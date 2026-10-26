@@ -1,0 +1,120 @@
+/* ========================================================
+   PRINT STYLES (A4 LANDSCAPE & SINGLE PAGE EXPORT)
+   ======================================================== */
+
+@media print {
+      html, body {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: auto !important;
+        display: block !important;
+        width: 100% !important;
+      }
+
+      .action-bar,
+      .football-welcome-banner {
+        display: none !important;
+      }
+
+      .page-sheet {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 8px 12px !important;
+        border-radius: 4px !important;
+        box-shadow: none !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        margin-bottom: 0 !important;
+        border-width: 2.5px !important;
+      }
+
+      /* Control single page printing */
+      body.print-only-1 .page-2,
+      body.print-only-1 .page-poster,
+      body.print-only-1 .page-break {
+        display: none !important;
+      }
+
+      body.print-only-2 .page-1,
+      body.print-only-2 .page-poster,
+      body.print-only-2 .page-break {
+        display: none !important;
+      }
+
+      body.print-only-poster .page-1,
+      body.print-only-poster .page-2,
+      body.print-only-poster .page-break {
+        display: none !important;
+      }
+      body.print-only-poster .page-poster {
+        display: block !important;
+        margin: 0 auto !important;
+      }
+    }
+
+@media print {
+      .score-input, .pt-input {
+        border-color: #666 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      .pt-input.gfga-pt,
+      .pt-input.gd-pt {
+        border-color: #666 !important;
+        background: transparent !important;
+        color: #000 !important;
+      }
+      .pen-picker-wrap, .btn-demo, .btn-reset, .live-status-pill {
+        display: none !important;
+      }
+
+      /* White Paper / Ink-Saving Sheet Theme during Print */
+      body.sheet-theme-paper .page-sheet,
+      body.light-mode .page-sheet {
+        background: #ffffff !important;
+        color: #111111 !important;
+        border: 2px solid #072a60 !important;
+        box-shadow: none !important;
+      }
+      body.sheet-theme-paper .header h1,
+      body.light-mode .header h1 {
+        color: #072a60 !important;
+        text-shadow: none !important;
+      }
+      body.sheet-theme-paper .header h1 span,
+      body.light-mode .header h1 span {
+        color: #c62828 !important;
+      }
+      body.sheet-theme-paper .header p,
+      body.light-mode .header p {
+        color: #333333 !important;
+      }
+      body.sheet-theme-paper .p1-card,
+      body.sheet-theme-paper .awards-box,
+      body.light-mode .p1-card,
+      body.light-mode .awards-box {
+        background: #ffffff !important;
+        border-color: #072a60 !important;
+        color: #111111 !important;
+      }
+      body.sheet-theme-paper .rule-strip,
+      body.light-mode .rule-strip {
+        background: #e8f5e9 !important;
+        color: #1b5e20 !important;
+        border-left-color: #2e7d32 !important;
+      }
+
+      /* Full Stadium Color Sheet Theme during Print */
+      body:not(.sheet-theme-paper):not(.light-mode) .page-sheet {
+        background: linear-gradient(135deg, #061c36 0%, #0d3b1e 40%, #16592d 100%) !important;
+        border: 3px solid #f5b915 !important;
+        color: #ffffff !important;
+      }
+      body:not(.sheet-theme-paper):not(.light-mode) .header h1 {
+        color: #ffca28 !important;
+      }
+      body:not(.sheet-theme-paper):not(.light-mode) .header h1 span {
+        color: #ff5252 !important;
+      }
+    }

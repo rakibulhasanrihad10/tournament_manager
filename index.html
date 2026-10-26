@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ফুটবল বিশ্বকাপ ২০২৬ - অফিসিয়াল ফিকশ্চার ও স্কোরবোর্ড</title>
+  <link rel="stylesheet" href="src/css/style.css">
+  <link rel="stylesheet" href="src/css/main.css">
+  <link rel="stylesheet" href="src/css/modals.css">
+  <link rel="stylesheet" href="src/css/hub.css">
+  <link rel="stylesheet" href="src/css/print.css">
+  <script>
+    // Immediate pre-render theme setup to prevent Flash of Incorrect Theme (FOIT)
+    (function() {
+      try {
+        const savedTheme = localStorage.getItem('tournament_theme_mode');
+        const systemLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+        const theme = savedTheme || (systemLight ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', theme);
+
+        const savedSheet = localStorage.getItem('tournament_sheet_theme');
+        if (savedSheet === 'paper') {
+          document.documentElement.classList.add('sheet-theme-paper');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ========================================================
+       1. INITIAL SPORTS HUB (HOME DASHBOARD VIEW)
+       ======================================================== -->
+  <div id="sports-hub-view" class="sports-hub-container">
+    <!-- Hub Top Navigation Bar -->
+    <header class="hub-header">
+      <div class="hub-nav-inner">
+        <div class="hub-brand">
+          <span class="hub-logo-icon">🏆</span>
+          <div>
+            <div class="hub-brand-title">
+              <span data-i18n="hub.brand_title">স্পোর্টস টুর্নামেন্ট প্রো</span>
+              <span class="hub-brand-badge" data-i18n="hub.brand_badge">মাল্টি-স্পোর্টস</span>
+            </div>
+            <div class="hub-brand-sub" data-i18n="hub.brand_sub">অল-ইন-ওয়ান টুর্নামেন্ট ম্যানেজমেন্ট প্ল্যাটফর্ম</div>
+          </div>
+        </div>
+
+        <div class="hub-controls">
+          <!-- Language Switcher -->
+          <div class="lang-switch-wrap" title="Switch Language / ভাষা পরিবর্তন করুন">
+            <button type="button" class="lang-btn lang-btn-bn active" onclick="setLanguage('bn')">বাংলা</button>
+            <button type="button" class="lang-btn lang-btn-en" onclick="setLanguage('en')">English</button>
+          </div>
+
+          <!-- Color Mode Switcher -->
+          <div class="theme-switch-wrap" title="App UI Color Mode / অ্যাপের কালার মোড (ডার্ক/লাইট)">
+            <button type="button" class="theme-btn theme-btn-dark active" onclick="setAppTheme('dark')" title="ডার্ক মোড">🌙</button>
+            <button type="button" class="theme-btn theme-btn-light" onclick="setAppTheme('light')" title="লাইট মোড">☀️</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hub Hero Section -->
+    <section class="hub-hero">
+      <div class="hub-hero-badge">
+        <span data-i18n="hub.hero_badge">⚡ যেকোনো টুর্নামেন্ট পরিচালনা করুন পেশাদারভাবে</span>
+      </div>
+      <h1 class="hub-hero-title">
+        <span data-i18n="hub.hero_title_1">আপনার টুর্নামেন্ট পরিচালনা করুন</span><br>
+        <span class="gradient-text" data-i18n="hub.hero_title_2">সহজ ও পেশাদারভাবে</span>
+      </h1>
+      <p class="hub-hero-desc" data-i18n="hub.hero_desc">
+        ফুটবল, ক্রিকেট কিংবা ব্যাডমিন্টন—ফিকশ্চার তৈরি, লাইভ অটো পয়েন্ট টেবিল, কার্ড ও স্কোর ট্র্যাকার এবং A4 ল্যান্ডস্কেপ প্রফেশনাল শিট প্রিন্ট করুন এক ক্লিকে।
+      </p>
+    </section>
+
+    <!-- 3 Sport Cards Grid -->
+    <main class="hub-grid">
+      <!-- 1. FOOTBALL TOURNAMENT (ACTIVE) -->
+      <div class="sport-card card-football">
+        <div>
+          <div class="card-top">
+            <div class="sport-icon-wrap">⚽</div>
+            <span class="sport-status-badge status-active">
+              <span class="pulse-dot" style="background:#10b981;"></span>
+              <span data-i18n="hub.status_active">সক্রিয় 🟢</span>
+            </span>
+          </div>
+          <h2 class="sport-title" data-i18n="hub.football_title">ফুটবল টুর্নামেন্ট</h2>
+          <p class="sport-desc" data-i18n="hub.football_desc">
+            ৩-গ্রুপ লিগ ও নকআউট ফিকশ্চার, অটো গোল ডিফারেন্স ও ফেয়ার প্লে টেবিল, সোশ্যাল মিডিয়া পোস্টার এবং A4 প্রিন্ট রেডি ডাবল-পেজ ফিকশ্চার শিট।
+          </p>
+        </div>
+        <button type="button" class="btn-launch-sport btn-football-launch" onclick="openFootballEntryChoiceModal()" data-i18n="hub.football_btn">
+          🚀 ফুটবল টুর্নামেন্টে প্রবেশ করুন ➜
+        </button>
+      </div>
+
+      <!-- 2. CRICKET TOURNAMENT (COMING SOON) -->
+      <div class="sport-card card-cricket">
+        <div>
+          <div class="card-top">
+            <div class="sport-icon-wrap">🏏</div>
+            <span class="sport-status-badge status-upcoming">
+              <span data-i18n="hub.status_upcoming">শীঘ্রই আসছে ⏳</span>
+            </span>
+          </div>
+          <h2 class="sport-title" data-i18n="hub.cricket_title">ক্রিকেট টুর্নামেন্ট</h2>
+          <p class="sport-desc" data-i18n="hub.cricket_desc">
+            টি-১০ / টি-২০ বা শর্ট ওভার লিগ ফিকশ্চার, নেট রান রেট (NRR) অটো ক্যালকুলেটর, ওভার ও বল ট্র্যাকার, গ্রুপ ও নকআউট ফিকশ্চার শিট।
+          </p>
+        </div>
+        <button type="button" class="btn-launch-sport btn-upcoming-preview" onclick="openSportPreviewModal('cricket')" data-i18n="hub.cricket_btn">
+          🔍 ফিচার রোডম্যাপ ও প্রিভিউ
+        </button>
+      </div>
+
+      <!-- 3. BADMINTON TOURNAMENT (COMING SOON) -->
+      <div class="sport-card card-badminton">
+        <div>
+          <div class="card-top">
+            <div class="sport-icon-wrap">🏸</div>
+            <span class="sport-status-badge status-upcoming">
+              <span data-i18n="hub.status_upcoming">শীঘ্রই আসছে ⏳</span>
+            </span>
+          </div>
+          <h2 class="sport-title" data-i18n="hub.badminton_title">ব্যাডমিন্টন টুর্নামেন্ট</h2>
+          <p class="sport-desc" data-i18n="hub.badminton_desc">
+            সিঙ্গেলস ও ডাবলস টুর্নামেন্ট ফরম্যাট, ২১-পয়েন্ট বেস্ট অব ৩ সেট স্কোরিং, নকআউট ব্র্যাকেট ট্রি এবং কোর্ট শিডিউল প্রিন্ট শিট।
+          </p>
+        </div>
+        <button type="button" class="btn-launch-sport btn-upcoming-preview" onclick="openSportPreviewModal('badminton')" data-i18n="hub.badminton_btn">
+          🔍 ফিচার রোডম্যাপ ও প্রিভিউ
+        </button>
+      </div>
+    </main>
+
+    <!-- Future Sports Expansion Strip -->
+    <div class="hub-future-strip">
+      <div class="future-inner">
+        <div class="future-text">
+          <span>✨</span>
+          <span class="future-title" data-i18n="hub.future_title">ভবিষ্যতে আরও স্পোর্টস আসছে:</span>
+        </div>
+        <div class="future-sports-tags">
+          <span class="future-tag" data-i18n="hub.tag_volleyball">🏐 ভলিবল</span>
+          <span class="future-tag" data-i18n="hub.tag_tabletennis">🏓 টেবিল টেনিস</span>
+          <span class="future-tag" data-i18n="hub.tag_carrom">🎯 ক্যারাম</span>
+          <span class="future-tag" data-i18n="hub.tag_chess">♟️ দাবা</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       2. FOOTBALL TOURNAMENT APP VIEW (THE COMPLETE ENGINE)
+       ======================================================== -->
+  <div id="football-app-view" class="football-app-container">
+    <!-- Floating Print Controls (Hidden on Print) -->
+    <div class="action-bar">
+      <div class="action-bar-inner">
+        <div class="action-bar-brand">
+          <!-- Return to Sports Hub Button -->
+          <button type="button" class="btn btn-hub" onclick="navigateToView('hub')" data-i18n="nav.btn_hub" title="স্পোর্টস হাব / হোম পেজে ফিরে যান">🏠 স্পোর্টস হাব</button>
+          <div class="action-bar-title-wrap">
+            <h2 data-i18n="nav.panel_title">টুর্নামেন্ট প্রিন্ট ও ম্যানেজমেন্ট প্যানেল</h2>
+            <p data-i18n="nav.panel_sub">যেকোনো টুর্নামেন্টের জন্য কাস্টমাইজযোগ্য ফিকশ্চার ও সোশ্যাল মিডিয়া পোস্টার সিস্টেম</p>
+          </div>
+        </div>
+        <div class="action-btns">
+          <!-- 1. Primary Highlighted Setup CTA (Eye-catching for new & returning users) -->
+          <button type="button" class="btn btn-primary-wizard" onclick="openTournamentWizard()" data-i18n="nav.btn_wizard" data-i18n-title="nav.btn_wizard_title" title="নতুন টুর্নামেন্টের নাম, ভেন্যু, প্রাইজমানি ও নিয়মাবলী সেট করুন">
+            🚀 টুর্নামেন্ট সেটআপ ও রুলস
+          </button>
+
+          <!-- 1.1 Team Registration Public Portal CTA -->
+          <button type="button" class="btn btn-team-reg" onclick="openTeamRegistrationModal()" data-i18n="nav.btn_team_reg" data-i18n-title="nav.btn_team_reg_title" title="টুর্নামেন্টে নতুন দলের নাম ও খেলোয়াড় তালিকা নিবন্ধন করুন">
+            📝 দল নিবন্ধন ফর্ম
+          </button>
+
+          <!-- 2. Consolidated Print Dropdown -->
+          <div class="dropdown-wrap" id="print-dropdown-wrap">
+            <button type="button" class="btn btn-dropdown" onclick="toggleDropdown('print-dropdown')" id="btn-print-dropdown" data-i18n-title="nav.dropdown_print_title" title="ফিকশ্চার বা নির্দিষ্ট পেজ প্রিন্ট করুন">
+              <span data-i18n="nav.dropdown_print">🖨️ প্রিন্ট</span> <span class="dropdown-caret">▾</span>
+            </button>
+            <div class="dropdown-menu" id="print-dropdown">
+              <button type="button" class="dropdown-item" onclick="printDocument('all'); closeAllDropdowns();">
+                <span class="item-icon">🖨️</span>
+                <div>
+                  <strong data-i18n="nav.print_all_title">সম্পূর্ণ ফিকশ্চার (২ পেজ)</strong>
+                  <small data-i18n="nav.print_all_sub">গ্রুপ টেবিল, নকআউট ব্র্যাকেট ও রুলস</small>
+                </div>
+              </button>
+              <button type="button" class="dropdown-item" onclick="printDocument('page1'); closeAllDropdowns();">
+                <span class="item-icon">📄</span>
+                <div>
+                  <strong data-i18n="nav.print_p1_title">পেজ ১ (ফিকশ্চার ও টেবিল)</strong>
+                  <small data-i18n="nav.print_p1_sub">পয়েন্ট টেবিল, সেমি ও ফাইনাল</small>
+                </div>
+              </button>
+              <button type="button" class="dropdown-item" onclick="printDocument('page2'); closeAllDropdowns();">
+                <span class="item-icon">📋</span>
+                <div>
+                  <strong data-i18n="nav.print_p2_title">পেজ ২ (রুলস ও প্লেয়ার)</strong>
+                  <small data-i18n="nav.print_p2_sub">অফিশিয়াল রুলস ও দল তালিকা</small>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Consolidated Tools & Settings Dropdown -->
+          <div class="dropdown-wrap" id="tools-dropdown-wrap">
+            <button type="button" class="btn btn-dropdown" onclick="toggleDropdown('tools-dropdown')" id="btn-tools-dropdown" data-i18n-title="nav.dropdown_tools_title" title="আরও প্রয়োজনীয় টুলস ও অপশন">
+              <span data-i18n="nav.dropdown_tools">⚙️ টুলস</span> <span class="dropdown-caret">▾</span>
+            </button>
+            <div class="dropdown-menu" id="tools-dropdown">
+              <!-- Promo Poster -->
+              <button type="button" class="dropdown-item" onclick="openPromoPosterModal(); closeAllDropdowns();" data-i18n-title="nav.btn_poster_title">
+                <span class="item-icon">📢</span>
+                <div>
+                  <strong data-i18n="nav.btn_poster">সোশ্যাল মিডিয়া পোস্টার</strong>
+                  <small data-i18n="nav.poster_sub">ফেসবুক ব্যানার তৈরি ও টেক্সট কপি</small>
+                </div>
+              </button>
+              <!-- Sheet Theme Toggle -->
+              <button type="button" class="dropdown-item btn-sheet-theme" id="btn-sheet-theme" onclick="toggleSheetTheme();" data-i18n-title="nav.sheet_theme_title" title="প্রিন্ট ও শিটের কালার থিম পরিবর্তন করুন">
+                <span class="item-icon" id="sheet-theme-icon">📄</span>
+                <div>
+                  <strong id="sheet-theme-label" data-i18n="nav.sheet_theme_paper">প্রিন্ট থিম: সাদা কাগজ</strong>
+                  <small data-i18n="nav.sheet_theme_sub">সাদা পেপার বা স্টেডিয়াম ব্যাকগ্রাউন্ড</small>
+                </div>
+              </button>
+              <!-- Demo Data -->
+              <button type="button" class="dropdown-item" onclick="loadSampleTournamentData(); closeAllDropdowns();">
+                <span class="item-icon">⚡</span>
+                <div>
+                  <strong data-i18n="nav.btn_demo">ডেমো ডাটা লোড করুন</strong>
+                  <small data-i18n="nav.demo_sub">নমুনা স্কোর ও দল দিয়ে টেস্ট করুন</small>
+                </div>
+              </button>
+              <div class="dropdown-divider"></div>
+              <!-- Reset Tournament Data -->
+              <button type="button" class="dropdown-item dropdown-item-danger" onclick="resetTournamentData(); closeAllDropdowns();">
+                <span class="item-icon">🔄</span>
+                <div>
+                  <strong data-i18n="nav.btn_reset">সব ডাটা রিসেট করুন</strong>
+                  <small data-i18n="nav.reset_sub">নতুন করে শুরু করার জন্য সব মুছুন</small>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. Language & Theme Utilities -->
+          <div class="nav-utilities">
+            <!-- Language Switcher Pill Toggle -->
+            <div class="lang-switch-wrap" title="Switch Language / ভাষা পরিবর্তন করুন">
+              <button type="button" class="lang-btn lang-btn-bn active" id="btn-lang-bn" onclick="setLanguage('bn')">বাং</button>
+              <button type="button" class="lang-btn lang-btn-en" id="btn-lang-en" onclick="setLanguage('en')">EN</button>
+            </div>
+
+            <!-- App System Color Mode Switcher (Dark / Light) -->
+            <div class="theme-switch-wrap" title="App UI Color Mode / অ্যাপের কালার মোড (ডার্ক/লাইট)" data-i18n-title="nav.theme_title">
+              <button type="button" class="theme-btn theme-btn-dark active" id="btn-theme-dark" onclick="setAppTheme('dark')" title="ডার্ক মোড (Dark Mode)" data-i18n-title="nav.theme_dark">🌙</button>
+              <button type="button" class="theme-btn theme-btn-light" id="btn-theme-light" onclick="setAppTheme('light')" title="লাইট মোড (Light Mode)" data-i18n-title="nav.theme_light">☀️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Friendly Welcome Onboarding Setup Strip (Hidden on Print) -->
+    <div class="football-welcome-banner" id="football-welcome-banner">
+      <div class="welcome-banner-inner">
+        <div class="welcome-banner-content">
+          <div class="welcome-banner-icon">💡</div>
+          <div class="welcome-banner-text">
+            <h3 data-i18n="banner.title">নতুন টুর্নামেন্ট শুরু করছেন? মাত্র ২ মিনিটে টুর্নামেন্ট সেটআপ করে নিন!</h3>
+            <p data-i18n="banner.desc">টুর্নামেন্টের নাম, খেলার স্থান, প্রাইজমানি ও নিয়মাবলী সেট করে সরাসরি প্রিন্ট-রেডি ফিকশ্চার তৈরি করুন।</p>
+          </div>
+        </div>
+        <div class="welcome-banner-actions">
+          <button type="button" class="btn btn-welcome-setup" onclick="openTournamentWizard()" data-i18n="banner.btn_setup">
+            🚀 সেটআপ শুরু করুন
+          </button>
+          <button type="button" class="welcome-dismiss-btn" onclick="dismissWelcomeBanner()" title="বন্ধ করুন" aria-label="Dismiss banner">✕</button>
+        </div>
+      </div>
+    </div>
+
+  <!-- ========================================================
+       PAGE 1: সম্পূর্ণ ফিকশ্চার ও ব্র্যাকেট পোস্টার
+       ======================================================== -->
+  <div class="page-sheet page-1" id="page1">
+    <div class="header">
+      <h1 id="app-title-display">⚽ <span id="app-title-accent">ফুটবল বিশ্বকাপ</span> <span id="app-title-rest">২০২৬</span></h1>
+      <p id="app-meta-display"><span data-i18n="page1.meta_organizer">আয়োজনে:</span> <span id="app-org-display">ফিফা ও বাংলাদেশ ফুটবল ফেডারেশন</span> &nbsp;|&nbsp; <span data-i18n="page1.meta_venue">স্থান:</span> <span id="app-venue-display">বঙ্গবন্ধু জাতীয় স্টেডিয়াম মাঠ, ঢাকা</span> <span class="live-status-pill"><span class="pulse-dot"></span> <span data-i18n="page1.live_status">লাইভ স্কোরবোর্ড ও অটো-ক্যালকুলেটর সক্রিয়</span></span></p>
+    </div>
+
+        <div class="page1-layout">
+      <!-- LEFT COLUMN (41%): গ্রুপ পয়েন্ট ট্র্যাকার, নিয়ম ও ব্যক্তিগত পুরস্কার -->
+      <div class="p1-left-col">
+        <!-- 1. দল, গ্রুপ পয়েন্ট ক্যালকুলেটর ও সেমিফাইনালিস্ট নির্ধারণ -->
+        <div class="p1-card" style="padding: 5px 7px;">
+          <div class="section-title" style="margin-bottom: 4px;" data-i18n="page1.left_col_title">দল, গ্রুপ পয়েন্ট ও সেমিফাইনালিস্ট নির্ধারণ</div>
+
+          <div id="dynamic-standings-container">
+          <!-- গ্রুপ এ (Group A) -->
+          <div class="grp-table-wrap">
+            <div class="grp-hd ga">
+              <span data-i18n="page1.group_a_title">🏆 গ্রুপ এ (Group A)</span>
+              <span style="font-size:9px; opacity:0.9;" data-i18n="page1.group_meta">৩ দল • ৩ ম্যাচ</span>
+            </div>
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th style="width: 5%;" data-i18n="page1.th_pos">#</th>
+                  <th style="width: 32%; text-align: left; padding-left: 5px;" data-i18n="page1.th_team">দলের নাম</th>
+                  <th style="width: 7%;" title="ম্যাচ খেলেছে (Played)" data-i18n="page1.th_pl" data-i18n-title="page1.th_pl_title">PL</th>
+                  <th style="width: 6%;" title="জয় (Won)" data-i18n="page1.th_w">W</th>
+                  <th style="width: 6%;" title="ড্র (Drawn)" data-i18n="page1.th_d">D</th>
+                  <th style="width: 6%;" title="হার (Lost)" data-i18n="page1.th_l">L</th>
+                  <th style="width: 11%;" title="দেওয়া-খাওয়া গোল (+/-)" data-i18n="page1.th_gfga">+/-</th>
+                  <th style="width: 7%;" title="গোল ব্যবধান (Goal Difference)" data-i18n="page1.th_gd">GD</th>
+                  <th style="width: 6%;" title="ফেয়ার প্লে পয়েন্ট (কার্ড শৃঙ্খলা: 🟨 -১, 🟥 -৩)" data-i18n="page1.th_fp" data-i18n-title="page1.th_fp_title">FP</th>
+                  <th style="width: 7%;" title="মোট পয়েন্ট (Points)" data-i18n="page1.th_pts">PTS</th>
+                  <th style="width: 11%;" title="সাম্প্রতিক ফর্ম (Form)" data-i18n="page1.th_form">Form</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-group-A">
+                <tr class="rank-1">
+                  <td>১</td>
+                  <td class="team-name-cell">মুড়িয়ারা</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-2">
+                  <td>২</td>
+                  <td class="team-name-cell">নোয়াপাড়া</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-3">
+                  <td>৩</td>
+                  <td class="team-name-cell">চিতড্ডা</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="grp-champ-row">
+              <span data-i18n="page1.champ_a_lbl">🏆 গ্রুপ এ চ্যাম্পিয়ন:</span>
+              <span class="champ-blank"><span id="champ-a-display" class="champ-blank-content"></span></span>
+            </div>
+          </div>
+
+          <!-- গ্রুপ বি (Group B) -->
+          <div class="grp-table-wrap">
+            <div class="grp-hd gb">
+              <span data-i18n="page1.group_b_title">🏆 গ্রুপ বি (Group B)</span>
+              <span style="font-size:9px; opacity:0.9;" data-i18n="page1.group_meta">৩ দল • ৩ ম্যাচ</span>
+            </div>
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th style="width: 5%;" data-i18n="page1.th_pos">#</th>
+                  <th style="width: 32%; text-align: left; padding-left: 5px;" data-i18n="page1.th_team">দলের নাম</th>
+                  <th style="width: 7%;" title="ম্যাচ খেলেছে (Played)" data-i18n="page1.th_pl" data-i18n-title="page1.th_pl_title">PL</th>
+                  <th style="width: 6%;" title="জয় (Won)" data-i18n="page1.th_w">W</th>
+                  <th style="width: 6%;" title="ড্র (Drawn)" data-i18n="page1.th_d">D</th>
+                  <th style="width: 6%;" title="হার (Lost)" data-i18n="page1.th_l">L</th>
+                  <th style="width: 11%;" title="দেওয়া-খাওয়া গোল (+/-)" data-i18n="page1.th_gfga">+/-</th>
+                  <th style="width: 7%;" title="গোল ব্যবধান (Goal Difference)" data-i18n="page1.th_gd">GD</th>
+                  <th style="width: 6%;" title="ফেয়ার প্লে পয়েন্ট (কার্ড শৃঙ্খলা: 🟨 -১, 🟥 -৩)" data-i18n="page1.th_fp" data-i18n-title="page1.th_fp_title">FP</th>
+                  <th style="width: 7%;" title="মোট পয়েন্ট (Points)" data-i18n="page1.th_pts">PTS</th>
+                  <th style="width: 11%;" title="সাম্প্রতিক ফর্ম (Form)" data-i18n="page1.th_form">Form</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-group-B">
+                <tr class="rank-1">
+                  <td>১</td>
+                  <td class="team-name-cell">মুকুন্দপুর</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-2">
+                  <td>২</td>
+                  <td class="team-name-cell">উত্তর ওড্ডা</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-3">
+                  <td>৩</td>
+                  <td class="team-name-cell">দক্ষিণ ওড্ডা</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="grp-champ-row">
+              <span data-i18n="page1.champ_b_lbl">🏆 গ্রুপ বি চ্যাম্পিয়ন:</span>
+              <span class="champ-blank"><span id="champ-b-display" class="champ-blank-content"></span></span>
+            </div>
+          </div>
+
+          <!-- গ্রুপ সি (Group C) -->
+          <div class="grp-table-wrap">
+            <div class="grp-hd gc">
+              <span data-i18n="page1.group_c_title">🏆 গ্রুপ সি (Group C)</span>
+              <span style="font-size:9px; opacity:0.9;" data-i18n="page1.group_meta">৩ দল • ৩ ম্যাচ</span>
+            </div>
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th style="width: 5%;" data-i18n="page1.th_pos">#</th>
+                  <th style="width: 32%; text-align: left; padding-left: 5px;" data-i18n="page1.th_team">দলের নাম</th>
+                  <th style="width: 7%;" title="ম্যাচ খেলেছে (Played)" data-i18n="page1.th_pl" data-i18n-title="page1.th_pl_title">PL</th>
+                  <th style="width: 6%;" title="জয় (Won)" data-i18n="page1.th_w">W</th>
+                  <th style="width: 6%;" title="ড্র (Drawn)" data-i18n="page1.th_d">D</th>
+                  <th style="width: 6%;" title="হার (Lost)" data-i18n="page1.th_l">L</th>
+                  <th style="width: 11%;" title="দেওয়া-খাওয়া গোল (+/-)" data-i18n="page1.th_gfga">+/-</th>
+                  <th style="width: 7%;" title="গোল ব্যবধান (Goal Difference)" data-i18n="page1.th_gd">GD</th>
+                  <th style="width: 6%;" title="ফেয়ার প্লে পয়েন্ট (কার্ড শৃঙ্খলা: 🟨 -১, 🟥 -৩)" data-i18n="page1.th_fp" data-i18n-title="page1.th_fp_title">FP</th>
+                  <th style="width: 7%;" title="মোট পয়েন্ট (Points)" data-i18n="page1.th_pts">PTS</th>
+                  <th style="width: 11%;" title="সাম্প্রতিক ফর্ম (Form)" data-i18n="page1.th_form">Form</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-group-C">
+                <tr class="rank-1">
+                  <td>১</td>
+                  <td class="team-name-cell">বাতাবাড়িয়া</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-2">
+                  <td>২</td>
+                  <td class="team-name-cell">মোহাম্মদপুর</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-3">
+                  <td>৩</td>
+                  <td class="team-name-cell">ভংগুয়া</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="grp-champ-row">
+              <span data-i18n="page1.champ_c_lbl">🏆 গ্রুপ সি চ্যাম্পিয়ন:</span>
+              <span class="champ-blank"><span id="champ-c-display" class="champ-blank-content"></span></span>
+            </div>
+          </div>
+
+          <!-- সেরা রানার্স-আপ -->
+          <div class="best-ru-strip">
+            <span data-i18n="page1.best_runner_up_strip">⭐ সেমিফাইনালে খেলার যোগ্য সেরা রানার্স-আপ (Best Runner-up):</span>
+            <span class="ru-blank"><span id="best-ru-display" class="ru-blank-content"></span></span>
+          </div>
+          </div> <!-- end #dynamic-standings-container -->
+        </div>
+
+        <!-- 2. ড্র নিষ্পত্তির একক নিয়ম (Single Line Strip) -->
+        <div class="rule-strip">
+          <strong data-i18n="page1.draw_strip">ℹ️ ড্র নিষ্পত্তি নিয়ম:</strong> <span data-i18n="page1.draw_strip_desc">গ্রুপ বা নকআউট পর্বের যেকোনো ম্যাচ ড্র হলে কোনো অতিরিক্ত সময় ছাড়াই সরাসরি পেনাল্টি শুটআউটে (টাইব্রেকার) বিজয়ী নির্ধারিত হবে।</span>
+        </div>
+
+        <!-- 3. ব্যক্তিগত পুরস্কার ও সম্মাননা (Awards Box) -->
+        <div class="awards-box">
+          <div class="section-title" style="margin-bottom: 4px;" data-i18n="page1.awards_title">🎖️ ব্যক্তিগত পুরস্কার ও সম্মাননা</div>
+
+          <!-- Auto Golden Boot Leaderboard Strip -->
+          <div class="golden-boot-lead-wrap">
+            <div class="lead-title">
+              <span data-i18n="page1.golden_boot_title">🏆 শীর্ষ গোলদাতা তালিকা (Golden Boot Race):</span>
+              <span style="font-size:8.5px; font-weight:normal; color:#92400e;" data-i18n="page1.golden_boot_sub">ম্যাচ ইভেন্ট থেকে স্বয়ংক্রিয়ভাবে সংকলিত</span>
+            </div>
+            <div class="lead-list" id="golden-boot-top-list">
+              <span class="lead-chip" data-i18n="common.no_goals_logged">কোনো গোল এখনো নথিভুক্ত হয়নি</span>
+            </div>
+          </div>
+          <div class="award-item">
+            <div class="award-header gold" data-i18n="page1.award_top_scorer">⚽ টুর্নামেন্টের সেরা গোলদাতা (গোল্ডেন বুট)</div>
+            <div class="award-details">
+              <span>খেলোয়াড়:</span><input type="text" class="award-line-lg" id="award-top-scorer-name" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
+              <span>দল:</span><input type="text" class="award-line-md" id="award-top-scorer-team" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
+              <span>গোল:</span><input type="number" class="award-box-sm" id="award-top-scorer-goals" style="text-align:center; font-weight:700; outline:none;">
+            </div>
+          </div>
+
+          <div class="award-item">
+            <div class="award-header red" data-i18n="page1.award_mot">🏅 ফাইনালের ম্যান অব দ্য ম্যাচ</div>
+            <div class="award-details">
+              <span>খেলোয়াড়:</span><input type="text" class="award-line-lg" id="award-mom-name" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
+              <span>দল:</span><input type="text" class="award-line-md" id="award-mom-team" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
+            </div>
+          </div>
+
+          <div class="award-item">
+            <div class="award-header green" data-i18n="page1.award_gk">🧤 টুর্নামেন্টের সেরা গোলরক্ষক (গোল্ডেন গ্লাভস)</div>
+            <div class="award-details">
+              <span>খেলোয়াড়:</span><input type="text" class="award-line-lg" id="award-gk-name" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
+              <span>দল:</span><input type="text" class="award-line-md" id="award-gk-team" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN (59%): গ্রুপ পর্বের ম্যাচ সূচি ও নকআউট পর্বের ব্র্যাকেট -->
+      <div class="p1-right-col">
+        <!-- 1. গ্রুপ পর্বের ম্যাচ সূচি (ম্যাচ ১-৯) -->
+        <div class="p1-card" style="padding: 5px 8px;">
+          <div class="section-title" style="margin-bottom: 3px;" data-i18n="page1.group_schedule_title">গ্রুপ পর্বের ম্যাচ সূচি</div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:8%;" data-i18n="page1.th_match_no">ম্যাচ নং</th>
+                <th style="width:13%;" data-i18n="page1.th_time">সময়</th>
+                <th style="width:12%;" data-i18n="page1.th_group">গ্রুপ</th>
+                <th style="width:38%;" data-i18n="page1.th_versus">মুখোমুখি দল</th>
+                <th style="width:14%;" data-i18n="page1.th_score">স্কোর</th>
+                <th style="width:15%;" data-i18n="page1.th_winner">ফলাফল / বিজয়ী</th>
+              </tr>
+            </thead>
+            <tbody id="dynamic-schedule-tbody">
+              <tr>
+                <td>১</td>
+                <td>সন্ধ্যা ৬:০০</td>
+                <td style="color:#0d47a1;">গ্রুপ বি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">মুকুন্দপুর</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">উত্তর ওড্ডা</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(1)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m1-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m1-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(1)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m1-winner" class="match-winner-txt">__________________</span>
+                  <div id="m1-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>২</td>
+                <td>সন্ধ্যা ৬:৩০</td>
+                <td style="color:#b71c1c;">গ্রুপ এ</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">মুড়িয়ারা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">নোয়াপাড়া</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(2)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m2-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m2-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(2)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m2-winner" class="match-winner-txt">__________________</span>
+                  <div id="m2-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৩</td>
+                <td>রাত ৭:০০</td>
+                <td style="color:#1b5e20;">গ্রুপ সি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">বাতাবাড়িয়া</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">মোহাম্মদপুর</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(3)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m3-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m3-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(3)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m3-winner" class="match-winner-txt">__________________</span>
+                  <div id="m3-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৪</td>
+                <td>রাত ৭:৩০</td>
+                <td style="color:#b71c1c;">গ্রুপ এ</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">নোয়াপাড়া</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">চিতড্ডা</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(4)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m4-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m4-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(4)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m4-winner" class="match-winner-txt">__________________</span>
+                  <div id="m4-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৫</td>
+                <td>রাত ৮:০০</td>
+                <td style="color:#0d47a1;">গ্রুপ বি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">উত্তর ওড্ডা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">দক্ষিণ ওড্ডা</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(5)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m5-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m5-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(5)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m5-winner" class="match-winner-txt">__________________</span>
+                  <div id="m5-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৬</td>
+                <td>রাত ৮:৩০</td>
+                <td style="color:#1b5e20;">গ্রুপ সি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">মোহাম্মদপুর</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">ভংগুয়া</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(6)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m6-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m6-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(6)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m6-winner" class="match-winner-txt">__________________</span>
+                  <div id="m6-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৭</td>
+                <td>রাত ৯:০০</td>
+                <td style="color:#b71c1c;">গ্রুপ এ</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">চিতড্ডা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">মুড়িয়ারা</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(7)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m7-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m7-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(7)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m7-winner" class="match-winner-txt">__________________</span>
+                  <div id="m7-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৮</td>
+                <td>রাত ৯:৩০</td>
+                <td style="color:#0d47a1;">গ্রুপ বি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">দক্ষিণ ওড্ডা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">মুকুন্দপুর</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(8)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m8-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m8-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(8)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m8-winner" class="match-winner-txt">__________________</span>
+                  <div id="m8-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৯</td>
+                <td>রাত ১০:০০</td>
+                <td style="color:#1b5e20;">গ্রুপ সি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">ভংগুয়া</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">বাতাবাড়িয়া</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(9)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m9-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m9-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(9)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m9-winner" class="match-winner-txt">__________________</span>
+                  <div id="m9-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 2. নকআউট পর্বের ব্র্যাকেট (ম্যাচ ১০-১৩) ও বিশেষ দ্রষ্টব্য -->
+        <div class="p1-card" style="padding: 5px 8px;">
+          <div class="bracket-header">
+            <div>
+              <div class="section-title" style="margin-bottom: 2px;" data-i18n="page1.bracket_title">👑 নকআউট পর্বের ব্র্যাকেট</div>
+              <p style="font-weight:700; font-size: 11.5px; color: #333;" data-i18n="page1.bracket_sub">৩ গ্রুপের চ্যাম্পিয়ন + সেরা রানার্স-আপ = ৪ দল</p>
+            </div>
+            <div class="trophies-showcase">
+              <div class="trophy-item t-gold"><span class="trophy-icon">🏆</span> <span data-i18n="page1.badge_champ">চ্যাম্পিয়ন</span></div>
+              <div class="trophy-item t-silver"><span class="trophy-icon">🏆</span> <span data-i18n="page1.badge_ru">রানার্স-আপ</span></div>
+              <div class="trophy-item t-bronze"><span class="trophy-icon">🏆</span> <span data-i18n="page1.badge_3rd">৩য় স্থান</span></div>
+            </div>
+          </div>
+
+          <div class="bracket-grid-2x2">
+            <!-- ১ম সেমিফাইনাল -->
+            <div class="match-card">
+              <div class="mc-head mc-red" data-i18n="page1.semi_1_hd">১ম সেমিফাইনাল (ম্যাচ ১০) | রাত ১০:৩০</div>
+              <div class="mc-body">
+                <div><span id="ko10-t1" class="team-badge-txt">গ্রুপ এ চ্যাম্পিয়ন</span> <span class="vs-badge" style="display:inline-block; width:16px; height:16px; font-size:8px;">VS</span> <span id="ko10-t2" class="team-badge-txt">সেরা রানার্স-আপ</span></div>
+                <div class="mc-score-row">
+                  স্কোর: 
+                  <div class="score-wrap" onclick="openMatchEventsModal(10)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="ko10-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="ko10-s2" readonly placeholder="০">
+                  </div>
+                  <button type="button" class="btn-match-event" onclick="openMatchEventsModal(10)" style="margin-left:4px; font-size:9px; padding:1px 5px;">⚽/🟨</button>
+                </div>
+                <div id="ko10-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                <div class="winner-input"><span data-i18n="page1.winner_lbl">বিজয়ী দল</span><div class="winner-blank" id="ko10-winner"><div class="winner-blank-content"></div></div></div>
+              </div>
+            </div>
+
+            <!-- ২য় সেমিফাইনাল -->
+            <div class="match-card">
+              <div class="mc-head mc-blue" data-i18n="page1.semi_2_hd">২য় সেমিফাইনাল (ম্যাচ ১১) | রাত ১১:০০</div>
+              <div class="mc-body">
+                <div><span id="ko11-t1" class="team-badge-txt">গ্রুপ বি চ্যাম্পিয়ন</span> <span class="vs-badge" style="display:inline-block; width:16px; height:16px; font-size:8px;">VS</span> <span id="ko11-t2" class="team-badge-txt">গ্রুপ সি চ্যাম্পিয়ন</span></div>
+                <div class="mc-score-row">
+                  স্কোর: 
+                  <div class="score-wrap" onclick="openMatchEventsModal(11)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="ko11-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="ko11-s2" readonly placeholder="০">
+                  </div>
+                  <button type="button" class="btn-match-event" onclick="openMatchEventsModal(11)" style="margin-left:4px; font-size:9px; padding:1px 5px;">⚽/🟨</button>
+                </div>
+                <div id="ko11-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                <div class="winner-input"><span data-i18n="page1.winner_lbl">বিজয়ী দল</span><div class="winner-blank" id="ko11-winner"><div class="winner-blank-content"></div></div></div>
+              </div>
+            </div>
+
+            <!-- ৩য় স্থান নির্ধারণী -->
+            <div class="match-card">
+              <div class="mc-head mc-purple" data-i18n="page1.play3_hd">🥉 ৩য় স্থান নির্ধারণী (ম্যাচ ১২) | রাত ১১:৩০</div>
+              <div class="mc-body">
+                <div><span id="ko12-t1" class="team-badge-txt">১ম সেমি পরাজিত</span> <span class="vs-badge" style="display:inline-block; width:16px; height:16px; font-size:8px;">VS</span> <span id="ko12-t2" class="team-badge-txt">২য় সেমি পরাজিত</span></div>
+                <div class="mc-score-row">
+                  স্কোর: 
+                  <div class="score-wrap" onclick="openMatchEventsModal(12)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="ko12-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="ko12-s2" readonly placeholder="০">
+                  </div>
+                  <button type="button" class="btn-match-event" onclick="openMatchEventsModal(12)" style="margin-left:4px; font-size:9px; padding:1px 5px;">⚽/🟨</button>
+                </div>
+                <div id="ko12-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                <div class="winner-input"><span data-i18n="page1.winner_3rd_lbl">৩য় স্থান বিজয়ী দল</span><div class="winner-blank" id="ko12-winner"><div class="winner-blank-content"></div></div></div>
+              </div>
+            </div>
+
+            <!-- গ্র্যান্ড ফাইনাল -->
+            <div class="match-card" style="border-color: #f5b915;">
+              <div class="mc-head mc-dark" data-i18n="page1.final_hd">🏆 গ্র্যান্ড ফাইনাল (ম্যাচ ১৩) | রাত ১২:০০</div>
+              <div class="mc-body">
+                <div><span id="ko13-t1" class="team-badge-txt">১ম সেমি বিজয়ী</span> <span class="vs-badge" style="display:inline-block; width:16px; height:16px; font-size:8px;">VS</span> <span id="ko13-t2" class="team-badge-txt">২য় সেমি বিজয়ী</span></div>
+                <div class="mc-score-row">
+                  স্কোর: 
+                  <div class="score-wrap" onclick="openMatchEventsModal(13)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="ko13-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="ko13-s2" readonly placeholder="০">
+                  </div>
+                  <button type="button" class="btn-match-event" onclick="openMatchEventsModal(13)" style="margin-left:4px; font-size:9px; padding:1px 5px;">⚽/🟨</button>
+                </div>
+                <div id="ko13-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                <div class="winner-input final-win"><span data-i18n="page1.winner_champ_lbl">🏆 টুর্নামেন্ট চ্যাম্পিয়ন দল</span><div class="winner-blank" id="ko13-winner"><div class="winner-blank-content"></div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="special-note" id="swap-notification-note">
+            <strong data-i18n="page1.swap_note_title">ℹ️ বিশেষ দ্রষ্টব্য:</strong> <span data-i18n="page1.swap_note_desc">১ম সেমিফাইনালে সেরা রানার্স-আপ দলটি যদি আবার 'গ্রুপ এ' থেকেই আসে, তবে নিয়ম অনুযায়ী নিজেদের গ্রুপের চ্যাম্পিয়নের সাথে না খেলিয়ে তাদের 'গ্রুপ বি' বা 'সি' চ্যাম্পিয়নের সাথে অদলবদল করে দেওয়া যাবে।</span>
+          </div>
+        </div>
+      </div></div>
+  </div>
+
+  <!-- PAGE BREAK FOR PRINTING -->
+  <div class="page-break"></div>
+
+  <!-- ========================================================
+       PAGE 2: খেলোয়াড় তালিকা ও টুর্নামেন্ট নিয়মাবলী
+       ======================================================== -->
+  <div class="page-sheet page-2" id="page2">
+    <div class="header">
+      <h1 id="app-title-display-p2">⚽ <span id="app-title-accent-p2">ফুটবল বিশ্বকাপ</span> <span id="app-title-rest-p2">২০২৬</span></h1>
+      <p id="app-meta-display-p2"><span data-i18n="page1.meta_organizer">আয়োজনে:</span> <span id="app-org-display-p2">ফিফা ও বাংলাদেশ ফুটবল ফেডারেশন</span> &nbsp;|&nbsp; <span data-i18n="page1.meta_venue">স্থান:</span> <span id="app-venue-display-p2">বঙ্গবন্ধু জাতীয় স্টেডিয়াম মাঠ, ঢাকা</span></p>
+    </div>
+
+    <div class="page-title-banner" data-i18n="page2.title_banner">
+      📋 দলীয় খেলোয়াড়দের অফিসিয়াল তালিকা ও টুর্নামেন্ট পরিচালনা নির্দেশিকা
+    </div>
+
+    <!-- Interactive Team Selector Pill Tabs (Screen Only) -->
+    <div class="p2-team-tabs-bar" id="p2-dynamic-team-tabs">
+      <span style="font-size:10px; font-weight:800; color:#475569;" data-i18n="page2.team_select_lbl">দল নির্বাচন:</span>
+      <span class="p2-grp-label ga">গ্রুপ এ</span>
+      <button type="button" class="p2-team-tab active" id="tab-btn-মুড়িয়ারা" onclick="switchRosterTeam('মুড়িয়ারা')">মুড়িয়ারা</button>
+      <button type="button" class="p2-team-tab" id="tab-btn-নোয়াপাড়া" onclick="switchRosterTeam('নোয়াপাড়া')">নোয়াপাড়া</button>
+      <button type="button" class="p2-team-tab" id="tab-btn-চিতড্ডা" onclick="switchRosterTeam('চিতড্ডা')">চিতড্ডা</button>
+
+      <span class="p2-grp-label gb">গ্রুপ বি</span>
+      <button type="button" class="p2-team-tab" id="tab-btn-মুকুন্দপুর" onclick="switchRosterTeam('মুকুন্দপুর')">মুকুন্দপুর</button>
+      <button type="button" class="p2-team-tab" id="tab-btn-উত্তর ওড্ডা" onclick="switchRosterTeam('উত্তর ওড্ডা')">উত্তর ওড্ডা</button>
+      <button type="button" class="p2-team-tab" id="tab-btn-দক্ষিণ ওড্ডা" onclick="switchRosterTeam('দক্ষিণ ওড্ডা')">দক্ষিণ ওড্ডা</button>
+
+      <span class="p2-grp-label gc">গ্রুপ সি</span>
+      <button type="button" class="p2-team-tab" id="tab-btn-বাতাবাড়িয়া" onclick="switchRosterTeam('বাতাবাড়িয়া')">বাতাবাড়িয়া</button>
+      <button type="button" class="p2-team-tab" id="tab-btn-মোহাম্মদপুর" onclick="switchRosterTeam('মোহাম্মদপুর')">মোহাম্মদপুর</button>
+      <button type="button" class="p2-team-tab" id="tab-btn-ভংগুয়া" onclick="switchRosterTeam('ভংগুয়া')">ভংগুয়া</button>
+    </div>
+
+    <!-- Team Information Header Grid -->
+    <div class="team-meta-container">
+      <div class="meta-item">
+        <strong data-i18n="page2.meta_team_name">দলের নাম:</strong>
+        <span id="roster-team-name-display" style="font-weight:800; color:#072a60;">মুড়িয়ারা</span>
+      </div>
+      <div class="meta-item">
+        <strong data-i18n="page2.meta_group">গ্রুপ:</strong>
+        <span id="roster-group-display" style="font-weight:800; color:#b71c1c;">গ্রুপ এ</span>
+      </div>
+      <div class="meta-item">
+        <strong data-i18n="page2.mgr_lbl">টিম ম্যানেজার:</strong>
+        <input type="text" class="meta-input-text" id="roster-manager-input" placeholder="ম্যানেজারের নাম..." data-i18n-placeholder="page2.mgr_placeholder" oninput="saveCurrentRoster()">
+      </div>
+      <div class="meta-item">
+        <strong data-i18n="page2.mgr_phone_lbl">মোবাইল নং:</strong>
+        <input type="text" class="meta-input-text" id="roster-phone-input" placeholder="মোবাইল নম্বর..." data-i18n-placeholder="page2.phone_placeholder" oninput="saveCurrentRoster()">
+      </div>
+    </div>
+
+    <div class="p2-layout">
+      <!-- Left Column: 11 Player Names List -->
+      <div class="p2-left">
+        <div>
+          <div class="section-title" data-i18n="page2.roster_card_title">খেলোয়াড়দের পূর্ণ নামের তালিকা (সর্বোচ্চ ১১ জন)</div>
+          <table class="player-table">
+            <thead>
+              <tr>
+                <th style="width: 14%;" data-i18n="page2.th_sl">ক্রমিক নং</th>
+                <th style="width: 18%;" data-i18n="page2.th_jersey">জার্সি নং</th>
+                <th style="width: 68%;" data-i18n="page2.th_player_name">খেলোয়াড়ের পূর্ণ নাম</th>
+              </tr>
+            </thead>
+            <tbody id="roster-players-tbody">
+              <!-- Dynamically rendered rows 1 to 11 -->
+            </tbody>
+          </table>
+        </div>
+<div class="sign-row">
+          <div class="sign-block">
+            <div class="sign-line"></div>
+            <strong data-i18n="page2.sign_mgr">টিম ম্যানেজারের স্বাক্ষর</strong>
+          </div>
+          <div class="sign-block">
+            <div class="sign-line"></div>
+            <strong data-i18n="page2.sign_committee">আয়োজক কমিটির স্বাক্ষর</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Rules & Guidelines + Group Stage Schedule -->
+      <div class="p2-right">
+        <div>
+          <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <span data-i18n="page2.rules_card_title">খেলার নিয়ম ও টুর্নামেন্ট নির্দেশনা</span>
+            <button type="button" class="btn" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:#fff; font-size:9.5px; padding:1px 6px; cursor:pointer;" onclick="openTournamentWizard('rules')" title="টুর্নামেন্টের নিয়মাবলী পরিবর্তন ও সিলেক্ট করুন" data-i18n="page2.btn_customize_rules">⚙️ নিয়ম কাস্টমাইজ</button>
+          </div>
+          <div class="rules-card">
+            <ul class="rules-list" id="tournament-rules-list">
+              <li><span class="rules-highlight">দল গঠন:</span> প্রতি দলে সর্বোচ্চ <span class="rules-highlight">১১ জন খেলোয়াড়</span> নিবন্ধন করা যাবে। নিবন্ধিত ১১ জনের বাইরের কোনো খেলোয়াড় অংশ নিতে পারবে না।</li>
+              <li><span class="rules-highlight">মাঠের সদস্য:</span> মাঠে একসঙ্গে প্রতি দলের <span class="rules-highlight">৬ জন খেলোয়াড়</span> (গোলকিপারসহ) খেলবেন (6-a-side)।</li>
+              <li><span class="rules-highlight">ম্যাচ সময়:</span> গ্রুপ পর্বের ম্যাচ <span class="rules-highlight">২০ মিনিট</span> (১০ মিনিট প্রথমার্ধ, ২ মিনিট বিরতি, ১০ মিনিট দ্বিতীয়ার্ধ)।</li>
+              <li><span class="rules-highlight">উপস্থিতি:</span> নির্ধারিত সময়ের কমপক্ষে <span class="rules-highlight">১৫ মিনিট পূর্বে</span> দলকে মাঠে উপস্থিত হয়ে রিপোর্ট করতে হবে।</li>
+              <li><span class="rules-highlight">চূড়ান্ত সিদ্ধান্ত:</span> রেফারির সিদ্ধান্ত এবং আয়োজক কমিটির সিদ্ধান্তই চূড়ান্ত ও সর্বসম্মত বলে গণ্য হবে।</li>
+              <li><span class="rules-highlight">শৃঙ্খলা:</span> অসদাচরণ, মাঠে রেফারির সিদ্ধান্তে অসম্মান বা খেলা বিঘ্নিত করার চেষ্টা করলে দল তাৎক্ষণিক বহিষ্কার হবে।</li>
+              <li><span class="rules-highlight">ম্যাচ ড্র ও সরাসরি টাইব্রেকার:</span> প্রতিটি ম্যাচের ক্ষেত্রে—<span class="rules-highlight">গ্রুপ পর্ব ও নকআউট পর্ব উভয়তেই</span>—নির্ধারিত সময়ে খেলা ড্র হলে কোনো অতিরিক্ত সময় থাকবে না; সরাসরি <span class="rules-highlight">পেনাল্টি শুটআউট (টাইব্রেকার)</span>-এর মাধ্যমে বিজয়ী নির্ধারিত হবে। টুর্নামেন্টের কোনো ম্যাচ ড্র হিসেবে শেষ হবে না।</li>
+              <li><span class="rules-highlight">পয়েন্ট ও অবস্থান:</span> প্রতিটি ম্যাচে বিজয়ী দল ৩ পয়েন্ট পাবে। গ্রুপে একাধিক দলের পয়েন্ট সমান হলে যথাক্রমে: হেড-টু-হেড ফলাফল, গোল ব্যবধান এবং সর্বাধিক গোল সংখ্যা বিবেচনা করে অবস্থান নির্ধারিত হবে।</li>
+            </ul>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title" style="background: linear-gradient(90deg, #1b5e20, #2e7d32); margin-top: 2px;" data-i18n="page2.fixture_table_title">
+            গ্রুপ পর্বের ম্যাচ সূচি (কার সাথে কার খেলা)
+          </div>
+          <table class="mini-fixture-table">
+            <thead>
+              <tr>
+                <th style="width: 14%;" data-i18n="page2.th_mno">ম্যাচ নং</th>
+                <th style="width: 20%;" data-i18n="page2.th_time">সময়</th>
+                <th style="width: 18%;" data-i18n="page2.th_grp">গ্রুপ</th>
+                <th style="width: 48%;" data-i18n="page2.th_vs">মুখোমুখি দল</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>১</td>
+                <td>সন্ধ্যা ৬:০০</td>
+                <td style="color:#0d47a1; font-weight:700;">গ্রুপ বি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">মুকুন্দপুর</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">উত্তর ওড্ডা</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>২</td>
+                <td>সন্ধ্যা ৬:৩০</td>
+                <td style="color:#b71c1c; font-weight:700;">গ্রুপ এ</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">মুড়িয়ারা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">নোয়াপাড়া</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>৩</td>
+                <td>রাত ৭:০০</td>
+                <td style="color:#1b5e20; font-weight:700;">গ্রুপ সি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">বাতাবাড়িয়া</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">মোহাম্মদপুর</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>৪</td>
+                <td>রাত ৭:৩০</td>
+                <td style="color:#b71c1c; font-weight:700;">গ্রুপ এ</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">নোয়াপাড়া</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">চিতড্ডা</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>৫</td>
+                <td>রাত ৮:০০</td>
+                <td style="color:#0d47a1; font-weight:700;">গ্রুপ বি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">উত্তর ওড্ডা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">দক্ষিণ ওড্ডা</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>৬</td>
+                <td>রাত ৮:৩০</td>
+                <td style="color:#1b5e20; font-weight:700;">গ্রুপ সি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">মোহাম্মদপুর</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">ভংগুয়া</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>৭</td>
+                <td>রাত ৯:০০</td>
+                <td style="color:#b71c1c; font-weight:700;">গ্রুপ এ</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">চিতড্ডা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">মুড়িয়ারা</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>৮</td>
+                <td>রাত ৯:৩০</td>
+                <td style="color:#0d47a1; font-weight:700;">গ্রুপ বি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">দক্ষিণ ওড্ডা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">মুকুন্দপুর</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>৯</td>
+                <td>রাত ১০:০০</td>
+                <td style="color:#1b5e20; font-weight:700;">গ্রুপ সি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">ভংগুয়া</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">বাতাবাড়িয়া</div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note-box" style="margin-top: 5px; padding: 4px 6px; font-size: 10px; line-height: 1.35;">
+            <strong data-i18n="page2.sched_note_hd">📌 গ্রুপ পর্বের শিডিউল নোট:</strong> <span data-i18n="page2.sched_note_body">রোটেশন সিস্টেমে প্রতিটি দল পর্যাপ্ত বিশ্রাম (কমপক্ষে ১-১.৫ ঘণ্টা) পাবে। নির্ধারিত সময়ে খেলা ড্র হলে কোনো অতিরিক্ত সময় ছাড়া সরাসরি পেনাল্টি শুটআউটে বিজয়ী নির্ধারিত হবে।</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATCH EVENT LOGGING MODAL -->
+  <div id="match-events-modal" class="modal-backdrop" onclick="if(event.target === this) closeMatchEventsModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-match-title" data-i18n="modal.event_title">⚽ ম্যাচ ইভেন্ট ট্র্যাকার</h3>
+        <button type="button" class="modal-close-btn" onclick="closeMatchEventsModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- LIVE MATCH SCOREBOARD BANNER -->
+        <div class="modal-live-scoreboard">
+          <div class="live-sc-team team-1">
+            <span class="live-sc-badge" data-i18n="modal.live_sc_t1">দল ১</span>
+            <span id="modal-live-t1-name" class="live-sc-name">টিম ১</span>
+          </div>
+          <div class="live-sc-center">
+            <div class="live-sc-label" data-i18n="modal.live_score_lbl">ম্যাচের লাইভ স্কোরবোর্ড</div>
+            <div id="modal-live-score-pill" class="live-sc-pill">০ - ০</div>
+          </div>
+          <div class="live-sc-team team-2">
+            <span class="live-sc-badge" data-i18n="modal.live_sc_t2">দল ২</span>
+            <span id="modal-live-t2-name" class="live-sc-name">টিম ২</span>
+          </div>
+        </div>
+
+        <!-- Instant Toast Notification -->
+        <div id="modal-toast-msg" class="modal-toast"></div>
+
+        <div style="font-size:10.5px; color:#475569; display:flex; justify-content:space-between; align-items:center;">
+          <span data-i18n-html="modal.notice_auto_calc">⚡ গোল বা কার্ড যোগ করার সাথে সাথে <strong>ম্যাচের স্কোর ও পয়েন্ট টেবিল স্বয়ংক্রিয়ভাবে আপডেট</strong> হয়ে যাবে।</span>
+        </div>
+        <div style="font-size:11px; color:#475569; display:flex; justify-content:space-between; align-items:center;">
+          <span data-i18n="modal.sub_instruction">ম্যাচের গোল ও কার্ড (হলুদ/লাল) নথিভুক্ত করুন। পেজ ২-এর নিবন্ধিত তালিকা থেকে ড্রপডাউনে প্লেয়ার আসবে।</span>
+        </div>
+
+        <!-- Team 1 Event Section -->
+        <div class="modal-team-section">
+          <div class="modal-team-title">
+            <span style="color:#0284c7;">🚩</span>
+            <span id="modal-t1-name">টিম ১</span>
+          </div>
+          <div class="event-input-row" style="margin-bottom:6px;">
+            <select id="modal-t1-player-select" class="event-select"></select>
+            <input type="number" id="modal-t1-goal-count" value="1" min="1" max="10" style="width:36px; text-align:center; padding:3px; border:1px solid #cbd5e1; border-radius:4px; font-weight:700;">
+            <button type="button" class="btn-event-add" onclick="addMatchEvent('goal', 1)" data-i18n="modal.btn_add_goal">⚽ গোল যোগ করুন</button>
+          </div>
+          <div class="event-input-row">
+            <select id="modal-t1-card-player-select" class="event-select"></select>
+            <select id="modal-t1-card-type" style="padding:3px; border:1px solid #cbd5e1; border-radius:4px; font-weight:700;">
+              <option value="yellow" data-i18n="modal.opt_yellow">🟨 হলুদ কার্ড (-১ FP)</option>
+              <option value="red" data-i18n="modal.opt_red">🟥 লাল কার্ড (-৩ FP)</option>
+            </select>
+            <button type="button" class="btn-card-add" onclick="addMatchEvent('card', 1)" data-i18n="modal.btn_give_card">কার্ড দিন</button>
+          </div>
+        </div>
+
+        <!-- PENALTY SHOOTOUT SECTION (APPEARS IF MATCH IS DRAWN) -->
+        <div id="modal-penalty-section" class="modal-team-section" style="display:none; background:#fff1f2; border:1.2px solid #fda4af;">
+          <div class="modal-team-title" style="color:#be123c;">
+            <span data-i18n="modal.pen_section_title">🎯 টাইব্রেকার / পেনাল্টি শুটআউট স্কোর (ম্যাচ ড্র হওয়ার কারণে)</span>
+          </div>
+          <div style="font-size:10px; color:#64748b; margin-bottom:4px;" data-i18n="modal.pen_section_sub">
+            উভয় দলের টাইব্রেকারে করা পেনাল্টি গোলের সংখ্যা লিখুন। যার গোল বেশি হবে সে স্বয়ংক্রিয়ভাবে বিজয়ী হবে।
+          </div>
+          <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:4px;">
+              <span id="modal-pen-t1-name" style="font-weight:800; font-size:11px; color:#0f172a;">টিম ১:</span>
+              <input type="number" min="0" max="30" class="pen-score-input" id="modal-pen-s1" placeholder="০" style="width:32px; height:20px; font-size:12px;" oninput="onModalPenScoreChange()">
+            </div>
+            <span style="font-weight:900; color:#be123c;">VS</span>
+            <div style="display:flex; align-items:center; gap:4px;">
+              <span id="modal-pen-t2-name" style="font-weight:800; font-size:11px; color:#0f172a;">টিম ২:</span>
+              <input type="number" min="0" max="30" class="pen-score-input" id="modal-pen-s2" placeholder="০" style="width:32px; height:20px; font-size:12px;" oninput="onModalPenScoreChange()">
+            </div>
+          </div>
+          <div id="modal-pen-winner-badge" style="margin-top:4px; text-align:center; font-weight:800; font-size:10.5px; color:#15803d;"></div>
+        </div>
+
+        <!-- Team 2 Event Section -->
+        <div class="modal-team-section">
+          <div class="modal-team-title">
+            <span style="color:#16a34a;">🚩</span>
+            <span id="modal-t2-name">টিম ২</span>
+          </div>
+          <div class="event-input-row" style="margin-bottom:6px;">
+            <select id="modal-t2-player-select" class="event-select"></select>
+            <input type="number" id="modal-t2-goal-count" value="1" min="1" max="10" style="width:36px; text-align:center; padding:3px; border:1px solid #cbd5e1; border-radius:4px; font-weight:700;">
+            <button type="button" class="btn-event-add" onclick="addMatchEvent('goal', 2)" data-i18n="modal.btn_add_goal">⚽ গোল যোগ করুন</button>
+          </div>
+          <div class="event-input-row">
+            <select id="modal-t2-card-player-select" class="event-select"></select>
+            <select id="modal-t2-card-type" style="padding:3px; border:1px solid #cbd5e1; border-radius:4px; font-weight:700;">
+              <option value="yellow" data-i18n="modal.opt_yellow">🟨 হলুদ কার্ড (-১ FP)</option>
+              <option value="red" data-i18n="modal.opt_red">🟥 লাল কার্ড (-৩ FP)</option>
+            </select>
+            <button type="button" class="btn-card-add" onclick="addMatchEvent('card', 2)" data-i18n="modal.btn_give_card">কার্ড দিন</button>
+          </div>
+        </div>
+
+        <!-- Match Events Logged -->
+        <div>
+          <div style="font-weight:800; font-size:11px; margin-bottom:4px; color:#1e293b; display:flex; justify-content:space-between; align-items:center;">
+            <span data-i18n="modal.events_log_title">📋 এই ম্যাচে নথিভুক্ত ইভেন্টসমূহ:</span>
+            <button type="button" class="btn-match-event" onclick="syncMatchScoreFromEvents()" data-i18n="modal.btn_sync_score">⚡ গোল অনুযায়ী স্কোরবোর্ড অটো-সিঙ্ক করুন</button>
+          </div>
+          <div id="modal-events-log" class="event-log-container">
+            <div style="color:#94a3b8; font-style:italic;">এখনো কোনো গোল বা কার্ড যুক্ত করা হয়নি।</div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:6px; border-top:1px solid #e2e8f0; gap:6px; flex-wrap:wrap;">
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn" style="background:#e11d48; color:#fff; font-size:11px; padding:5px 9px;" onclick="clearCurrentMatchEvents()" data-i18n="modal.btn_reset_match" title="এই ম্যাচের গোল ও কার্ড মুছে ম্যাচটিকে আগের অবস্থায় ফিরিয়ে নিন">🔄 ম্যাচ রিসেট</button>
+            <button type="button" class="btn" style="background:#0284c7; color:#fff; font-size:11px; padding:5px 9px;" onclick="markMatchAsZeroDraw()" data-i18n="modal.btn_confirm_zero_draw" title="গোলহীন ০-০ ড্র হিসেবে ম্যাচ নির্ধারণ করুন এবং টাইব্রেকার চালু করুন">🎯 ০-০ ড্র নিশ্চিত</button>
+          </div>
+          <button type="button" class="btn" style="background:#0f172a; color:#fff; font-size:12px; padding:5px 12px;" onclick="closeMatchEventsModal()" data-i18n="modal.btn_save_close">সংরক্ষণ ও বন্ধ করুন ✕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       TOURNAMENT SETUP & RULES WIZARD MODAL
+       ======================================================== -->
+  <div id="tournament-wizard-modal" class="modal-backdrop" onclick="if(event.target === this) closeTournamentWizard()">
+    <div class="modal-box modal-wizard">
+      <div class="modal-header modal-wizard-header">
+        <div>
+          <h3 data-i18n="modal.wizard_title">⚙️ টুর্নামেন্ট সেটআপ ও নিয়মাবলী</h3>
+          <p class="modal-wizard-subtitle" data-i18n="modal.wizard_subtitle">আপনার টুর্নামেন্টের নাম, ফরম্যাট, প্রাইজমানি ও অফিসিয়াল নিয়মাবলী সহজে সাজিয়ে নিন</p>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeTournamentWizard()">✕</button>
+      </div>
+
+      <!-- Wizard Tab Bar -->
+      <div class="w-tab-bar">
+        <button type="button" class="w-tab-btn active" id="wtab-btn-info" onclick="switchWizardTab('info')">
+          <span class="w-tab-step-dot" data-i18n="wizard.step_1">১</span>
+          <span data-i18n="modal.tab_info">📋 সাধারণ তথ্য</span>
+        </button>
+        <button type="button" class="w-tab-btn" id="wtab-btn-prizes" onclick="switchWizardTab('prizes')">
+          <span class="w-tab-step-dot" data-i18n="wizard.step_2">২</span>
+          <span data-i18n="modal.tab_prizes">🏆 প্রাইজমানি ও ফি</span>
+        </button>
+        <button type="button" class="w-tab-btn" id="wtab-btn-rules" onclick="switchWizardTab('rules')">
+          <span class="w-tab-step-dot" data-i18n="wizard.step_3">৩</span>
+          <span data-i18n="modal.tab_rules">📜 অফিশিয়াল নিয়ম</span> (<span id="w-selected-rules-count">০</span>)
+        </button>
+        <button type="button" class="w-tab-btn" id="wtab-btn-teams" onclick="switchWizardTab('teams')">
+          <span class="w-tab-step-dot" data-i18n="wizard.step_4">৪</span>
+          <span data-i18n="modal.tab_teams">👥 দল ও স্কোয়াড</span> (<span id="w-teams-count-badge">৯</span>)
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- TAB 1: General Info & Format -->
+        <div id="wtab-content-info" class="w-tab-content active">
+          <div class="w-grid-2">
+            <div class="w-card-section w-card-identity">
+              <div class="w-card-header">
+                <div class="w-card-title" data-i18n="wizard.sec_general">⚽ টুর্নামেন্ট ও আয়োজক বিবরণ</div>
+                <span class="w-card-chip chip-blue" data-i18n="wizard.chip_identity">১ • সাধারণ পরিচয়</span>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_title">টুর্নামেন্টের পূর্ণ নাম:</label>
+                <input type="text" id="w-cfg-title" class="w-input" placeholder="যেমন: ফুটবল বিশ্বকাপ ২০২৬ / চ্যাম্পিয়নশিপ ফুটবল কাপ" data-i18n-placeholder="wizard.ph_title">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_org">আয়োজক কমিটি / ক্লাবের নাম:</label>
+                <input type="text" id="w-cfg-organizer" class="w-input" placeholder="যেমন: ফিফা / বাংলাদেশ ফুটবল ফেডারেশন (বাফুফে)" data-i18n-placeholder="wizard.ph_org">
+              </div>
+            </div>
+
+            <div class="w-card-section w-card-timing">
+              <div class="w-card-header">
+                <div class="w-card-title" data-i18n="wizard.sec_timing">📍 ভেন্যু, সময়সূচি ও শুরুর তারিখ</div>
+                <span class="w-card-chip chip-purple" data-i18n="wizard.chip_timing">২ • ভেন্যু ও সময়সূচি</span>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_venue">খেলার মাঠ ও ভেন্যুর ঠিকানা:</label>
+                <input type="text" id="w-cfg-venue" class="w-input" placeholder="যেমন: বঙ্গবন্ধু জাতীয় স্টেডিয়াম মাঠ, ঢাকা" data-i18n-placeholder="wizard.ph_venue">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_date">টুর্নামেন্ট শুরুর সম্ভাব্য তারিখ ও বছর:</label>
+                <input type="text" id="w-cfg-startDate" class="w-input" placeholder="যেমন: ২০২৬ / ১৫ নভেম্বর ২০২৬" data-i18n-placeholder="wizard.ph_date">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_duration">ম্যাচের মোট সময়কাল:</label>
+                <input type="text" id="w-cfg-matchDuration" class="w-input" placeholder="যেমন: ৯০ মিনিট (৪৫ মিনিট + ৪৫ মিনিট)" data-i18n-placeholder="wizard.ph_duration">
+              </div>
+            </div>
+
+            <!-- Squad Size & Substitution Rules Section -->
+            <div class="w-card-section w-card-squad w-squad-config-card" style="grid-column: 1 / -1;">
+              <div class="w-squad-header-bar">
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <div class="w-card-title" style="margin-bottom:0;" data-i18n="wizard.sec_squad_rules">👥 খেলোয়াড় সংখ্যা, বেঞ্চ ও বদলি নিয়ম</div>
+                  <span class="w-card-chip chip-emerald" data-i18n="wizard.chip_squad">৩ • স্কোয়াড গঠন</span>
+                </div>
+                <div class="w-squad-presets-wrap">
+                  <button type="button" class="btn-squad-preset" onclick="applySquadPreset('fifa')" title="FIFA World Cup Standard">🏆 <span data-i18n="wizard.preset_fifa">ফিফা বিশ্বকাপ (১১+১৫ ও ৫ বদলি)</span></button>
+                  <button type="button" class="btn-squad-preset" onclick="applySquadPreset('standard')" title="Standard Football 11s">⚽ <span data-i18n="wizard.preset_std">সাধারণ একাদশ (১১+৫ ও ৩ বদলি)</span></button>
+                  <button type="button" class="btn-squad-preset" onclick="applySquadPreset('futsal')" title="5-a-side Minibar">🥅 <span data-i18n="wizard.preset_mini">৫-এ-সাইড মিনিবার (৫+৫ ও রোলিং)</span></button>
+                </div>
+              </div>
+
+              <div class="w-grid-3" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-top:12px;">
+                <div class="w-field">
+                  <label class="w-label" data-i18n="wizard.lbl_starting_players">🏟️ মাঠে মূল খেলোয়াড় সংখ্যা (Starting XI):</label>
+                  <input type="number" id="w-cfg-startingPlayers" min="3" max="11" class="w-input" value="11" oninput="updateSquadCalculations()" onblur="validateStartingPlayers(this)" placeholder="11">
+                  <div id="w-starting-players-warning" class="w-field-warning" style="display:none;"></div>
+                </div>
+                <div class="w-field">
+                  <label class="w-label" data-i18n="wizard.lbl_bench_players">🪑 অতিরিক্ত / বেঞ্চ খেলোয়াড় (Substitutes):</label>
+                  <input type="number" id="w-cfg-benchPlayers" min="0" max="15" class="w-input" value="5" oninput="updateSquadCalculations()" placeholder="5">
+                </div>
+                <div class="w-field">
+                  <label class="w-label" data-i18n="wizard.lbl_max_substitutes">🔄 ম্যাচে সর্বোচ্চ বদলি খেলোয়াড় (Max Subs):</label>
+                  <input type="number" id="w-cfg-maxSubstitutes" min="1" max="15" class="w-input" value="5" oninput="updateSquadCalculations()" placeholder="5">
+                </div>
+              </div>
+
+              <!-- Live Squad Summary Badge Bar -->
+              <div id="w-squad-calc-summary" class="w-squad-summary-bar">
+                <!-- Dynamically populated by updateSquadCalculations() -->
+              </div>
+            </div>
+
+            <!-- Tournament Structure & Format Section -->
+            <div class="w-card-section w-card-format" style="grid-column: 1 / -1;">
+              <div class="w-card-header">
+                <div class="w-card-title" data-i18n="wizard.sec_structure">📐 টুর্নামেন্ট কাঠামো, দল সংখ্যা ও খেলার পদ্ধতি নির্বাচন</div>
+                <span class="w-card-chip chip-amber" data-i18n="wizard.chip_format">৪ • টুর্নামেন্ট ফরম্যাট</span>
+              </div>
+
+              <!-- Step 4.1: Team Count Selection -->
+              <div class="w-step-box">
+                <div class="w-step-title-row">
+                  <span class="w-step-num-pill" data-i18n="wizard.step_4_1">ধাপ ৪.১</span>
+                  <label class="w-label" style="margin-bottom:0;" data-i18n="wizard.lbl_team_count">অংশগ্রহণকারী মোট দলের সংখ্যা নির্বাচন করুন:</label>
+                </div>
+                <div class="w-team-count-row">
+                  <input type="number" min="2" max="32" id="w-cfg-teamCount" class="w-input w-team-count-input" value="9" oninput="onWizardTeamCountChange(this.value)">
+                  <div class="w-quick-team-chips" id="w-quick-team-chips">
+                    <button type="button" class="w-team-chip" data-count="4" onclick="onWizardTeamCountChange(4)">৪ দল</button>
+                    <button type="button" class="w-team-chip" data-count="5" onclick="onWizardTeamCountChange(5)">৫ দল</button>
+                    <button type="button" class="w-team-chip" data-count="6" onclick="onWizardTeamCountChange(6)">৬ দল</button>
+                    <button type="button" class="w-team-chip" data-count="7" onclick="onWizardTeamCountChange(7)">৭ দল</button>
+                    <button type="button" class="w-team-chip" data-count="8" onclick="onWizardTeamCountChange(8)">৮ দল</button>
+                    <button type="button" class="w-team-chip" data-count="9" onclick="onWizardTeamCountChange(9)">৯ দল</button>
+                    <button type="button" class="w-team-chip" data-count="10" onclick="onWizardTeamCountChange(10)">১০ দল</button>
+                    <button type="button" class="w-team-chip" data-count="12" onclick="onWizardTeamCountChange(12)">১২ দল</button>
+                    <button type="button" class="w-team-chip" data-count="16" onclick="onWizardTeamCountChange(16)">১৬ দল</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 4.2: Tournament Format Selection & Intelligent Recommendations -->
+              <div class="w-step-box" style="margin-top:14px;">
+                <div class="w-step-title-row">
+                  <span class="w-step-num-pill" data-i18n="wizard.step_4_2">ধাপ ৪.২</span>
+                  <label class="w-label" style="margin-bottom:0;" data-i18n="wizard.lbl_tourney_type">টুর্নামেন্ট পরিচালনার পদ্ধতি নির্বাচন করুন (দল সংখ্যার উপর ভিত্তি করে স্বয়ংক্রিয় সাজেশন):</label>
+                </div>
+                <div class="w-structure-cards-grid-3">
+                  <!-- Card 1: Groups + Knockout -->
+                  <div class="w-struct-card active" id="btn-tourney-type-groups" onclick="setWizardTournamentType('groups')">
+                    <div class="w-struct-header-row">
+                      <div class="w-struct-icon">🏆</div>
+                      <span id="w-rec-pill-groups" class="w-struct-rec-pill rec-best">⭐ সেরা ও সুপারিশকৃত</span>
+                    </div>
+                    <div class="w-struct-title" data-i18n="wizard.type_groups_title">গ্রুপ পর্ব + নকআউট</div>
+                    <div id="w-rec-desc-groups" class="w-struct-desc" data-i18n="wizard.type_groups_desc">বিশ্বকাপ স্টাইল • গ্রুপে পয়েন্ট টেবিল • সেরা দলগুলো নিয়ে সেমিফাইনাল ও ফাইনাল</div>
+                  </div>
+
+                  <!-- Card 2: Single League -->
+                  <div class="w-struct-card" id="btn-tourney-type-league" onclick="setWizardTournamentType('league')">
+                    <div class="w-struct-header-row">
+                      <div class="w-struct-icon">🔄</div>
+                      <span id="w-rec-pill-league" class="w-struct-rec-pill rec-good">⚡ উপযুক্ত বিকল্প</span>
+                    </div>
+                    <div class="w-struct-title" data-i18n="wizard.type_league_title">একক লিগ টেবিল</div>
+                    <div id="w-rec-desc-league" class="w-struct-desc" data-i18n="wizard.type_league_desc">রাউন্ড-রবিন • সবাই সবার সাথে খেলবে • পয়েন্ট টেবিলের শীর্ষে থাকা দল চ্যাম্পিয়ন</div>
+                  </div>
+
+                  <!-- Card 3: Direct Knockout -->
+                  <div class="w-struct-card" id="btn-tourney-type-knockout" onclick="setWizardTournamentType('knockout')">
+                    <div class="w-struct-header-row">
+                      <div class="w-struct-icon">⚡</div>
+                      <span id="w-rec-pill-knockout" class="w-struct-rec-pill rec-warn">⚠️ অসুপারিশকৃত</span>
+                    </div>
+                    <div class="w-struct-title" data-i18n="wizard.type_ko_title">সরাসরি নকআউট</div>
+                    <div id="w-rec-desc-knockout" class="w-struct-desc" data-i18n="wizard.type_ko_desc">একক এলিমিনেশন • কোনো পয়েন্ট টেবিল নেই • প্রথম ম্যাচ থেকেই হারলেই বাদ</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Smart Structure Summary Banner & Live Visual Fixture Bracket -->
+              <div class="w-smart-summary-box" style="margin-top:14px;">
+                <div class="w-smart-summary-header">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-size:16px;">🤖</span>
+                    <strong data-i18n="wizard.summary_title">স্বয়ংক্রিয় কাঠামো ও ফিক্সচার প্রিভিউ:</strong>
+                  </div>
+                  <div id="w-bracket-stats-bar" class="w-bracket-stats-bar">
+                    <!-- Populated dynamically by updateWizardStructureSummary() -->
+                  </div>
+                </div>
+                <div id="w-structure-summary-text" class="w-smart-summary-content">
+                  ৩টি গ্রুপ (প্রতি গ্রুপে ৩ দল) • মোট ৯টি গ্রুপ ম্যাচ • ৩ চ্যাম্পিয়ন + ১ সেরা রানার্স-আপ ➔ সেমিফাইনাল ➔ ফাইনাল।
+                </div>
+
+                <!-- Live Visual Interactive Fixture Bracket / Flow Diagram -->
+                <div class="w-visual-bracket-wrapper">
+                  <div class="w-visual-bracket-hint">
+                    <span>💡</span>
+                    <span data-i18n="wizard.bracket_hint">নিচে আপনার নির্বাচিত দল সংখ্যা ও পদ্ধতির ভিত্তিতে স্বয়ংক্রিয় ফিক্সচার রোডম্যাপ ও ব্র্যাকেট দেখানো হলো:</span>
+                  </div>
+                  <div id="w-visual-bracket-tree" class="w-visual-bracket-tree">
+                    <!-- Populated dynamically by renderWizardVisualFixtureBracket() -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Fees, Prizes & Contact -->
+        <div id="wtab-content-prizes" class="w-tab-content">
+          <div class="w-grid-2">
+            <div class="w-card-section w-card-prizes">
+              <div class="w-card-header">
+                <div class="w-card-title" data-i18n="wizard.sec_prizes">🏆 পুরস্কার ও ট্রফি (Prize Pool)</div>
+                <span class="w-card-chip chip-amber" data-i18n="wizard.chip_prizes">১ • ট্রফি ও পুরস্কার</span>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_champ_prize">🥇 চ্যাম্পিয়ন দলের প্রাইজমানি ও পুরস্কার:</label>
+                <input type="text" id="w-cfg-championPrize" class="w-input" placeholder="যেমন: ৩০,০০০ টাকা ও আকর্ষণীয় চ্যাম্পিয়ন ট্রফি" data-i18n-placeholder="wizard.ph_champ_prize">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_ru_prize">🥈 রানার্স-আপ দলের প্রাইজমানি ও পুরস্কার:</label>
+                <input type="text" id="w-cfg-runnerUpPrize" class="w-input" placeholder="যেমন: ১৫,০০০ টাকা ও রানার্স-আপ ট্রফি" data-i18n-placeholder="wizard.ph_ru_prize">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_third_prize">🥉 ৩য় স্থান / ফেয়ার প্লে পুরস্কার:</label>
+                <input type="text" id="w-cfg-thirdPrize" class="w-input" placeholder="যেমন: ৫,০০০ টাকা অথবা ট্রফি ও মেডেল" data-i18n-placeholder="wizard.ph_third_prize">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_indiv_prizes">🎖️ ব্যক্তিগত পুরস্কারসমূহ:</label>
+                <input type="text" id="w-cfg-otherPrizes" class="w-input" placeholder="যেমন: গোল্ডেন বুট, গোল্ডেন গ্লাভস, ফাইনালের ম্যান অব দ্য ম্যাচ" data-i18n-placeholder="wizard.ph_indiv_prizes">
+              </div>
+            </div>
+
+            <div class="w-card-section w-card-fees">
+              <div class="w-card-header">
+                <div class="w-card-title" data-i18n="wizard.sec_fees">💰 এন্ট্রি ফি ও যোগাযোগ মাধ্যম</div>
+                <span class="w-card-chip chip-teal" data-i18n="wizard.chip_fees">২ • ফি ও পেমেন্ট</span>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_fee">প্রতি দলের এন্ট্রি ফি (টাকা):</label>
+                <input type="text" id="w-cfg-entryFee" class="w-input" placeholder="যেমন: ২,০০০ টাকা (অফেরতযোগ্য)" data-i18n-placeholder="wizard.ph_fee">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_deadline">রেজিস্ট্রেশনের শেষ সময়সীমা:</label>
+                <input type="text" id="w-cfg-regDeadline" class="w-input" placeholder="যেমন: ম্যাচ শুরুর ৩০ মিনিট পূর্বে / ১০ নভেম্বর" data-i18n-placeholder="wizard.ph_deadline">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_contact">যোগাযোগের মোবাইল নাম্বার(সমূহ):</label>
+                <input type="text" id="w-cfg-contactPhone" class="w-input" placeholder="যেমন: ০১৭১১-xxxxxx, ০১৮১২-xxxxxx" data-i18n-placeholder="wizard.ph_contact">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_payment">ফি জমাদানের মাধ্যম (বিকাশ/নগদ/হাতে হাতে):</label>
+                <input type="text" id="w-cfg-paymentMethod" class="w-input" placeholder="যেমন: বিকাশ / নগদ (পার্সোনাল) অথবা অফিসে সরাসরি" data-i18n-placeholder="wizard.ph_payment">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Rules Catalog -->
+        <div id="wtab-content-rules" class="w-tab-content">
+          <!-- Tournament Rules Format Selection Cards -->
+          <div class="w-format-selector-section">
+            <div class="w-format-selector-header">
+              <span class="w-format-step-badge" data-i18n="modal.format_step_badge">রুলস টেমপ্লেট</span>
+              <span class="w-format-selector-title" data-i18n="modal.format_selector_title">অফিসিয়াল নিয়মাবলীর ধরন নির্বাচন করুন:</span>
+              <span class="w-format-selector-sub" data-i18n="modal.format_selector_sub">যেকোনো একটি বেছে নিলে সংশ্লিষ্ট নিয়মাবলী ও সময়কাল স্বয়ংক্রিয়ভাবে সাজানো হবে</span>
+            </div>
+            <div class="w-format-cards-grid">
+              <!-- Card 1: Standard Football -->
+              <div class="w-format-card" id="btn-preset-standard" onclick="applyWizardPreset('standard')">
+                <div class="w-format-card-top">
+                  <div class="w-format-card-icon">🏆</div>
+                  <div class="w-format-card-info">
+                    <div class="w-format-card-title" data-i18n="modal.format_std_title">স্ট্যান্ডার্ড পূর্ণাঙ্গ ফুটবল (১১-এ-সাইড)</div>
+                    <div class="w-format-card-desc" data-i18n="modal.format_std_desc">বড় মাঠ • অফসাইড নিয়ম কার্যকর • ৪৫+৪৫ মিনিট দীর্ঘ ম্যাচ • অফিসিয়াল ফিফা রুলস</div>
+                  </div>
+                  <div class="w-format-check-circle"><span class="w-format-check-tick">✓</span></div>
+                </div>
+                <div class="w-format-card-footer">
+                  <span class="w-format-pill" data-i18n="modal.format_std_pill">ক্লিক করলে স্ট্যান্ডার্ড নিয়ম লোড হবে</span>
+                </div>
+              </div>
+
+              <!-- Card 2: Minibar / Futsal -->
+              <div class="w-format-card" id="btn-preset-minibar" onclick="applyWizardPreset('minibar')">
+                <div class="w-format-card-top">
+                  <div class="w-format-card-icon">⚡</div>
+                  <div class="w-format-card-info">
+                    <div class="w-format-card-title" data-i18n="modal.format_mini_title">মিনিবার / শর্ট-পিচ ফুটবল (৫-এ-সাইড)</div>
+                    <div class="w-format-card-desc" data-i18n="modal.format_mini_desc">ছোট মাঠ / ফুটসাল • নো-অফসাইড • রোলিং সাবস্টিটিউট • ৭+৭ বা ১৫ মি. দ্রুত ম্যাচ</div>
+                  </div>
+                  <div class="w-format-check-circle"><span class="w-format-check-tick">✓</span></div>
+                </div>
+                <div class="w-format-card-footer">
+                  <span class="w-format-pill" data-i18n="modal.format_mini_pill">ক্লিক করলে মিনিবার নিয়ম লোড হবে</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Rule Addition Box (Placed at Top) -->
+          <div class="w-custom-box">
+            <div class="w-custom-box-title">
+              <span>➕</span>
+              <span data-i18n="modal.custom_rules_header">আপনার এলাকার নিজস্ব বিশেষ নিয়ম যোগ করুন</span>
+              <span class="w-custom-box-guide" data-i18n="modal.custom_rules_guide">(নিচে অনেকগুলো স্ট্যান্ডার্ড নিয়ম দেওয়া আছে, সেখান থেকেও বাছাই করতে পারেন):</span>
+            </div>
+            <div class="w-custom-inputs">
+              <input type="text" id="w-custom-rule-title" class="w-input" style="flex:1; min-width:160px;" placeholder="নিয়মের শিরোনাম (যেমন: মাঠের পূর্ব দেওয়াল)" data-i18n-placeholder="modal.custom_rule_title_ph">
+              <input type="text" id="w-custom-rule-desc" class="w-input" style="flex:2; min-width:240px;" placeholder="নিয়মের পূর্ণ বিবরণ..." data-i18n-placeholder="modal.custom_rule_desc_ph">
+              <button type="button" class="btn" style="background:#15803d; color:#fff; font-size:12px; padding:8px 14px; border-radius:8px;" onclick="addCustomRule()" data-i18n="modal.btn_add_rule">+ নিয়ম যোগ করুন</button>
+            </div>
+            <!-- Custom Rules List Container -->
+            <div id="w-custom-rules-container" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;"></div>
+          </div>
+
+          <div class="w-rules-toolbar">
+            <input type="text" id="w-rules-search-input" class="w-rules-search" placeholder="🔍 নিয়ম খুঁজুন (যেমন: কার্ড, ওয়াকওভার, টাইব্রেকার...)" data-i18n-placeholder="modal.search_rules_placeholder" oninput="filterRulesInWizard(this.value)">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="w-rules-summary-pill" id="w-rules-active-count">সিলেক্টেড: ০টি</span>
+              <button type="button" class="btn" style="background:#0284c7; color:#fff; font-size:11px; padding:5px 12px; border-radius:6px;" onclick="selectAllMasterRules(true)" data-i18n="modal.btn_select_all">সব নির্বাচন</button>
+              <button type="button" class="btn" style="background:#f1f5f9; color:#475569; font-size:11px; padding:5px 12px; border-radius:6px; border:1px solid #cbd5e1;" onclick="selectAllMasterRules(false)" data-i18n="modal.btn_deselect_all">সব বাতিল</button>
+            </div>
+          </div>
+
+          <!-- Dynamic Rules Categories Checklist Container -->
+          <div id="w-rules-catalog-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+
+        <!-- TAB 4: Teams & Player Roster Dashboard -->
+        <div id="wtab-content-teams" class="w-tab-content">
+          <div class="w-teams-dashboard-intro" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <span data-i18n="modal.teams_dashboard_intro">💡 দলগুলোর নাম, টিম ম্যানেজার, মোবাইল নম্বর ও এন্ট্রি ফি পরিশোধের অবস্থা ট্র্যাক করুন। খেলার আগেও খেলোয়াড় পরিবর্তন করা যাবে:</span>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button type="button" class="btn btn-sm btn-reg-share-link" onclick="copyRegistrationLink(this)" data-i18n="reg.btn_copy_link">🔗 রেজিস্ট্রেশন লিংক কপি</button>
+              <button type="button" class="btn btn-sm btn-reg-open-portal" onclick="openTeamRegistrationModal()" data-i18n="reg.btn_open_portal">📝 নতুন দল নিবন্ধন করুন</button>
+            </div>
+          </div>
+          <div id="w-teams-dashboard-container"></div>
+        </div>
+      </div>
+
+      <!-- Wizard Action Footer -->
+      <div class="modal-wizard-footer">
+        <span class="w-footer-tip" data-i18n="modal.wizard_footer_tip">💡 সেভ করলেই ফিকশ্চার ও সোশ্যাল মিডিয়া পোস্টার স্বয়ংক্রিয়ভাবে আপডেট হয়ে যাবে।</span>
+        <div class="modal-wizard-actions">
+          <button type="button" class="btn btn-wizard-cancel" onclick="closeTournamentWizard()" data-i18n="modal.btn_close">✕ বাতিল</button>
+          <button type="button" class="btn btn-wizard-save" onclick="saveTournamentConfigFromWizard()" data-i18n="modal.btn_save_config">💾 টুর্নামেন্ট সংরক্ষণ ও সক্রিয় করুন</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       PROMOTIONAL POSTER & SOCIAL MEDIA NOTICE MODAL
+       ======================================================== -->
+  <div id="promo-poster-modal" class="modal-backdrop" onclick="if(event.target === this) closePromoPosterModal()">
+    <div class="modal-box modal-promo">
+      <div class="modal-header" style="background: linear-gradient(90deg, #0f172a, #0284c7);">
+        <h3 data-i18n="modal.promo_title">📢 অফিসিয়াল টুর্নামেন্ট নোটিশ ও প্রচারণামূলক পোস্টার</h3>
+        <button type="button" class="modal-close-btn" onclick="closePromoPosterModal()">✕</button>
+      </div>
+
+      <!-- Top Poster Action Bar -->
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#f8fafc; border-bottom:1px solid #e2e8f0; flex-wrap:wrap; gap:6px;">
+        <span style="font-size:11px; font-weight:700; color:#334155;" data-i18n="modal.promo_sub">ফেসবুক ও সোশ্যাল মিডিয়ায় পোস্ট করার জন্য তৈরি নোটিশ ও ব্যানার:</span>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn" style="background:linear-gradient(135deg, #1e40af, #2563eb); color:#fff; font-size:11px; padding:5px 10px;" onclick="copyFacebookPromoPost()" data-i18n="modal.btn_copy_fb">📋 ফেসবুক পোস্ট কপি করুন</button>
+          <button type="button" class="btn" style="background:linear-gradient(135deg, #15803d, #16a34a); color:#fff; font-size:11px; padding:5px 10px;" onclick="printDocument('poster')" data-i18n="modal.btn_print_poster">🖨️ পোস্টার প্রিন্ট / PDF</button>
+        </div>
+      </div>
+
+      <div class="modal-body" style="max-height:75vh; overflow-y:auto; padding:12px;">
+        <!-- Live Poster Preview Container -->
+        <div id="promo-poster-render-target"></div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; padding:8px 12px; background:#f8fafc; border-top:1px solid #e2e8f0;">
+        <button type="button" class="btn" style="background:#0f172a; color:#fff;" onclick="closePromoPosterModal()" data-i18n="modal.btn_close_done">বন্ধ করুন ✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIDDEN PRINT-ONLY POSTER SHEET (VISIBLE ONLY ON PRINT) -->
+  <div class="page-sheet page-poster" id="page-poster" style="display:none;"></div>
+  </div> <!-- /football-app-view -->
+
+  <!-- FOOTBALL ENTRY CHOICE ONBOARDING MODAL -->
+  <div id="football-entry-modal" class="modal-backdrop" onclick="if(event.target === this) closeFootballEntryChoiceModal()">
+    <div class="modal-box modal-entry-box">
+      <button type="button" class="entry-modal-close" onclick="closeFootballEntryChoiceModal()" aria-label="Close" title="বন্ধ করুন">✕</button>
+      <div class="modal-body" style="padding: 24px;">
+        <div class="entry-choices-grid">
+          <!-- Choice 1: Setup My Tournament Directly -->
+          <div class="entry-choice-card choice-setup" onclick="startFootballWithWizard()" role="button" tabindex="0">
+            <div class="choice-icon-wrap" style="background: linear-gradient(135deg, #4f46e5, #6366f1); color: #fff;">
+              🚀
+            </div>
+            <div class="choice-content">
+              <h4 data-i18n="entry.choice_wizard_title">আপনার টুর্নামেন্ট সেটআপ করুন</h4>
+              <p data-i18n="entry.choice_wizard_desc">টুর্নামেন্টের নাম, খেলার মাঠ, প্রাইজমানি ও নিয়মাবলী সেট করে সরাসরি সম্পূর্ণ নতুন ফিকশ্চার শিট তৈরি করুন।</p>
+            </div>
+            <div class="choice-arrow">➜</div>
+          </div>
+
+          <!-- Choice 2: Explore Demo Interface First -->
+          <div class="entry-choice-card choice-demo" onclick="startFootballWithDemo()" role="button" tabindex="0">
+            <div class="choice-icon-wrap" style="background: linear-gradient(135deg, #0284c7, #0ea5e9); color: #fff;">
+              👀
+            </div>
+            <div class="choice-content">
+              <h4 data-i18n="entry.choice_demo_title">ডেমো ইন্টারফেস ঘুরে দেখুন</h4>
+              <p data-i18n="entry.choice_demo_desc">সম্পূর্ণ সাজানো ফিকশ্চার, অটো ক্যালকুলেটর ও স্কোরবোর্ড কীভাবে কাজ করে তা আগে একটু টেস্ট করে দেখুন।</p>
+            </div>
+            <div class="choice-arrow">➜</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       TEAM REGISTRATION PORTAL MODAL (দল নিবন্ধন পোর্টাল)
+       ======================================================== -->
+  <div id="team-registration-modal" class="modal-backdrop" onclick="if(event.target === this) closeTeamRegistrationModal()">
+    <div class="modal-box modal-wizard modal-registration">
+      <div class="modal-header modal-wizard-header" style="background:linear-gradient(135deg, #064e3b 0%, #0f172a 100%);">
+        <div>
+          <h3 data-i18n="reg.modal_title">📝 অফিশিয়াল দল ও স্কোয়াড নিবন্ধন পোর্টাল</h3>
+          <p class="modal-wizard-subtitle" data-i18n="reg.modal_subtitle">আপনার দলের নাম, ম্যানেজার, কোচ ও খেলোয়াড়দের তালিকা অনলাইনে সরাসরি জমা দিন</p>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeTeamRegistrationModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 1. REGISTRATION FORM SECTION -->
+        <div id="reg-form-section">
+          <!-- Tournament Highlights Banner -->
+          <div class="reg-highlight-banner">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
+              <div style="font-size:13px; font-weight:800; color:#38bdf8;">
+                ⚽ <span id="reg-highlight-title">ফুটবল টুর্নামেন্ট ২০২৬</span>
+              </div>
+              <span class="reg-highlight-badge" data-i18n="reg.tourney_summary_badge">টুর্নামেন্ট হাইলাইটস</span>
+            </div>
+            <div class="reg-highlight-grid">
+              <div class="reg-pill">
+                <span data-i18n="reg.lbl_prize">চ্যাম্পিয়ন প্রাইজ:</span>
+                <strong id="reg-highlight-prize">৩০,০০০ টাকা + ট্রফি</strong>
+              </div>
+              <div class="reg-pill">
+                <span data-i18n="reg.lbl_fee">এন্ট্রি ফি:</span>
+                <strong id="reg-highlight-fee">২,০০০ টাকা</strong>
+              </div>
+              <div class="reg-pill">
+                <span data-i18n="reg.lbl_deadline">নিবন্ধনের শেষ সময়:</span>
+                <strong id="reg-highlight-deadline">ম্যাচ শুরুর পূর্বে</strong>
+              </div>
+              <div class="reg-pill">
+                <span data-i18n="reg.lbl_venue">খেলার মাঠ:</span>
+                <strong id="reg-highlight-venue">স্টেডিয়াম মাঠ</strong>
+              </div>
+              <div class="reg-pill">
+                <span data-i18n="reg.lbl_squad_rule">স্কোয়াড আকার:</span>
+                <strong id="reg-highlight-squad">১১ মাঠে + ৫ বেঞ্চ</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Official Rules & Agreement Accordion / Card -->
+          <div class="w-card-section" style="margin-top:12px;">
+            <div class="w-card-title" data-i18n="reg.rules_card_title">📜 টুর্নামেন্ট পরিচালনা ও শৃঙ্খলা নিয়মাবলী</div>
+            <div id="reg-rules-summary-box" class="reg-rules-summary-box"></div>
+            <label class="reg-terms-label">
+              <input type="checkbox" id="reg-terms-agree" required>
+              <span data-i18n="reg.terms_checkbox">আমি এবং আমার দলের সকল খেলোয়াড় টুর্নামেন্টের সকল অফিশিয়াল নিয়মাবলী ও রেফারির সিদ্ধান্ত মেনে নিতে সম্মত আছি।</span>
+            </label>
+          </div>
+
+          <!-- Team Information Section -->
+          <div class="w-card-section" style="margin-top:12px;">
+            <div class="w-card-title" data-i18n="reg.sec_team_info">⚽ দল ও ম্যানেজমেন্ট বিবরণ</div>
+            <div class="w-grid-2">
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_team_name">দলের পূর্ণ নাম: *</label>
+                <input type="text" id="reg-team-name" class="w-input" placeholder="যেমন: তরুণ একাদশ / ফ্রেন্ডস ক্লাব" data-i18n-placeholder="reg.ph_team_name" required>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_manager">ম্যানেজার / অধিনায়কের নাম: *</label>
+                <input type="text" id="reg-manager-name" class="w-input" placeholder="ম্যানেজারের পূর্ণ নাম..." data-i18n-placeholder="reg.ph_manager" required>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_phone">মোবাইল ও হোয়াটসঅ্যাপ নম্বর: *</label>
+                <input type="tel" id="reg-manager-phone" class="w-input" placeholder="০১xxxxxxxxx" data-i18n-placeholder="reg.ph_phone" required>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_coach">প্রধান কোচ / সহকারী (ঐচ্ছিক):</label>
+                <input type="text" id="reg-coach-name" class="w-input" placeholder="কোচের নাম..." data-i18n-placeholder="reg.ph_coach">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_jersey">দলের জার্সির মূল রঙ (ঐচ্ছিক):</label>
+                <input type="text" id="reg-jersey-color" class="w-input" placeholder="যেমন: লাল-সাদা / গাঢ় নীল" data-i18n-placeholder="reg.ph_jersey">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_payment_note">ফি পরিশোধের তথ্য / ট্রানজেকশন আইডি (ঐচ্ছিক):</label>
+                <input type="text" id="reg-payment-note" class="w-input" placeholder="যেমন: বিকাশ ট্রানজেকশন আইডি বা মাঠে জমা দেওয়া হবে" data-i18n-placeholder="reg.ph_payment_note">
+              </div>
+            </div>
+          </div>
+
+          <!-- Squad Players List Table -->
+          <div class="w-card-section" style="margin-top:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div class="w-card-title" style="margin:0;" data-i18n="reg.sec_squad">👥 স্কোয়াড খেলোয়াড়দের তালিকা (১১ থেকে ১৫ জন)</div>
+              <button type="button" class="btn-reg-add-player" onclick="addRegistrationPlayerRow()" data-i18n="reg.btn_add_player">+ আরও খেলোয়াড় যোগ করুন</button>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="reg-players-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px; text-align:center;" data-i18n="reg.th_sl">ক্রমিক</th>
+                    <th style="width:75px; text-align:center;" data-i18n="reg.th_jersey">জার্সি নং</th>
+                    <th data-i18n="reg.th_name">খেলোয়াড়ের পূর্ণ নাম</th>
+                    <th style="width:115px;" data-i18n="reg.th_role">ভূমিকা / পজিশন</th>
+                    <th style="width:36px; text-align:center;">✕</th>
+                  </tr>
+                </thead>
+                <tbody id="reg-players-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Form Actions Footer -->
+          <div class="modal-wizard-footer" style="margin-top:14px; border-radius:12px; padding:12px 16px;">
+            <button type="button" class="btn btn-wizard-cancel" onclick="closeTeamRegistrationModal()" data-i18n="reg.btn_cancel">✕ বাতিল</button>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn btn-sm btn-reg-share-link" onclick="copyRegistrationLink(this)" data-i18n="reg.btn_copy_link">🔗 রেজিস্ট্রেশন লিংক কপি</button>
+              <button type="button" class="btn btn-wizard-save" onclick="submitTeamRegistration(event)" data-i18n="reg.btn_submit">✅ দল নিবন্ধন সম্পন্ন করুন</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. REGISTRATION SUCCESS SECTION -->
+        <div id="reg-success-section" style="display:none;">
+          <div class="reg-success-banner">
+            <div class="reg-success-icon">✓</div>
+            <h3 data-i18n="reg.success_title" style="margin:4px 0 2px; color:#15803d; font-size:16px;">🎉 দল নিবন্ধন সফলভাবে সম্পন্ন হয়েছে!</h3>
+            <p data-i18n="reg.success_sub" style="margin:0; font-size:12px; color:#166534;">আপনার দল অফিসিয়াল টুর্নামেন্ট ড্যাশবোর্ড ও ফিক্সচারে সফলভাবে অন্তর্ভুক্ত হয়েছে</p>
+          </div>
+
+          <!-- Printable Slip -->
+          <div id="reg-slip-container" style="margin-top:12px;"></div>
+
+          <!-- Success Actions -->
+          <div class="modal-wizard-footer" style="margin-top:14px; border-radius:12px; padding:12px 16px;">
+            <button type="button" class="btn btn-wizard-cancel" onclick="closeTeamRegistrationModal()" data-i18n="reg.btn_done">বন্ধ করুন ✕</button>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn btn-primary" onclick="printRegistrationSlip()" data-i18n="reg.btn_print_slip">🖨️ রসিদ প্রিন্ট / PDF সংরক্ষণ</button>
+              <button type="button" class="btn btn-wa-share" onclick="shareRegistrationOnWhatsApp()" data-i18n="reg.btn_share_wa">📲 হোয়াটসঅ্যাপে আয়োজককে জানান</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPCOMING SPORT PREVIEW / ROADMAP MODAL -->
+  <div id="sport-preview-modal" class="modal-backdrop" onclick="if(event.target === this) closeSportPreviewModal()">
+    <div class="modal-box" style="max-width:540px;">
+      <div class="modal-header" style="background:linear-gradient(90deg, #0f172a, #0284c7);">
+        <h3 id="preview-sport-title">🏏 স্পোর্টস টুর্নামেন্ট প্রিভিউ</h3>
+        <button type="button" class="modal-close-btn" onclick="closeSportPreviewModal()">✕</button>
+      </div>
+      <div class="modal-body" id="preview-sport-body" style="padding:16px;"></div>
+      <div style="display:flex; justify-content:flex-end; padding:8px 14px; background:var(--bg-modal-footer); border-top:1px solid var(--border-modal-footer);">
+        <button type="button" class="btn" style="background:#0284c7; color:#fff;" onclick="closeSportPreviewModal()" data-i18n="modal.btn_close_done">বন্ধ করুন ✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODULAR APPLICATION SCRIPTS
+       ======================================================== -->
+  <script src="src/js/constants.js"></script>
+  <script src="src/js/i18n.js"></script>
+  <script src="src/js/state.js"></script>
+  <script src="src/js/calculator.js"></script>
+  <script src="src/js/roster.js"></script>
+  <script src="src/js/match-events.js"></script>
+  <script src="src/js/wizard.js"></script>
+  <script src="src/js/poster.js"></script>
+  <script src="src/js/registration.js"></script>
+  <script src="src/js/hub.js"></script>
+  <script src="src/js/app.js"></script>
+</body>
+</html>

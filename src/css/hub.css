@@ -1,0 +1,588 @@
+/* ========================================================
+   SPORTS HUB (HOME DASHBOARD) STYLES
+   Multi-Sport Tournament Management Platform
+   ======================================================== */
+
+.sports-hub-container {
+  min-height: 100vh;
+  background: var(--bg-app);
+  color: var(--text-action-title);
+  padding: 0 0 60px 0;
+  display: block;
+}
+
+/* 1. Hub Header / Navbar */
+.hub-header {
+  background: var(--bg-action-bar);
+  border-bottom: 1px solid var(--border-action-bar);
+  box-shadow: var(--shadow-action-bar);
+  padding: 14px 24px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.hub-nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hub-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hub-logo-icon {
+  font-size: 30px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 8px rgba(37, 99, 235, 0.4));
+}
+
+.hub-brand-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-action-title);
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hub-brand-badge {
+  font-size: 11px;
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.hub-brand-sub {
+  font-size: 12px;
+  color: var(--text-action-sub);
+  margin-top: 1px;
+}
+
+.hub-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 2. Hero Section */
+.hub-hero {
+  max-width: 1280px;
+  margin: 40px auto 30px;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.hub-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(37, 99, 235, 0.12);
+  border: 1px solid rgba(37, 99, 235, 0.3);
+  color: #38bdf8;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+[data-theme="light"] .hub-hero-badge {
+  background: #e0f2fe;
+  border-color: #bae6fd;
+  color: #0369a1;
+}
+
+.hub-hero-title {
+  font-size: clamp(26px, 4vw, 42px);
+  font-weight: 900;
+  line-height: 1.25;
+  margin-bottom: 14px;
+  color: var(--text-action-title);
+}
+
+.hub-hero-title .gradient-text {
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .hub-hero-title .gradient-text {
+  background: linear-gradient(135deg, #0284c7, #4f46e5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hub-hero-desc {
+  font-size: clamp(14px, 1.8vw, 17px);
+  color: var(--text-action-sub);
+  max-width: 760px;
+  margin: 0 auto 36px;
+  line-height: 1.6;
+}
+
+/* 3. Sport Cards Grid */
+.hub-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.sport-card {
+  background: var(--bg-modal);
+  border: 1.5px solid var(--border-action-bar);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.sport-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: transparent;
+  transition: all 0.25s ease;
+}
+
+.sport-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.4);
+}
+
+/* Specific Card Themes */
+.sport-card.card-football {
+  border-color: #0284c7;
+}
+.sport-card.card-football::before {
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+}
+.sport-card.card-football:hover {
+  border-color: #38bdf8;
+  box-shadow: 0 20px 30px -10px rgba(2, 132, 199, 0.3);
+}
+
+.sport-card.card-cricket {
+  border-color: #059669;
+}
+.sport-card.card-cricket::before {
+  background: linear-gradient(90deg, #059669, #34d399);
+}
+.sport-card.card-cricket:hover {
+  border-color: #34d399;
+  box-shadow: 0 20px 30px -10px rgba(5, 150, 105, 0.3);
+}
+
+.sport-card.card-badminton {
+  border-color: #7c3aed;
+}
+.sport-card.card-badminton::before {
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+}
+.sport-card.card-badminton:hover {
+  border-color: #a78bfa;
+  box-shadow: 0 20px 30px -10px rgba(124, 58, 237, 0.3);
+}
+
+/* Card Header */
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sport-icon-wrap {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+
+.card-football .sport-icon-wrap {
+  background: rgba(2, 132, 199, 0.15);
+  border: 1px solid rgba(2, 132, 199, 0.35);
+}
+.card-cricket .sport-icon-wrap {
+  background: rgba(5, 150, 105, 0.15);
+  border: 1px solid rgba(5, 150, 105, 0.35);
+}
+.card-badminton .sport-icon-wrap {
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+}
+
+.sport-status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.status-active {
+  background: #065f46;
+  color: #a7f3d0;
+  border: 1px solid #10b981;
+}
+
+[data-theme="light"] .status-active {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #6ee7b7;
+}
+
+.status-upcoming {
+  background: #78350f;
+  color: #fde68a;
+  border: 1px solid #f59e0b;
+}
+
+[data-theme="light"] .status-upcoming {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fcd34d;
+}
+
+/* Card Content */
+.sport-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-action-title);
+  margin-bottom: 8px;
+}
+
+.sport-desc {
+  font-size: 13.5px;
+  color: var(--text-action-sub);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.sport-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sport-features-list li {
+  font-size: 12.5px;
+  color: var(--text-action-title);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] .sport-features-list li {
+  border-bottom-color: #e2e8f0;
+}
+
+.sport-features-list li:last-child {
+  border-bottom: none;
+}
+
+.feature-check {
+  font-size: 13px;
+}
+
+/* Card CTA Buttons */
+.btn-launch-sport {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-football-launch {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+}
+.btn-football-launch:hover {
+  background: linear-gradient(135deg, #0369a1, #1d4ed8);
+  transform: scale(1.02);
+}
+
+.btn-upcoming-preview {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-action-title);
+  border: 1px solid var(--border-action-bar);
+}
+
+[data-theme="light"] .btn-upcoming-preview {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.btn-upcoming-preview:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(1.02);
+}
+
+/* 4. Future Sports Strip */
+.hub-future-strip {
+  max-width: 1280px;
+  margin: 40px auto 0;
+  padding: 0 24px;
+}
+
+.future-inner {
+  background: var(--bg-modal-section);
+  border: 1px solid var(--border-modal-section);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.future-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.future-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-action-title);
+}
+
+.future-sports-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.future-tag {
+  font-size: 11.5px;
+  padding: 3px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  color: var(--text-action-sub);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .future-tag {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+/* 5. Return to Hub Button inside Football Action Bar */
+.btn-hub {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border: 1.5px solid #38bdf8;
+  color: #38bdf8;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+[data-theme="light"] .btn-hub {
+  background: #f0f9ff;
+  border-color: #0284c7;
+  color: #0284c7;
+}
+
+.btn-hub:hover {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+/* 6. View Container Visibility & Print Rules */
+.football-app-container {
+  display: none;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 60px 0;
+}
+
+/* 7. Football Entry Choice Modal */
+.modal-entry-box {
+  max-width: 540px;
+  width: 92%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  border: 1.5px solid var(--border-action-bar);
+  background: var(--bg-modal);
+  position: relative;
+}
+
+.entry-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 10;
+  width: 30px;
+  height: 30px;
+  background: var(--bg-modal-section);
+  border: 1px solid var(--border-action-bar);
+  border-radius: 50%;
+  color: var(--text-action-sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.entry-modal-close:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.entry-choices-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.entry-choice-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border-action-bar);
+  background: var(--bg-modal-section);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.entry-choice-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.entry-choice-card.choice-setup:hover {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.08);
+}
+
+[data-theme="light"] .entry-choice-card.choice-setup:hover {
+  background: #eef2ff;
+}
+
+.entry-choice-card.choice-demo:hover {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+}
+
+[data-theme="light"] .entry-choice-card.choice-demo:hover {
+  background: #f0f9ff;
+}
+
+.choice-icon-wrap {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.choice-content {
+  flex: 1;
+}
+
+.choice-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-action-title);
+}
+
+.choice-content p {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-action-sub);
+  line-height: 1.45;
+}
+
+.choice-arrow {
+  font-size: 18px;
+  color: var(--text-action-sub);
+  transition: all 0.2s ease;
+  padding-left: 8px;
+  flex-shrink: 0;
+}
+
+.entry-choice-card:hover .choice-arrow {
+  color: #38bdf8;
+  transform: translateX(4px);
+}
+
+.entry-choice-card.choice-setup:hover .choice-arrow {
+  color: #818cf8;
+}
+
+@media print {
+  .sports-hub-container {
+    display: none !important;
+  }
+  .football-app-container {
+    display: block !important;
+  }
+}
