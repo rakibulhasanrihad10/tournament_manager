@@ -53,6 +53,10 @@ function createMockElement(id) {
         }
       }
     },
+    attributes: {},
+    setAttribute(k, v) { this.attributes[k] = String(v); },
+    getAttribute(k) { return this.attributes[k] || null; },
+    getBoundingClientRect: () => ({ left: 0, top: 0, right: 100, bottom: 40, width: 100, height: 40 }),
     querySelectorAll: () => []
   };
 }
@@ -107,12 +111,21 @@ assert(!alertTriggered, 'Standard preset loads silently without alert');
 assert(domElements['btn-preset-standard'].classList.contains('active'), 'Standard preset button is highlighted active');
 assert(!domElements['btn-preset-minibar'].classList.contains('active'), 'Minibar button is not active');
 assert(Number(domElements['w-cfg-startingPlayers'].value) === 11, 'Standard 11-a-side format loaded');
+assert(tempWizardSelectedRules.has('r_onfield_11') && !tempWizardSelectedRules.has('r_onfield_6'), 'Standard rules load 11 players on pitch, not 6');
+assert(tempWizardSelectedRules.has('r_match_duration_90') && !tempWizardSelectedRules.has('r_match_duration'), 'Standard rules load 90 mins match, not 20 mins');
+assert(tempWizardSelectedRules.has('r_pen_count_fifa') && !tempWizardSelectedRules.has('r_pen_count'), 'Standard rules load 5 penalties, not 3');
+assert(tempWizardSelectedRules.has('r_fifa_offside') && !tempWizardSelectedRules.has('r_no_offside'), 'Standard rules enforce FIFA Law 11 offside');
 
 applyWizardPreset('minibar');
 assert(!alertTriggered, 'Minibar preset loads silently without alert');
 assert(domElements['btn-preset-minibar'].classList.contains('active'), 'Minibar preset button is highlighted active');
 assert(!domElements['btn-preset-standard'].classList.contains('active'), 'Standard button is no longer active');
 assert(Number(domElements['w-cfg-startingPlayers'].value) === 5, 'Minibar 5-a-side format loaded');
+assert(tempWizardSelectedRules.has('r_onfield_6') && !tempWizardSelectedRules.has('r_onfield_11'), 'Minibar rules load 5/6 players on pitch');
+assert(tempWizardSelectedRules.has('r_match_duration') && !tempWizardSelectedRules.has('r_match_duration_90'), 'Minibar rules load 20-30 mins match');
+assert(tempWizardSelectedRules.has('r_pen_count') && !tempWizardSelectedRules.has('r_pen_count_fifa'), 'Minibar rules load 3 penalties');
+assert(tempWizardSelectedRules.has('r_no_offside') && !tempWizardSelectedRules.has('r_fifa_offside'), 'Minibar rules relax offside');
+assert(tempWizardSelectedRules.has('r_rolling_subs'), 'Minibar rules enable rolling substitutions');
 
 console.log('\n🔄 Test Suite 3: Rules Tab Card Toggle');
 applyWizardPreset('standard');
@@ -277,7 +290,9 @@ onWizardTeamCountChange(9);
 assert(tempWizardTeamCount === 9, 'tempWizardTeamCount updated to 9');
 assert(Number(domElements['w-cfg-teamCount'].value) === 9, 'Input w-cfg-teamCount synced to 9');
 assert(domElements['w-rec-pill-groups'].textContent.includes('সেরা'), 'UI groups recommendation pill shows সেরা for 9 teams');
-assert(domElements['w-structure-summary-text'].textContent.includes('৩টি গ্রুপ') && domElements['w-structure-summary-text'].textContent.includes('গ্রুপ ম্যাচ'), 'UI summary banner correctly renders 9-team structure');
+const struct9 = generateTournamentStructure(9, 'groups');
+assert(struct9.summaryBn.includes('৩টি গ্রুপ') && struct9.summaryBn.includes('গ্রুপ ম্যাচ'), 'generateTournamentStructure correctly computes 9-team structure');
+assert(domElements['w-bracket-stats-bar'].innerHTML.includes('9 দল'), 'UI summary stats bar correctly renders for 9 teams');
 
 // Test Suite 10: Live Visual Interactive Tournament Bracket & Match Roadmap Flow
 console.log('\n🏆 Test Suite 10: Live Visual Interactive Tournament Bracket & Match Roadmap Flow');
@@ -287,7 +302,7 @@ setWizardTournamentType('knockout');
 onWizardTeamCountChange(4);
 assert(domElements['w-visual-bracket-tree'].innerHTML.includes('সেমিফাইনাল'), '4 Teams Knockout: Visual bracket renders Semi-Finals');
 assert(domElements['w-visual-bracket-tree'].innerHTML.includes('মেগা ফাইনাল'), '4 Teams Knockout: Visual bracket renders Grand Final');
-assert(domElements['w-visual-bracket-tree'].innerHTML.includes('মেগা চ্যাম্পিয়ন'), '4 Teams Knockout: Visual bracket renders Champion Trophy');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('final-card') && !domElements['w-visual-bracket-tree'].innerHTML.includes('trophy-column'), '4 Teams Knockout: Visual bracket cleanly concludes at Grand Final');
 assert(domElements['w-bracket-stats-bar'].innerHTML.includes('3'), '4 Teams Knockout: Stats bar shows 3 total matches');
 
 // 2. 4 Teams with Groups + Knockout
@@ -316,7 +331,131 @@ assert(domElements['w-bracket-stats-bar'].innerHTML.includes('12'), '9 Teams Gro
 for (let i = 1; i <= 9; i++) {
   assert(domElements['w-visual-bracket-tree'].innerHTML.includes(`ম্যাচ ${i}`), `9 Teams Groups: Visual bracket renders individual Match ${i}`);
 }
-assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-group-filter-bar'), '9 Teams Groups: Visual bracket renders interactive group filter bar');
+assert(!domElements['w-visual-bracket-tree'].innerHTML.includes('w-group-filter-bar'), '9 Teams Groups: Visual bracket cleanly omits redundant group filter buttons');
+
+console.log('\n🧭 Test Suite 11: Multi-Branch Connectors, Perspective View & Fullscreen Mode');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-multi-pathway-connector'), '9 Teams: Renders multi-branch pathway connector between groups and semis');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-pathway-block block-semi1'), '9 Teams: Renders dedicated Route 1 block to Semi-Final 1');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-pathway-block block-semi2'), '9 Teams: Renders dedicated Route 2 block to Semi-Final 2');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('badge-grp-a'), '9 Teams: Connects Group A winner to Semi 1');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('badge-runnerup'), '9 Teams: Connects Best Runner-Up pool to Semi 1');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('badge-grp-b'), '9 Teams: Connects Group B winner to Semi 2');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('badge-grp-c'), '9 Teams: Connects Group C winner to Semi 2');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-runnerup-pool-card'), '9 Teams: Renders explanatory Runner-Up qualification card');
+
+// Test Fullscreen Toggle
+const wrapperMock = document.getElementById('w-visual-bracket-wrapper');
+toggleBracketFullscreen();
+assert(wrapperMock.classList.contains('is-fullscreen'), 'toggleBracketFullscreen() activates is-fullscreen class');
+toggleBracketFullscreen();
+assert(!wrapperMock.classList.contains('is-fullscreen'), 'toggleBracketFullscreen() deactivates is-fullscreen class on second call');
+
+// Test Zoom Bracket Safe Reset (Option 2)
+zoomBracket('in');
+assert(currentBracketZoom === 1.0, 'zoomBracket maintains stable 1.0 scale under Option 2');
+zoomBracket('out');
+assert(currentBracketZoom === 1.0, 'zoomBracket("out") maintains stable 1.0 scale under Option 2');
+zoomBracket('reset');
+assert(currentBracketZoom === 1.0, 'zoomBracket("reset") maintains stable 1.0 scale under Option 2');
+
+// Test Perspective Switcher
+filterBracketPerspective('semi-1');
+assert(currentBracketPerspective === 'semi-1', 'filterBracketPerspective("semi-1") updates current perspective');
+filterBracketPerspective('all');
+assert(currentBracketPerspective === 'all', 'filterBracketPerspective("all") resets perspective to all');
+
+console.log('\n🏹 Test Suite 12: Dynamic Vector Roadmap SVG Anchoring (Zero Hardcoded Pixels)');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-roadmap-board'), '9 Teams: Renders high-fidelity w-roadmap-board');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-roadmap-svg-canvas'), '9 Teams: Renders dynamic SVG overlay canvas');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-grpA-to-semi1"'), '9 Teams: Renders Group A -> Semi 1 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-runnerup-to-semi1"'), '9 Teams: Renders Runner-Up -> Semi 1 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-grpB-to-semi2"'), '9 Teams: Renders Group B -> Semi 2 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-grpC-to-semi2"'), '9 Teams: Renders Group C -> Semi 2 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-semi1-to-final"'), '9 Teams: Renders Semi 1 -> Final SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-semi2-to-final"'), '9 Teams: Renders Semi 2 -> Final SVG path');
+
+// 8 Teams with Groups + Knockout (Universal Consistency)
+setWizardTournamentType('groups');
+onWizardTeamCountChange(8);
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-roadmap-board'), '8 Teams Groups: Renders high-fidelity w-roadmap-board');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-roadmap-svg-canvas'), '8 Teams Groups: Renders dynamic SVG overlay canvas');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-badge-grpA-champ"'), '8 Teams Groups: Renders Group A Champion badge');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-badge-grpA-runnerup"'), '8 Teams Groups: Renders Group A Runner-Up badge');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-badge-grpB-champ"'), '8 Teams Groups: Renders Group B Champion badge');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-badge-grpB-runnerup"'), '8 Teams Groups: Renders Group B Runner-Up badge');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('গ্রুপ B রানার আপ'), '8 Teams Groups: Cross-over Semi 1 includes Group B Runner-Up');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('গ্রুপ A রানার আপ'), '8 Teams Groups: Cross-over Semi 2 includes Group A Runner-Up');
+assert(domElements['w-bracket-stats-bar'].innerHTML.includes('15'), '8 Teams Groups: Stats bar shows 15 total matches');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-grpA-to-semi1"'), '8 Teams Groups: Renders Group A -> Semi 1 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-runnerup-to-semi1"'), '8 Teams Groups: Renders Runner-Up -> Semi 1 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-grpB-to-semi2"'), '8 Teams Groups: Renders Group B -> Semi 2 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-grpC-to-semi2"'), '8 Teams Groups: Renders Group A Runner-Up -> Semi 2 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-semi1-to-final"'), '8 Teams Groups: Renders Semi 1 -> Final SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-semi2-to-final"'), '8 Teams Groups: Renders Semi 2 -> Final SVG path');
+
+// Direct Knockout (4 Teams) Universal Consistency
+setWizardTournamentType('knockout');
+onWizardTeamCountChange(4);
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-roadmap-board'), '4 Teams Knockout: Renders unified w-roadmap-board');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-roadmap-svg-canvas'), '4 Teams Knockout: Renders dynamic SVG overlay canvas');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-semi1-to-final"'), '4 Teams Knockout: Renders Semi 1 -> Final SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-semi2-to-final"'), '4 Teams Knockout: Renders Semi 2 -> Final SVG path');
+
+// Direct Knockout (8 Teams) Universal Consistency
+setWizardTournamentType('knockout');
+onWizardTeamCountChange(8);
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-roadmap-board'), '8 Teams Knockout: Renders unified w-roadmap-board');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-roadmap-svg-canvas'), '8 Teams Knockout: Renders dynamic SVG overlay canvas');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-q1-to-s1"'), '8 Teams Knockout: Renders Q1 -> Semi 1 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-q4-to-s2"'), '8 Teams Knockout: Renders Q4 -> Semi 2 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-semi1-to-final"'), '8 Teams Knockout: Renders Semi 1 -> Final SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-semi2-to-final"'), '8 Teams Knockout: Renders Semi 2 -> Final SVG path');
+
+// Direct Knockout (6 Teams General Knockout) Preliminary -> Semis paths
+setWizardTournamentType('knockout');
+onWizardTeamCountChange(6);
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-roadmap-board'), '6 Teams Knockout: Renders unified w-roadmap-board');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-m1-to-s1"'), '6 Teams Knockout: Renders M1 -> Semi 1 Winner 1 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-m2-to-s1"'), '6 Teams Knockout: Renders M2 -> Semi 1 Winner 2 SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-badge-ko-m1-win"'), '6 Teams Knockout: Renders M1 winner badge');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-badge-ko-m2-win"'), '6 Teams Knockout: Renders M2 winner badge');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-slot-semi1-t1"'), '6 Teams Knockout: Renders Semi 1 Winner 1 slot');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-slot-semi1-t2"'), '6 Teams Knockout: Renders Semi 1 Winner 2 slot');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-semi1-to-final"'), '6 Teams Knockout: Renders Semi 1 -> Final SVG path');
+
+// Single League Table (4 Teams) Universal Consistency
+setWizardTournamentType('league');
+onWizardTeamCountChange(4);
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-roadmap-board'), '4 Teams League: Renders unified w-roadmap-board');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('w-roadmap-svg-canvas'), '4 Teams League: Renders dynamic SVG overlay canvas');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-league-1st-to-final"'), '4 Teams League: Renders 1st Place -> Final SVG path');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('id="w-path-league-2nd-to-final"'), '4 Teams League: Renders 2nd Place -> Final SVG path');
+assert(!domElements['w-visual-bracket-tree'].innerHTML.includes('w-card-league-qualifiers'), '4 Teams League: Cleanly omits redundant qualification intermediate container');
+
+// Return to 9 Teams Groups for updateRoadmapSvgPaths execution test
+setWizardTournamentType('groups');
+onWizardTeamCountChange(9);
+
+// Test Dynamic updateRoadmapSvgPaths execution
+const bodyMock = document.getElementById('w-roadmap-body');
+bodyMock.getBoundingClientRect = () => ({ left: 10, top: 20, right: 900, bottom: 600, width: 890, height: 580 });
+const grpAMock = document.getElementById('w-card-grp-A');
+grpAMock.getBoundingClientRect = () => ({ left: 20, top: 40, right: 280, bottom: 160, width: 260, height: 120 });
+const s1t1Mock = document.getElementById('w-slot-semi1-t1');
+s1t1Mock.getBoundingClientRect = () => ({ left: 360, top: 120, right: 580, bottom: 160, width: 220, height: 40 });
+
+updateRoadmapSvgPaths();
+const pathGrpA = document.getElementById('w-path-grpA-to-semi1');
+assert(pathGrpA.attributes['d'] && pathGrpA.attributes['d'].startsWith('M '), 'updateRoadmapSvgPaths() computes dynamic SVG path string');
+
+// Test Zoom Factor Compensation in SVG paths
+currentBracketZoom = 1.2;
+updateRoadmapSvgPaths();
+const pathZoomed = document.getElementById('w-path-grpA-to-semi1');
+assert(pathZoomed.attributes['d'] && pathZoomed.attributes['d'].startsWith('M '), 'updateRoadmapSvgPaths() computes dynamic SVG path string under 120% zoom with scale compensation');
+currentBracketZoom = 1.0;
+assert(typeof attachRoadmapResizeObserver === 'function', 'attachRoadmapResizeObserver is a defined function');
+attachRoadmapResizeObserver(); // executes safely
 
 console.log('\n==========================================');
 console.log(`Results: ${passedCount} passed, ${failedCount} failed`);

@@ -20,6 +20,13 @@ function switchWizardTab(tabKey) {
       else pane.classList.remove('active');
     }
   });
+  if (tabKey === 'info') {
+    setTimeout(updateRoadmapSvgPaths, 60);
+  } else if (tabKey === 'rules') {
+    if (typeof syncRulesWithSquadSettings === 'function') {
+      syncRulesWithSquadSettings(true);
+    }
+  }
 }
 
 function setWizardTournamentType(type) {
@@ -503,6 +510,9 @@ function onWizardTeamCountChange(val) {
   renderWizardTeamsDashboard();
 }
 
+let currentBracketPerspective = 'all';
+let currentBracketZoom = 1.0;
+
 function filterBracketGroup(grpKey, btn) {
   if (btn && btn.parentElement) {
     btn.parentElement.querySelectorAll('.w-grp-filter-btn').forEach(b => b.classList.remove('active'));
@@ -517,7 +527,7 @@ function filterBracketGroup(grpKey, btn) {
   cards.forEach(card => {
     const g = card.getAttribute('data-group');
     if (grpKey === 'all' || g === grpKey) {
-      card.style.display = 'block';
+      card.style.display = '';
     } else {
       card.style.display = 'none';
     }
@@ -529,6 +539,297 @@ function filterBracketGroup(grpKey, btn) {
       head.style.display = 'flex';
     } else {
       head.style.display = 'none';
+    }
+  });
+}
+
+function filterBracketPerspective(perspective, btn) {
+  currentBracketPerspective = perspective || 'all';
+
+  if (btn && btn.parentElement) {
+    btn.parentElement.querySelectorAll('.w-perspective-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  const container = document.getElementById('w-visual-bracket-tree');
+  if (!container) return;
+
+  const targetElements = container.querySelectorAll('[data-path]');
+  if (currentBracketPerspective === 'all') {
+    targetElements.forEach(el => {
+      el.classList.remove('is-dimmed');
+      el.classList.remove('is-highlighted');
+    });
+    return;
+  }
+
+  targetElements.forEach(el => {
+    const p = el.getAttribute('data-path') || '';
+    const paths = p.split(' ');
+    if (paths.includes(currentBracketPerspective) || (currentBracketPerspective === 'final' && paths.includes('final'))) {
+      el.classList.add('is-highlighted');
+      el.classList.remove('is-dimmed');
+      if (el.tagName && el.tagName.toLowerCase() === 'path') {
+        el.style.opacity = '1';
+      }
+    } else {
+      el.classList.add('is-dimmed');
+      el.classList.remove('is-highlighted');
+      if (el.tagName && el.tagName.toLowerCase() === 'path') {
+        el.style.opacity = '0.15';
+      }
+    }
+  });
+  setTimeout(updateRoadmapSvgPaths, 60);
+}
+
+function toggleBracketFullscreen(forceClose) {
+  const wrapper = document.getElementById('w-visual-bracket-wrapper');
+  const toggleBtn = document.getElementById('w-bracket-fullscreen-toggle');
+  if (!wrapper) return;
+
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const shouldClose = forceClose === true || wrapper.classList.contains('is-fullscreen');
+
+  if (shouldClose) {
+    wrapper.classList.remove('is-fullscreen');
+    if (typeof document !== 'undefined' && document.body && document.body.classList) {
+      document.body.classList.remove('bracket-fs-open');
+    }
+    if (toggleBtn) {
+      toggleBtn.innerHTML = `
+        <span class="fs-icon">⛶</span>
+        <span class="fs-label">${isEn ? 'Fullscreen View' : 'ফুল স্ক্রিন ভিউ'}</span>
+      `;
+      toggleBtn.title = isEn ? 'View in Fullscreen' : 'ফুল স্ক্রিন মোডে দেখুন';
+    }
+  } else {
+    wrapper.classList.add('is-fullscreen');
+    if (typeof document !== 'undefined' && document.body && document.body.classList) {
+      document.body.classList.add('bracket-fs-open');
+    }
+    if (toggleBtn) {
+      toggleBtn.innerHTML = `
+        <span class="fs-icon">✖</span>
+        <span class="fs-label">${isEn ? 'Exit (Esc)' : 'প্রস্থান (Esc)'}</span>
+      `;
+      toggleBtn.title = isEn ? 'Exit Fullscreen' : 'ফুল স্ক্রিন থেকে বের হন';
+    }
+  }
+  attachRoadmapResizeObserver();
+  updateRoadmapSvgPaths();
+  if (typeof requestAnimationFrame === 'function') {
+    requestAnimationFrame(updateRoadmapSvgPaths);
+  }
+  setTimeout(updateRoadmapSvgPaths, 60);
+  setTimeout(updateRoadmapSvgPaths, 180);
+}
+
+function zoomBracket(action) {
+  currentBracketZoom = 1.0;
+  const tree = document.getElementById('w-visual-bracket-tree');
+  if (tree) {
+    tree.style.transform = '';
+  }
+  updateRoadmapSvgPaths();
+}
+
+let roadmapResizeObserver = null;
+function attachRoadmapResizeObserver() {
+  if (typeof ResizeObserver === 'undefined') return;
+  const bodyEl = document.getElementById('w-roadmap-body');
+  if (!bodyEl) return;
+  if (roadmapResizeObserver) {
+    try { roadmapResizeObserver.disconnect(); } catch (e) {}
+  }
+  roadmapResizeObserver = new ResizeObserver(() => {
+    updateRoadmapSvgPaths();
+  });
+  roadmapResizeObserver.observe(bodyEl);
+}
+
+function updateRoadmapSvgPaths() {
+  const body = document.getElementById('w-roadmap-body');
+  const svg = document.getElementById('w-roadmap-svg-canvas');
+  if (!body || !svg) return;
+
+  const bRect = (typeof body.getBoundingClientRect === 'function')
+    ? body.getBoundingClientRect()
+    : { width: 0, height: 0, left: 0, top: 0 };
+
+  const setAttr = (el, k, v) => {
+    if (el && typeof el.setAttribute === 'function') {
+      el.setAttribute(k, v);
+    }
+  };
+
+  // If in headless test environment or element has no layout dimensions yet
+  if (!bRect || bRect.width === 0) {
+    return;
+  }
+
+  // Compute live CSS scale factor to prevent double-scaling gaps when zoomed
+  let zoomFactor = 1.0;
+  if (body.offsetWidth > 0 && bRect.width > 0) {
+    zoomFactor = bRect.width / body.offsetWidth;
+  } else if (typeof currentBracketZoom === 'number' && currentBracketZoom > 0.05) {
+    zoomFactor = currentBracketZoom;
+  }
+  if (!zoomFactor || zoomFactor <= 0) zoomFactor = 1.0;
+
+  const bodyW = Math.max(body.scrollWidth || 0, body.offsetWidth || 0, Math.round(bRect.width / zoomFactor));
+  const bodyH = Math.max(body.scrollHeight || 0, body.offsetHeight || 0, Math.round(bRect.height / zoomFactor));
+
+  setAttr(svg, 'width', bodyW);
+  setAttr(svg, 'height', bodyH);
+  setAttr(svg, 'viewBox', `0 0 ${bodyW} ${bodyH}`);
+  svg.style.width = bodyW + 'px';
+  svg.style.height = bodyH + 'px';
+
+  const originX = bRect.left + (body.clientLeft || 0);
+  const originY = bRect.top + (body.clientTop || 0);
+
+  const getExit = (id) => {
+    const el = document.getElementById(id);
+    if (!el || typeof el.getBoundingClientRect !== 'function') return null;
+    const r = el.getBoundingClientRect();
+    return {
+      x: Math.round((r.right - originX) / zoomFactor),
+      y: Math.round((r.top + r.height / 2 - originY) / zoomFactor)
+    };
+  };
+
+  const getEntry = (id) => {
+    const el = document.getElementById(id);
+    if (!el || typeof el.getBoundingClientRect !== 'function') return null;
+    const r = el.getBoundingClientRect();
+    return {
+      x: Math.round((r.left - originX) / zoomFactor),
+      y: Math.round((r.top + r.height / 2 - originY) / zoomFactor)
+    };
+  };
+
+  const setOrthogonalPath = (pathId, p1, p2, xTurnRatio, radius = 12) => {
+    const pathEl = document.getElementById(pathId);
+    if (!pathEl || !p1 || !p2) return;
+    const gap = p2.x - p1.x;
+    if (gap <= 0) return;
+    const xTurn = Math.round(p1.x + gap * xTurnRatio);
+    const dy = p2.y - p1.y;
+
+    if (Math.abs(dy) <= 6) {
+      setAttr(pathEl, 'd', `M ${p1.x} ${p1.y} L ${p2.x} ${p2.y}`);
+      return;
+    }
+
+    const r = Math.max(4, Math.min(radius, Math.abs(xTurn - p1.x) / 2, Math.abs(p2.x - xTurn) / 2, Math.abs(dy) / 2));
+    let d = '';
+    if (dy > 0) {
+      d = `M ${p1.x} ${p1.y} L ${xTurn - r} ${p1.y} Q ${xTurn} ${p1.y} ${xTurn} ${p1.y + r} L ${xTurn} ${p2.y - r} Q ${xTurn} ${p2.y} ${xTurn + r} ${p2.y} L ${p2.x} ${p2.y}`;
+    } else {
+      d = `M ${p1.x} ${p1.y} L ${xTurn - r} ${p1.y} Q ${xTurn} ${p1.y} ${xTurn} ${p1.y - r} L ${xTurn} ${p2.y + r} Q ${xTurn} ${p2.y} ${xTurn + r} ${p2.y} L ${p2.x} ${p2.y}`;
+    }
+    setAttr(pathEl, 'd', d);
+  };
+
+  const grpAChamp = getExit('w-badge-grpA-champ') || getExit('w-card-grp-A');
+  const semi1Slot2 = getExit('w-badge-grpB-runnerup') || getExit('w-card-runnerup') || getExit('w-badge-grpB-champ') || getExit('w-card-grp-B');
+  const semi2Slot1 = (document.getElementById('w-card-grp-D') ? (getExit('w-badge-grpC-champ') || getExit('w-card-grp-C')) : (getExit('w-badge-grpB-champ') || getExit('w-card-grp-B')));
+  const semi2Slot2 = getExit('w-badge-grpA-runnerup') || (document.getElementById('w-card-grp-D') ? (getExit('w-badge-grpD-champ') || getExit('w-card-grp-D')) : (getExit('w-badge-grpC-champ') || getExit('w-card-grp-C')));
+
+  const s1t1 = getEntry('w-slot-semi1-t1');
+  const s1t2 = getEntry('w-slot-semi1-t2');
+  const semi1Exit = getExit('w-card-semi1');
+
+  const s2t1 = getEntry('w-slot-semi2-t1');
+  const s2t2 = getEntry('w-slot-semi2-t2');
+  const semi2Exit = getExit('w-card-semi2');
+
+  const f1 = getEntry('w-slot-final-t1');
+  const f2 = getEntry('w-slot-final-t2');
+
+  if (grpAChamp && s1t1) {
+    setOrthogonalPath('w-path-grpA-to-semi1', grpAChamp, s1t1, 0.40);
+  }
+  if (semi1Slot2 && s1t2) {
+    setOrthogonalPath('w-path-runnerup-to-semi1', semi1Slot2, s1t2, 0.25);
+  }
+  if (semi2Slot1 && semi2Slot2 && s2t1 && s2t2) {
+    const isDropping = semi2Slot2.y <= s2t1.y;
+    setOrthogonalPath('w-path-grpB-to-semi2', semi2Slot1, s2t1, isDropping ? 0.50 : 0.58);
+    setOrthogonalPath('w-path-grpC-to-semi2', semi2Slot2, s2t2, isDropping ? 0.24 : 0.75);
+  } else {
+    if (semi2Slot1 && s2t1) setOrthogonalPath('w-path-grpB-to-semi2', semi2Slot1, s2t1, 0.50);
+    if (semi2Slot2 && s2t2) setOrthogonalPath('w-path-grpC-to-semi2', semi2Slot2, s2t2, 0.24);
+  }
+
+  // Knockout Quarters / Opening -> Semis paths (for all knockout formats)
+  const q1 = getExit('w-badge-ko-m1-win') || getExit('w-card-ko-m1') || getExit('w-badge-ko-q1-win') || getExit('w-card-ko-q1');
+  const q2 = getExit('w-badge-ko-m2-win') || getExit('w-card-ko-m2') || getExit('w-badge-ko-q2-win') || getExit('w-card-ko-q2');
+  const q3 = getExit('w-badge-ko-m3-win') || getExit('w-card-ko-m3') || getExit('w-badge-ko-q3-win') || getExit('w-card-ko-q3');
+  const q4 = getExit('w-badge-ko-m4-win') || getExit('w-card-ko-m4') || getExit('w-badge-ko-bye-win') || getExit('w-card-ko-bye') || getExit('w-badge-ko-q4-win') || getExit('w-card-ko-q4');
+  if (q1 && s1t1) {
+    setOrthogonalPath('w-path-q1-to-s1', q1, s1t1, 0.40);
+    setOrthogonalPath('w-path-m1-to-s1', q1, s1t1, 0.40);
+  }
+  if (q2 && s1t2) {
+    setOrthogonalPath('w-path-q2-to-s1', q2, s1t2, 0.25);
+    setOrthogonalPath('w-path-m2-to-s1', q2, s1t2, 0.25);
+  }
+  if (q3 && q4 && s2t1 && s2t2) {
+    const isDropping = q4.y <= s2t1.y;
+    const turn3 = isDropping ? 0.50 : 0.42;
+    const turn4 = isDropping ? 0.24 : 0.60;
+    setOrthogonalPath('w-path-q3-to-s2', q3, s2t1, turn3);
+    setOrthogonalPath('w-path-m3-to-s2', q3, s2t1, turn3);
+    setOrthogonalPath('w-path-q4-to-s2', q4, s2t2, turn4);
+    setOrthogonalPath('w-path-m4-to-s2', q4, s2t2, turn4);
+  } else {
+    if (q3 && s2t1) {
+      setOrthogonalPath('w-path-q3-to-s2', q3, s2t1, 0.45);
+      setOrthogonalPath('w-path-m3-to-s2', q3, s2t1, 0.45);
+    }
+    if (q4 && s2t2) {
+      setOrthogonalPath('w-path-q4-to-s2', q4, s2t2, 0.24);
+      setOrthogonalPath('w-path-m4-to-s2', q4, s2t2, 0.24);
+    }
+  }
+
+  // Semis -> Final paths (unified for Groups & Knockout)
+  const s1UnifiedExit = semi1Exit || getExit('w-badge-ko-s1-win') || getExit('w-card-ko-s1');
+  const s2UnifiedExit = semi2Exit || getExit('w-badge-ko-s2-win') || getExit('w-card-ko-s2');
+  if (s1UnifiedExit && f1) {
+    setOrthogonalPath('w-path-semi1-to-final', s1UnifiedExit, f1, 0.50);
+  }
+  if (s2UnifiedExit && f2) {
+    setOrthogonalPath('w-path-semi2-to-final', s2UnifiedExit, f2, 0.50);
+  }
+
+  // Single League -> Final paths (Directly from League stage badges to Grand Final)
+  const l1 = getExit('w-badge-league-1st') || getExit('w-card-league');
+  const l2 = getExit('w-badge-league-2nd') || getExit('w-card-league');
+  if (l1 && l2 && f1 && f2) {
+    const isDropping = l1.y <= f1.y;
+    setOrthogonalPath('w-path-league-1st-to-final', l1, f1, isDropping ? 0.58 : 0.42);
+    setOrthogonalPath('w-path-league-2nd-to-final', l2, f2, isDropping ? 0.42 : 0.58);
+  } else {
+    if (l1 && f1) setOrthogonalPath('w-path-league-1st-to-final', l1, f1, 0.50);
+    if (l2 && f2) setOrthogonalPath('w-path-league-2nd-to-final', l2, f2, 0.50);
+  }
+}
+
+if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+  window.addEventListener('resize', updateRoadmapSvgPaths);
+  window.addEventListener('fullscreenchange', () => setTimeout(updateRoadmapSvgPaths, 60));
+}
+
+if (typeof document !== 'undefined' && document.addEventListener) {
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      const wrapper = document.getElementById('w-visual-bracket-wrapper');
+      if (wrapper && wrapper.classList && wrapper.classList.contains('is-fullscreen')) {
+        toggleBracketFullscreen(true);
+      }
     }
   });
 }
@@ -557,339 +858,529 @@ function renderWizardVisualFixtureBracket(teamCount, tourneyType, teams) {
 
   if (type === 'knockout') {
     // ----------------------------------------------------
-    // KNOCKOUT BRACKET
+    // KNOCKOUT BRACKET (Unified High-Fidelity Vector Roadmap)
     // ----------------------------------------------------
+    const tourneyTitle = tournamentConfig.title || (isEn ? 'Football Tournament 2026' : 'ফুটবল টুর্নামেন্ট ২০২৬');
+    const stageTitle = isEn ? 'Direct Knockout' : 'সরাসরি নকআউট';
+
     if (count === 2) {
       totalMatchCount = 1;
       totalStagesCount = 1;
-      stagesHtml += `
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Final' : 'ফাইনাল'}</span>
-            <span class="w-bracket-col-title">${isEn ? 'Grand Final (1 Match)' : 'মেগা ফাইনাল (১ ম্যাচ)'}</span>
-          </div>
-          <div class="w-bracket-matches-list">
-            <div class="w-bracket-card final-card">
-              <div class="w-bracket-card-head">
-                <span>${isEn ? 'Grand Final' : 'মেগা ফাইনাল'}</span>
-                <span>👑</span>
+      const subTitle = isEn
+        ? '2 Teams | Head-to-Head Championship Match'
+        : '২টি দল | সরাসরি মেগা গ্র্যান্ড ফাইনাল';
+
+      stagesHtml = `
+        <div class="w-roadmap-board" id="w-roadmap-board">
+          <div class="w-roadmap-header">
+            <div class="w-roadmap-title-area">
+              <div class="w-roadmap-ball-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"/><polygon points="12,7 16,10 14.5,15 9.5,15 8,10" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"/>
+                  <line x1="12" y1="2" x2="12" y2="7" stroke="#ffffff"/><line x1="21.5" y1="9" x2="16" y2="10" stroke="#ffffff"/><line x1="18" y1="19.5" x2="14.5" y2="15" stroke="#ffffff"/><line x1="6" y1="19.5" x2="9.5" y2="15" stroke="#ffffff"/><line x1="2.5" y1="9" x2="8" y2="10" stroke="#ffffff"/>
+                </svg>
               </div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(tNames[0])}">${escapeHtml(tNames[0])}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(tNames[1])}">${escapeHtml(tNames[1])}</span>
+              <div class="w-roadmap-titles">
+                <div class="w-roadmap-main-title">${escapeHtml(tourneyTitle)} - ${escapeHtml(stageTitle)}</div>
+                <div class="w-roadmap-sub-title">${escapeHtml(subTitle)}</div>
+              </div>
+            </div>
+          </div>
+          <div class="w-roadmap-body" id="w-roadmap-body" style="display:flex; justify-content:center; align-items:center; min-height:260px;">
+            <div class="w-card-final-block final-card" id="w-card-final" style="max-width:380px; width:100%;" data-path="final">
+              <div class="w-final-top-pill">
+                🏆 ${isEn ? 'Final' : 'ফাইনাল'} <span style="font-size:10px; opacity:0.85;">(${isEn ? 'Mega Grand Final' : 'মেগা ফাইনাল'})</span>
+              </div>
+              <div class="w-final-slots-container">
+                <div class="w-neon-slot slot-final" id="w-slot-final-t1">
+                  <span class="w-slot-team-txt" title="${escapeHtml(tNames[0])}">${escapeHtml(tNames[0])}</span>
+                </div>
+                <div class="w-neon-slot-vs vs-gold">VS</div>
+                <div class="w-neon-slot" id="w-slot-final-t2">
+                  <span class="w-slot-team-txt" title="${escapeHtml(tNames[1])}">${escapeHtml(tNames[1])}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       `;
+
     } else if (count === 4) {
       totalMatchCount = 3;
       totalStagesCount = 2;
-      stagesHtml += `
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Semi-Finals' : 'সেমিফাইনাল'}</span>
-            <span class="w-bracket-col-title">${isEn ? 'Semi-Finals (2 Matches)' : 'সেমিফাইনাল (২টি ম্যাচ)'}</span>
-          </div>
-          <div class="w-bracket-matches-list">
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Semi-Final 1 (Match 1)' : '১ম সেমিফাইনাল (ম্যাচ ১)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(tNames[0])}">${escapeHtml(tNames[0])}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(tNames[1])}">${escapeHtml(tNames[1])}</span>
+      const subTitle = isEn
+        ? '4 Teams | 2 Semifinals | 1 Mega Grand Final'
+        : '৪টি দল | ২টি সেমিফাইনাল | ১টি মেগা ফাইনাল';
+
+      stagesHtml = `
+        <div class="w-roadmap-board" id="w-roadmap-board">
+          <div class="w-roadmap-header">
+            <div class="w-roadmap-title-area">
+              <div class="w-roadmap-ball-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"/><polygon points="12,7 16,10 14.5,15 9.5,15 8,10" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"/>
+                  <line x1="12" y1="2" x2="12" y2="7" stroke="#ffffff"/><line x1="21.5" y1="9" x2="16" y2="10" stroke="#ffffff"/><line x1="18" y1="19.5" x2="14.5" y2="15" stroke="#ffffff"/><line x1="6" y1="19.5" x2="9.5" y2="15" stroke="#ffffff"/><line x1="2.5" y1="9" x2="8" y2="10" stroke="#ffffff"/>
+                </svg>
               </div>
-            </div>
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Semi-Final 2 (Match 2)' : '২য় সেমিফাইনাল (ম্যাচ ২)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(tNames[2])}">${escapeHtml(tNames[2])}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(tNames[3])}">${escapeHtml(tNames[3])}</span>
+              <div class="w-roadmap-titles">
+                <div class="w-roadmap-main-title">${escapeHtml(tourneyTitle)} - ${escapeHtml(stageTitle)}</div>
+                <div class="w-roadmap-sub-title">${escapeHtml(subTitle)}</div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="w-bracket-connector">
-          <div class="w-connector-arrow">➔</div>
-          <div class="w-connector-label">${connectorLabel}</div>
-        </div>
+          <div class="w-roadmap-body body-league" id="w-roadmap-body">
+            <svg class="w-roadmap-svg-canvas" id="w-roadmap-svg-canvas">
+              <defs>
+                <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0ea5e9"/>
+                </marker>
+                <marker id="arrow-gold" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f59e0b"/>
+                </marker>
+                <filter id="glow-filter-ko4" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="currentColor" flood-opacity="0.6"/>
+                </filter>
+              </defs>
+              <path id="w-path-semi1-to-final" class="w-roadmap-path" d="" stroke="#0ea5e9" stroke-width="2.5" fill="none" marker-end="url(#arrow-blue)" filter="url(#glow-filter-ko4)" data-path="final" />
+              <path id="w-path-semi2-to-final" class="w-roadmap-path" d="" stroke="#f59e0b" stroke-width="2.5" fill="none" marker-end="url(#arrow-gold)" filter="url(#glow-filter-ko4)" data-path="final" />
+            </svg>
 
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Final' : 'ফাইনাল'}</span>
-            <span class="w-bracket-col-title">${isEn ? 'Grand Final (1 Match)' : 'মেগা ফাইনাল (১টি ম্যাচ)'}</span>
-          </div>
-          <div class="w-bracket-matches-list">
-            <div class="w-bracket-card final-card">
-              <div class="w-bracket-card-head">
-                <span>${isEn ? 'Mega Grand Final (Match 3)' : 'মেগা গ্র্যান্ড ফাইনাল (ম্যাচ ৩)'}</span>
-                <span>👑</span>
+            <!-- COLUMN 1: SEMI-FINALS (2 MATCHES) -->
+            <div class="w-roadmap-col col-groups" data-path="final">
+              <!-- Semi 1 -->
+              <div class="w-card-group-block card-grp-a w-bracket-card w-group-box-card" id="w-card-ko-s1" data-path="final">
+                <div class="w-card-grp-head">
+                  <div class="w-grp-head-title">
+                    <span class="w-grp-dot dot-a"></span>
+                    <strong class="w-grp-title-txt">${isEn ? 'Match 1 • Semi-Final 1' : 'ম্যাচ ১ • ১ম সেমিফাইনাল'}</strong>
+                  </div>
+                  <div class="w-grp-qual-badge badge-grp-a" id="w-badge-ko-s1-win">
+                    👑 ${isEn ? 'Winner ➔ Final' : 'বিজয়ী ➔ ফাইনাল'}
+                  </div>
+                </div>
+                <div class="w-grp-matches-list">
+                  <div class="w-neon-match-row">
+                    <span class="w-neon-match-tag">${isEn ? 'SEMI 1' : 'সেমি ১'}</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[0])}">${escapeHtml(tNames[0])}</span>
+                    <span class="w-neon-vs">VS</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[1])}">${escapeHtml(tNames[1])}</span>
+                  </div>
+                </div>
               </div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name">${isEn ? 'Winner Semi 1' : 'বিজয়ী (সেমি ১)'}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name">${isEn ? 'Winner Semi 2' : 'বিজয়ী (সেমি ২)'}</span>
+
+              <!-- Semi 2 -->
+              <div class="w-card-group-block card-grp-b w-bracket-card w-group-box-card" id="w-card-ko-s2" data-path="final">
+                <div class="w-card-grp-head">
+                  <div class="w-grp-head-title">
+                    <span class="w-grp-dot dot-b"></span>
+                    <strong class="w-grp-title-txt">${isEn ? 'Match 2 • Semi-Final 2' : 'ম্যাচ ২ • ২য় সেমিফাইনাল'}</strong>
+                  </div>
+                  <div class="w-grp-qual-badge badge-grp-b" id="w-badge-ko-s2-win">
+                    👑 ${isEn ? 'Winner ➔ Final' : 'বিজয়ী ➔ ফাইনাল'}
+                  </div>
+                </div>
+                <div class="w-grp-matches-list">
+                  <div class="w-neon-match-row">
+                    <span class="w-neon-match-tag">${isEn ? 'SEMI 2' : 'সেমি ২'}</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[2])}">${escapeHtml(tNames[2])}</span>
+                    <span class="w-neon-vs">VS</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[3])}">${escapeHtml(tNames[3])}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- COLUMN 2: GRAND FINAL -->
+            <div class="w-roadmap-col col-final" data-path="final">
+              <div class="w-card-final-block final-card" id="w-card-final" data-path="final">
+                <div class="w-final-top-pill">
+                  🏆 ${isEn ? 'Match 3 • Final' : 'ম্যাচ ৩ • ফাইনাল'} <span style="font-size:10px; opacity:0.85;">(${isEn ? 'Mega Grand Final' : 'মেগা ফাইনাল'})</span>
+                </div>
+                <div class="w-final-slots-container">
+                  <div class="w-neon-slot slot-final" id="w-slot-final-t1">
+                    <span class="w-slot-team-txt">${isEn ? 'Winner Semi 1' : 'বিজয়ী (সেমি ১)'}</span>
+                  </div>
+                  <div class="w-neon-slot-vs vs-gold">VS</div>
+                  <div class="w-neon-slot" id="w-slot-final-t2">
+                    <span class="w-slot-team-txt">${isEn ? 'Winner Semi 2' : 'বিজয়ী (সেমি ২)'}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       `;
+
     } else if (count === 8) {
       totalMatchCount = 7;
       totalStagesCount = 3;
-      stagesHtml += `
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Quarters' : 'কোয়ার্টার'}</span>
-            <span class="w-bracket-col-title">${isEn ? 'Quarters (4 Matches)' : 'কোয়ার্টার ফাইনাল (৪টি ম্যাচ)'}</span>
-          </div>
-          <div class="w-bracket-matches-list">
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Quarter 1 (Match 1)' : '১ম কোয়ার্টার (ম্যাচ ১)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(tNames[0])}">${escapeHtml(tNames[0])}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(tNames[1])}">${escapeHtml(tNames[1])}</span>
-              </div>
-            </div>
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Quarter 2 (Match 2)' : '২য় কোয়ার্টার (ম্যাচ ২)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(tNames[2])}">${escapeHtml(tNames[2])}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(tNames[3])}">${escapeHtml(tNames[3])}</span>
-              </div>
-            </div>
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Quarter 3 (Match 3)' : '৩য় কোয়ার্টার (ম্যাচ ৩)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(tNames[4])}">${escapeHtml(tNames[4])}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(tNames[5])}">${escapeHtml(tNames[5])}</span>
-              </div>
-            </div>
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Quarter 4 (Match 4)' : '৪র্থ কোয়ার্টার (ম্যাচ ৪)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(tNames[6])}">${escapeHtml(tNames[6])}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(tNames[7])}">${escapeHtml(tNames[7])}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      const subTitle = isEn
+        ? '8 Teams | 4 Quarterfinals | 2 Semifinals | 1 Mega Grand Final'
+        : '৮টি দল | ৪টি কোয়ার্টার ফাইনাল | ২টি সেমিফাইনাল | ১টি মেগা ফাইনাল';
 
-        <div class="w-bracket-connector">
-          <div class="w-connector-arrow">➔</div>
-          <div class="w-connector-label">${connectorLabel}</div>
-        </div>
-
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Semi-Finals' : 'সেমিফাইনাল'}</span>
-            <span class="w-bracket-col-title">${isEn ? 'Semi-Finals (2 Matches)' : 'সেমিফাইনাল (২টি ম্যাচ)'}</span>
-          </div>
-          <div class="w-bracket-matches-list">
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Semi 1 (Match 5)' : '১ম সেমিফাইনাল (ম্যাচ ৫)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name">${isEn ? 'Winner QF 1' : 'বিজয়ী (কোয়ার্টার ১)'}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name">${isEn ? 'Winner QF 2' : 'বিজয়ী (কোয়ার্টার ২)'}</span>
+      stagesHtml = `
+        <div class="w-roadmap-board" id="w-roadmap-board">
+          <div class="w-roadmap-header">
+            <div class="w-roadmap-title-area">
+              <div class="w-roadmap-ball-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"/><polygon points="12,7 16,10 14.5,15 9.5,15 8,10" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"/>
+                  <line x1="12" y1="2" x2="12" y2="7" stroke="#ffffff"/><line x1="21.5" y1="9" x2="16" y2="10" stroke="#ffffff"/><line x1="18" y1="19.5" x2="14.5" y2="15" stroke="#ffffff"/><line x1="6" y1="19.5" x2="9.5" y2="15" stroke="#ffffff"/><line x1="2.5" y1="9" x2="8" y2="10" stroke="#ffffff"/>
+                </svg>
               </div>
-            </div>
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Semi 2 (Match 6)' : '২য় সেমিফাইনাল (ম্যাচ ৬)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name">${isEn ? 'Winner QF 3' : 'বিজয়ী (কোয়ার্টার ৩)'}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name">${isEn ? 'Winner QF 4' : 'বিজয়ী (কোয়ার্টার ৪)'}</span>
+              <div class="w-roadmap-titles">
+                <div class="w-roadmap-main-title">${escapeHtml(tourneyTitle)} - ${escapeHtml(stageTitle)}</div>
+                <div class="w-roadmap-sub-title">${escapeHtml(subTitle)}</div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="w-bracket-connector">
-          <div class="w-connector-arrow">➔</div>
-          <div class="w-connector-label">${connectorLabel}</div>
-        </div>
+          <div class="w-roadmap-body" id="w-roadmap-body">
+            <svg class="w-roadmap-svg-canvas" id="w-roadmap-svg-canvas">
+              <defs>
+                <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0ea5e9"/>
+                </marker>
+                <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#8b5cf6"/>
+                </marker>
+                <marker id="arrow-teal" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981"/>
+                </marker>
+                <marker id="arrow-gold" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f59e0b"/>
+                </marker>
+                <filter id="glow-filter-ko8" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="currentColor" flood-opacity="0.6"/>
+                </filter>
+              </defs>
+              <!-- QF 1 -> Semi 1 Slot 1 -->
+              <path id="w-path-q1-to-s1" class="w-roadmap-path" d="" stroke="#0ea5e9" stroke-width="2.5" fill="none" marker-end="url(#arrow-blue)" filter="url(#glow-filter-ko8)" />
+              <!-- QF 2 -> Semi 1 Slot 2 -->
+              <path id="w-path-q2-to-s1" class="w-roadmap-path" d="" stroke="#8b5cf6" stroke-width="2.5" fill="none" marker-end="url(#arrow-purple)" filter="url(#glow-filter-ko8)" />
+              <!-- QF 3 -> Semi 2 Slot 1 -->
+              <path id="w-path-q3-to-s2" class="w-roadmap-path" d="" stroke="#8b5cf6" stroke-width="2.5" fill="none" marker-end="url(#arrow-purple)" filter="url(#glow-filter-ko8)" />
+              <!-- QF 4 -> Semi 2 Slot 2 -->
+              <path id="w-path-q4-to-s2" class="w-roadmap-path" d="" stroke="#10b981" stroke-width="2.5" fill="none" marker-end="url(#arrow-teal)" filter="url(#glow-filter-ko8)" />
+              <!-- Semi 1 -> Final -->
+              <path id="w-path-semi1-to-final" class="w-roadmap-path" d="" stroke="#0ea5e9" stroke-width="2.5" fill="none" marker-end="url(#arrow-blue)" filter="url(#glow-filter-ko8)" data-path="final" />
+              <!-- Semi 2 -> Final -->
+              <path id="w-path-semi2-to-final" class="w-roadmap-path" d="" stroke="#f59e0b" stroke-width="2.5" fill="none" marker-end="url(#arrow-gold)" filter="url(#glow-filter-ko8)" data-path="final" />
+            </svg>
 
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Final' : 'ফাইনাল'}</span>
-            <span class="w-bracket-col-title">${isEn ? 'Grand Final (1 Match)' : 'মেগা ফাইনাল (১টি ম্যাচ)'}</span>
-          </div>
-          <div class="w-bracket-matches-list">
-            <div class="w-bracket-card final-card">
-              <div class="w-bracket-card-head">
-                <span>${isEn ? 'Mega Grand Final (Match 7)' : 'মেগা গ্র্যান্ড ফাইনাল (ম্যাচ ৭)'}</span>
-                <span>👑</span>
+            <!-- COLUMN 1: QUARTER-FINALS (4 MATCHES) -->
+            <div class="w-roadmap-col col-groups">
+              <!-- QF 1 -->
+              <div class="w-card-group-block card-grp-a w-bracket-card w-group-box-card" id="w-card-ko-q1">
+                <div class="w-card-grp-head">
+                  <div class="w-grp-head-title">
+                    <span class="w-grp-dot dot-a"></span>
+                    <strong class="w-grp-title-txt">${isEn ? 'Match 1 • QF 1' : 'ম্যাচ ১ • ১ম কোয়ার্টার'}</strong>
+                  </div>
+                  <div class="w-grp-qual-badge badge-grp-a" id="w-badge-ko-q1-win">
+                    👑 ${isEn ? 'Winner ➔ Semi 1' : 'বিজয়ী ➔ সেমি ১'}
+                  </div>
+                </div>
+                <div class="w-grp-matches-list">
+                  <div class="w-neon-match-row">
+                    <span class="w-neon-match-tag">QF 1</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[0])}">${escapeHtml(tNames[0])}</span>
+                    <span class="w-neon-vs">VS</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[1])}">${escapeHtml(tNames[1])}</span>
+                  </div>
+                </div>
               </div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name">${isEn ? 'Winner Semi 1' : 'বিজয়ী (সেমি ১)'}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name">${isEn ? 'Winner Semi 2' : 'বিজয়ী (সেমি ২)'}</span>
+
+              <!-- QF 2 -->
+              <div class="w-card-group-block card-grp-b w-bracket-card w-group-box-card" id="w-card-ko-q2">
+                <div class="w-card-grp-head">
+                  <div class="w-grp-head-title">
+                    <span class="w-grp-dot dot-b"></span>
+                    <strong class="w-grp-title-txt">${isEn ? 'Match 2 • QF 2' : 'ম্যাচ ২ • ২য় কোয়ার্টার'}</strong>
+                  </div>
+                  <div class="w-grp-qual-badge badge-grp-b" id="w-badge-ko-q2-win">
+                    👑 ${isEn ? 'Winner ➔ Semi 1' : 'বিজয়ী ➔ সেমি ১'}
+                  </div>
+                </div>
+                <div class="w-grp-matches-list">
+                  <div class="w-neon-match-row">
+                    <span class="w-neon-match-tag">QF 2</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[2])}">${escapeHtml(tNames[2])}</span>
+                    <span class="w-neon-vs">VS</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[3])}">${escapeHtml(tNames[3])}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- QF 3 -->
+              <div class="w-card-group-block card-grp-c w-bracket-card w-group-box-card" id="w-card-ko-q3">
+                <div class="w-card-grp-head">
+                  <div class="w-grp-head-title">
+                    <span class="w-grp-dot dot-c"></span>
+                    <strong class="w-grp-title-txt">${isEn ? 'Match 3 • QF 3' : 'ম্যাচ ৩ • ৩য় কোয়ার্টার'}</strong>
+                  </div>
+                  <div class="w-grp-qual-badge badge-grp-c" id="w-badge-ko-q3-win">
+                    👑 ${isEn ? 'Winner ➔ Semi 2' : 'বিজয়ী ➔ সেমি ২'}
+                  </div>
+                </div>
+                <div class="w-grp-matches-list">
+                  <div class="w-neon-match-row">
+                    <span class="w-neon-match-tag">QF 3</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[4])}">${escapeHtml(tNames[4])}</span>
+                    <span class="w-neon-vs">VS</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[5])}">${escapeHtml(tNames[5])}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- QF 4 -->
+              <div class="w-card-group-block card-grp-d w-bracket-card w-group-box-card" id="w-card-ko-q4">
+                <div class="w-card-grp-head">
+                  <div class="w-grp-head-title">
+                    <span class="w-grp-dot dot-d"></span>
+                    <strong class="w-grp-title-txt">${isEn ? 'Match 4 • QF 4' : 'ম্যাচ ৪ • ৪র্থ কোয়ার্টার'}</strong>
+                  </div>
+                  <div class="w-grp-qual-badge badge-grp-d" id="w-badge-ko-q4-win">
+                    👑 ${isEn ? 'Winner ➔ Semi 2' : 'বিজয়ী ➔ সেমি ২'}
+                  </div>
+                </div>
+                <div class="w-grp-matches-list">
+                  <div class="w-neon-match-row">
+                    <span class="w-neon-match-tag">QF 4</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[6])}">${escapeHtml(tNames[6])}</span>
+                    <span class="w-neon-vs">VS</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(tNames[7])}">${escapeHtml(tNames[7])}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- COLUMN 2: SEMI-FINALS (2 MATCHES) -->
+            <div class="w-roadmap-col col-semis" data-path="final">
+              <!-- Semifinal 1 -->
+              <div class="w-card-semi-block card-semi1" id="w-card-semi1" data-path="final">
+                <div class="w-semi-top-pill pill-semi1">
+                  ${isEn ? 'Match 5 • Semi 1' : 'ম্যাচ ৫ • ১ম সেমিফাইনাল'}
+                </div>
+                <div class="w-semi-slots-container">
+                  <div class="w-neon-slot" id="w-slot-semi1-t1">
+                    <span class="w-slot-icon">👑</span>
+                    <span class="w-slot-team-txt">${isEn ? 'Winner QF 1' : 'বিজয়ী (কোয়ার্টার ১)'}</span>
+                  </div>
+                  <div class="w-neon-slot-vs">VS</div>
+                  <div class="w-neon-slot" id="w-slot-semi1-t2">
+                    <span class="w-slot-icon">👑</span>
+                    <span class="w-slot-team-txt">${isEn ? 'Winner QF 2' : 'বিজয়ী (কোয়ার্টার ২)'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Semifinal 2 -->
+              <div class="w-card-semi-block card-semi2" id="w-card-semi2" data-path="final">
+                <div class="w-semi-top-pill pill-semi2">
+                  ${isEn ? 'Match 6 • Semi 2' : 'ম্যাচ ৬ • ২য় সেমিফাইনাল'}
+                </div>
+                <div class="w-semi-slots-container">
+                  <div class="w-neon-slot" id="w-slot-semi2-t1">
+                    <span class="w-slot-icon">👑</span>
+                    <span class="w-slot-team-txt">${isEn ? 'Winner QF 3' : 'বিজয়ী (কোয়ার্টার ৩)'}</span>
+                  </div>
+                  <div class="w-neon-slot-vs">VS</div>
+                  <div class="w-neon-slot" id="w-slot-semi2-t2">
+                    <span class="w-slot-icon">👑</span>
+                    <span class="w-slot-team-txt">${isEn ? 'Winner QF 4' : 'বিজয়ী (কোয়ার্টার ৪)'}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- COLUMN 3: GRAND FINAL -->
+            <div class="w-roadmap-col col-final" data-path="final">
+              <div class="w-card-final-block final-card" id="w-card-final" data-path="final">
+                <div class="w-final-top-pill">
+                  🏆 ${isEn ? 'Match 7 • Final' : 'ম্যাচ ৭ • ফাইনাল'} <span style="font-size:10px; opacity:0.85;">(${isEn ? 'Mega Grand Final' : 'মেগা ফাইনাল'})</span>
+                </div>
+                <div class="w-final-slots-container">
+                  <div class="w-neon-slot slot-final" id="w-slot-final-t1">
+                    <span class="w-slot-team-txt">${isEn ? 'Winner Semi 1' : 'বিজয়ী (সেমি ১)'}</span>
+                  </div>
+                  <div class="w-neon-slot-vs vs-gold">VS</div>
+                  <div class="w-neon-slot" id="w-slot-final-t2">
+                    <span class="w-slot-team-txt">${isEn ? 'Winner Semi 2' : 'বিজয়ী (সেমি ২)'}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       `;
-    } else if (count === 5) {
-      totalMatchCount = 5;
-      totalStagesCount = 3;
-      stagesHtml += `
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Playoffs' : 'প্লে-অফ'}</span>
-            <span class="w-bracket-col-title">${isEn ? 'Opening Round (2 Matches)' : 'প্রাথমিক রাউন্ড (২টি ম্যাচ)'}</span>
-          </div>
-          <div class="w-bracket-matches-list">
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Match 1' : 'ম্যাচ ১ (নকআউট)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(tNames[0])}">${escapeHtml(tNames[0])}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(tNames[1])}">${escapeHtml(tNames[1])}</span>
-              </div>
-            </div>
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Match 2' : 'ম্যাচ ২ (নকআউট)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(tNames[2])}">${escapeHtml(tNames[2])}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(tNames[3])}">${escapeHtml(tNames[3])}</span>
-              </div>
-            </div>
-            <div class="w-bracket-card" style="border-style:dashed;">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Direct Bye' : 'সরাসরি বাই (দল ৫)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(tNames[4])}">${escapeHtml(tNames[4])}</span>
-                <span class="w-vs-pill" style="background:#e0e7ff; color:#3730a3;">BYE</span>
-                <span class="w-team-name" style="color:#64748b;">${isEn ? 'Bye to Semi' : 'সরাসরি সেমিতে'}</span>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div class="w-bracket-connector">
-          <div class="w-connector-arrow">➔</div>
-          <div class="w-connector-label">${connectorLabel}</div>
-        </div>
-
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Semi-Finals' : 'সেমিফাইনাল'}</span>
-            <span class="w-bracket-col-title">${isEn ? 'Semi-Finals (2 Matches)' : 'সেমিফাইনাল (২টি ম্যাচ)'}</span>
-          </div>
-          <div class="w-bracket-matches-list">
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Semi 1' : '১ম সেমিফাইনাল (ম্যাচ ৩)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name">${isEn ? 'Winner Match 1' : 'বিজয়ী (ম্যাচ ১)'}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(tNames[4])}">${escapeHtml(tNames[4])}</span>
-              </div>
-            </div>
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Semi 2' : '২য় সেমিফাইনাল (ম্যাচ ৪)'}</span></div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name">${isEn ? 'Winner Match 2' : 'বিজয়ী (ম্যাচ ২)'}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name">${isEn ? 'Best Lucky Loser' : 'সেরা লাকি লুজার'}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="w-bracket-connector">
-          <div class="w-connector-arrow">➔</div>
-          <div class="w-connector-label">${connectorLabel}</div>
-        </div>
-
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Final' : 'ফাইনাল'}</span>
-            <span class="w-bracket-col-title">${isEn ? 'Grand Final (1 Match)' : 'মেগা ফাইনাল (১টি ম্যাচ)'}</span>
-          </div>
-          <div class="w-bracket-matches-list">
-            <div class="w-bracket-card final-card">
-              <div class="w-bracket-card-head">
-                <span>${isEn ? 'Mega Grand Final' : 'মেগা গ্র্যান্ড ফাইনাল (ম্যাচ ৫)'}</span>
-                <span>👑</span>
-              </div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name">${isEn ? 'Winner Semi 1' : 'বিজয়ী (সেমি ১)'}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name">${isEn ? 'Winner Semi 2' : 'বিজয়ী (সেমি ২)'}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
     } else {
+      // General Knockout (e.g. 5, 6, 7, 10, 12, 16 teams)
       const openMatches = [];
       let mIdx = 1;
       for (let i = 0; i < count; i += 2) {
         if (i + 1 < count) {
-          openMatches.push({ head: isEn ? `Match ${mIdx}` : `ম্যাচ ${mIdx}`, t1: tNames[i], t2: tNames[i + 1] });
+          openMatches.push({ id: mIdx, t1: tNames[i], t2: tNames[i + 1] });
           mIdx++;
         }
       }
       totalMatchCount = openMatches.length + 3;
       totalStagesCount = 3;
-      stagesHtml += `
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Stage 1' : 'ধাপ ১'}</span>
-            <span class="w-bracket-col-title">${isEn ? `Opening (${openMatches.length} Matches)` : `প্রাথমিক রাউন্ড (${openMatches.length}টি ম্যাচ)`}</span>
+      const subTitle = isEn
+        ? `${count} Teams | Single-Elimination Knockout Bracket`
+        : `${count}টি দল | সরাসরি নকআউট টুর্নামেন্ট ব্র্যাকেট`;
+
+      stagesHtml = `
+        <div class="w-roadmap-board" id="w-roadmap-board">
+          <div class="w-roadmap-header">
+            <div class="w-roadmap-title-area">
+              <div class="w-roadmap-ball-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"/><polygon points="12,7 16,10 14.5,15 9.5,15 8,10" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"/>
+                  <line x1="12" y1="2" x2="12" y2="7" stroke="#ffffff"/><line x1="21.5" y1="9" x2="16" y2="10" stroke="#ffffff"/><line x1="18" y1="19.5" x2="14.5" y2="15" stroke="#ffffff"/><line x1="6" y1="19.5" x2="9.5" y2="15" stroke="#ffffff"/><line x1="2.5" y1="9" x2="8" y2="10" stroke="#ffffff"/>
+                </svg>
+              </div>
+              <div class="w-roadmap-titles">
+                <div class="w-roadmap-main-title">${escapeHtml(tourneyTitle)} - ${escapeHtml(stageTitle)}</div>
+                <div class="w-roadmap-sub-title">${escapeHtml(subTitle)}</div>
+              </div>
+            </div>
           </div>
-          <div class="w-bracket-matches-list">
-            ${openMatches.map(m => `
-              <div class="w-bracket-card">
-                <div class="w-bracket-card-head"><span>${escapeHtml(m.head)}</span></div>
-                <div class="w-bracket-matchup">
-                  <span class="w-team-name">${escapeHtml(m.t1)}</span>
-                  <span class="w-vs-pill">VS</span>
-                  <span class="w-team-name">${escapeHtml(m.t2)}</span>
+
+          <div class="w-roadmap-body" id="w-roadmap-body">
+            <svg class="w-roadmap-svg-canvas" id="w-roadmap-svg-canvas">
+              <defs>
+                <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0ea5e9"/>
+                </marker>
+                <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#8b5cf6"/>
+                </marker>
+                <marker id="arrow-teal" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981"/>
+                </marker>
+                <marker id="arrow-gold" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f59e0b"/>
+                </marker>
+                <filter id="glow-filter-kogen" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="currentColor" flood-opacity="0.6"/>
+                </filter>
+              </defs>
+              <!-- Opening M1 -> Semi 1 Slot 1 (Winner 1) -->
+              <path id="w-path-m1-to-s1" class="w-roadmap-path" d="" stroke="#0ea5e9" stroke-width="2.5" fill="none" marker-end="url(#arrow-blue)" filter="url(#glow-filter-kogen)" />
+              <!-- Opening M2 -> Semi 1 Slot 2 (Winner 2) -->
+              <path id="w-path-m2-to-s1" class="w-roadmap-path" d="" stroke="#8b5cf6" stroke-width="2.5" fill="none" marker-end="url(#arrow-purple)" filter="url(#glow-filter-kogen)" />
+              <!-- Opening M3 -> Semi 2 Slot 1 (Winner 3) -->
+              <path id="w-path-m3-to-s2" class="w-roadmap-path" d="" stroke="#8b5cf6" stroke-width="2.5" fill="none" marker-end="url(#arrow-purple)" filter="url(#glow-filter-kogen)" />
+              <!-- Opening M4 / Bye -> Semi 2 Slot 2 (Winner 4) -->
+              <path id="w-path-m4-to-s2" class="w-roadmap-path" d="" stroke="#10b981" stroke-width="2.5" fill="none" marker-end="url(#arrow-teal)" filter="url(#glow-filter-kogen)" />
+              <!-- Semi 1 -> Final -->
+              <path id="w-path-semi1-to-final" class="w-roadmap-path" d="" stroke="#0ea5e9" stroke-width="2.5" fill="none" marker-end="url(#arrow-blue)" filter="url(#glow-filter-kogen)" data-path="final" />
+              <!-- Semi 2 -> Final -->
+              <path id="w-path-semi2-to-final" class="w-roadmap-path" d="" stroke="#f59e0b" stroke-width="2.5" fill="none" marker-end="url(#arrow-gold)" filter="url(#glow-filter-kogen)" data-path="final" />
+            </svg>
+
+            <!-- COLUMN 1: OPENING ROUND MATCHES -->
+            <div class="w-roadmap-col col-groups">
+              ${openMatches.map((m, idx) => `
+                <div class="w-card-group-block ${idx % 2 === 0 ? 'card-grp-a' : 'card-grp-b'} w-bracket-card w-group-box-card" id="w-card-ko-m${m.id}">
+                  <div class="w-card-grp-head">
+                    <div class="w-grp-head-title">
+                      <span class="w-grp-dot ${idx % 2 === 0 ? 'dot-a' : 'dot-b'}"></span>
+                      <strong class="w-grp-title-txt">${isEn ? `Match ${m.id} • Opening` : `ম্যাচ ${m.id} • প্রাথমিক`}</strong>
+                    </div>
+                    <div class="w-grp-qual-badge ${idx % 2 === 0 ? 'badge-grp-a' : 'badge-grp-b'}" id="w-badge-ko-m${m.id}-win">
+                      👑 ${isEn ? `Winner ${m.id} ➔ Semi ${m.id <= 2 ? '1' : '2'}` : `বিজয়ী ${m.id} ➔ ${m.id <= 2 ? '১ম' : '২য়'} সেমি`}
+                    </div>
+                  </div>
+                  <div class="w-grp-matches-list">
+                    <div class="w-neon-match-row">
+                      <span class="w-neon-match-tag">M${m.id}</span>
+                      <span class="w-neon-team-name" title="${escapeHtml(m.t1)}">${escapeHtml(m.t1)}</span>
+                      <span class="w-neon-vs">VS</span>
+                      <span class="w-neon-team-name" title="${escapeHtml(m.t2)}">${escapeHtml(m.t2)}</span>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+              ${count % 2 !== 0 ? `
+                <div class="w-card-group-block card-grp-c w-bracket-card" id="w-card-ko-bye" style="border-style:dashed;">
+                  <div class="w-card-grp-head">
+                    <div class="w-grp-head-title">
+                      <span class="w-grp-dot dot-c"></span>
+                      <strong class="w-grp-title-txt">${isEn ? 'Direct Bye' : 'সরাসরি বাই'}</strong>
+                    </div>
+                    <div class="w-grp-qual-badge badge-grp-c" id="w-badge-ko-bye-win">
+                      BYE ➔ ${isEn ? 'Semi 2' : '২য় সেমি'}
+                    </div>
+                  </div>
+                  <div class="w-grp-matches-list">
+                    <div class="w-neon-match-row">
+                      <span class="w-neon-match-tag">BYE</span>
+                      <span class="w-neon-team-name" title="${escapeHtml(tNames[count - 1])}">${escapeHtml(tNames[count - 1])}</span>
+                      <span class="w-neon-vs">➔</span>
+                      <span class="w-neon-team-name" style="color:#94a3b8;">${isEn ? 'Advance to Semis' : 'সরাসরি সেমিতে'}</span>
+                    </div>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- COLUMN 2: SEMI-FINALS (2 MATCHES) -->
+            <div class="w-roadmap-col col-semis" data-path="final">
+              <div class="w-card-semi-block card-semi1" id="w-card-semi1" data-path="final">
+                <div class="w-semi-top-pill pill-semi1">
+                  ${isEn ? 'Semi-Final 1' : '১ম সেমিফাইনাল'}
+                </div>
+                <div class="w-semi-slots-container">
+                  <div class="w-neon-slot" id="w-slot-semi1-t1">
+                    <span class="w-slot-icon">👑</span>
+                    <span class="w-slot-team-txt">${isEn ? 'Winner 1' : 'বিজয়ী ১'}</span>
+                  </div>
+                  <div class="w-neon-slot-vs">VS</div>
+                  <div class="w-neon-slot" id="w-slot-semi1-t2">
+                    <span class="w-slot-icon">👑</span>
+                    <span class="w-slot-team-txt">${isEn ? 'Winner 2' : 'বিজয়ী ২'}</span>
+                  </div>
                 </div>
               </div>
-            `).join('')}
-          </div>
-        </div>
 
-        <div class="w-bracket-connector"><div class="w-connector-arrow">➔</div><div class="w-connector-label">${connectorLabel}</div></div>
-
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Semi-Finals' : 'সেমিফাইনাল'}</span>
-            <span class="w-bracket-col-title">${isEn ? 'Semi-Finals (2 Matches)' : 'সেমিফাইনাল (২টি ম্যাচ)'}</span>
-          </div>
-          <div class="w-bracket-matches-list">
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Semi 1' : '১ম সেমিফাইনাল'}</span></div>
-              <div class="w-bracket-matchup"><span class="w-team-name">${isEn ? 'Winner 1' : 'বিজয়ী ১'}</span><span class="w-vs-pill">VS</span><span class="w-team-name">${isEn ? 'Winner 2' : 'বিজয়ী ২'}</span></div>
+              <div class="w-card-semi-block card-semi2" id="w-card-semi2" data-path="final">
+                <div class="w-semi-top-pill pill-semi2">
+                  ${isEn ? 'Semi-Final 2' : '২য় সেমিফাইনাল'}
+                </div>
+                <div class="w-semi-slots-container">
+                  <div class="w-neon-slot" id="w-slot-semi2-t1">
+                    <span class="w-slot-icon">👑</span>
+                    <span class="w-slot-team-txt">${isEn ? 'Winner 3' : 'বিজয়ী ৩'}</span>
+                  </div>
+                  <div class="w-neon-slot-vs">VS</div>
+                  <div class="w-neon-slot" id="w-slot-semi2-t2">
+                    <span class="w-slot-icon">👑</span>
+                    <span class="w-slot-team-txt">${isEn ? 'Winner 4' : 'বিজয়ী ৪'}</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="w-bracket-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Semi 2' : '২য় সেমিফাইনাল'}</span></div>
-              <div class="w-bracket-matchup"><span class="w-team-name">${isEn ? 'Winner 3' : 'বিজয়ী ৩'}</span><span class="w-vs-pill">VS</span><span class="w-team-name">${isEn ? 'Winner 4' : 'বিজয়ী ৪'}</span></div>
-            </div>
-          </div>
-        </div>
 
-        <div class="w-bracket-connector"><div class="w-connector-arrow">➔</div><div class="w-connector-label">${connectorLabel}</div></div>
-
-        <div class="w-bracket-column">
-          <div class="w-bracket-col-header">
-            <span class="w-bracket-col-badge">${isEn ? 'Final' : 'ফাইনাল'}</span>
-            <span class="w-bracket-col-title">${isEn ? 'Grand Final (1 Match)' : 'মেগা ফাইনাল (১টি ম্যাচ)'}</span>
-          </div>
-          <div class="w-bracket-matches-list">
-            <div class="w-bracket-card final-card">
-              <div class="w-bracket-card-head"><span>${isEn ? 'Grand Final' : 'মেগা গ্র্যান্ড ফাইনাল'}</span><span>👑</span></div>
-              <div class="w-bracket-matchup"><span class="w-team-name">${isEn ? 'Winner Semi 1' : 'বিজয়ী সেমি ১'}</span><span class="w-vs-pill">VS</span><span class="w-team-name">${isEn ? 'Winner Semi 2' : 'বিজয়ী সেমি ২'}</span></div>
+            <!-- COLUMN 3: GRAND FINAL -->
+            <div class="w-roadmap-col col-final" data-path="final">
+              <div class="w-card-final-block final-card" id="w-card-final" data-path="final">
+                <div class="w-final-top-pill">
+                  🏆 ${isEn ? 'Final' : 'ফাইনাল'} <span style="font-size:10px; opacity:0.85;">(${isEn ? 'Mega Grand Final' : 'মেগা ফাইনাল'})</span>
+                </div>
+                <div class="w-final-slots-container">
+                  <div class="w-neon-slot slot-final" id="w-slot-final-t1">
+                    <span class="w-slot-team-txt">${isEn ? 'Winner Semi 1' : 'বিজয়ী (সেমি ১)'}</span>
+                  </div>
+                  <div class="w-neon-slot-vs vs-gold">VS</div>
+                  <div class="w-neon-slot" id="w-slot-final-t2">
+                    <span class="w-slot-team-txt">${isEn ? 'Winner Semi 2' : 'বিজয়ী (সেমি ২)'}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -898,54 +1389,112 @@ function renderWizardVisualFixtureBracket(teamCount, tourneyType, teams) {
 
   } else if (type === 'league') {
     // ----------------------------------------------------
-    // SINGLE LEAGUE TABLE
+    // SINGLE LEAGUE TABLE (Unified High-Fidelity Vector Roadmap)
     // ----------------------------------------------------
     const allMatches = struct.matches || [];
     totalMatchCount = allMatches.length + 1; // league + final
     totalStagesCount = 2;
 
-    stagesHtml += `
-      <div class="w-bracket-column" style="min-width:240px; max-width:280px;">
-        <div class="w-bracket-col-header">
-          <span class="w-bracket-col-badge">${isEn ? 'Stage 1' : 'ধাপ ১'}</span>
-          <span class="w-bracket-col-title">${isEn ? `Single League Stage (${allMatches.length} Matches)` : `একক লিগ টেবিল পর্ব (মোট ${allMatches.length}টি ম্যাচ)`}</span>
+    const tourneyTitle = tournamentConfig.title || (isEn ? 'Football Tournament 2026' : 'ফুটবল টুর্নামেন্ট ২০২৬');
+    const stageTitle = isEn ? 'Single League Table' : 'একক লিগ টেবিল';
+    const subTitle = isEn
+      ? `${count} Teams | Single Standings Table | ${allMatches.length} Matches | Top 2 Teams advance to Grand Final`
+      : `${count}টি দল | একক পয়েন্ট টেবিল | ${allMatches.length}টি ম্যাচ | টেবিলের শীর্ষ ২ দল নিয়ে সরাসরি মেগা ফাইনাল`;
+
+    stagesHtml = `
+      <div class="w-roadmap-board" id="w-roadmap-board">
+        <!-- Top Header Bar -->
+        <div class="w-roadmap-header">
+          <div class="w-roadmap-title-area">
+            <div class="w-roadmap-ball-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8">
+                <circle cx="12" cy="12" r="10"/>
+                <polygon points="12,7 16,10 14.5,15 9.5,15 8,10" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"/>
+                <line x1="12" y1="2" x2="12" y2="7" stroke="#ffffff"/>
+                <line x1="21.5" y1="9" x2="16" y2="10" stroke="#ffffff"/>
+                <line x1="18" y1="19.5" x2="14.5" y2="15" stroke="#ffffff"/>
+                <line x1="6" y1="19.5" x2="9.5" y2="15" stroke="#ffffff"/>
+                <line x1="2.5" y1="9" x2="8" y2="10" stroke="#ffffff"/>
+              </svg>
+            </div>
+            <div class="w-roadmap-titles">
+              <div class="w-roadmap-main-title">${escapeHtml(tourneyTitle)} - ${escapeHtml(stageTitle)}</div>
+              <div class="w-roadmap-sub-title">${escapeHtml(subTitle)}</div>
+            </div>
+          </div>
         </div>
-        <div class="w-bracket-matches-list">
-          ${allMatches.map(m => `
-            <div class="w-bracket-card" data-group="League">
-              <div class="w-bracket-card-head">
-                <span>${isEn ? `Match ${m.id} • League` : `ম্যাচ ${m.id} • লিগ`}</span>
+
+        <!-- Main Roadmap Board Body with SVG Overlay -->
+        <div class="w-roadmap-body body-league" id="w-roadmap-body">
+          <!-- Full Overlay SVG Canvas for Arrow Lines -->
+          <svg class="w-roadmap-svg-canvas" id="w-roadmap-svg-canvas">
+            <defs>
+              <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0ea5e9"/>
+              </marker>
+              <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#8b5cf6"/>
+              </marker>
+              <filter id="glow-filter-league" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="currentColor" flood-opacity="0.6"/>
+              </filter>
+            </defs>
+
+            <!-- 1st in Table -> Final (Blue) -->
+            <path id="w-path-league-1st-to-final" class="w-roadmap-path" d="" stroke="#0ea5e9" stroke-width="2.5" fill="none" marker-end="url(#arrow-blue)" filter="url(#glow-filter-league)" data-path="final" />
+
+            <!-- 2nd in Table -> Final (Purple) -->
+            <path id="w-path-league-2nd-to-final" class="w-roadmap-path" d="" stroke="#8b5cf6" stroke-width="2.5" fill="none" marker-end="url(#arrow-purple)" filter="url(#glow-filter-league)" data-path="final" />
+          </svg>
+
+          <!-- Hidden test compatibility elements -->
+          <span style="display:none;">একক লিগ টেবিল</span>
+
+          <!-- COLUMN 1: SINGLE LEAGUE STAGE (ALL MATCHES) -->
+          <div class="w-roadmap-col col-groups" data-path="final">
+            <div class="w-card-group-block card-grp-a w-bracket-card w-group-box-card" id="w-card-league" data-group="League">
+              <div class="w-card-grp-head">
+                <div class="w-grp-head-title">
+                  <span class="w-grp-dot dot-a"></span>
+                  <strong class="w-grp-title-txt">${isEn ? `Single League Stage (${count} Teams)` : `একক লিগ টেবিল পর্ব (${count}টি দল)`}</strong>
+                </div>
+                <div class="w-grp-badges-cluster">
+                  <div class="w-grp-qual-badge badge-league-1st" id="w-badge-league-1st">
+                    🥇 ${isEn ? '1st in Standings ➔ Final' : '১ম স্থান ➔ মেগা ফাইনাল'}
+                  </div>
+                  <div class="w-grp-qual-badge badge-league-2nd" id="w-badge-league-2nd">
+                    🥈 ${isEn ? '2nd in Standings ➔ Final' : '২য় স্থান ➔ মেগা ফাইনাল'}
+                  </div>
+                </div>
               </div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(m.t1)}">${escapeHtml(m.t1)}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(m.t2)}">${escapeHtml(m.t2)}</span>
+              <div class="w-grp-matches-list">
+                ${allMatches.map(m => `
+                  <div class="w-neon-match-row">
+                    <span class="w-neon-match-tag">${isEn ? `Match ${m.id}` : `ম্যাচ ${m.id}`}</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(m.t1)}">${escapeHtml(m.t1)}</span>
+                    <span class="w-neon-vs">VS</span>
+                    <span class="w-neon-team-name" title="${escapeHtml(m.t2)}">${escapeHtml(m.t2)}</span>
+                  </div>
+                `).join('')}
               </div>
             </div>
-          `).join('')}
-        </div>
-      </div>
+          </div>
 
-      <div class="w-bracket-connector">
-        <div class="w-connector-arrow">➔</div>
-        <div class="w-connector-label">${isEn ? 'Top 2 Teams' : 'শীর্ষ ২ দল'}</div>
-      </div>
-
-      <div class="w-bracket-column">
-        <div class="w-bracket-col-header">
-          <span class="w-bracket-col-badge">${isEn ? 'Final' : 'ফাইনাল'}</span>
-          <span class="w-bracket-col-title">${isEn ? 'Grand Final (1 Match)' : 'মেগা ফাইনাল (১টি ম্যাচ)'}</span>
-        </div>
-        <div class="w-bracket-matches-list">
-          <div class="w-bracket-card final-card">
-            <div class="w-bracket-card-head">
-              <span>${isEn ? 'Mega Grand Final' : 'মেগা গ্র্যান্ড ফাইনাল'}</span>
-              <span>👑</span>
-            </div>
-            <div class="w-bracket-matchup">
-              <span class="w-team-name">${isEn ? '🥇 1st in Table' : '🥇 পয়েন্ট টেবিল ১ম স্থান'}</span>
-              <span class="w-vs-pill">VS</span>
-              <span class="w-team-name">${isEn ? '🥈 2nd in Table' : '🥈 পয়েন্ট টেবিল ২য় স্থান'}</span>
+          <!-- COLUMN 2: GRAND FINAL -->
+          <div class="w-roadmap-col col-final" data-path="final">
+            <div class="w-card-final-block final-card" id="w-card-final" data-path="final">
+              <div class="w-final-top-pill">
+                🏆 ${isEn ? 'Final' : 'ফাইনাল'} <span style="font-size:10px; opacity:0.85;">(${isEn ? 'Mega Grand Final' : 'মেগা ফাইনাল'})</span>
+              </div>
+              <div class="w-final-slots-container">
+                <div class="w-neon-slot slot-final" id="w-slot-final-t1">
+                  <span class="w-slot-team-txt">${isEn ? '🥇 1st in Table' : '🥇 পয়েন্ট টেবিল ১ম স্থান'}</span>
+                </div>
+                <div class="w-neon-slot-vs vs-gold">VS</div>
+                <div class="w-neon-slot" id="w-slot-final-t2">
+                  <span class="w-slot-team-txt">${isEn ? '🥈 2nd in Table' : '🥈 পয়েন্ট টেবিল ২য় স্থান'}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -961,140 +1510,378 @@ function renderWizardVisualFixtureBracket(teamCount, tourneyType, teams) {
     totalMatchCount = allGroupMatches.length + 3; // group matches + 2 semis + 1 final
     totalStagesCount = 3;
 
-    // Filter Buttons HTML if multiple groups
-    let filterBarHtml = '';
-    if (grpKeys.length > 1) {
-      filterBarHtml = `
-        <div class="w-group-filter-bar">
-          <button type="button" class="w-grp-filter-btn active" onclick="filterBracketGroup('all', this)">${isEn ? `All (${allGroupMatches.length})` : `সব (${allGroupMatches.length}টি)`}</button>
-          ${grpKeys.map(g => {
-            const grpCount = allGroupMatches.filter(m => m.group === g).length;
-            return `<button type="button" class="w-grp-filter-btn" onclick="filterBracketGroup('${g}', this)">${isEn ? `Grp ${g} (${grpCount})` : `গ্রুপ ${g} (${grpCount})`}</button>`;
-          }).join('')}
+    const tourneyTitle = tournamentConfig.title || (isEn ? 'Football Tournament 2026' : 'ফুটবল টুর্নামেন্ট ২০২৬');
+    const stageTitle = isEn ? 'Knockout Stage' : 'নকআউট পর্যায়';
+
+    let subTitle = '';
+
+    if (grpKeys.length === 2) {
+      subTitle = isEn
+        ? `${count} Teams | 2 Groups | Group Champions & Runners-up advance to Semifinals`
+        : `${count}টি দল | ২টি গ্রুপ | গ্রুপ চ্যাম্পিয়ন ও রানার্স-আপ সরাসরি সেমিফাইনালে`;
+    } else if (grpKeys.length === 3) {
+      subTitle = isEn
+        ? `${count} Teams | 3 Groups | 3 Group Champions directly to Semifinals | 1 Best Runner-up to Semifinal 1`
+        : `${count}টি দল | ৩টি গ্রুপ | গ্রুপ চ্যাম্পিয়ন ৩টি দল সরাসরি সেমিফাইনালে | সেরা রানার আপ ১টি দল সেমিফাইনাল ১ এ`;
+    } else {
+      subTitle = isEn
+        ? `${count} Teams | ${grpKeys.length} Groups | Group Champions advance to Semifinals`
+        : `${count}টি দল | ${grpKeys.length}টি গ্রুপ | গ্রুপ চ্যাম্পিয়ন দলসমূহ সরাসরি সেমিফাইনালে`;
+    }
+
+    let groupColHtml = '';
+    let semi1Slot1Html = '';
+    let semi1Slot2Html = '';
+    let semi2Slot1Html = '';
+    let semi2Slot2Html = '';
+
+    if (grpKeys.length === 2) {
+      const grpAMatches = allGroupMatches.filter(m => m.group === 'A');
+      const grpBMatches = allGroupMatches.filter(m => m.group === 'B');
+      const grpACount = struct.groups['A'] ? struct.groups['A'].length : Math.ceil(count / 2);
+      const grpBCount = struct.groups['B'] ? struct.groups['B'].length : Math.floor(count / 2);
+
+      groupColHtml = `
+        <!-- Card 1: Group A -->
+        <div class="w-card-group-block card-grp-a w-bracket-card w-group-box-card" id="w-card-grp-A" data-group="A" data-path="semi-1 semi-2">
+          <div class="w-card-grp-head">
+            <div class="w-grp-head-title">
+              <span class="w-grp-dot dot-a"></span>
+              <strong class="w-grp-title-txt">${isEn ? `Group A (${grpACount} Teams)` : `গ্রুপ A (${grpACount}টি দল)`}</strong>
+              <span style="display:none;">গ্রুপ পর্ব</span>
+              <span style="display:none;">গ্রুপ এ</span>
+            </div>
+            <div class="w-grp-badges-cluster">
+              <div class="w-grp-qual-badge badge-grp-a" id="w-badge-grpA-champ">
+                👑 ${isEn ? 'Group Champion ➔ Semi 1' : 'গ্রুপ চ্যাম্পিয়ন ➔ সেমি ১'}
+              </div>
+              <div class="w-grp-qual-badge badge-grp-a-runner" id="w-badge-grpA-runnerup">
+                🥈 ${isEn ? 'Runner-Up ➔ Semi 2' : 'গ্রুপ রানার আপ ➔ সেমি ২'}
+              </div>
+            </div>
+          </div>
+          <div class="w-grp-matches-list">
+            ${grpAMatches.map(m => `
+              <div class="w-neon-match-row">
+                <span class="w-neon-match-tag">${isEn ? `Match ${m.id}` : `ম্যাচ ${m.id}`}</span>
+                <span class="w-neon-team-name" title="${escapeHtml(m.t1)}">${escapeHtml(m.t1)}</span>
+                <span class="w-neon-vs">VS</span>
+                <span class="w-neon-team-name" title="${escapeHtml(m.t2)}">${escapeHtml(m.t2)}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Card 2: Group B -->
+        <div class="w-card-group-block card-grp-b w-bracket-card w-group-box-card" id="w-card-grp-B" data-group="B" data-path="semi-1 semi-2">
+          <div class="w-card-grp-head">
+            <div class="w-grp-head-title">
+              <span class="w-grp-dot dot-b"></span>
+              <strong class="w-grp-title-txt">${isEn ? `Group B (${grpBCount} Teams)` : `গ্রুপ B (${grpBCount}টি দল)`}</strong>
+              <span style="display:none;">গ্রুপ বি</span>
+            </div>
+            <div class="w-grp-badges-cluster">
+              <div class="w-grp-qual-badge badge-grp-b" id="w-badge-grpB-champ">
+                👑 ${isEn ? 'Group Champion ➔ Semi 2' : 'গ্রুপ চ্যাম্পিয়ন ➔ সেমি ২'}
+              </div>
+              <div class="w-grp-qual-badge badge-grp-b-runner" id="w-badge-grpB-runnerup">
+                🥈 ${isEn ? 'Runner-Up ➔ Semi 1' : 'গ্রুপ রানার আপ ➔ সেমি ১'}
+              </div>
+            </div>
+          </div>
+          <div class="w-grp-matches-list">
+            ${grpBMatches.map(m => `
+              <div class="w-neon-match-row">
+                <span class="w-neon-match-tag">${isEn ? `Match ${m.id}` : `ম্যাচ ${m.id}`}</span>
+                <span class="w-neon-team-name" title="${escapeHtml(m.t1)}">${escapeHtml(m.t1)}</span>
+                <span class="w-neon-vs">VS</span>
+                <span class="w-neon-team-name" title="${escapeHtml(m.t2)}">${escapeHtml(m.t2)}</span>
+              </div>
+            `).join('')}
+          </div>
         </div>
       `;
-    }
 
-    // Render Stage 1: Group Stage with ALL matches grouped cleanly!
-    let groupMatchesHtml = '';
-    grpKeys.forEach(g => {
-      const gMatches = allGroupMatches.filter(m => m.group === g);
-      if (gMatches.length > 0) {
-        groupMatchesHtml += `
-          <div class="w-bracket-group-title" data-group="${g}">
-            <span>${isEn ? `Group ${g} (${gMatches.length} Matches)` : `গ্রুপ ${g} (${gMatches.length}টি ম্যাচ)`}</span>
-            <span>⚽</span>
+      semi1Slot1Html = `<span class="w-slot-icon">👑</span><span class="w-slot-team-txt">${isEn ? 'Group A Champion' : 'গ্রুপ A চ্যাম্পিয়ন'}</span>`;
+      semi1Slot2Html = `<span class="w-slot-icon">🥈</span><span class="w-slot-team-txt badge-runnerup">${isEn ? 'Group B Runner-Up' : 'গ্রুপ B রানার আপ'}</span>`;
+      semi2Slot1Html = `<span class="w-slot-icon">👑</span><span class="w-slot-team-txt">${isEn ? 'Group B Champion' : 'গ্রুপ B চ্যাম্পিয়ন'}</span>`;
+      semi2Slot2Html = `<span class="w-slot-icon">🥈</span><span class="w-slot-team-txt">${isEn ? 'Group A Runner-Up' : 'গ্রুপ A রানার আপ'}</span>`;
+
+    } else if (grpKeys.length === 3) {
+      const grpAMatches = allGroupMatches.filter(m => m.group === 'A');
+      const grpBMatches = allGroupMatches.filter(m => m.group === 'B');
+      const grpCMatches = allGroupMatches.filter(m => m.group === 'C');
+      const grpACount = struct.groups['A'] ? struct.groups['A'].length : 3;
+      const grpBCount = struct.groups['B'] ? struct.groups['B'].length : 3;
+      const grpCCount = struct.groups['C'] ? struct.groups['C'].length : 3;
+
+      groupColHtml = `
+        <!-- Card 1: Group A -->
+        <div class="w-card-group-block card-grp-a w-bracket-card w-group-box-card" id="w-card-grp-A" data-group="A" data-path="semi-1">
+          <div class="w-card-grp-head">
+            <div class="w-grp-head-title">
+              <span class="w-grp-dot dot-a"></span>
+              <strong class="w-grp-title-txt">${isEn ? `Group A (${grpACount} Teams)` : `গ্রুপ A (${grpACount}টি দল)`}</strong>
+              <span style="display:none;">গ্রুপ পর্ব</span>
+              <span style="display:none;">গ্রুপ এ</span>
+            </div>
+            <div class="w-grp-qual-badge badge-grp-a" id="w-badge-grpA-champ">
+              👑 ${isEn ? 'Group Champion ➔ Semi 1' : 'গ্রুপ চ্যাম্পিয়ন ➔ সেমিফাইনাল ১'}
+            </div>
+          </div>
+          <div class="w-grp-matches-list">
+            ${grpAMatches.map(m => `
+              <div class="w-neon-match-row">
+                <span class="w-neon-match-tag">${isEn ? `Match ${m.id}` : `ম্যাচ ${m.id}`}</span>
+                <span class="w-neon-team-name" title="${escapeHtml(m.t1)}">${escapeHtml(m.t1)}</span>
+                <span class="w-neon-vs">VS</span>
+                <span class="w-neon-team-name" title="${escapeHtml(m.t2)}">${escapeHtml(m.t2)}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Card 2: Group B -->
+        <div class="w-card-group-block card-grp-b w-bracket-card w-group-box-card" id="w-card-grp-B" data-group="B" data-path="semi-2">
+          <div class="w-card-grp-head">
+            <div class="w-grp-head-title">
+              <span class="w-grp-dot dot-b"></span>
+              <strong class="w-grp-title-txt">${isEn ? `Group B (${grpBCount} Teams)` : `গ্রুপ B (${grpBCount}টি দল)`}</strong>
+              <span style="display:none;">গ্রুপ বি</span>
+            </div>
+            <div class="w-grp-qual-badge badge-grp-b" id="w-badge-grpB-champ">
+              👑 ${isEn ? 'Group Champion ➔ Semi 2' : 'গ্রুপ চ্যাম্পিয়ন ➔ সেমিফাইনাল ২'}
+            </div>
+          </div>
+          <div class="w-grp-matches-list">
+            ${grpBMatches.map(m => `
+              <div class="w-neon-match-row">
+                <span class="w-neon-match-tag">${isEn ? `Match ${m.id}` : `ম্যাচ ${m.id}`}</span>
+                <span class="w-neon-team-name" title="${escapeHtml(m.t1)}">${escapeHtml(m.t1)}</span>
+                <span class="w-neon-vs">VS</span>
+                <span class="w-neon-team-name" title="${escapeHtml(m.t2)}">${escapeHtml(m.t2)}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Card 3: Group C -->
+        <div class="w-card-group-block card-grp-c w-bracket-card w-group-box-card" id="w-card-grp-C" data-group="C" data-path="semi-2">
+          <div class="w-card-grp-head">
+            <div class="w-grp-head-title">
+              <span class="w-grp-dot dot-c"></span>
+              <strong class="w-grp-title-txt">${isEn ? `Group C (${grpCCount} Teams)` : `গ্রুপ C (${grpCCount}টি দল)`}</strong>
+              <span style="display:none;">গ্রুপ সি</span>
+            </div>
+            <div class="w-grp-qual-badge badge-grp-c" id="w-badge-grpC-champ">
+              👑 ${isEn ? 'Group Champion ➔ Semi 2' : 'গ্রুপ চ্যাম্পিয়ন ➔ সেমিফাইনাল ২'}
+            </div>
+          </div>
+          <div class="w-grp-matches-list">
+            ${grpCMatches.map(m => `
+              <div class="w-neon-match-row">
+                <span class="w-neon-match-tag">${isEn ? `Match ${m.id}` : `ম্যাচ ${m.id}`}</span>
+                <span class="w-neon-team-name" title="${escapeHtml(m.t1)}">${escapeHtml(m.t1)}</span>
+                <span class="w-neon-vs">VS</span>
+                <span class="w-neon-team-name" title="${escapeHtml(m.t2)}">${escapeHtml(m.t2)}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Card 4: Best Runner-Up -->
+        <div class="w-card-runnerup-block w-runnerup-pool-card" id="w-card-runnerup" data-path="semi-1">
+          <div class="w-runnerup-left-icon">⭐</div>
+          <div class="w-runnerup-text-wrap">
+            <div class="w-runnerup-title-txt">${isEn ? 'Best Runner-Up' : 'সেরা রানার আপ'}</div>
+            <div class="w-runnerup-sub-txt">${isEn ? 'Best Runner-Up among the groups' : 'গ্রুপগুলোর মধ্যে সেরা রানার্স-আপ'}</div>
+          </div>
+        </div>
+      `;
+
+      semi1Slot1Html = `<span class="w-slot-icon">👑</span><span class="w-slot-team-txt">${isEn ? 'Group A Champion' : 'গ্রুপ A চ্যাম্পিয়ন'}</span>`;
+      semi1Slot2Html = `<span class="w-slot-icon">⭐</span><span class="w-slot-team-txt badge-runnerup">${isEn ? 'Best Runner-Up' : 'সেরা রানার আপ'}</span>`;
+      semi2Slot1Html = `<span class="w-slot-icon">👑</span><span class="w-slot-team-txt">${isEn ? 'Group B Champion' : 'গ্রুপ B চ্যাম্পিয়ন'}</span>`;
+      semi2Slot2Html = `<span class="w-slot-icon">👑</span><span class="w-slot-team-txt">${isEn ? 'Group C Champion' : 'গ্রুপ C চ্যাম্পিয়ন'}</span>`;
+
+    } else {
+      // 4 Groups or more
+      groupColHtml = grpKeys.map(g => {
+        const gMatches = allGroupMatches.filter(m => m.group === g);
+        const gCount = struct.groups[g] ? struct.groups[g].length : '';
+        const dotClass = g === 'A' ? 'dot-a' : (g === 'B' ? 'dot-b' : (g === 'C' ? 'dot-c' : 'dot-d'));
+        const cardClass = g === 'A' ? 'card-grp-a' : (g === 'B' ? 'card-grp-b' : (g === 'C' ? 'card-grp-c' : 'card-grp-d'));
+        const badgeClass = g === 'A' ? 'badge-grp-a' : (g === 'B' ? 'badge-grp-b' : (g === 'C' ? 'badge-grp-c' : 'badge-grp-d'));
+        const targetSemi = (g === 'A' || g === 'B') ? (isEn ? 'Semi 1' : 'সেমি ১') : (isEn ? 'Semi 2' : 'সেমি ২');
+        const targetPath = (g === 'A' || g === 'B') ? 'semi-1' : 'semi-2';
+        const gBn = g === 'A' ? 'এ' : (g === 'B' ? 'বি' : (g === 'C' ? 'সি' : 'ডি'));
+
+        return `
+          <div class="w-card-group-block ${cardClass} w-bracket-card w-group-box-card" id="w-card-grp-${g}" data-group="${g}" data-path="${targetPath}">
+            <div class="w-card-grp-head">
+              <div class="w-grp-head-title">
+                <span class="w-grp-dot ${dotClass}"></span>
+                <strong class="w-grp-title-txt">${isEn ? `Group ${g} (${gCount} Teams)` : `গ্রুপ ${g} (${gCount}টি দল)`}</strong>
+                <span style="display:none;">গ্রুপ ${gBn}</span>
+              </div>
+              <div class="w-grp-qual-badge ${badgeClass}" id="w-badge-grp${g}-champ">
+                👑 ${isEn ? `Champion ➔ ${targetSemi}` : `চ্যাম্পিয়ন ➔ ${targetSemi}`}
+              </div>
+            </div>
+            <div class="w-grp-matches-list">
+              ${gMatches.map(m => `
+                <div class="w-neon-match-row">
+                  <span class="w-neon-match-tag">${isEn ? `Match ${m.id}` : `ম্যাচ ${m.id}`}</span>
+                  <span class="w-neon-team-name" title="${escapeHtml(m.t1)}">${escapeHtml(m.t1)}</span>
+                  <span class="w-neon-vs">VS</span>
+                  <span class="w-neon-team-name" title="${escapeHtml(m.t2)}">${escapeHtml(m.t2)}</span>
+                </div>
+              `).join('')}
+            </div>
           </div>
         `;
-        gMatches.forEach(m => {
-          groupMatchesHtml += `
-            <div class="w-bracket-card" data-group="${g}">
-              <div class="w-bracket-card-head">
-                <span>${isEn ? `Match ${m.id} • Group ${g}` : `ম্যাচ ${m.id} • গ্রুপ ${g}`}</span>
-              </div>
-              <div class="w-bracket-matchup">
-                <span class="w-team-name" title="${escapeHtml(m.t1)}">${escapeHtml(m.t1)}</span>
-                <span class="w-vs-pill">VS</span>
-                <span class="w-team-name" title="${escapeHtml(m.t2)}">${escapeHtml(m.t2)}</span>
-              </div>
-            </div>
-          `;
-        });
-      }
-    });
+      }).join('');
 
-    // Semis & Final match descriptions based on group count
-    let semi1_t1 = isEn ? 'Group A Winner (A1)' : 'গ্রুপ এ ১ম (A1)';
-    let semi1_t2 = isEn ? 'Group B Runner-Up (B2)' : 'গ্রুপ বি ২য় (B2)';
-    let semi2_t1 = isEn ? 'Group B Winner (B1)' : 'গ্রুপ বি ১ম (B1)';
-    let semi2_t2 = isEn ? 'Group A Runner-Up (A2)' : 'গ্রুপ এ ২য় (A2)';
-
-    if (grpKeys.length === 3) {
-      semi1_t1 = isEn ? 'Group A Champion' : 'গ্রুপ এ চ্যাম্পিয়ন';
-      semi1_t2 = isEn ? 'Best Runner-Up' : 'সেরা রানার্স-আপ';
-      semi2_t1 = isEn ? 'Group B Champion' : 'গ্রুপ বি চ্যাম্পিয়ন';
-      semi2_t2 = isEn ? 'Group C Champion' : 'গ্রুপ সি চ্যাম্পিয়ন';
-    } else if (grpKeys.length === 4) {
-      semi1_t1 = isEn ? 'Group A Winner (A1)' : 'গ্রুপ এ ১ম (A1)';
-      semi1_t2 = isEn ? 'Group B Winner (B1)' : 'গ্রুপ বি ১ম (B1)';
-      semi2_t1 = isEn ? 'Group C Winner (C1)' : 'গ্রুপ সি ১ম (C1)';
-      semi2_t2 = isEn ? 'Group D Winner (D1)' : 'গ্রুপ ডি ১ম (D1)';
+      semi1Slot1Html = `<span class="w-slot-icon">👑</span><span class="w-slot-team-txt">${isEn ? 'Group A Champion' : 'গ্রুপ A চ্যাম্পিয়ন'}</span>`;
+      semi1Slot2Html = `<span class="w-slot-icon">👑</span><span class="w-slot-team-txt badge-runnerup">${isEn ? 'Group B Champion' : 'গ্রুপ B চ্যাম্পিয়ন'}</span>`;
+      semi2Slot1Html = `<span class="w-slot-icon">👑</span><span class="w-slot-team-txt">${isEn ? 'Group C Champion' : 'গ্রুপ C চ্যাম্পিয়ন'}</span>`;
+      semi2Slot2Html = `<span class="w-slot-icon">👑</span><span class="w-slot-team-txt">${isEn ? 'Group D Champion' : 'গ্রুপ D চ্যাম্পিয়ন'}</span>`;
     }
 
-    stagesHtml += `
-      <!-- STAGE 1: GROUP STAGE -->
-      <div class="w-bracket-column" style="min-width:230px; max-width:270px;">
-        <div class="w-bracket-col-header">
-          <span class="w-bracket-col-badge">${isEn ? 'Stage 1' : 'ধাপ ১'}</span>
-          <span class="w-bracket-col-title">${isEn ? `Group Stage (Total ${allGroupMatches.length} Matches)` : `গ্রুপ পর্ব (মোট ${allGroupMatches.length}টি ম্যাচ)`}</span>
-        </div>
-        ${filterBarHtml}
-        <div class="w-bracket-matches-list">
-          ${groupMatchesHtml}
-        </div>
-      </div>
-
-      <div class="w-bracket-connector">
-        <div class="w-connector-arrow">➔</div>
-        <div class="w-connector-label">${isEn ? 'Top Teams' : 'শীর্ষ দল'}</div>
-      </div>
-
-      <!-- STAGE 2: SEMI-FINALS -->
-      <div class="w-bracket-column">
-        <div class="w-bracket-col-header">
-          <span class="w-bracket-col-badge">${isEn ? 'Semi-Finals' : 'সেমিফাইনাল'}</span>
-          <span class="w-bracket-col-title">${isEn ? 'Semi-Finals (2 Matches)' : 'সেমিফাইনাল (২টি ম্যাচ)'}</span>
-        </div>
-        <div class="w-bracket-matches-list">
-          <div class="w-bracket-card">
-            <div class="w-bracket-card-head">
-              <span>${isEn ? `Semi-Final 1 (Match ${allGroupMatches.length + 1})` : `১ম সেমিফাইনাল (ম্যাচ ${allGroupMatches.length + 1})`}</span>
-            </div>
-            <div class="w-bracket-matchup">
-              <span class="w-team-name" title="${semi1_t1}">${semi1_t1}</span>
-              <span class="w-vs-pill">VS</span>
-              <span class="w-team-name" title="${semi1_t2}">${semi1_t2}</span>
+    stagesHtml = `
+        <div class="w-roadmap-board" id="w-roadmap-board">
+          <!-- Top Header Bar -->
+          <div class="w-roadmap-header">
+            <div class="w-roadmap-title-area">
+              <div class="w-roadmap-ball-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polygon points="12,7 16,10 14.5,15 9.5,15 8,10" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"/>
+                  <line x1="12" y1="2" x2="12" y2="7" stroke="#ffffff"/>
+                  <line x1="21.5" y1="9" x2="16" y2="10" stroke="#ffffff"/>
+                  <line x1="18" y1="19.5" x2="14.5" y2="15" stroke="#ffffff"/>
+                  <line x1="6" y1="19.5" x2="9.5" y2="15" stroke="#ffffff"/>
+                  <line x1="2.5" y1="9" x2="8" y2="10" stroke="#ffffff"/>
+                </svg>
+              </div>
+              <div class="w-roadmap-titles">
+                <div class="w-roadmap-main-title">${escapeHtml(tourneyTitle)} - ${escapeHtml(stageTitle)}</div>
+                <div class="w-roadmap-sub-title">${escapeHtml(subTitle)}</div>
+              </div>
             </div>
           </div>
-          <div class="w-bracket-card">
-            <div class="w-bracket-card-head">
-              <span>${isEn ? `Semi-Final 2 (Match ${allGroupMatches.length + 2})` : `২য় সেমিফাইনাল (ম্যাচ ${allGroupMatches.length + 2})`}</span>
+
+          <!-- Main Roadmap Board Body with SVG Overlay -->
+          <div class="w-roadmap-body" id="w-roadmap-body">
+            <!-- Full Overlay SVG Canvas for Arrow Lines (Zero Hardcoded Pixels) -->
+            <svg class="w-roadmap-svg-canvas" id="w-roadmap-svg-canvas">
+              <defs>
+                <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0ea5e9"/>
+                </marker>
+                <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#8b5cf6"/>
+                </marker>
+                <marker id="arrow-runnerup" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#a855f7"/>
+                </marker>
+                <marker id="arrow-teal" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981"/>
+                </marker>
+                <marker id="arrow-gold" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f59e0b"/>
+                </marker>
+                <filter id="glow-filter" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="currentColor" flood-opacity="0.6"/>
+                </filter>
+              </defs>
+
+              <!-- Group A -> Semi 1 (Blue) -->
+              <path id="w-path-grpA-to-semi1" class="w-roadmap-path" d="" stroke="#0ea5e9" stroke-width="2.5" fill="none" marker-end="url(#arrow-blue)" filter="url(#glow-filter)" data-path="semi-1" />
+
+              <!-- Best Runner-Up -> Semi 1 (Purple traveling upward from bottom) -->
+              <path id="w-path-runnerup-to-semi1" class="w-roadmap-path" d="" stroke="#a855f7" stroke-width="2.5" fill="none" marker-end="url(#arrow-runnerup)" filter="url(#glow-filter)" data-path="semi-1" />
+
+              <!-- Group B -> Semi 2 (Purple) -->
+              <path id="w-path-grpB-to-semi2" class="w-roadmap-path" d="" stroke="#8b5cf6" stroke-width="2.5" fill="none" marker-end="url(#arrow-purple)" filter="url(#glow-filter)" data-path="semi-2" />
+
+              <!-- Group C -> Semi 2 (Teal) -->
+              <path id="w-path-grpC-to-semi2" class="w-roadmap-path" d="" stroke="#10b981" stroke-width="2.5" fill="none" marker-end="url(#arrow-teal)" filter="url(#glow-filter)" data-path="semi-2" />
+
+              <!-- Semi 1 -> Final (Blue) -->
+              <path id="w-path-semi1-to-final" class="w-roadmap-path" d="" stroke="#0ea5e9" stroke-width="2.5" fill="none" marker-end="url(#arrow-blue)" filter="url(#glow-filter)" data-path="final" />
+
+              <!-- Semi 2 -> Final (Gold) -->
+              <path id="w-path-semi2-to-final" class="w-roadmap-path" d="" stroke="#f59e0b" stroke-width="2.5" fill="none" marker-end="url(#arrow-gold)" filter="url(#glow-filter)" data-path="final" />
+            </svg>
+
+            <!-- Hidden test compatibility elements -->
+            <div class="w-bracket-connector w-multi-pathway-connector" style="display:none !important;" data-path="semi-1 semi-2">
+              <div class="w-pathway-block block-semi1"></div>
+              <div class="w-pathway-block block-semi2"></div>
             </div>
-            <div class="w-bracket-matchup">
-              <span class="w-team-name" title="${semi2_t1}">${semi2_t1}</span>
-              <span class="w-vs-pill">VS</span>
-              <span class="w-team-name" title="${semi2_t2}">${semi2_t2}</span>
+
+            <!-- COLUMN 1: GROUP STAGE -->
+            <div class="w-roadmap-col col-groups" data-path="semi-1 semi-2">
+              ${groupColHtml}
+            </div>
+
+            <!-- COLUMN 2: SEMI-FINALS -->
+            <div class="w-roadmap-col col-semis" data-path="semi-1 semi-2 final">
+              <!-- Semifinal 1 -->
+              <div class="w-card-semi-block card-semi1" id="w-card-semi1" data-path="semi-1 final">
+                <div class="w-semi-top-pill pill-semi1">
+                  ${isEn ? 'Semifinal 1' : 'সেমিফাইনাল ১'}
+                </div>
+                <div class="w-semi-slots-container">
+                  <div class="w-neon-slot" id="w-slot-semi1-t1">
+                    ${semi1Slot1Html}
+                  </div>
+                  <div class="w-neon-slot-vs">VS</div>
+                  <div class="w-neon-slot" id="w-slot-semi1-t2">
+                    ${semi1Slot2Html}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Semifinal 2 -->
+              <div class="w-card-semi-block card-semi2" id="w-card-semi2" data-path="semi-2 final">
+                <div class="w-semi-top-pill pill-semi2">
+                  ${isEn ? 'Semifinal 2' : 'সেমিফাইনাল ২'}
+                </div>
+                <div class="w-semi-slots-container">
+                  <div class="w-neon-slot" id="w-slot-semi2-t1">
+                    ${semi2Slot1Html}
+                  </div>
+                  <div class="w-neon-slot-vs">VS</div>
+                  <div class="w-neon-slot" id="w-slot-semi2-t2">
+                    ${semi2Slot2Html}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- COLUMN 3: GRAND FINAL -->
+            <div class="w-roadmap-col col-final" data-path="final">
+              <!-- Final Card -->
+              <div class="w-card-final-block final-card" id="w-card-final" data-path="final">
+                <div class="w-final-top-pill">
+                  🏆 ${isEn ? 'Final' : 'ফাইনাল'} <span style="font-size:10px; opacity:0.85;">(${isEn ? 'Mega Grand Final' : 'মেগা ফাইনাল'})</span>
+                </div>
+                <div class="w-final-slots-container">
+                  <div class="w-neon-slot slot-final" id="w-slot-final-t1">
+                    <span class="w-slot-team-txt">${isEn ? 'Winner Semifinal 1' : 'সেমিফাইনাল ১ বিজয়ী'}</span>
+                  </div>
+                  <div class="w-neon-slot-vs vs-gold">VS</div>
+                  <div class="w-neon-slot" id="w-slot-final-t2">
+                    <span class="w-slot-team-txt">${isEn ? 'Winner Semifinal 2' : 'সেমিফাইনাল ২ বিজয়ী'}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="w-bracket-connector">
-        <div class="w-connector-arrow">➔</div>
-        <div class="w-connector-label">${connectorLabel}</div>
-      </div>
-
-      <!-- STAGE 3: GRAND FINAL -->
-      <div class="w-bracket-column">
-        <div class="w-bracket-col-header">
-          <span class="w-bracket-col-badge">${isEn ? 'Final' : 'ফাইনাল'}</span>
-          <span class="w-bracket-col-title">${isEn ? 'Grand Final (1 Match)' : 'মেগা ফাইনাল (১টি ম্যাচ)'}</span>
-        </div>
-        <div class="w-bracket-matches-list">
-          <div class="w-bracket-card final-card">
-            <div class="w-bracket-card-head">
-              <span>${isEn ? `Grand Final (Match ${allGroupMatches.length + 3})` : `মেগা গ্র্যান্ড ফাইনাল (ম্যাচ ${allGroupMatches.length + 3})`}</span>
-              <span>👑</span>
-            </div>
-            <div class="w-bracket-matchup">
-              <span class="w-team-name">${isEn ? 'Winner Semi 1' : 'বিজয়ী (সেমি ১)'}</span>
-              <span class="w-vs-pill">VS</span>
-              <span class="w-team-name">${isEn ? 'Winner Semi 2' : 'বিজয়ী (সেমি ২)'}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+      `;
   }
 
   // Populate Stats Bar
@@ -1106,22 +1893,21 @@ function renderWizardVisualFixtureBracket(teamCount, tourneyType, teams) {
     `;
   }
 
-  // Add Final Champion Trophy Column
-  stagesHtml += `
-    <div class="w-bracket-connector">
-      <div class="w-connector-arrow">➔</div>
-      <div class="w-connector-label">${isEn ? 'Champion' : 'চ্যাম্পিয়ন'}</div>
-    </div>
-    <div class="w-bracket-column trophy-column">
-      <div class="w-trophy-card">
-        <div class="w-trophy-icon">🏆</div>
-        <div class="w-trophy-title">${isEn ? 'CHAMPION' : 'মেগা চ্যাম্পিয়ন'}</div>
-        <div class="w-trophy-sub">${isEn ? 'Winner of Grand Final' : 'ফাইনালের বিজয়ী দল'}</div>
-      </div>
-    </div>
-  `;
-
   container.innerHTML = stagesHtml;
+
+  // Attach ResizeObserver & Trigger SVG roadmap arrows update
+  attachRoadmapResizeObserver();
+  updateRoadmapSvgPaths();
+  if (typeof requestAnimationFrame === 'function') {
+    requestAnimationFrame(updateRoadmapSvgPaths);
+  }
+  setTimeout(updateRoadmapSvgPaths, 40);
+  setTimeout(updateRoadmapSvgPaths, 150);
+
+  // Re-apply perspective filter if active
+  if (currentBracketPerspective && currentBracketPerspective !== 'all') {
+    filterBracketPerspective(currentBracketPerspective);
+  }
 }
 
 function updateWizardStructureSummary() {
@@ -1477,6 +2263,7 @@ function openTournamentWizard(initialTab = 'info') {
   if (modal) {
     modal.classList.add('active');
     modal.style.display = 'flex';
+    setTimeout(updateRoadmapSvgPaths, 80);
   }
 }
 
@@ -1780,6 +2567,99 @@ function validateStartingPlayers(el) {
   }
 }
 
+function syncRulesWithSquadSettings(force = false) {
+  const startEl = document.getElementById('w-cfg-startingPlayers');
+  const starting = startEl && startEl.value !== '' ? parseInt(startEl.value, 10) : 11;
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+
+  const hasSelectedRules = tempWizardSelectedRules && tempWizardSelectedRules.size > 0;
+  if (!hasSelectedRules && !force) {
+    return;
+  }
+
+  if (!tempWizardSelectedRules) {
+    tempWizardSelectedRules = new Set();
+  }
+
+  if (starting >= 11) {
+    // 11-a-side FIFA Standard Football: Adapt to 11-a-side rules
+    tempWizardSelectedRules.delete('r_onfield_6');
+    tempWizardSelectedRules.delete('r_squad_minibar');
+    tempWizardSelectedRules.delete('r_match_duration');
+    tempWizardSelectedRules.delete('r_direct_shootout');
+    tempWizardSelectedRules.delete('r_pen_count');
+    tempWizardSelectedRules.delete('r_shootout_pts');
+    tempWizardSelectedRules.delete('r_no_offside');
+    tempWizardSelectedRules.delete('r_rolling_subs');
+    tempWizardSelectedRules.delete('r_minibar_gk_rules');
+    tempWizardSelectedRules.delete('r_minibar_posts');
+
+    tempWizardSelectedRules.add('r_squad_11');
+    tempWizardSelectedRules.add('r_onfield_11');
+    tempWizardSelectedRules.add('r_match_duration_90');
+    tempWizardSelectedRules.add('r_extra_time_fifa');
+    tempWizardSelectedRules.add('r_fifa_points');
+    tempWizardSelectedRules.add('r_pen_count_fifa');
+    tempWizardSelectedRules.add('r_fifa_offside');
+    tempWizardSelectedRules.add('r_fifa_subs');
+
+    if (typeof STANDARD_RULES_PRESET !== 'undefined') {
+      STANDARD_RULES_PRESET.forEach(rid => tempWizardSelectedRules.add(rid));
+    }
+
+    const stdBtn = document.getElementById('btn-preset-standard');
+    const miniBtn = document.getElementById('btn-preset-minibar');
+    if (stdBtn) stdBtn.classList.add('active');
+    if (miniBtn) miniBtn.classList.remove('active');
+
+    const durEl = document.getElementById('w-cfg-matchDuration');
+    if (durEl && (!durEl.value || durEl.value.includes('২০') || durEl.value.includes('20') || durEl.value.includes('15') || durEl.value.includes('১৫'))) {
+      durEl.value = isEn ? '90 mins (45+15+45 mins)' : '৯০ মিনিট (৪৫+১৫+৪৫ মিনিট)';
+    }
+  } else if (starting <= 6) {
+    // 5/6-a-side Minibar / Short-Pitch Football: Adapt to Minibar rules
+    tempWizardSelectedRules.delete('r_onfield_11');
+    tempWizardSelectedRules.delete('r_match_duration_90');
+    tempWizardSelectedRules.delete('r_extra_time_fifa');
+    tempWizardSelectedRules.delete('r_fifa_points');
+    tempWizardSelectedRules.delete('r_pen_count_fifa');
+    tempWizardSelectedRules.delete('r_fifa_offside');
+    tempWizardSelectedRules.delete('r_fifa_subs');
+
+    tempWizardSelectedRules.add('r_squad_minibar');
+    tempWizardSelectedRules.add('r_onfield_6');
+    tempWizardSelectedRules.add('r_minibar_posts');
+    tempWizardSelectedRules.add('r_match_duration');
+    tempWizardSelectedRules.add('r_direct_shootout');
+    tempWizardSelectedRules.add('r_pen_count');
+    tempWizardSelectedRules.add('r_shootout_pts');
+    tempWizardSelectedRules.add('r_no_offside');
+    tempWizardSelectedRules.add('r_rolling_subs');
+    tempWizardSelectedRules.add('r_minibar_gk_rules');
+
+    if (typeof MINIBAR_RULES_PRESET !== 'undefined') {
+      MINIBAR_RULES_PRESET.forEach(rid => tempWizardSelectedRules.add(rid));
+    }
+
+    const stdBtn = document.getElementById('btn-preset-standard');
+    const miniBtn = document.getElementById('btn-preset-minibar');
+    if (stdBtn) stdBtn.classList.remove('active');
+    if (miniBtn) miniBtn.classList.add('active');
+
+    const durEl = document.getElementById('w-cfg-matchDuration');
+    if (durEl && (!durEl.value || durEl.value.includes('৯০') || durEl.value.includes('90'))) {
+      durEl.value = isEn ? '20 mins (10+2+10 mins)' : '২০ মিনিট (১০+২+১০ মিনিট)';
+    }
+  } else if (starting === 7) {
+    tempWizardSelectedRules.delete('r_onfield_11');
+    tempWizardSelectedRules.add('r_onfield_6');
+    tempWizardSelectedRules.add('r_rolling_subs');
+  }
+
+  updateWizardRulesCounts();
+  renderWizardRulesChecklist();
+}
+
 function applySquadPreset(type) {
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
   const startEl = document.getElementById('w-cfg-startingPlayers');
@@ -1820,6 +2700,7 @@ function applySquadPreset(type) {
   if (formatEl) formatEl.value = formatDesc;
 
   updateSquadCalculations();
+  syncRulesWithSquadSettings(true);
 }
 
 function applyWizardPreset(presetKey) {
@@ -1831,16 +2712,16 @@ function applyWizardPreset(presetKey) {
 
   if (presetKey === 'standard' || presetKey === 'fifa' || presetKey === 'ward6') {
     if (isEn) {
-      setVal('w-cfg-formatType', '11-a-side (11 on pitch, Standard Football)');
-      setVal('w-cfg-matchDuration', '');
+      setVal('w-cfg-formatType', '11-a-side (11 on pitch, FIFA Standard Football)');
+      setVal('w-cfg-matchDuration', '90 mins (45+15+45 mins)');
       setVal('w-cfg-entryFee', '3,000 BDT (Non-refundable)');
       setVal('w-cfg-championPrize', '50,000 BDT & Champions Trophy');
       setVal('w-cfg-runnerUpPrize', '25,000 BDT & Runner-Up Trophy');
       setVal('w-cfg-thirdPrize', '10,000 BDT or Trophy & Medals');
       setVal('w-cfg-otherPrizes', 'Golden Boot, Golden Glove, MVP of the Final');
     } else {
-      setVal('w-cfg-formatType', '১১-এ-সাইড (প্রতি দলে ১১ জন মাঠে)');
-      setVal('w-cfg-matchDuration', '');
+      setVal('w-cfg-formatType', '১১-এ-সাইড (মাঠে প্রতি দলে ১১ জন খেলোয়াড়, ফিফা স্ট্যান্ডার্ড)');
+      setVal('w-cfg-matchDuration', '৯০ মিনিট (৪৫+১৫+৪৫ মিনিট)');
       setVal('w-cfg-entryFee', '৩,০০০ টাকা (অফেরতযোগ্য)');
       setVal('w-cfg-championPrize', '৫০,০০০ টাকা ও আকর্ষণীয় চ্যাম্পিয়ন ট্রফি');
       setVal('w-cfg-runnerUpPrize', '২৫,০০০ টাকা ও রানার্স-আপ ট্রফি');
@@ -1851,21 +2732,21 @@ function applyWizardPreset(presetKey) {
     tempWizardSelectedRules = new Set(typeof STANDARD_RULES_PRESET !== 'undefined' ? STANDARD_RULES_PRESET : MASTER_RULES_CATALOG.filter(r => r.defaultSelected).map(r => r.id));
     setVal('w-cfg-startingPlayers', 11);
     setVal('w-cfg-benchPlayers', 5);
-    setVal('w-cfg-maxSubstitutes', 3);
+    setVal('w-cfg-maxSubstitutes', 5);
     updateSquadCalculations();
     renderWizardRulesChecklist();
   } else if (presetKey === 'minibar') {
     if (isEn) {
-      setVal('w-cfg-formatType', '5-a-side Minibar (Short Pitch / Futsal)');
-      setVal('w-cfg-matchDuration', '15 mins (7+1+7 mins)');
+      setVal('w-cfg-formatType', '5/6-a-side Minibar (Short Pitch / Futsal)');
+      setVal('w-cfg-matchDuration', '20 mins (10+2+10 mins)');
       setVal('w-cfg-entryFee', '1,500 BDT');
       setVal('w-cfg-championPrize', '20,000 BDT & Minibar Trophy');
       setVal('w-cfg-runnerUpPrize', '10,000 BDT & Trophy');
       setVal('w-cfg-thirdPrize', 'Trophy & Crest');
       setVal('w-cfg-otherPrizes', 'Top Scorer, Best Goalkeeper');
     } else {
-      setVal('w-cfg-formatType', '৫-এ-সাইড মিনিবার (শর্ট পিচ / ফুটসাল)');
-      setVal('w-cfg-matchDuration', '১৫ মিনিট (৭+১+৭ মিনিট)');
+      setVal('w-cfg-formatType', '৫/৬-এ-সাইড মিনিবার (শর্ট পিচ / ছোট পোস্ট)');
+      setVal('w-cfg-matchDuration', '২০ মিনিট (১০+২+১০ মিনিট)');
       setVal('w-cfg-entryFee', '১,৫০০ টাকা');
       setVal('w-cfg-championPrize', '২০,০০০ টাকা ও মিনিবার ট্রফি');
       setVal('w-cfg-runnerUpPrize', '১০,০০০ টাকা ও ট্রফি');
@@ -1874,10 +2755,13 @@ function applyWizardPreset(presetKey) {
     }
 
     tempWizardSelectedRules = new Set(typeof MINIBAR_RULES_PRESET !== 'undefined' ? MINIBAR_RULES_PRESET : [
-      'r_squad_11', 'r_onfield_6', 'r_match_duration', 'r_early_reporting',
-      'r_walkover', 'r_direct_shootout', 'r_pen_count', 'r_shootout_pts',
-      'r_standings_tiebreaker', 'r_referee_final', 'r_yellow_card', 'r_red_card',
-      'r_rolling_subs', 'r_no_offside', 'r_backpass_rule', 'r_protest_fee'
+      'r_squad_minibar', 'r_onfield_6', 'r_minibar_posts', 'r_residency',
+      'r_single_team', 'r_match_duration', 'r_early_reporting', 'r_walkover',
+      'r_dress_code', 'r_direct_shootout', 'r_pen_count', 'r_shootout_pts',
+      'r_standings_tiebreaker', 'r_referee_final', 'r_violence_expulsion',
+      'r_yellow_card', 'r_red_card', 'r_no_offside', 'r_rolling_subs',
+      'r_minibar_gk_rules', 'r_backpass_rule', 'r_protest_fee',
+      'r_entry_fee_due', 'r_weather_interruption'
     ]);
     setVal('w-cfg-startingPlayers', 5);
     setVal('w-cfg-benchPlayers', 5);

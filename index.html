@@ -1236,7 +1236,7 @@
       <div class="modal-header modal-wizard-header">
         <div>
           <h3 data-i18n="modal.wizard_title">⚙️ টুর্নামেন্ট সেটআপ ও নিয়মাবলী</h3>
-          <p class="modal-wizard-subtitle" data-i18n="modal.wizard_subtitle">আপনার টুর্নামেন্টের নাম, ফরম্যাট, প্রাইজমানি ও অফিসিয়াল নিয়মাবলী সহজে সাজিয়ে নিন</p>
+          <p class="modal-wizard-subtitle" data-i18n="modal.wizard_subtitle">আপনার টুর্নামেন্টের নাম, ফরম্যাট, প্রাইজমানি ও নিয়মাবলী সহজে সাজিয়ে নিন</p>
         </div>
         <button type="button" class="modal-close-btn" onclick="closeTournamentWizard()">✕</button>
       </div>
@@ -1253,7 +1253,7 @@
         </button>
         <button type="button" class="w-tab-btn" id="wtab-btn-rules" onclick="switchWizardTab('rules')">
           <span class="w-tab-step-dot" data-i18n="wizard.step_3">৩</span>
-          <span data-i18n="modal.tab_rules">📜 অফিশিয়াল নিয়ম</span> (<span id="w-selected-rules-count">০</span>)
+          <span data-i18n="modal.tab_rules">📜 নিয়ম</span> (<span id="w-selected-rules-count">০</span>)
         </button>
         <button type="button" class="w-tab-btn" id="wtab-btn-teams" onclick="switchWizardTab('teams')">
           <span class="w-tab-step-dot" data-i18n="wizard.step_4">৪</span>
@@ -1316,7 +1316,7 @@
               <div class="w-grid-3" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-top:12px;">
                 <div class="w-field">
                   <label class="w-label" data-i18n="wizard.lbl_starting_players">🏟️ মাঠে মূল খেলোয়াড় সংখ্যা (Starting XI):</label>
-                  <input type="number" id="w-cfg-startingPlayers" min="3" max="11" class="w-input" value="11" oninput="updateSquadCalculations()" onblur="validateStartingPlayers(this)" placeholder="11">
+                  <input type="number" id="w-cfg-startingPlayers" min="3" max="11" class="w-input" value="11" oninput="updateSquadCalculations(); if (typeof syncRulesWithSquadSettings === 'function') syncRulesWithSquadSettings();" onblur="validateStartingPlayers(this)" placeholder="11">
                   <div id="w-starting-players-warning" class="w-field-warning" style="display:none;"></div>
                 </div>
                 <div class="w-field">
@@ -1407,23 +1407,31 @@
               <div class="w-smart-summary-box" style="margin-top:14px;">
                 <div class="w-smart-summary-header">
                   <div style="display:flex; align-items:center; gap:6px;">
-                    <span style="font-size:16px;">🤖</span>
-                    <strong data-i18n="wizard.summary_title">স্বয়ংক্রিয় কাঠামো ও ফিক্সচার প্রিভিউ:</strong>
+                    <span style="font-size:16px;">📅</span>
+                    <strong data-i18n="wizard.summary_title">ফিক্সচার প্রিভিউ:</strong>
                   </div>
                   <div id="w-bracket-stats-bar" class="w-bracket-stats-bar">
                     <!-- Populated dynamically by updateWizardStructureSummary() -->
                   </div>
                 </div>
-                <div id="w-structure-summary-text" class="w-smart-summary-content">
-                  ৩টি গ্রুপ (প্রতি গ্রুপে ৩ দল) • মোট ৯টি গ্রুপ ম্যাচ • ৩ চ্যাম্পিয়ন + ১ সেরা রানার্স-আপ ➔ সেমিফাইনাল ➔ ফাইনাল।
-                </div>
 
                 <!-- Live Visual Interactive Fixture Bracket / Flow Diagram -->
-                <div class="w-visual-bracket-wrapper">
-                  <div class="w-visual-bracket-hint">
-                    <span>💡</span>
-                    <span data-i18n="wizard.bracket_hint">নিচে আপনার নির্বাচিত দল সংখ্যা ও পদ্ধতির ভিত্তিতে স্বয়ংক্রিয় ফিক্সচার রোডম্যাপ ও ব্র্যাকেট দেখানো হলো:</span>
+                <div class="w-visual-bracket-wrapper" id="w-visual-bracket-wrapper">
+                  <!-- Normal / Fullscreen Top Toolbar -->
+                  <div class="w-visual-bracket-topbar">
+                    <div class="w-visual-bracket-hint">
+                      <span>💡</span>
+                      <span data-i18n="wizard.bracket_hint">নিচে আপনার নির্বাচিত দল সংখ্যা ও পদ্ধতির ভিত্তিতে স্বয়ংক্রিয় ফিক্সচার রোডম্যাপ ও ব্র্যাকেট দেখানো হলো:</span>
+                    </div>
+                    <div class="w-bracket-actions-group">
+                      <!-- Fullscreen Toggle Button -->
+                      <button type="button" class="w-bracket-fullscreen-btn" id="w-bracket-fullscreen-toggle" onclick="toggleBracketFullscreen()" title="ফুল স্ক্রিন মোডে দেখুন">
+                        <span class="fs-icon">⛶</span>
+                        <span class="fs-label" data-i18n="wizard.bracket_fullscreen_btn">ফুল স্ক্রিন ভিউ</span>
+                      </button>
+                    </div>
                   </div>
+
                   <div id="w-visual-bracket-tree" class="w-visual-bracket-tree">
                     <!-- Populated dynamically by renderWizardVisualFixtureBracket() -->
                   </div>
@@ -1490,7 +1498,7 @@
           <div class="w-format-selector-section">
             <div class="w-format-selector-header">
               <span class="w-format-step-badge" data-i18n="modal.format_step_badge">রুলস টেমপ্লেট</span>
-              <span class="w-format-selector-title" data-i18n="modal.format_selector_title">অফিসিয়াল নিয়মাবলীর ধরন নির্বাচন করুন:</span>
+              <span class="w-format-selector-title" data-i18n="modal.format_selector_title">নিয়মাবলীর ধরন নির্বাচন করুন:</span>
               <span class="w-format-selector-sub" data-i18n="modal.format_selector_sub">যেকোনো একটি বেছে নিলে সংশ্লিষ্ট নিয়মাবলী ও সময়কাল স্বয়ংক্রিয়ভাবে সাজানো হবে</span>
             </div>
             <div class="w-format-cards-grid">
