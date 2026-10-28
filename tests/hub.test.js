@@ -40,6 +40,10 @@ function createMockElement(id) {
     textContent: '',
     innerHTML: '',
     style: {},
+    attributes: {},
+    setAttribute(k, v) { this.attributes[k] = v; },
+    removeAttribute(k) { delete this.attributes[k]; },
+    getAttribute(k) { return this.attributes[k] || null; },
     classList: {
       classes: new Set(),
       add(c) { this.classes.add(c); },
@@ -62,8 +66,14 @@ global.document = {
     if (!domElements[id]) domElements[id] = createMockElement(id);
     return domElements[id];
   },
+  querySelector: (sel) => {
+    if (sel.startsWith('#')) return global.document.getElementById(sel.slice(1));
+    if (sel === '.btn-football-launch') return global.document.getElementById('btn-football-launch');
+    return null;
+  },
   querySelectorAll: () => [],
   addEventListener: () => {},
+  documentElement: { lang: 'bn' },
   title: ''
 };
 
@@ -73,10 +83,14 @@ global.window = {
   addEventListener: () => {}
 };
 
-// 2. Load Hub & I18n scripts
+// 2. Load Scripts
+const constantsCode = fs.readFileSync(path.join(__dirname, '../src/js/constants.js'), 'utf8');
+const stateCode = fs.readFileSync(path.join(__dirname, '../src/js/state.js'), 'utf8');
 const i18nCode = fs.readFileSync(path.join(__dirname, '../src/js/i18n.js'), 'utf8');
 const hubCode = fs.readFileSync(path.join(__dirname, '../src/js/hub.js'), 'utf8');
 
+vm.runInThisContext(constantsCode);
+vm.runInThisContext(stateCode);
 vm.runInThisContext(i18nCode);
 vm.runInThisContext(hubCode);
 
@@ -140,6 +154,60 @@ let wizardOpened = false;
 global.openTournamentWizard = () => { wizardOpened = true; };
 startFootballWithWizard();
 assert(window.location.hash === '#football', 'startFootballWithWizard() switches view to #football');
+
+// ==========================================
+// TEST SUITE 4: Smart Tournament Resume & Launch
+// ==========================================
+console.log('\n🚀 Test Suite 4: Smart Tournament Resume & Launch');
+
+// 1. Clean slate test
+tournamentConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+tournamentConfig.isCustomConfig = false;
+updateHubFootballCard();
+updateNavWizardButton();
+const launchBtn = document.getElementById('btn-football-launch');
+const navBtn = document.getElementById('btn-nav-wizard');
+assert(launchBtn.textContent.includes('ফুটবল টুর্নামেন্টে প্রবেশ করুন'), 'Clean slate button text is default prompt');
+assert(!launchBtn.classList.contains('btn-has-active-tournament'), 'Clean slate does not have active tournament class');
+assert(navBtn.textContent.includes('টুর্নামেন্ট সেটআপ ও রুলস'), 'Clean slate nav button shows Setup & Rules');
+assert(!navBtn.classList.contains('btn-mode-edit'), 'Clean slate does not have btn-mode-edit');
+
+openFootballEntryChoiceModal();
+const cleanChoices = document.getElementById('football-entry-choices').innerHTML;
+assert(cleanChoices.includes('choice-setup'), 'Clean slate modal contains setup card');
+assert(cleanChoices.includes('choice-demo'), 'Clean slate modal contains demo card');
+assert(!cleanChoices.includes('choice-resume'), 'Clean slate modal does NOT contain resume card');
+closeFootballEntryChoiceModal();
+
+// 2. Active custom tournament test
+tournamentConfig.title = 'কোটচাঁদপুর প্রিমিয়ার লিগ ২০২৬';
+tournamentConfig.isCustomConfig = true;
+updateHubFootballCard();
+updateNavWizardButton();
+assert(launchBtn.textContent.includes('পরিচালনা করুন: কোটচাঁদপুর প্রিমিয়ার লিগ ২০২৬'), 'Button dynamically updates to resume active tournament title');
+assert(launchBtn.getAttribute('title') === 'কোটচাঁদপুর প্রিমিয়ার লিগ ২০২৬', 'Button tooltip stores full tournament title');
+assert(launchBtn.classList.contains('btn-has-active-tournament'), 'Button gets "btn-has-active-tournament" class');
+assert(navBtn.textContent.includes('এডিট টুর্নামেন্ট ও রুলস'), 'Active custom tournament updates nav button to "এডিট টুর্নামেন্ট ও রুলস"');
+assert(navBtn.classList.contains('btn-mode-edit'), 'Active custom tournament adds btn-mode-edit class');
+
+openFootballEntryChoiceModal();
+const activeChoices = document.getElementById('football-entry-choices').innerHTML;
+const activeHeader = document.getElementById('football-entry-header').innerHTML;
+const activeFooter = document.getElementById('football-entry-footer').innerHTML;
+assert(activeHeader.includes('কোটচাঁদপুর প্রিমিয়ার লিগ ২০২৬'), 'Header renders custom tournament title');
+assert(activeHeader.includes('সক্রিয় টুর্নামেন্ট'), 'Header renders active status badge');
+assert(activeChoices.includes('choice-resume'), 'Active modal renders primary resume card');
+assert(activeChoices.includes('choice-edit'), 'Active modal renders edit settings card');
+assert(activeFooter.includes('btn-start-fresh'), 'Active modal renders start fresh tournament option');
+
+// 3. Start fresh confirmation and execution
+global.confirm = () => true;
+let wizardOpenedFromFresh = false;
+global.openTournamentWizard = () => { wizardOpenedFromFresh = true; };
+startFreshTournament();
+assert(!tournamentConfig.isCustomConfig, 'startFreshTournament resets isCustomConfig flag');
+assert(window.location.hash === '#football', 'startFreshTournament switches view to #football');
+assert(!document.getElementById('football-entry-modal').classList.contains('active'), 'startFreshTournament closes modal');
 
 // ==========================================
 // SUMMARY REPORT

@@ -30,10 +30,10 @@ function switchWizardTab(tabKey) {
 }
 
 function setWizardTournamentType(type) {
-  tempWizardTourneyType = type || 'groups';
+  tempWizardTourneyType = type || null;
   ['groups', 'knockout', 'league'].forEach(t => {
     const card = document.getElementById(`btn-tourney-type-${t}`);
-    if (card) card.classList.toggle('active', t === tempWizardTourneyType);
+    if (card) card.classList.toggle('active', Boolean(type && t === tempWizardTourneyType));
   });
   updateWizardStructureSummary();
   renderWizardTeamsDashboard();
@@ -481,12 +481,36 @@ function getTournamentFormatRecommendations(teamCount, isEn = false) {
 }
 
 function onWizardTeamCountChange(val) {
+  if (val === '' || val === null || val === undefined) {
+    tempWizardTeamCount = null;
+    tempWizardTourneyType = null;
+    const countInp = document.getElementById('w-cfg-teamCount');
+    if (countInp) countInp.value = '';
+    updateWizardStructureSummary();
+    renderWizardTeamsDashboard();
+    return;
+  }
   const count = Math.max(2, parseInt(val, 10) || 2);
   tempWizardTeamCount = count;
 
   const countInp = document.getElementById('w-cfg-teamCount');
   if (countInp && parseInt(countInp.value, 10) !== count) {
     countInp.value = count;
+  }
+
+  // If tourney type was not selected, select the recommended best format for this team count
+  if (!tempWizardTourneyType) {
+    const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+    const recs = getTournamentFormatRecommendations(count, isEn);
+    let bestType = 'groups';
+    ['groups', 'league', 'knockout'].forEach(t => {
+      if (recs[t] && recs[t].badge === 'best') bestType = t;
+    });
+    tempWizardTourneyType = bestType;
+    ['groups', 'knockout', 'league'].forEach(t => {
+      const card = document.getElementById(`btn-tourney-type-${t}`);
+      if (card) card.classList.toggle('active', t === tempWizardTourneyType);
+    });
   }
 
   // Sync tempWizardTeams size
@@ -1912,12 +1936,67 @@ function renderWizardVisualFixtureBracket(teamCount, tourneyType, teams) {
 
 function updateWizardStructureSummary() {
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+
+  // Highlight active quick team chip
+  if (typeof document !== 'undefined' && document.querySelectorAll) {
+    const chips = document.querySelectorAll('#w-quick-team-chips .w-team-chip');
+    if (chips && chips.length > 0) {
+      chips.forEach(chip => {
+        const cnt = chip.getAttribute ? chip.getAttribute('data-count') : null;
+        if (chip.classList) {
+          chip.classList.toggle('active', Boolean(tempWizardTeamCount && cnt === String(tempWizardTeamCount)));
+        }
+      });
+    }
+  }
+
+  if (!tempWizardTeamCount) {
+    ['groups', 'league', 'knockout'].forEach(t => {
+      const pill = document.getElementById(`w-rec-pill-${t}`);
+      const card = document.getElementById(`btn-tourney-type-${t}`);
+      if (card && card.classList) card.classList.remove('active');
+      if (pill) {
+        pill.textContent = isEn ? 'Select team count first' : 'প্রথমে দল সংখ্যা বেছে নিন';
+        pill.className = 'w-struct-rec-pill';
+      }
+    });
+
+    const summaryEl = document.getElementById('w-structure-summary-text');
+    if (summaryEl) {
+      summaryEl.textContent = isEn
+        ? 'Please select the number of participating teams above to see the tournament roadmap.'
+        : 'টুর্নামেন্টের ফিক্সচার রোডম্যাপ ও কাঠামো দেখতে ওপর থেকে অংশগ্রহণকারী দলের সংখ্যা নির্বাচন করুন।';
+    }
+    const badge = document.getElementById('w-teams-count-badge');
+    if (badge) badge.textContent = isEn ? '0' : '০';
+
+    const bracketTree = document.getElementById('w-visual-bracket-tree');
+    if (bracketTree) {
+      bracketTree.innerHTML = `
+        <div style="text-align:center; padding:36px 16px; background:rgba(255,255,255,0.02); border:1.5px dashed rgba(255,255,255,0.18); border-radius:12px; margin:10px 0;">
+          <div style="font-size:32px; margin-bottom:8px;">👥</div>
+          <div style="font-size:14px; font-weight:700; color:#38bdf8; margin-bottom:4px;">
+            ${isEn ? 'Select the Number of Teams Above' : 'ওপর থেকে মোট দলের সংখ্যা নির্বাচন করুন'}
+          </div>
+          <div style="font-size:12px; color:var(--text-muted); max-width:480px; margin:0 auto; line-height:1.5;">
+            ${isEn ? 'Click any team button (e.g. 4, 8, 9 teams) or enter a number. Clicking will instantly generate fixtures, format recommendations, and interactive brackets!' : 'ওপরের যেকোনো দলের বাটনে (যেমন: ৪ দল, ৮ দল, ৯ দল...) ক্লিক করুন অথবা সংখ্যা লিখুন—ক্লিক করার সাথে সাথে ফিক্সচার, সেরা ফরম্যাট ও রোডম্যাপ স্বয়ংক্রিয়ভাবে তৈরি হবে!'}
+          </div>
+        </div>
+      `;
+    }
+    const statsBar = document.getElementById('w-bracket-stats-bar');
+    if (statsBar) statsBar.innerHTML = '';
+    return;
+  }
+
   const recs = getTournamentFormatRecommendations(tempWizardTeamCount, isEn);
 
   ['groups', 'league', 'knockout'].forEach(t => {
     const pill = document.getElementById(`w-rec-pill-${t}`);
     const desc = document.getElementById(`w-rec-desc-${t}`);
+    const card = document.getElementById(`btn-tourney-type-${t}`);
     const rec = recs[t];
+    if (card && card.classList) card.classList.toggle('active', t === tempWizardTourneyType);
     if (rec) {
       if (pill) {
         pill.textContent = rec.badgeText;
@@ -1928,19 +2007,6 @@ function updateWizardStructureSummary() {
       }
     }
   });
-
-  // Highlight active quick team chip
-  if (typeof document !== 'undefined' && document.querySelectorAll) {
-    const chips = document.querySelectorAll('#w-quick-team-chips .w-team-chip');
-    if (chips && chips.length > 0) {
-      chips.forEach(chip => {
-        const cnt = chip.getAttribute ? chip.getAttribute('data-count') : null;
-        if (chip.classList) {
-          chip.classList.toggle('active', cnt === String(tempWizardTeamCount));
-        }
-      });
-    }
-  }
 
   const struct = generateTournamentStructure(tempWizardTeamCount, tempWizardTourneyType, tempWizardTeams);
   const summaryEl = document.getElementById('w-structure-summary-text');
@@ -2211,17 +2277,26 @@ function openTournamentWizard(initialTab = 'info') {
   setVal('w-cfg-titleAccent', isDefault ? '' : (tournamentConfig.titleAccent || ''));
   setVal('w-cfg-organizer', isDefault ? '' : (tournamentConfig.organizer || ''));
   setVal('w-cfg-venue', isDefault ? '' : (tournamentConfig.venue || ''));
-  setVal('w-cfg-formatType', tournamentConfig.formatType || '১১-এ-সাইড (11-a-side)');
-  setVal('w-cfg-startingPlayers', tournamentConfig.startingPlayers !== undefined ? tournamentConfig.startingPlayers : 11);
-  setVal('w-cfg-benchPlayers', tournamentConfig.benchPlayers !== undefined ? tournamentConfig.benchPlayers : 5);
-  setVal('w-cfg-maxSubstitutes', tournamentConfig.maxSubstitutes !== undefined ? tournamentConfig.maxSubstitutes : 5);
+  setVal('w-cfg-formatType', isDefault ? '' : (tournamentConfig.formatType || ''));
+  
+  // Squad Size: No default values on clean/default
+  const hasCustomSquad = !isDefault && tournamentConfig.startingPlayers !== undefined && tournamentConfig.startingPlayers !== null && tournamentConfig.startingPlayers !== '';
+  setVal('w-cfg-startingPlayers', hasCustomSquad ? tournamentConfig.startingPlayers : '');
+  setVal('w-cfg-benchPlayers', hasCustomSquad && tournamentConfig.benchPlayers !== undefined && tournamentConfig.benchPlayers !== null && tournamentConfig.benchPlayers !== '' ? tournamentConfig.benchPlayers : '');
+  setVal('w-cfg-maxSubstitutes', hasCustomSquad && tournamentConfig.maxSubstitutes !== undefined && tournamentConfig.maxSubstitutes !== null && tournamentConfig.maxSubstitutes !== '' ? tournamentConfig.maxSubstitutes : '');
+
+  // Clear squad preset active buttons on clean slate
+  if (typeof document !== 'undefined' && document.querySelectorAll) {
+    document.querySelectorAll('.btn-squad-preset').forEach(b => b.classList && b.classList.remove('active'));
+  }
   updateSquadCalculations();
   const isDefaultMatchDuration = !tournamentConfig.matchDuration ||
     tournamentConfig.matchDuration === '৯০ মিনিট (৪৫ মিনিট + ৪৫ মিনিট)' ||
     tournamentConfig.matchDuration === '90 mins (45 mins + 45 mins)' ||
     (typeof DEFAULT_CONFIG !== 'undefined' && tournamentConfig.matchDuration === DEFAULT_CONFIG.matchDuration) ||
     (typeof DEFAULT_CONFIG_EN !== 'undefined' && tournamentConfig.matchDuration === DEFAULT_CONFIG_EN.matchDuration);
-  setVal('w-cfg-matchDuration', isDefaultMatchDuration ? '' : tournamentConfig.matchDuration);
+  const durToPopulate = isDefaultMatchDuration ? '' : tournamentConfig.matchDuration;
+  populateMatchDurationFields(durToPopulate);
   setVal('w-cfg-startDate', isDefault ? '' : (tournamentConfig.startDate || ''));
 
   setVal('w-cfg-championPrize', isDefault ? '' : (tournamentConfig.championPrize || ''));
@@ -2236,11 +2311,13 @@ function openTournamentWizard(initialTab = 'info') {
   tempWizardSelectedRules = new Set(tournamentConfig.selectedRules || []);
   tempWizardCustomRules = JSON.parse(JSON.stringify(tournamentConfig.customRules || []));
 
-  tempWizardTourneyType = tournamentConfig.tournamentType || 'groups';
-  tempWizardTeamCount = tournamentConfig.teamCount || (tournamentConfig.teams ? tournamentConfig.teams.length : 9);
-  tempWizardTeams = JSON.parse(JSON.stringify(tournamentConfig.teams || DEFAULT_TEAMS));
+  // Tournament Structure, Teams & Format: Clean state with no default value on clean/default
+  const hasCustomStructure = !isDefault && Boolean(tournamentConfig.teamCount || (tournamentConfig.teams && tournamentConfig.teams.length > 0));
+  tempWizardTeamCount = hasCustomStructure ? (tournamentConfig.teamCount || tournamentConfig.teams.length) : null;
+  tempWizardTourneyType = hasCustomStructure ? (tournamentConfig.tournamentType || 'groups') : null;
+  tempWizardTeams = hasCustomStructure ? JSON.parse(JSON.stringify(tournamentConfig.teams)) : [];
 
-  setVal('w-cfg-teamCount', tempWizardTeamCount);
+  setVal('w-cfg-teamCount', tempWizardTeamCount !== null && tempWizardTeamCount !== undefined ? tempWizardTeamCount : '');
   setWizardTournamentType(tempWizardTourneyType);
 
   const searchInp = document.getElementById('w-rules-search-input');
@@ -2499,7 +2576,25 @@ function updateSquadCalculations() {
   const summaryEl = document.getElementById('w-squad-calc-summary');
   const warningEl = document.getElementById('w-starting-players-warning');
 
-  const rawVal = startEl && startEl.value !== '' ? parseInt(startEl.value, 10) : 11;
+  const hasStart = startEl && startEl.value !== '' && !isNaN(parseInt(startEl.value, 10));
+  const hasBench = benchEl && benchEl.value !== '' && !isNaN(parseInt(benchEl.value, 10));
+  const hasMaxSubs = maxSubsEl && maxSubsEl.value !== '' && !isNaN(parseInt(maxSubsEl.value, 10));
+
+  if (!hasStart && !hasBench && !hasMaxSubs) {
+    if (warningEl) warningEl.style.display = 'none';
+    if (startEl && startEl.classList) startEl.classList.remove('w-input-warning');
+    if (summaryEl) {
+      summaryEl.innerHTML = `
+        <div style="font-size:12px; color:var(--text-muted); padding:6px 10px; display:flex; align-items:center; gap:8px;">
+          <span>💡</span>
+          <span>${isEn ? 'Choose a squad preset above (FIFA, Standard 11s, 5-a-side) or enter player numbers to calculate squad roster.' : 'ওপরের প্রিসেটগুলো (ফিফা বিশ্বকাপ, সাধারণ একাদশ, ৫-এ-সাইড) ক্লিক করুন অথবা নিজের প্রয়োজনমতো খেলোয়াড় সংখ্যা লিখুন।'}</span>
+        </div>
+      `;
+    }
+    return;
+  }
+
+  const rawVal = hasStart ? parseInt(startEl.value, 10) : 11;
 
   // Warning when starting players > 11 (Max 11 in football)
   if (rawVal > 11) {
@@ -2518,8 +2613,8 @@ function updateSquadCalculations() {
   }
 
   const startCount = (isNaN(rawVal) || rawVal <= 0) ? 11 : Math.min(rawVal, 11);
-  const benchCount = parseInt(benchEl && benchEl.value ? benchEl.value : 5, 10) || 0;
-  const maxSubs = parseInt(maxSubsEl && maxSubsEl.value ? maxSubsEl.value : 5, 10) || 3;
+  const benchCount = hasBench ? parseInt(benchEl.value, 10) : 0;
+  const maxSubs = hasMaxSubs ? parseInt(maxSubsEl.value, 10) : 3;
   const totalSquad = startCount + benchCount;
 
   if (summaryEl) {
@@ -2565,6 +2660,145 @@ function validateStartingPlayers(el) {
     }
     updateSquadCalculations();
   }
+}
+
+// ========================================================
+// MATCH DURATION & HALVES SYSTEM
+// ========================================================
+
+function updateMatchDurationFromHalves() {
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const half1El = document.getElementById('w-cfg-half1');
+  const half2El = document.getElementById('w-cfg-half2');
+  const breakEl = document.getElementById('w-cfg-break');
+  const targetInput = document.getElementById('w-cfg-matchDuration');
+  const summaryEl = document.getElementById('w-duration-summary-text');
+
+  const h1 = half1El && half1El.value ? parseInt(half1El.value, 10) : 0;
+  const h2 = half2El && half2El.value ? parseInt(half2El.value, 10) : 0;
+  const brk = breakEl && breakEl.value ? parseInt(breakEl.value, 10) : 0;
+
+  // Active time chips highlighting
+  if (typeof document !== 'undefined' && document.querySelectorAll) {
+    document.querySelectorAll('.btn-time-chip').forEach(btn => {
+      const onclickAttr = btn.getAttribute ? btn.getAttribute('onclick') : '';
+      if (btn.classList) {
+        btn.classList.toggle('active', onclickAttr.includes(`applyTimePreset(${h1}, ${h2}`));
+      }
+    });
+  }
+
+  if (!h1 && !h2) {
+    if (targetInput) targetInput.value = '';
+    if (summaryEl) {
+      summaryEl.textContent = isEn
+        ? 'Select 1st and 2nd half duration to auto-calculate total match time.'
+        : 'প্রথম ও দ্বিতীয় অর্ধ নির্বাচন করলে মোট খেলার সময় স্বয়ংক্রিয়ভাবে তৈরি হবে।';
+      if (summaryEl.parentElement && summaryEl.parentElement.style) {
+        summaryEl.parentElement.style.color = 'var(--text-muted, #94a3b8)';
+        summaryEl.parentElement.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+      }
+    }
+    return;
+  }
+
+  const effectiveH1 = h1 || h2;
+  const effectiveH2 = h2 || h1;
+  const total = effectiveH1 + effectiveH2;
+
+  let formattedDuration = '';
+  if (isEn) {
+    if (brk > 0) {
+      formattedDuration = `${total} mins (${effectiveH1}+${brk}+${effectiveH2} mins)`;
+    } else {
+      formattedDuration = `${total} mins (${effectiveH1}+${effectiveH2} mins)`;
+    }
+  } else {
+    if (brk > 0) {
+      formattedDuration = `${total} মিনিট (${effectiveH1}+${brk}+${effectiveH2} মিনিট)`;
+    } else {
+      formattedDuration = `${total} মিনিট (${effectiveH1}+${effectiveH2} মিনিট)`;
+    }
+  }
+
+  if (targetInput) {
+    targetInput.value = formattedDuration;
+  }
+
+  if (summaryEl) {
+    if (isEn) {
+      summaryEl.innerHTML = `<strong>Total Match Time:</strong> ${total} mins (${effectiveH1}m 1st half + ${effectiveH2}m 2nd half)${brk > 0 ? ` • ${brk}m break` : ''}`;
+    } else {
+      summaryEl.innerHTML = `<strong>মোট খেলার সময়:</strong> ${total} মিনিট (${effectiveH1} মিনিট ১ম অর্ধ + ${effectiveH2} মিনিট ২য় অর্ধ)${brk > 0 ? ` • ${brk} মিনিট মধ্যবিরতি` : ''}`;
+    }
+    if (summaryEl.parentElement && summaryEl.parentElement.style) {
+      summaryEl.parentElement.style.color = '#38bdf8';
+      summaryEl.parentElement.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+    }
+  }
+}
+
+function onHalf1Change(val) {
+  const half2El = document.getElementById('w-cfg-half2');
+  if (half2El) {
+    if (!half2El.dataset) half2El.dataset = {};
+    if (!half2El.value || half2El.dataset.autoSynced === 'true' || half2El.value === '') {
+      half2El.value = val;
+      half2El.dataset.autoSynced = 'true';
+    }
+  }
+  updateMatchDurationFromHalves();
+}
+
+function applyTimePreset(h1, h2, brk = 0) {
+  const half1El = document.getElementById('w-cfg-half1');
+  const half2El = document.getElementById('w-cfg-half2');
+  const breakEl = document.getElementById('w-cfg-break');
+  if (half1El) half1El.value = String(h1);
+  if (half2El) {
+    half2El.value = String(h2);
+    if (!half2El.dataset) half2El.dataset = {};
+    half2El.dataset.autoSynced = 'false';
+  }
+  if (breakEl) breakEl.value = String(brk);
+  updateMatchDurationFromHalves();
+}
+
+function populateMatchDurationFields(durationStr) {
+  const half1El = document.getElementById('w-cfg-half1');
+  const half2El = document.getElementById('w-cfg-half2');
+  const breakEl = document.getElementById('w-cfg-break');
+
+  if (!durationStr) {
+    if (half1El) half1El.value = '';
+    if (half2El) half2El.value = '';
+    if (breakEl) breakEl.value = '0';
+    updateMatchDurationFromHalves();
+    return;
+  }
+
+  const normalized = durationStr.replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d));
+  const plusMatch = normalized.match(/(\d+)\s*\+\s*(?:(\d+)\s*\+\s*)?(\d+)/);
+  if (plusMatch) {
+    if (plusMatch[2] !== undefined) {
+      if (half1El) half1El.value = plusMatch[1];
+      if (breakEl) breakEl.value = plusMatch[2];
+      if (half2El) half2El.value = plusMatch[3];
+    } else {
+      if (half1El) half1El.value = plusMatch[1];
+      if (breakEl) breakEl.value = '0';
+      if (half2El) half2El.value = plusMatch[3];
+    }
+  } else {
+    const singleMatch = normalized.match(/(\d+)/);
+    if (singleMatch) {
+      const half = Math.floor(parseInt(singleMatch[1], 10) / 2);
+      if (half1El) half1El.value = String(half);
+      if (half2El) half2El.value = String(half);
+      if (breakEl) breakEl.value = '0';
+    }
+  }
+  updateMatchDurationFromHalves();
 }
 
 function syncRulesWithSquadSettings(force = false) {
@@ -2614,7 +2848,7 @@ function syncRulesWithSquadSettings(force = false) {
 
     const durEl = document.getElementById('w-cfg-matchDuration');
     if (durEl && (!durEl.value || durEl.value.includes('২০') || durEl.value.includes('20') || durEl.value.includes('15') || durEl.value.includes('১৫'))) {
-      durEl.value = isEn ? '90 mins (45+15+45 mins)' : '৯০ মিনিট (৪৫+১৫+৪৫ মিনিট)';
+      applyTimePreset(45, 45, 15);
     }
   } else if (starting <= 6) {
     // 5/6-a-side Minibar / Short-Pitch Football: Adapt to Minibar rules
@@ -2648,12 +2882,13 @@ function syncRulesWithSquadSettings(force = false) {
 
     const durEl = document.getElementById('w-cfg-matchDuration');
     if (durEl && (!durEl.value || durEl.value.includes('৯০') || durEl.value.includes('90'))) {
-      durEl.value = isEn ? '20 mins (10+2+10 mins)' : '২০ মিনিট (১০+২+১০ মিনিট)';
+      applyTimePreset(10, 10, 2);
     }
   } else if (starting === 7) {
     tempWizardSelectedRules.delete('r_onfield_11');
     tempWizardSelectedRules.add('r_onfield_6');
     tempWizardSelectedRules.add('r_rolling_subs');
+    applyTimePreset(25, 25, 5);
   }
 
   updateWizardRulesCounts();
@@ -2667,6 +2902,17 @@ function applySquadPreset(type) {
   const maxSubsEl = document.getElementById('w-cfg-maxSubstitutes');
   const formatEl = document.getElementById('w-cfg-formatType');
 
+  // Highlight active squad preset button
+  if (typeof document !== 'undefined' && document.querySelectorAll) {
+    const btns = document.querySelectorAll('.btn-squad-preset');
+    btns.forEach(btn => {
+      const onclickAttr = btn.getAttribute ? btn.getAttribute('onclick') : '';
+      if (btn.classList) {
+        btn.classList.toggle('active', onclickAttr.includes(`'${type}'`));
+      }
+    });
+  }
+
   let starting = 11;
   let bench = 5;
   let maxSubs = 5;
@@ -2677,21 +2923,25 @@ function applySquadPreset(type) {
     bench = 15;
     maxSubs = 5;
     formatDesc = isEn ? '11-a-side (FIFA World Cup Standard - 26 Players)' : '১১-এ-সাইড (ফিফা বিশ্বকাপ স্ট্যান্ডার্ড - ২৬ জন স্কোয়াড)';
+    applyTimePreset(45, 45, 15);
   } else if (type === 'standard') {
     starting = 11;
     bench = 5;
     maxSubs = 3;
     formatDesc = isEn ? '11-a-side (11 Starting, 5 Bench)' : '১১-এ-সাইড (১১ জন মাঠে, ৫ জন বদলি)';
+    applyTimePreset(45, 45, 10);
   } else if (type === 'seven') {
     starting = 7;
     bench = 4;
     maxSubs = 3;
     formatDesc = isEn ? '7-a-side (7 Starting, 4 Bench)' : '৭-এ-সাইড (৭ জন মাঠে, ৪ জন বদলি)';
+    applyTimePreset(25, 25, 5);
   } else if (type === 'futsal') {
     starting = 5;
     bench = 5;
     maxSubs = 5;
     formatDesc = isEn ? '5-a-side Minibar (5 Starting, Rolling Subs)' : '৫-এ-সাইড মিনিবার (৫ জন মাঠে, রোলিং বদলি)';
+    applyTimePreset(10, 10, 2);
   }
 
   if (startEl) startEl.value = starting;
@@ -2733,6 +2983,7 @@ function applyWizardPreset(presetKey) {
     setVal('w-cfg-startingPlayers', 11);
     setVal('w-cfg-benchPlayers', 5);
     setVal('w-cfg-maxSubstitutes', 5);
+    applyTimePreset(45, 45, 15);
     updateSquadCalculations();
     renderWizardRulesChecklist();
   } else if (presetKey === 'minibar') {
@@ -2766,6 +3017,7 @@ function applyWizardPreset(presetKey) {
     setVal('w-cfg-startingPlayers', 5);
     setVal('w-cfg-benchPlayers', 5);
     setVal('w-cfg-maxSubstitutes', 5);
+    applyTimePreset(10, 10, 2);
     updateSquadCalculations();
     renderWizardRulesChecklist();
   }
@@ -2821,9 +3073,9 @@ function saveTournamentConfigFromWizard() {
     maxSubstitutes: maxSubs,
     matchDuration: getVal('w-cfg-matchDuration', ''),
     startDate: getVal('w-cfg-startDate', DEFAULT_CONFIG.startDate),
-    tournamentType: tempWizardTourneyType,
-    teamCount: tempWizardTeamCount,
-    teams: tempWizardTeams,
+    tournamentType: tempWizardTourneyType || 'groups',
+    teamCount: tempWizardTeamCount || (tempWizardTeams.length > 0 ? tempWizardTeams.length : 9),
+    teams: tempWizardTeams.length > 0 ? tempWizardTeams : DEFAULT_TEAMS,
     championPrize: getVal('w-cfg-championPrize', DEFAULT_CONFIG.championPrize),
     runnerUpPrize: getVal('w-cfg-runnerUpPrize', DEFAULT_CONFIG.runnerUpPrize),
     thirdPrize: getVal('w-cfg-thirdPrize', DEFAULT_CONFIG.thirdPrize),
@@ -2833,7 +3085,8 @@ function saveTournamentConfigFromWizard() {
     contactPhone: getVal('w-cfg-contactPhone', DEFAULT_CONFIG.contactPhone),
     paymentMethod: getVal('w-cfg-paymentMethod', DEFAULT_CONFIG.paymentMethod),
     selectedRules: Array.from(tempWizardSelectedRules),
-    customRules: tempWizardCustomRules
+    customRules: tempWizardCustomRules,
+    isCustomConfig: true
   };
 
   saveTournamentConfig(newConfig);

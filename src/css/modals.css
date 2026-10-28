@@ -2852,6 +2852,164 @@
       flex-wrap: wrap;
     }
 
+    /* Poster Modal Tabs & Dual Mode Navigation */
+    .poster-modal-tabs {
+      display: flex;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 8px;
+      gap: 6px;
+      margin: 8px 12px 4px 12px;
+    }
+    [data-theme="dark"] .poster-modal-tabs {
+      background: #1e293b;
+    }
+    .poster-tab-btn {
+      flex: 1;
+      padding: 8px 14px;
+      border: none;
+      background: transparent;
+      color: #475569;
+      font-weight: 700;
+      font-size: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    [data-theme="dark"] .poster-tab-btn {
+      color: #94a3b8;
+    }
+    .poster-tab-btn.active {
+      background: #ffffff;
+      color: #0284c7;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    [data-theme="dark"] .poster-tab-btn.active {
+      background: #0f172a;
+      color: #38bdf8;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* Official Fixture & Match Schedule Poster (Phase 2) */
+    .fixture-poster-card {
+      background: linear-gradient(135deg, #091a2e 0%, #0c2b4c 50%, #071526 100%);
+      color: #fff;
+      border: 3px solid #0284c7;
+      border-radius: 10px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 11.5px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .fixture-poster-card .p1-card {
+      background: #ffffff !important;
+      color: #111111 !important;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .fixture-poster-card table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    .fixture-poster-card th {
+      background: #0d2b6b;
+      color: #ffffff;
+      padding: 5px 6px;
+      text-align: center;
+      font-weight: 700;
+      border: 1px solid #072a60;
+    }
+    .fixture-poster-card td {
+      padding: 4px 6px;
+      border: 1px solid #e2e8f0;
+      vertical-align: middle;
+      color: #1e293b;
+    }
+    .fixture-poster-card tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    .fixture-poster-card .match-vs-grid {
+      display: grid;
+      grid-template-columns: 1fr 24px 1fr;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+    }
+    .fixture-poster-card .team-left {
+      text-align: right;
+      font-weight: 700;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .fixture-poster-card .team-right {
+      text-align: left;
+      font-weight: 700;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .fixture-poster-card .vs-badge {
+      background: #d32f2f;
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 800;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin: 0 auto;
+    }
+    .fixture-poster-card .bracket-grid-2x2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .fixture-poster-card .match-card {
+      border: 1.2px solid #cbd5e1;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .fixture-poster-card .mc-head {
+      color: #ffffff;
+      padding: 4px 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .fixture-poster-card .mc-body {
+      padding: 9px 8px;
+      text-align: center;
+      background: #ffffff;
+    }
+    .fixture-poster-card .fixture-poster-vs-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .fixture-poster-card .team-badge-txt {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 11.5px;
+    }
+
     /* Promotional Poster Modal & Sheet Styles */
     .promo-poster-card {
       background: linear-gradient(135deg, #05192d 0%, #082d18 50%, #03140b 100%);
@@ -3826,6 +3984,12 @@
       color: #065f46;
       box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
     }
+    .btn-squad-preset.active {
+      background: #059669;
+      border-color: #047857;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
+    }
     [data-theme="dark"] .btn-squad-preset {
       background: #1e293b;
       border-color: #334155;
@@ -3835,6 +3999,12 @@
       background: #064e3b;
       border-color: #059669;
       color: #ecfdf5;
+    }
+    [data-theme="dark"] .btn-squad-preset.active {
+      background: #059669;
+      border-color: #10b981;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
     }
     .w-squad-summary-bar {
       margin-top: 12px;
@@ -3876,6 +4046,50 @@
     }
     .w-squad-stat-val strong {
       font-size: 13px;
+    }
+
+    /* Match Duration & Halves Quick Selection Chips */
+    .btn-time-chip {
+      background: #ffffff;
+      border: 1.2px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .btn-time-chip:hover {
+      background: #e0f2fe;
+      border-color: #0284c7;
+      color: #0369a1;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.15);
+    }
+    .btn-time-chip.active {
+      background: #0284c7;
+      border-color: #0369a1;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+    }
+    [data-theme="dark"] .btn-time-chip {
+      background: #1e293b;
+      border-color: #334155;
+      color: #cbd5e1;
+    }
+    [data-theme="dark"] .btn-time-chip:hover {
+      background: #0c4a6e;
+      border-color: #0284c7;
+      color: #e0f2fe;
+    }
+    [data-theme="dark"] .btn-time-chip.active {
+      background: #0284c7;
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
     }
 
     /* ==========================================================================
@@ -4124,37 +4338,39 @@
       border: 1px solid #fde68a;
     }
 
+    /* Registration Slip Print Scope: Only hides other elements when explicitly printing reg slip */
     @media print {
-      body * {
+      body.print-only-reg-slip * {
         visibility: hidden !important;
       }
-      #team-registration-modal,
-      #team-registration-modal * {
+      body.print-only-reg-slip #team-registration-modal,
+      body.print-only-reg-slip #team-registration-modal * {
         visibility: visible !important;
       }
-      #team-registration-modal {
+      body.print-only-reg-slip #team-registration-modal {
         position: absolute !important;
         left: 0 !important;
         top: 0 !important;
         width: 100% !important;
         background: transparent !important;
         padding: 0 !important;
+        display: flex !important;
       }
-      .modal-registration {
+      body.print-only-reg-slip .modal-registration {
         border: none !important;
         box-shadow: none !important;
         max-width: 100% !important;
       }
-      .modal-header,
-      .modal-footer,
-      .reg-modal-actions,
-      #reg-form-container {
+      body.print-only-reg-slip .modal-header,
+      body.print-only-reg-slip .modal-footer,
+      body.print-only-reg-slip .reg-modal-actions,
+      body.print-only-reg-slip #reg-form-container {
         display: none !important;
       }
-      #reg-slip-print-area {
+      body.print-only-reg-slip #reg-slip-print-area {
         display: block !important;
       }
-      .reg-slip-card {
+      body.print-only-reg-slip .reg-slip-card {
         border: 2px solid #0284c7 !important;
         box-shadow: none !important;
       }

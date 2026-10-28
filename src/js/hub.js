@@ -31,9 +31,17 @@ function renderCurrentView() {
     if (typeof recalculateAll === 'function') {
       recalculateAll();
     }
+    if (typeof updateNavWizardButton === 'function') {
+      updateNavWizardButton();
+    }
   } else {
     hubView.style.display = 'block';
     footballView.style.display = 'none';
+
+    // Update football launch card button state when visiting hub
+    if (typeof updateHubFootballCard === 'function') {
+      updateHubFootballCard();
+    }
   }
 
   // Update document title dynamically
@@ -115,7 +123,7 @@ function openSportPreviewModal(sportKey) {
           <h4 style="margin:12px 0 6px; color:#38bdf8;">Planned Modules:</h4>
           <ul style="padding-left:20px; margin-bottom:14px;">
             <li><strong>Singles & Doubles Brackets:</strong> 8, 16 or 32 player/team knockout trees.</li>
-            <li><strong>21-Point & Best of 3 Sets Scoring:</strong> Official BWF rally point scoring rules.</li>
+            <li><strong>BWF & Bangla Scoring Modes:</strong> Official BWF rally points (21 pts) & classic Bangla service-over (15 pts).</li>
             <li><strong>Deuce & Golden Point Handling:</strong> Up to 30 points cap automation.</li>
             <li><strong>Court Scheduling & Umpire Sheets:</strong> Court 1, Court 2 visual match timeline.</li>
             <li><strong>A4 Landscape Visual Knockout Bracket Print:</strong> Wall-mounted tournament fixture tree.</li>
@@ -129,7 +137,7 @@ function openSportPreviewModal(sportKey) {
           <h4 style="margin:12px 0 6px; color:#38bdf8;">পরিকল্পিত প্রধান ফিচারসমূহ:</h4>
           <ul style="padding-left:20px; margin-bottom:14px;">
             <li><strong>সিঙ্গেলস ও ডাবলস ড্র ব্র্যাকেট:</strong> ৮, ১৬ বা ৩২ দল/প্লেয়ারের পূর্ণাঙ্গ নকআউট ট্রি।</li>
-            <li><strong>২১-পয়েন্ট ও ৩-সেট স্কোরিং:</strong> অফিসিয়াল ব্যাডমিন্টন বিশ্ব ফেডারেশন (BWF) রুলস।</li>
+            <li><strong>BWF ও দেশীয় বাংলা স্কোরিং মোড:</strong> অফিসিয়াল BWF র‍্যালি পয়েন্ট (২১ পয়েন্ট) ও ক্লাসিক বাংলা সার্ভ-কাট নিয়ম (১৫ পয়েন্ট)।</li>
             <li><strong>ডিউস ও গোল্ডেন পয়েন্ট অটোমেশন:</strong> ২৯-২৯ এ ৩০ পয়েন্টের গোল্ডেন রুলস ট্র্যাকার।</li>
             <li><strong>কোর্ট শিডিউল ও আম্পায়ার শিট:</strong> একাধিক কোর্টে একই সাথে ম্যাচ পরিচালনার রুটিন।</li>
             <li><strong>A4 ল্যান্ডস্কেপ ব্র্যাকেট প্রিন্ট শিট:</strong> নোটিশ বোর্ডে লাগানোর মতো প্রিমিয়াম ট্রি চার্ট।</li>
@@ -152,17 +160,157 @@ function closeSportPreviewModal() {
 }
 
 // ========================================================
-// FOOTBALL ENTRY CHOICE MODAL (SETUP VS DEMO)
+// FOOTBALL ENTRY & RESUME MANAGEMENT SYSTEM
 // ========================================================
+
+function updateHubFootballCard() {
+  const btn = document.getElementById('btn-football-launch') || (typeof document !== 'undefined' && document.querySelector ? document.querySelector('.btn-football-launch') : null);
+  if (!btn) return;
+
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const hasCustom = typeof hasActiveCustomTournament === 'function' && hasActiveCustomTournament();
+
+  if (hasCustom && typeof tournamentConfig !== 'undefined' && tournamentConfig.title) {
+    const rawTitle = tournamentConfig.title;
+    const truncatedTitle = rawTitle.length > 32 ? (rawTitle.slice(0, 31) + '…') : rawTitle;
+    btn.textContent = isEn
+      ? `▶️ Resume: ${truncatedTitle} ➜`
+      : `▶️ পরিচালনা করুন: ${truncatedTitle} ➜`;
+    if (btn.setAttribute) {
+      btn.setAttribute('title', rawTitle);
+    }
+    if (btn.classList && btn.classList.add) {
+      btn.classList.add('btn-has-active-tournament');
+    }
+  } else {
+    btn.textContent = isEn
+      ? '🚀 Enter Football Tournament ➜'
+      : '🚀 ফুটবল টুর্নামেন্টে প্রবেশ করুন ➜';
+    if (btn.removeAttribute) {
+      btn.removeAttribute('title');
+    }
+    if (btn.classList && btn.classList.remove) {
+      btn.classList.remove('btn-has-active-tournament');
+    }
+  }
+}
 
 function openFootballEntryChoiceModal() {
   const modal = document.getElementById('football-entry-modal');
-  if (modal) {
-    modal.classList.add('active');
-    modal.style.display = 'flex';
-  } else {
+  if (!modal) {
     navigateToView('football');
+    return;
   }
+
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const hasCustom = typeof hasActiveCustomTournament === 'function' && hasActiveCustomTournament();
+  const choicesGrid = document.getElementById('football-entry-choices');
+  const headerEl = document.getElementById('football-entry-header');
+  const footerEl = document.getElementById('football-entry-footer');
+
+  if (hasCustom && typeof tournamentConfig !== 'undefined') {
+    const rawTitle = tournamentConfig.title || (isEn ? 'Football Tournament' : 'ফুটবল টুর্নামেন্ট');
+    const escTitle = typeof escapeHtml === 'function' ? escapeHtml(rawTitle) : rawTitle;
+
+    if (headerEl) {
+      headerEl.style.display = 'block';
+      headerEl.innerHTML = `
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <span style="display:inline-flex; align-items:center; gap:5px; background:rgba(16, 185, 129, 0.15); color:#10b981; border:1px solid rgba(16, 185, 129, 0.3); padding:3px 10px; border-radius:9999px; font-size:12px; font-weight:700;">
+            🟢 ${isEn ? 'Active Tournament' : 'সক্রিয় টুর্নামেন্ট'}
+          </span>
+          <span style="font-size:12px; color:var(--text-modal-sub, #64748b);">
+            ${isEn ? 'Saved in Browser' : 'ব্রাউজারে সংরক্ষিত'}
+          </span>
+        </div>
+        <h3 style="margin:0 0 6px; font-size:1.25rem; font-weight:800; color:var(--text-modal-main, #0f172a); line-height:1.3;">
+          ${escTitle}
+        </h3>
+        <p style="margin:0; font-size:0.875rem; color:var(--text-modal-sub, #64748b); line-height:1.4;">
+          ${isEn ? 'Your custom tournament is ready. Choose an option to proceed:' : 'আপনার তৈরি করা টুর্নামেন্ট সক্রিয় রয়েছে। নিচের যেকোনো অপশন বেছে নিন:'}
+        </p>
+      `;
+    }
+
+    if (choicesGrid) {
+      choicesGrid.innerHTML = `
+        <!-- Choice 1: Resume Tournament Management (Primary) -->
+        <div class="entry-choice-card choice-resume" onclick="startFootballWithDemo()" role="button" tabindex="0" style="border: 2px solid #10b981; background: rgba(16, 185, 129, 0.06);">
+          <div class="choice-icon-wrap" style="background: linear-gradient(135deg, #059669, #10b981); color: #fff;">
+            ▶️
+          </div>
+          <div class="choice-content">
+            <h4 style="color:#059669; font-weight:800;">${isEn ? 'Resume Tournament Management' : 'আপনার টুর্নামেন্ট পরিচালনা করুন'}</h4>
+            <p>${isEn ? 'Enter your tournament dashboard directly to record match results, update points table, and print sheets.' : 'সরাসরি টুর্নামেন্ট ড্যাশবোর্ডে প্রবেশ করে পয়েন্ট টেবিল, লাইভ স্কোর ও ফিকশ্চার পরিচালনা করুন।'}</p>
+          </div>
+          <div class="choice-arrow" style="color:#059669; font-weight:bold;">➜</div>
+        </div>
+
+        <!-- Choice 2: Edit Tournament Settings & Teams -->
+        <div class="entry-choice-card choice-edit" onclick="startFootballWithWizard()" role="button" tabindex="0">
+          <div class="choice-icon-wrap" style="background: linear-gradient(135deg, #4f46e5, #6366f1); color: #fff;">
+            ⚙️
+          </div>
+          <div class="choice-content">
+            <h4>${isEn ? 'Edit Tournament Settings & Teams' : 'টুর্নামেন্ট সেটিংস ও দল পরিবর্তন করুন'}</h4>
+            <p>${isEn ? 'Open setup wizard to adjust tournament title, teams, squad size, venue, prize pool or rules.' : 'টুর্নামেন্টের নাম, ফরম্যাট, খেলার মাঠ, প্রাইজমানি বা দলের তালিকা পরিবর্তন করতে সেটআপ উইজার্ড খুলুন।'}</p>
+          </div>
+          <div class="choice-arrow">➜</div>
+        </div>
+      `;
+    }
+
+    if (footerEl) {
+      footerEl.style.display = 'block';
+      footerEl.innerHTML = `
+        <button type="button" class="btn-start-fresh" onclick="startFreshTournament()" style="background:none; border:none; color:var(--text-modal-sub, #64748b); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline; padding:6px 12px; transition:color 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-modal-sub, #64748b)'">
+          ${isEn ? '🔄 Start a brand new tournament from scratch' : '🔄 সম্পূর্ণ নতুন টুর্নামেন্ট তৈরি করুন (নতুন করে শুরু)'}
+        </button>
+      `;
+    }
+  } else {
+    // Default Clean Slate Onboarding
+    if (headerEl) {
+      headerEl.style.display = 'none';
+      headerEl.innerHTML = '';
+    }
+
+    if (choicesGrid) {
+      choicesGrid.innerHTML = `
+        <!-- Choice 1: Setup My Tournament Directly -->
+        <div class="entry-choice-card choice-setup" onclick="startFootballWithWizard()" role="button" tabindex="0">
+          <div class="choice-icon-wrap" style="background: linear-gradient(135deg, #4f46e5, #6366f1); color: #fff;">
+            🚀
+          </div>
+          <div class="choice-content">
+            <h4 data-i18n="entry.choice_wizard_title">${isEn ? 'Set Up Your Tournament' : 'আপনার টুর্নামেন্ট সেটআপ করুন'}</h4>
+            <p data-i18n="entry.choice_wizard_desc">${isEn ? 'Configure tournament name, venue, prize pool & rules to build an official custom fixture sheet.' : 'টুর্নামেন্টের নাম, খেলার মাঠ, প্রাইজমানি ও নিয়মাবলী সেট করে সরাসরি সম্পূর্ণ নতুন ফিকশ্চার শিট তৈরি করুন।'}</p>
+          </div>
+          <div class="choice-arrow">➜</div>
+        </div>
+
+        <!-- Choice 2: Explore Demo Interface First -->
+        <div class="entry-choice-card choice-demo" onclick="startFootballWithDemo()" role="button" tabindex="0">
+          <div class="choice-icon-wrap" style="background: linear-gradient(135deg, #0284c7, #0ea5e9); color: #fff;">
+            👀
+          </div>
+          <div class="choice-content">
+            <h4 data-i18n="entry.choice_demo_title">${isEn ? 'Explore Demo Interface First' : 'ডেমো ইন্টারফেস ঘুরে দেখুন'}</h4>
+            <p data-i18n="entry.choice_demo_desc">${isEn ? 'Explore sample fixtures, auto-calculating points tables and scoreboard features before customizing.' : 'সম্পূর্ণ সাজানো ফিকশ্চার, অটো ক্যালকুলেটর ও স্কোরবোর্ড কীভাবে কাজ করে তা আগে একটু টেস্ট করে দেখুন।'}</p>
+          </div>
+          <div class="choice-arrow">➜</div>
+        </div>
+      `;
+    }
+
+    if (footerEl) {
+      footerEl.style.display = 'none';
+      footerEl.innerHTML = '';
+    }
+  }
+
+  modal.classList.add('active');
+  modal.style.display = 'flex';
 }
 
 function closeFootballEntryChoiceModal() {
@@ -188,6 +336,65 @@ function startFootballWithDemo() {
   navigateToView('football');
 }
 
+function startFreshTournament() {
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const confirmMsg = isEn
+    ? 'Are you sure you want to start a brand new tournament? Your current tournament configuration and scores will be reset.'
+    : 'আপনি কি সম্পূর্ণ নতুন একটি টুর্নামেন্ট শুরু করতে চান? বর্তমান টুর্নামেন্টের সেটিংস ও স্কোরবোর্ড খালি হয়ে যাবে।';
+
+  if (typeof confirm === 'function' && !confirm(confirmMsg)) {
+    return;
+  }
+
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('chitadda_tournament_config_2026');
+      localStorage.removeItem('chitadda_app_state_2026');
+      localStorage.removeItem('chitadda_tournament_rosters_2026');
+    }
+  } catch (e) {
+    console.warn('Storage clear error', e);
+  }
+
+  if (typeof matchScores !== 'undefined') matchScores = {};
+  if (typeof penaltyWinners !== 'undefined') penaltyWinners = {};
+  if (typeof penaltyScores !== 'undefined') penaltyScores = {};
+  if (typeof koScores !== 'undefined') koScores = { 10: { s1: '', s2: '' }, 11: { s1: '', s2: '' }, 12: { s1: '', s2: '' }, 13: { s1: '', s2: '' } };
+  if (typeof koPenWinners !== 'undefined') koPenWinners = {};
+  if (typeof koPenScores !== 'undefined') koPenScores = {};
+  if (typeof matchEvents !== 'undefined') matchEvents = {};
+
+  if (typeof DEFAULT_CONFIG !== 'undefined') {
+    tournamentConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    tournamentConfig.isCustomConfig = false;
+  }
+  if (typeof DEFAULT_ROSTERS !== 'undefined') {
+    teamRosters = JSON.parse(JSON.stringify(DEFAULT_ROSTERS));
+  }
+
+  if (typeof populateInputsFromState === 'function') {
+    populateInputsFromState();
+  }
+  if (typeof recalculateAll === 'function') {
+    recalculateAll();
+  }
+  if (typeof applyTournamentConfig === 'function') {
+    applyTournamentConfig();
+  }
+  if (typeof updateHubFootballCard === 'function') {
+    updateHubFootballCard();
+  }
+
+  closeFootballEntryChoiceModal();
+  navigateToView('football');
+
+  setTimeout(() => {
+    if (typeof openTournamentWizard === 'function') {
+      openTournamentWizard();
+    }
+  }, 150);
+}
+
 // Initial View Detector on Load
 function initViewRouter() {
   const hash = window.location.hash;
@@ -197,6 +404,9 @@ function initViewRouter() {
     currentAppView = 'hub';
   }
   renderCurrentView();
+  if (typeof updateHubFootballCard === 'function') {
+    updateHubFootballCard();
+  }
 
   window.addEventListener('hashchange', () => {
     const newHash = window.location.hash;

@@ -606,7 +606,15 @@
   }
 
   function printRegistrationSlip() {
+    if (typeof document !== 'undefined' && document.body) {
+      document.body.classList.add('print-only-reg-slip');
+    }
     window.print();
+    setTimeout(() => {
+      if (typeof document !== 'undefined' && document.body) {
+        document.body.classList.remove('print-only-reg-slip');
+      }
+    }, 1200);
   }
 
   function shareRegistrationOnWhatsApp() {

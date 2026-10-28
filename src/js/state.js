@@ -229,6 +229,53 @@ function escapeHtml(str) {
       return typeof DEFAULT_TEAMS !== 'undefined' ? DEFAULT_TEAMS : [];
     }
 
+    function hasActiveCustomTournament() {
+      if (typeof tournamentConfig === 'undefined' || !tournamentConfig) return false;
+      if (tournamentConfig.isCustomConfig) return true;
+      const title = tournamentConfig.title || '';
+      const isLegacy = title.includes('চিতড্ডা') || title.includes('Chitadda');
+      const isDef = !title || (typeof DEFAULT_CONFIG !== 'undefined' && title === DEFAULT_CONFIG.title) || (typeof DEFAULT_CONFIG_EN !== 'undefined' && title === DEFAULT_CONFIG_EN.title) || isLegacy;
+      const hasCustomTeams = Boolean(tournamentConfig.teamCount && tournamentConfig.teamCount !== 9);
+      return !isDef || hasCustomTeams || Boolean(tournamentConfig.startingPlayers && tournamentConfig.startingPlayers !== 11);
+    }
+
+    function updateNavWizardButton() {
+      const navBtn = document.getElementById('btn-nav-wizard') || (typeof document !== 'undefined' && document.querySelector ? document.querySelector('.btn-primary-wizard') : null);
+      const welcomeBtn = document.getElementById('btn-welcome-setup') || (typeof document !== 'undefined' && document.querySelector ? document.querySelector('.btn-welcome-setup') : null);
+      if (!navBtn && !welcomeBtn) return;
+
+      const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+      const hasCustom = typeof hasActiveCustomTournament === 'function' && hasActiveCustomTournament();
+
+      if (hasCustom) {
+        if (navBtn) {
+          navBtn.textContent = isEn ? '⚙️ Edit Tournament & Rules' : '⚙️ এডিট টুর্নামেন্ট ও রুলস';
+          if (navBtn.setAttribute) {
+            navBtn.setAttribute('title', isEn ? 'Edit current tournament name, teams, match timings and rules' : 'বর্তমান টুর্নামেন্টের নাম, দল, খেলার সময় ও নিয়মাবলী পরিবর্তন করুন');
+          }
+          if (navBtn.classList && navBtn.classList.add) {
+            navBtn.classList.add('btn-mode-edit');
+          }
+        }
+        if (welcomeBtn) {
+          welcomeBtn.textContent = isEn ? '⚙️ Edit Tournament' : '⚙️ টুর্নামেন্ট এডিট করুন';
+        }
+      } else {
+        if (navBtn) {
+          navBtn.textContent = isEn ? '🚀 Tournament Setup & Rules' : '🚀 টুর্নামেন্ট সেটআপ ও রুলস';
+          if (navBtn.setAttribute) {
+            navBtn.setAttribute('title', isEn ? 'Configure tournament name, venue, prize pool & official rules' : 'নতুন টুর্নামেন্টের নাম, ভেন্যু, প্রাইজমানি ও নিয়মাবলী সেট করুন');
+          }
+          if (navBtn.classList && navBtn.classList.remove) {
+            navBtn.classList.remove('btn-mode-edit');
+          }
+        }
+        if (welcomeBtn) {
+          welcomeBtn.textContent = isEn ? '🚀 Start Setup' : '🚀 সেটআপ শুরু করুন';
+        }
+      }
+    }
+
     // ========================================================
     // TOURNAMENT CONFIGURATION & PERSISTENCE
     // ========================================================
@@ -358,6 +405,28 @@ function escapeHtml(str) {
       }
       if (typeof renderPage2RulesList === 'function') {
         renderPage2RulesList();
+      }
+      if (typeof updateHubFootballCard === 'function') {
+        updateHubFootballCard();
+      }
+      if (typeof updateNavWizardButton === 'function') {
+        updateNavWizardButton();
+      }
+      if (typeof renderPrintablePosterSheet === 'function') {
+        renderPrintablePosterSheet();
+      }
+      const posterTarget = document.getElementById('promo-poster-render-target');
+      if (posterTarget && typeof activePosterTab !== 'undefined') {
+        posterTarget.innerHTML = activePosterTab === 'fixture'
+          ? (typeof generateFixturePosterCardHtml === 'function' ? generateFixturePosterCardHtml() : '')
+          : (typeof generatePromoPosterCardHtml === 'function' ? generatePromoPosterCardHtml() : '');
+      }
+      const p1BracketSub = document.querySelector('[data-i18n="page1.bracket_sub"]');
+      if (p1BracketSub && typeof getDynamicKnockoutMatchesForPoster === 'function') {
+        const koInfo = getDynamicKnockoutMatchesForPoster(activeCfg, isEn);
+        if (koInfo && koInfo.subtitle) {
+          p1BracketSub.textContent = koInfo.subtitle;
+        }
       }
     }
 

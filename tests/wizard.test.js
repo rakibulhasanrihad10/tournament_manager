@@ -143,6 +143,12 @@ assert(domElements['tournament-wizard-modal'].classList.contains('active'), 'Wiz
 assert(domElements['tournament-wizard-modal'].style.display === 'flex', 'Wizard modal displays as flex');
 assert(!domElements['btn-preset-standard'].classList.contains('active'), 'Standard card is inactive by default on clean slate');
 assert(!domElements['btn-preset-minibar'].classList.contains('active'), 'Minibar card is inactive by default on clean slate');
+assert(domElements['w-cfg-startingPlayers'].value === '', 'Starting players input has NO default value on clean slate');
+assert(domElements['w-cfg-benchPlayers'].value === '', 'Bench players input has NO default value on clean slate');
+assert(domElements['w-cfg-maxSubstitutes'].value === '', 'Max substitutes input has NO default value on clean slate');
+assert(domElements['w-cfg-teamCount'].value === '', 'Team count input has NO default value on clean slate');
+assert(tempWizardTeamCount === null, 'tempWizardTeamCount is null on clean slate');
+assert(domElements['w-visual-bracket-tree'].innerHTML.includes('মোট দলের সংখ্যা নির্বাচন করুন'), 'Bracket tree renders empty team prompt on clean slate');
 
 closeTournamentWizard();
 assert(!domElements['tournament-wizard-modal'].classList.contains('active'), 'Wizard modal removes active class on close');
@@ -241,6 +247,44 @@ assert(!domElements['w-cfg-startingPlayers'].classList.contains('w-input-warning
 domElements['w-cfg-startingPlayers'].value = '15';
 saveTournamentConfigFromWizard();
 assert(tournamentConfig.startingPlayers === 11, 'saveTournamentConfigFromWizard clamps startingPlayers to 11');
+
+// Test Suite 8.5: Match Duration & Halves Selection System
+console.log('\n⏱️ Test Suite 8.5: Match Duration & Halves Selection System');
+
+// 1. Clean slate test:
+populateMatchDurationFields('');
+assert(domElements['w-cfg-half1'].value === '', 'Clean slate leaves half 1 empty');
+assert(domElements['w-cfg-half2'].value === '', 'Clean slate leaves half 2 empty');
+assert(domElements['w-cfg-matchDuration'].value === '', 'Clean slate leaves formatted matchDuration empty');
+
+// 2. 1st half selection automatically syncs 2nd half
+onHalf1Change('15');
+assert(domElements['w-cfg-half2'].value === '15', 'onHalf1Change automatically syncs half 2 to match half 1');
+assert(domElements['w-cfg-matchDuration'].value.includes('30') || domElements['w-cfg-matchDuration'].value.includes('৩০'), 'Calculates total 30 mins (15+15)');
+
+// 3. Set break time and verify formatting
+domElements['w-cfg-break'].value = '5';
+updateMatchDurationFromHalves();
+assert(domElements['w-cfg-matchDuration'].value.includes('15+5+15') || domElements['w-cfg-matchDuration'].value.includes('১৫+৫+১৫'), 'Match duration includes 5-minute break in breakdown');
+assert((domElements['w-duration-summary-text'].innerHTML || domElements['w-duration-summary-text'].textContent).includes('30') || (domElements['w-duration-summary-text'].innerHTML || domElements['w-duration-summary-text'].textContent).includes('৩০'), 'Summary text displays calculated total minutes');
+
+// 4. Quick preset testing
+applyTimePreset(20, 20, 5);
+assert(domElements['w-cfg-half1'].value === '20', 'applyTimePreset sets half 1 to 20');
+assert(domElements['w-cfg-half2'].value === '20', 'applyTimePreset sets half 2 to 20');
+assert(domElements['w-cfg-break'].value === '5', 'applyTimePreset sets break to 5');
+assert(domElements['w-cfg-matchDuration'].value.includes('40') || domElements['w-cfg-matchDuration'].value.includes('৪০'), 'applyTimePreset formats 40 mins');
+
+// 5. Populate from existing string
+populateMatchDurationFields('90 mins (45+15+45 mins)');
+assert(domElements['w-cfg-half1'].value === '45', 'populateMatchDurationFields parses 45 for half 1');
+assert(domElements['w-cfg-break'].value === '15', 'populateMatchDurationFields parses 15 for break');
+assert(domElements['w-cfg-half2'].value === '45', 'populateMatchDurationFields parses 45 for half 2');
+
+populateMatchDurationFields('৩০ মিনিট (১৫+১৫ মিনিট)');
+assert(domElements['w-cfg-half1'].value === '15', 'populateMatchDurationFields parses Bengali numeral ১৫ for half 1');
+assert(domElements['w-cfg-half2'].value === '15', 'populateMatchDurationFields parses Bengali numeral ১৫ for half 2');
+assert(domElements['w-cfg-break'].value === '0', 'populateMatchDurationFields defaults break to 0 when absent');
 
 // Test Suite 9: Intelligent Format Recommendation Engine based on Team Count
 console.log('\n🤖 Test Suite 9: Intelligent Format Recommendation Engine');

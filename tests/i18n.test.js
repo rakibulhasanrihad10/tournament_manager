@@ -50,6 +50,10 @@ global.document = {
     }
     return domElements.get(id);
   },
+  querySelector(selector) {
+    const list = this.querySelectorAll(selector);
+    return list.length > 0 ? list[0] : null;
+  },
   querySelectorAll(selector) {
     const res = [];
     for (const el of domElements.values()) {

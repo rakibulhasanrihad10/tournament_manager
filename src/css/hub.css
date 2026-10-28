@@ -349,6 +349,15 @@
   transform: scale(1.02);
 }
 
+.btn-football-launch.btn-has-active-tournament {
+  background: linear-gradient(135deg, #059669, #10b981);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+}
+.btn-football-launch.btn-has-active-tournament:hover {
+  background: linear-gradient(135deg, #047857, #059669);
+  transform: scale(1.02);
+}
+
 .btn-upcoming-preview {
   background: rgba(255, 255, 255, 0.06);
   color: var(--text-action-title);
@@ -529,6 +538,24 @@
 
 [data-theme="light"] .entry-choice-card.choice-demo:hover {
   background: #f0f9ff;
+}
+
+.entry-choice-card.choice-resume:hover {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.12) !important;
+}
+
+[data-theme="light"] .entry-choice-card.choice-resume:hover {
+  background: #ecfdf5 !important;
+}
+
+.entry-choice-card.choice-edit:hover {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.08);
+}
+
+[data-theme="light"] .entry-choice-card.choice-edit:hover {
+  background: #eef2ff;
 }
 
 .choice-icon-wrap {

@@ -289,7 +289,7 @@ if (typeof document !== 'undefined') {
 }
 
 function printDocument(mode) {
-      document.body.classList.remove('print-only-1', 'print-only-2', 'print-only-poster');
+      document.body.classList.remove('print-only-1', 'print-only-2', 'print-only-poster', 'print-only-reg-slip');
       if (mode === 'page1') {
         document.body.classList.add('print-only-1');
       } else if (mode === 'page2') {
@@ -300,7 +300,7 @@ function printDocument(mode) {
       }
       window.print();
       setTimeout(() => {
-        document.body.classList.remove('print-only-1', 'print-only-2', 'print-only-poster');
+        document.body.classList.remove('print-only-1', 'print-only-2', 'print-only-poster', 'print-only-reg-slip');
       }, 1200);
     }
 
