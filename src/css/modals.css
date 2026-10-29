@@ -2849,6 +2849,12 @@
       max-width: 800px;
       width: 95%;
     }
+
+    .modal-box.modal-blank-roster {
+      max-width: 880px;
+      width: 94%;
+      border-radius: 14px;
+    }
       flex-wrap: wrap;
     }
 

@@ -68,6 +68,7 @@ global.document = {
     }
     return domElements[id];
   },
+  querySelector: () => null,
   querySelectorAll: () => []
 };
 

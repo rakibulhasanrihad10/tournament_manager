@@ -289,18 +289,41 @@ if (typeof document !== 'undefined') {
 }
 
 function printDocument(mode) {
-      document.body.classList.remove('print-only-1', 'print-only-2', 'print-only-poster', 'print-only-reg-slip');
+      document.body.classList.remove('print-only-1', 'print-only-2', 'print-only-poster', 'print-only-reg-slip', 'print-only-blank-roster');
+      
+      let pageStyle = document.getElementById('dynamic-print-page-style');
+      if (!pageStyle && typeof document !== 'undefined' && document.head) {
+        pageStyle = document.createElement('style');
+        pageStyle.id = 'dynamic-print-page-style';
+        document.head.appendChild(pageStyle);
+      }
+
       if (mode === 'page1') {
+        if (pageStyle) pageStyle.textContent = '@page { size: A4 landscape; margin: 5mm 6mm; }';
         document.body.classList.add('print-only-1');
       } else if (mode === 'page2') {
+        if (pageStyle) pageStyle.textContent = '@page { size: A4 landscape; margin: 5mm 6mm; }';
         document.body.classList.add('print-only-2');
       } else if (mode === 'poster') {
+        if (pageStyle) pageStyle.textContent = '@page { size: A4 landscape; margin: 5mm 6mm; }';
         renderPrintablePosterSheet();
         document.body.classList.add('print-only-poster');
+      } else if (mode === 'blank-roster') {
+        // A4 Portrait for Blank Squad Registration Form (minimal edge margins for maximum printable width)
+        if (pageStyle) pageStyle.textContent = '@page { size: A4 portrait; margin: 3.5mm 4mm; }';
+        if (typeof renderBlankRosterSheet === 'function') {
+          renderBlankRosterSheet();
+        }
+        document.body.classList.add('print-only-blank-roster');
       }
-      window.print();
+      if (typeof window !== 'undefined' && typeof window.print === 'function') {
+        window.print();
+      }
       setTimeout(() => {
-        document.body.classList.remove('print-only-1', 'print-only-2', 'print-only-poster', 'print-only-reg-slip');
+        document.body.classList.remove('print-only-1', 'print-only-2', 'print-only-poster', 'print-only-reg-slip', 'print-only-blank-roster');
+        if (pageStyle) {
+          pageStyle.textContent = '@page { size: A4 landscape; margin: 5mm 6mm; }';
+        }
       }, 1200);
     }
 
@@ -310,6 +333,7 @@ function printDocument(mode) {
         closeAllDropdowns();
         if (typeof closeFootballEntryChoiceModal === 'function') closeFootballEntryChoiceModal();
         if (typeof closeSportPreviewModal === 'function') closeSportPreviewModal();
+        if (typeof closeBlankRosterConfigModal === 'function') closeBlankRosterConfigModal();
         if (activeModalMatchId) closeMatchEventsModal();
         closeTournamentWizard();
         closePromoPosterModal();

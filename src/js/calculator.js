@@ -322,6 +322,9 @@ function recalculateAll() {
 
       // 7. Update Golden Boot Leaderboard & Award Input
       updateGoldenBootLeaderboard(playerGoals);
+      if (typeof renderPage2OperationsHub === 'function') {
+        renderPage2OperationsHub(playerGoals, teamStats);
+      }
     }
 
     function renderGroupRows(grpId, teams) {

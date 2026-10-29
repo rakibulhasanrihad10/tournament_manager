@@ -201,6 +201,14 @@
                   <small data-i18n="nav.print_p2_sub">অফিশিয়াল রুলস ও দল তালিকা</small>
                 </div>
               </button>
+              <div class="dropdown-divider"></div>
+              <button type="button" class="dropdown-item" onclick="openBlankRosterConfigModal(); closeAllDropdowns();" id="btn-print-blank-roster">
+                <span class="item-icon">📝</span>
+                <div>
+                  <strong data-i18n="nav.print_blank_roster">খালি প্লেয়ার নিবন্ধন ফর্ম</strong>
+                  <small data-i18n="nav.print_blank_roster_sub">দলের নাম ও খেলোয়াড় তালিকা হাতে লেখার ব্ল্যাঙ্ক শিট</small>
+                </div>
+              </button>
             </div>
           </div>
 
@@ -937,184 +945,77 @@
     </div>
 
     <div class="p2-layout">
-      <!-- Left Column: 11 Player Names List -->
-      <div class="p2-left">
+      <!-- Left Column: Active Team Squad & Lineup -->
+      <div class="p2-left" style="width: 50%;">
         <div>
-          <div class="section-title" data-i18n="page2.roster_card_title">খেলোয়াড়দের পূর্ণ নামের তালিকা (সর্বোচ্চ ১১ জন)</div>
+          <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <span data-i18n="page2.roster_card_title">👥 খেলোয়াড়দের পূর্ণ নামের তালিকা ও লাইনআপ</span>
+            <span id="p2-team-squad-badge" style="font-size:10px; background:rgba(255,255,255,0.25); padding:2px 8px; border-radius:12px; font-weight:700;">১১ জন</span>
+          </div>
           <table class="player-table">
             <thead>
               <tr>
-                <th style="width: 14%;" data-i18n="page2.th_sl">ক্রমিক নং</th>
-                <th style="width: 18%;" data-i18n="page2.th_jersey">জার্সি নং</th>
-                <th style="width: 68%;" data-i18n="page2.th_player_name">খেলোয়াড়ের পূর্ণ নাম</th>
+                <th style="width: 10%;" data-i18n="page2.th_sl">ক্র. নং</th>
+                <th style="width: 15%;" data-i18n="page2.th_jersey">জার্সি নং</th>
+                <th style="width: 50%;" data-i18n="page2.th_player_name">খেলোয়াড়ের পূর্ণ নাম</th>
+                <th style="width: 25%; text-align:center;" data-i18n="page2.th_perf">পারফরম্যান্স (ইভেন্ট)</th>
               </tr>
             </thead>
             <tbody id="roster-players-tbody">
-              <!-- Dynamically rendered rows 1 to 11 -->
+              <!-- Dynamically rendered rows with performance badges -->
             </tbody>
           </table>
         </div>
-<div class="sign-row">
-          <div class="sign-block">
-            <div class="sign-line"></div>
-            <strong data-i18n="page2.sign_mgr">টিম ম্যানেজারের স্বাক্ষর</strong>
-          </div>
-          <div class="sign-block">
-            <div class="sign-line"></div>
-            <strong data-i18n="page2.sign_committee">আয়োজক কমিটির স্বাক্ষর</strong>
-          </div>
+
+        <!-- Active Team Summary Strip (Clean & informative) -->
+        <div id="p2-team-stats-strip" class="p2-team-stats-strip" style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:6px 10px; margin-top:8px; display:flex; justify-content:space-between; align-items:center; font-size:11px;">
+          <span style="color:#166534; font-weight:700;">
+            <span id="p2-strip-team-name">টিম</span>: <span id="p2-strip-players-count">১১ জন নিবন্ধিত</span>
+          </span>
+          <span style="color:#0f172a; font-weight:600;">
+            ⚽ গোল: <strong id="p2-strip-team-goals" style="color:#15803d;">০</strong> &nbsp;|&nbsp; 
+            🟨 কার্ড: <strong id="p2-strip-team-yellows" style="color:#b45309;">০</strong> &nbsp;|&nbsp; 
+            🟥 লাল: <strong id="p2-strip-team-reds" style="color:#b91c1c;">০</strong>
+          </span>
         </div>
       </div>
 
-      <!-- Right Column: Rules & Guidelines + Group Stage Schedule -->
-      <div class="p2-right">
-        <div>
-          <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
-            <span data-i18n="page2.rules_card_title">খেলার নিয়ম ও টুর্নামেন্ট নির্দেশনা</span>
-            <button type="button" class="btn" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:#fff; font-size:9.5px; padding:1px 6px; cursor:pointer;" onclick="openTournamentWizard('rules')" title="টুর্নামেন্টের নিয়মাবলী পরিবর্তন ও সিলেক্ট করুন" data-i18n="page2.btn_customize_rules">⚙️ নিয়ম কাস্টমাইজ</button>
+      <!-- Right Column: Tournament Operations, Top Scorers & Discipline Hub -->
+      <div class="p2-right" style="width: 50%;">
+        
+        <!-- CARD 1: TOP SCORERS / GOLDEN BOOT -->
+        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden; margin-bottom:8px;">
+          <div class="section-title" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
+            <span data-i18n="page2.top_scorers_title">🏆 শীর্ষ গোলদাতা (Top Scorers - Golden Boot)</span>
+            <span style="font-size:10px; opacity:0.9;">⚽ লাইভ র‍্যাংকিং</span>
           </div>
-          <div class="rules-card">
-            <ul class="rules-list" id="tournament-rules-list">
-              <li><span class="rules-highlight">দল গঠন:</span> প্রতি দলে সর্বোচ্চ <span class="rules-highlight">১১ জন খেলোয়াড়</span> নিবন্ধন করা যাবে। নিবন্ধিত ১১ জনের বাইরের কোনো খেলোয়াড় অংশ নিতে পারবে না।</li>
-              <li><span class="rules-highlight">মাঠের সদস্য:</span> মাঠে একসঙ্গে প্রতি দলের <span class="rules-highlight">৬ জন খেলোয়াড়</span> (গোলকিপারসহ) খেলবেন (6-a-side)।</li>
-              <li><span class="rules-highlight">ম্যাচ সময়:</span> গ্রুপ পর্বের ম্যাচ <span class="rules-highlight">২০ মিনিট</span> (১০ মিনিট প্রথমার্ধ, ২ মিনিট বিরতি, ১০ মিনিট দ্বিতীয়ার্ধ)।</li>
-              <li><span class="rules-highlight">উপস্থিতি:</span> নির্ধারিত সময়ের কমপক্ষে <span class="rules-highlight">১৫ মিনিট পূর্বে</span> দলকে মাঠে উপস্থিত হয়ে রিপোর্ট করতে হবে।</li>
-              <li><span class="rules-highlight">চূড়ান্ত সিদ্ধান্ত:</span> রেফারির সিদ্ধান্ত এবং আয়োজক কমিটির সিদ্ধান্তই চূড়ান্ত ও সর্বসম্মত বলে গণ্য হবে।</li>
-              <li><span class="rules-highlight">শৃঙ্খলা:</span> অসদাচরণ, মাঠে রেফারির সিদ্ধান্তে অসম্মান বা খেলা বিঘ্নিত করার চেষ্টা করলে দল তাৎক্ষণিক বহিষ্কার হবে।</li>
-              <li><span class="rules-highlight">ম্যাচ ড্র ও সরাসরি টাইব্রেকার:</span> প্রতিটি ম্যাচের ক্ষেত্রে—<span class="rules-highlight">গ্রুপ পর্ব ও নকআউট পর্ব উভয়তেই</span>—নির্ধারিত সময়ে খেলা ড্র হলে কোনো অতিরিক্ত সময় থাকবে না; সরাসরি <span class="rules-highlight">পেনাল্টি শুটআউট (টাইব্রেকার)</span>-এর মাধ্যমে বিজয়ী নির্ধারিত হবে। টুর্নামেন্টের কোনো ম্যাচ ড্র হিসেবে শেষ হবে না।</li>
-              <li><span class="rules-highlight">পয়েন্ট ও অবস্থান:</span> প্রতিটি ম্যাচে বিজয়ী দল ৩ পয়েন্ট পাবে। গ্রুপে একাধিক দলের পয়েন্ট সমান হলে যথাক্রমে: হেড-টু-হেড ফলাফল, গোল ব্যবধান এবং সর্বাধিক গোল সংখ্যা বিবেচনা করে অবস্থান নির্ধারিত হবে।</li>
-            </ul>
+          <div id="p2-top-scorers-container" style="padding:6px 8px; min-height:85px; font-size:11.5px;">
+            <!-- Dynamically populated top scorers list -->
           </div>
         </div>
 
-        <div>
-          <div class="section-title" style="background: linear-gradient(90deg, #1b5e20, #2e7d32); margin-top: 2px;" data-i18n="page2.fixture_table_title">
-            গ্রুপ পর্বের ম্যাচ সূচি (কার সাথে কার খেলা)
+        <!-- CARD 2: DISCIPLINE, CARDS & SUSPENSION WATCH -->
+        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden; margin-bottom:8px;">
+          <div class="section-title" style="background:linear-gradient(90deg, #991b1b, #b91c1c); display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
+            <span data-i18n="page2.discipline_title">🟨 🟥 কার্ড, শৃঙ্খলা ও সাসপেনশন ট্র্যাকিং</span>
+            <span style="font-size:10px; opacity:0.9;">ফেয়ার প্লে ওয়াচ</span>
           </div>
-          <table class="mini-fixture-table">
-            <thead>
-              <tr>
-                <th style="width: 14%;" data-i18n="page2.th_mno">ম্যাচ নং</th>
-                <th style="width: 20%;" data-i18n="page2.th_time">সময়</th>
-                <th style="width: 18%;" data-i18n="page2.th_grp">গ্রুপ</th>
-                <th style="width: 48%;" data-i18n="page2.th_vs">মুখোমুখি দল</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>১</td>
-                <td>সন্ধ্যা ৬:০০</td>
-                <td style="color:#0d47a1; font-weight:700;">গ্রুপ বি</td>
-                <td>
-                  <div class="match-vs-grid">
-                    <div class="team-left">মুকুন্দপুর</div>
-                    <div><span class="vs-badge">VS</span></div>
-                    <div class="team-right">উত্তর ওড্ডা</div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>২</td>
-                <td>সন্ধ্যা ৬:৩০</td>
-                <td style="color:#b71c1c; font-weight:700;">গ্রুপ এ</td>
-                <td>
-                  <div class="match-vs-grid">
-                    <div class="team-left">মুড়িয়ারা</div>
-                    <div><span class="vs-badge">VS</span></div>
-                    <div class="team-right">নোয়াপাড়া</div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>৩</td>
-                <td>রাত ৭:০০</td>
-                <td style="color:#1b5e20; font-weight:700;">গ্রুপ সি</td>
-                <td>
-                  <div class="match-vs-grid">
-                    <div class="team-left">বাতাবাড়িয়া</div>
-                    <div><span class="vs-badge">VS</span></div>
-                    <div class="team-right">মোহাম্মদপুর</div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>৪</td>
-                <td>রাত ৭:৩০</td>
-                <td style="color:#b71c1c; font-weight:700;">গ্রুপ এ</td>
-                <td>
-                  <div class="match-vs-grid">
-                    <div class="team-left">নোয়াপাড়া</div>
-                    <div><span class="vs-badge">VS</span></div>
-                    <div class="team-right">চিতড্ডা</div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>৫</td>
-                <td>রাত ৮:০০</td>
-                <td style="color:#0d47a1; font-weight:700;">গ্রুপ বি</td>
-                <td>
-                  <div class="match-vs-grid">
-                    <div class="team-left">উত্তর ওড্ডা</div>
-                    <div><span class="vs-badge">VS</span></div>
-                    <div class="team-right">দক্ষিণ ওড্ডা</div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>৬</td>
-                <td>রাত ৮:৩০</td>
-                <td style="color:#1b5e20; font-weight:700;">গ্রুপ সি</td>
-                <td>
-                  <div class="match-vs-grid">
-                    <div class="team-left">মোহাম্মদপুর</div>
-                    <div><span class="vs-badge">VS</span></div>
-                    <div class="team-right">ভংগুয়া</div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>৭</td>
-                <td>রাত ৯:০০</td>
-                <td style="color:#b71c1c; font-weight:700;">গ্রুপ এ</td>
-                <td>
-                  <div class="match-vs-grid">
-                    <div class="team-left">চিতড্ডা</div>
-                    <div><span class="vs-badge">VS</span></div>
-                    <div class="team-right">মুড়িয়ারা</div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>৮</td>
-                <td>রাত ৯:৩০</td>
-                <td style="color:#0d47a1; font-weight:700;">গ্রুপ বি</td>
-                <td>
-                  <div class="match-vs-grid">
-                    <div class="team-left">দক্ষিণ ওড্ডা</div>
-                    <div><span class="vs-badge">VS</span></div>
-                    <div class="team-right">মুকুন্দপুর</div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>৯</td>
-                <td>রাত ১০:০০</td>
-                <td style="color:#1b5e20; font-weight:700;">গ্রুপ সি</td>
-                <td>
-                  <div class="match-vs-grid">
-                    <div class="team-left">ভংগুয়া</div>
-                    <div><span class="vs-badge">VS</span></div>
-                    <div class="team-right">বাতাবাড়িয়া</div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="note-box" style="margin-top: 5px; padding: 4px 6px; font-size: 10px; line-height: 1.35;">
-            <strong data-i18n="page2.sched_note_hd">📌 গ্রুপ পর্বের শিডিউল নোট:</strong> <span data-i18n="page2.sched_note_body">রোটেশন সিস্টেমে প্রতিটি দল পর্যাপ্ত বিশ্রাম (কমপক্ষে ১-১.৫ ঘণ্টা) পাবে। নির্ধারিত সময়ে খেলা ড্র হলে কোনো অতিরিক্ত সময় ছাড়া সরাসরি পেনাল্টি শুটআউটে বিজয়ী নির্ধারিত হবে।</span>
+          <div id="p2-discipline-container" style="padding:6px 8px; min-height:85px; font-size:11px;">
+            <!-- Dynamically populated card holders and suspension alerts -->
           </div>
         </div>
+
+        <!-- CARD 3: TOURNAMENT OVERVIEW & RULES ACTION -->
+        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden;">
+          <div class="section-title" style="background:linear-gradient(90deg, #0f766e, #0d9488); display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
+            <span data-i18n="page2.overview_title">📊 টুর্নামেন্ট ওভারভিউ ও নিয়মাবলী</span>
+            <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,0.25); border:1px solid rgba(255,255,255,0.5); color:#fff; font-size:10px; padding:2px 8px; border-radius:4px; cursor:pointer;" onclick="openTournamentRulesModal()" data-i18n="page2.btn_view_rules">📋 নিয়মাবলী দেখুন</button>
+          </div>
+          <div id="p2-overview-container" style="padding:8px 10px; font-size:11.5px; background:#f8fafc;">
+            <!-- Dynamically populated matches count, goals count, cards count -->
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1710,6 +1611,8 @@
 
   <!-- HIDDEN PRINT-ONLY POSTER SHEET (VISIBLE ONLY ON PRINT) -->
   <div class="page-sheet page-poster" id="page-poster" style="display:none;"></div>
+  <!-- HIDDEN PRINT-ONLY BLANK ROSTER SHEET (VISIBLE ONLY ON PRINT) -->
+  <div class="page-blank-roster" id="page-blank-roster" style="display:none; border:none; box-shadow:none; padding:0;"></div>
   </div> <!-- /football-app-view -->
 
   <!-- FOOTBALL ENTRY CHOICE ONBOARDING MODAL -->
@@ -1770,7 +1673,10 @@
               <div style="font-size:13px; font-weight:800; color:#38bdf8;">
                 ⚽ <span id="reg-highlight-title">ফুটবল টুর্নামেন্ট ২০২৬</span>
               </div>
-              <span class="reg-highlight-badge" data-i18n="reg.tourney_summary_badge">টুর্নামেন্ট হাইলাইটস</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button type="button" class="btn" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:10px; padding:2px 8px; border-radius:4px; cursor:pointer;" onclick="openBlankRosterConfigModal()" title="অফলাইন দল তালিকা জমার জন্য খালি প্লেয়ার ফর্ম প্রিন্ট করুন">🖨️ খালি ফর্ম প্রিন্ট</button>
+                <span class="reg-highlight-badge" data-i18n="reg.tourney_summary_badge">টুর্নামেন্ট হাইলাইটস</span>
+              </div>
             </div>
             <div class="reg-highlight-grid">
               <div class="reg-pill">
@@ -1893,6 +1799,132 @@
     </div>
   </div>
 
+  <!-- BLANK ROSTER SMART PRINT CONFIGURATION MODAL -->
+  <div id="blank-roster-config-modal" class="modal-backdrop" onclick="if(event.target === this) closeBlankRosterConfigModal()">
+    <div class="modal-box modal-blank-roster" style="max-width: 880px; width: 95%; border-radius: 14px; box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.45);">
+      <div class="modal-header" style="background: linear-gradient(90deg, #072a60, #0d47a1); padding: 14px 22px; border-radius: 14px 14px 0 0;">
+        <h3 id="blank-roster-modal-title" style="display:flex; align-items:center; gap:10px; font-size:16px;">
+          <span>📋</span> <span data-i18n="blank_roster.modal_title">খালি প্লেয়ার নিবন্ধন ফর্ম ও প্রিন্ট সেটআপ</span>
+        </h3>
+        <button type="button" class="modal-close-btn" onclick="closeBlankRosterConfigModal()">✕</button>
+      </div>
+      
+      <div class="modal-body" style="padding: 20px 24px; max-height: calc(85vh - 130px); overflow-y: auto;">
+        
+        <!-- SECTION 1: SQUAD SIZE & SPLIT -->
+        <div style="background: var(--bg-card, #f8fafc); border: 1px solid var(--border-color, #cbd5e1); border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
+          <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #072a60; display:flex; align-items:center; gap:8px;">
+            <span>👥</span> <span data-i18n="blank_roster.squad_setup_title">স্কোয়াড ও খেলোয়াড় সংখ্যা নির্ধারণ</span>
+          </h4>
+          <div style="display: flex; gap: 18px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+              <label style="font-size: 12px; font-weight: 700; color: #334155; display:block; margin-bottom: 5px;" data-i18n="blank_roster.starting_players_lbl">মূল একাদশ / শুরুর খেলোয়াড়:</label>
+              <select id="blank-roster-starting-select" class="form-control" style="width:100%; padding:8px 12px; font-size:13px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterConfigChange()">
+                <option value="5">৫ জন (Futsal / Minibar)</option>
+                <option value="6">৬ জন (6-a-side)</option>
+                <option value="7">৭ জন (7-a-side)</option>
+                <option value="8">৮ জন (8-a-side)</option>
+                <option value="9">৯ জন (9-a-side)</option>
+                <option value="11" selected>১১ জন (FIFA 11-a-side)</option>
+              </select>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+              <label style="font-size: 12px; font-weight: 700; color: #334155; display:block; margin-bottom: 5px;" data-i18n="blank_roster.bench_players_lbl">অতিরিক্ত / বিকল্প খেলোয়াড়:</label>
+              <select id="blank-roster-bench-select" class="form-control" style="width:100%; padding:8px 12px; font-size:13px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterConfigChange()">
+                <option value="2">২ জন</option>
+                <option value="3">৩ জন</option>
+                <option value="4">৪ জন</option>
+                <option value="5" selected>৫ জন (স্ট্যান্ডার্ড)</option>
+                <option value="6">৬ জন</option>
+                <option value="7">৭ জন</option>
+                <option value="9">৯ জন</option>
+              </select>
+            </div>
+          </div>
+          <div id="blank-roster-squad-summary" style="margin-top: 12px; font-size: 12.5px; color: #0284c7; font-weight: 700; background:#e0f2fe; padding:6px 14px; border-radius:6px; display:inline-block;">
+            📝 সর্বমোট স্কোয়াড: ১৬ জন (১১ জন মূল + ৫ জন বিকল্প)
+          </div>
+        </div>
+
+        <!-- SECTION 1.5: HEADER LOGOS CUSTOMIZER -->
+        <div style="background: #f0f7ff; border: 1.5px solid #93c5fd; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
+          <h4 style="margin: 0 0 12px 0; font-size: 14px; color: #072a60; display:flex; align-items:center; gap:8px;">
+            <span>🖼️</span> <span data-i18n="blank_roster.logos_title">হেডার লোগো ও ছবি নির্বাচন (বাম ও ডান পাশ)</span>
+          </h4>
+          <div style="display:flex; gap:18px; flex-wrap:wrap;">
+            <!-- LEFT LOGO -->
+            <div style="flex:1; min-width:240px; background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:12px 14px;">
+              <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;" data-i18n="blank_roster.left_logo_lbl">বাম পাশের লোগো / প্রতীক:</label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <select id="blank-roster-left-logo-select" class="form-control" style="flex:1; padding:7px 10px; font-size:12.5px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterLogoTypeChange('left')">
+                  <option value="default_ball" selected data-i18n="blank_roster.opt_default_ball">⚽ স্পিড ফুটবল (ডিফল্ট)</option>
+                  <option value="trophy" data-i18n="blank_roster.opt_trophy">🏆 champions ট্রফি</option>
+                  <option value="star" data-i18n="blank_roster.opt_star">🌟 স্টার ব্যাজ</option>
+                  <option value="custom" data-i18n="blank_roster.opt_custom">📁 নিজস্ব ছবি আপলোড...</option>
+                </select>
+                <div id="blank-roster-left-logo-preview" style="width:54px; height:46px; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;"></div>
+              </div>
+              <div id="blank-roster-left-file-wrap" style="display:none; margin-top:8px;">
+                <input type="file" id="blank-roster-left-file" accept="image/*" style="font-size:11.5px;" onchange="handleBlankRosterImageUpload('left', event)">
+              </div>
+            </div>
+
+            <!-- RIGHT LOGO -->
+            <div style="flex:1; min-width:240px; background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:12px 14px;">
+              <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;" data-i18n="blank_roster.right_logo_lbl">ডান পাশের ছবি / ভেন্যু / স্পনসর:</label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <select id="blank-roster-right-logo-select" class="form-control" style="flex:1; padding:7px 10px; font-size:12.5px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterLogoTypeChange('right')">
+                  <option value="default_stadium" selected data-i18n="blank_roster.opt_default_stadium">🏟️ স্টেডিয়াম আর্ট (ডিফল্ট)</option>
+                  <option value="kick" data-i18n="blank_roster.opt_kick">⚽ ফুটবল কিক আর্ট</option>
+                  <option value="sponsor" data-i18n="blank_roster.opt_sponsor">🤝 স্পনসর / ফেয়ার প্লে</option>
+                  <option value="custom" data-i18n="blank_roster.opt_custom">📁 নিজস্ব ছবি আপলোড...</option>
+                </select>
+                <div id="blank-roster-right-logo-preview" style="width:54px; height:46px; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;"></div>
+              </div>
+              <div id="blank-roster-right-file-wrap" style="display:none; margin-top:8px;">
+                <input type="file" id="blank-roster-right-file" accept="image/*" style="font-size:11.5px;" onchange="handleBlankRosterImageUpload('right', event)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: SMART RULE BUDGET & METER -->
+        <div style="background: #fffdf5; border: 1.5px solid #ffe082; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; flex-wrap:wrap; gap:8px;">
+            <h4 style="margin: 0; font-size: 14px; color: #b71c1c; display:flex; align-items:center; gap:8px;">
+              <span>📜</span> <span data-i18n="blank_roster.rules_budget_title">খেলার নিয়মাবলী বাজেট ও নির্বাচন (A4 ১-পেজ ফিট)</span>
+            </h4>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn" style="background:#16a34a; color:#fff; font-size:11.5px; padding:5px 12px; border-radius:6px; font-weight:700; cursor:pointer;" onclick="autoFitBlankRosterRules()" data-i18n="blank_roster.btn_autofit">⚡ ১ পেজে অটো-ফিট</button>
+              <button type="button" class="btn" style="background:#e2e8f0; color:#334155; font-size:11.5px; padding:5px 12px; border-radius:6px; cursor:pointer;" onclick="uncheckAllBlankRosterRules()" data-i18n="blank_roster.btn_clear_rules">সব মুছুন</button>
+            </div>
+          </div>
+
+          <!-- RULE CAPACITY METER BADGE -->
+          <div id="blank-roster-rule-budget-meter" style="padding: 8px 12px; border-radius: 6px; font-size: 12.5px; font-weight: 700; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+            <!-- Dynamically populated -->
+          </div>
+
+          <div style="font-size: 11.5px; color: #64748b; margin-bottom: 10px;">
+            💡 A4 Portrait পেপারে এক পাতার মধ্যে সুন্দরভাবে ধরে রাখার জন্য সর্বোচ্চ <strong>৬ থেকে ৮টি মূল নিয়ম</strong> রাখা আদর্শ।
+          </div>
+
+          <!-- CHECKABLE RULES LIST (SPACIOUS 2-COLUMN RESPONSIVE GRID) -->
+          <div id="blank-roster-rules-checklist" style="max-height: 280px; overflow-y: auto; border: 1.5px solid #cbd5e1; border-radius: 8px; background: #fff; padding: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 10px;">
+            <!-- Dynamic checklist items -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div style="display:flex; justify-content:space-between; align-items:center; padding: 14px 24px; background: #f1f5f9; border-top: 1px solid #cbd5e1; border-radius: 0 0 14px 14px;">
+        <button type="button" class="btn" style="background:#64748b; color:#fff; padding:8px 18px; font-size:13px; border-radius:6px; cursor:pointer;" onclick="closeBlankRosterConfigModal()" data-i18n="modal.btn_close">বাতিল</button>
+        <button type="button" class="btn btn-primary" style="background:linear-gradient(135deg, #072a60, #0d47a1); font-weight:800; padding:10px 22px; font-size:13.5px; border-radius:6px; cursor:pointer;" onclick="applyBlankRosterConfigAndPrint()" data-i18n="blank_roster.btn_print_a4">🖨️ এ ফোর পোর্ট্রেটে প্রিন্ট করুন</button>
+      </div>
+    </div>
+  </div>
+
   <!-- UPCOMING SPORT PREVIEW / ROADMAP MODAL -->
   <div id="sport-preview-modal" class="modal-backdrop" onclick="if(event.target === this) closeSportPreviewModal()">
     <div class="modal-box" style="max-width:540px;">
@@ -1903,6 +1935,32 @@
       <div class="modal-body" id="preview-sport-body" style="padding:16px;"></div>
       <div style="display:flex; justify-content:flex-end; padding:8px 14px; background:var(--bg-modal-footer); border-top:1px solid var(--border-modal-footer);">
         <button type="button" class="btn" style="background:#0284c7; color:#fff;" onclick="closeSportPreviewModal()" data-i18n="modal.btn_close_done">বন্ধ করুন ✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOURNAMENT RULES & GUIDELINES MODAL -->
+  <div id="tournament-rules-modal" class="modal-backdrop" style="display:none;" onclick="if(event.target===this)closeTournamentRulesModal()">
+    <div class="modal-box" style="max-width:760px; width:92%; max-height:85vh; border-radius:12px; overflow:hidden;">
+      <div class="modal-header" style="background:linear-gradient(90deg, #072a60, #0d47a1); padding:12px 20px;">
+        <h3 style="margin:0; font-size:15px; font-weight:800; display:flex; align-items:center; gap:8px;">
+          <span>📜</span> <span data-i18n="page2.rules_modal_header">টুর্নামেন্ট পরিচালনা ও খেলার অফিসিয়াল নিয়মাবলী</span>
+        </h3>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:#fff; font-size:10px; padding:3px 10px; border-radius:4px; cursor:pointer;" onclick="closeTournamentRulesModal(); openTournamentWizard('rules');" title="নিয়মাবলী পরিবর্তন ও কাস্টমাইজ করুন" data-i18n="page2.btn_customize_rules">⚙️ নিয়ম কাস্টমাইজ</button>
+          <button type="button" class="modal-close-btn" onclick="closeTournamentRulesModal()">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" style="padding:16px 20px; overflow-y:auto; max-height:calc(85vh - 120px); background:#f8fafc;">
+        <div class="rules-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:12px 16px;">
+          <ul class="rules-list" id="tournament-rules-list" style="margin:0; padding:0; list-style:none;">
+            <!-- Dynamically populated by renderPage2RulesList() -->
+          </ul>
+        </div>
+      </div>
+      <div style="background:#f1f5f9; padding:10px 18px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0;">
+        <span style="font-size:11px; color:#64748b;" data-i18n="page2.rules_modal_note">📌 যেকোনো নিয়ম বা ফরম্যাট পরিবর্তনের জন্য 'নিয়ম কাস্টমাইজ' বাটনে ক্লিক করুন।</span>
+        <button type="button" class="btn" style="background:#072a60; color:#fff; padding:6px 16px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;" onclick="closeTournamentRulesModal()" data-i18n="modal.btn_close">বন্ধ করুন</button>
       </div>
     </div>
   </div>

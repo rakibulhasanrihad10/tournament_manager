@@ -32,22 +32,36 @@
       /* Control single page printing */
       body.print-only-1 .page-2,
       body.print-only-1 .page-poster,
+      body.print-only-1 .page-blank-roster,
       body.print-only-1 .page-break {
         display: none !important;
       }
 
       body.print-only-2 .page-1,
       body.print-only-2 .page-poster,
+      body.print-only-2 .page-blank-roster,
       body.print-only-2 .page-break {
         display: none !important;
       }
 
       body.print-only-poster .page-1,
       body.print-only-poster .page-2,
+      body.print-only-poster .page-blank-roster,
       body.print-only-poster .page-break {
         display: none !important;
       }
       body.print-only-poster .page-poster {
+        display: block !important;
+        margin: 0 auto !important;
+      }
+
+      body.print-only-blank-roster .page-1,
+      body.print-only-blank-roster .page-2,
+      body.print-only-blank-roster .page-poster,
+      body.print-only-blank-roster .page-break {
+        display: none !important;
+      }
+      body.print-only-blank-roster .page-blank-roster {
         display: block !important;
         margin: 0 auto !important;
       }
@@ -105,16 +119,85 @@
         border-left-color: #2e7d32 !important;
       }
 
-      /* Full Stadium Color Sheet Theme during Print */
-      body:not(.sheet-theme-paper):not(.light-mode) .page-sheet {
+      /* Full Stadium Color Sheet Theme during Print (Excludes printable blank roster form) */
+      body:not(.sheet-theme-paper):not(.light-mode) .page-sheet:not(.page-blank-roster) {
         background: linear-gradient(135deg, #061c36 0%, #0d3b1e 40%, #16592d 100%) !important;
-        border: 3px solid #f5b915 !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
         color: #ffffff !important;
       }
-      body:not(.sheet-theme-paper):not(.light-mode) .header h1 {
+      body:not(.sheet-theme-paper):not(.light-mode) .page-sheet:not(.page-blank-roster) .header h1 {
         color: #ffca28 !important;
       }
-      body:not(.sheet-theme-paper):not(.light-mode) .header h1 span {
+      body:not(.sheet-theme-paper):not(.light-mode) .page-sheet:not(.page-blank-roster) .header h1 span {
         color: #ff5252 !important;
+      }
+
+      /* Blank Squad Sheet: Edge-to-edge minimal margin & NO outside border (matching reference image) */
+      body.print-only-blank-roster .page-sheet.page-blank-roster,
+      body.print-only-blank-roster .page-blank-roster,
+      .page-blank-roster {
+        background: #ffffff !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        color: #0f172a !important;
+      }
+      body.print-only-blank-roster .page-blank-roster {
+        display: block !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        box-sizing: border-box !important;
+      }
+      body.print-only-blank-roster .page-blank-roster .p2-layout {
+        display: flex !important;
+        gap: 8px !important;
+        align-items: flex-start !important;
+      }
+      body.print-only-blank-roster .page-blank-roster .p2-left {
+        width: calc(54% - 4px) !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+        overflow: visible !important;
+      }
+      body.print-only-blank-roster .page-blank-roster .starter-card,
+      body.print-only-blank-roster .page-blank-roster .bench-card {
+        border: 1.5px solid #93c5fd !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+      }
+      body.print-only-blank-roster .page-blank-roster .p2-right {
+        width: calc(46% - 4px) !important;
+        border: 1.5px solid #93c5fd !important;
+        border-radius: 8px !important;
+      }
+      body.print-only-blank-roster .blank-roster-player-table td {
+        height: 27px !important;
+      }
+      body.print-only-blank-roster .page-blank-roster .header h1,
+      .page-blank-roster .header h1 {
+        color: #072a60 !important;
+      }
+      body.print-only-blank-roster .page-blank-roster .header p,
+      .page-blank-roster .header p {
+        color: #333333 !important;
       }
     }
