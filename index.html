@@ -526,28 +526,49 @@
               <span class="lead-chip" data-i18n="common.no_goals_logged">কোনো গোল এখনো নথিভুক্ত হয়নি</span>
             </div>
           </div>
-          <div class="award-item">
+          <div class="award-item award-item-gold">
             <div class="award-header gold" data-i18n="page1.award_top_scorer">⚽ টুর্নামেন্টের সেরা গোলদাতা (গোল্ডেন বুট)</div>
             <div class="award-details">
-              <span>খেলোয়াড়:</span><input type="text" class="award-line-lg" id="award-top-scorer-name" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
-              <span>দল:</span><input type="text" class="award-line-md" id="award-top-scorer-team" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
-              <span>গোল:</span><input type="number" class="award-box-sm" id="award-top-scorer-goals" style="text-align:center; font-weight:700; outline:none;">
+              <div class="award-field award-field-player">
+                <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
+                <input type="text" class="award-input-text award-line-lg" id="award-top-scorer-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
+              </div>
+              <div class="award-field award-field-team">
+                <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
+                <input type="text" class="award-input-text award-line-md" id="award-top-scorer-team" placeholder="দলের নাম...">
+              </div>
+              <div class="award-field award-field-stat">
+                <span class="award-field-lbl" data-i18n="page1.goals_lbl">গোল:</span>
+                <input type="number" min="0" max="99" class="award-box-sm award-input-stat" id="award-top-scorer-goals" placeholder="০">
+              </div>
             </div>
           </div>
 
-          <div class="award-item">
+          <div class="award-item award-item-red">
             <div class="award-header red" data-i18n="page1.award_mot">🏅 ফাইনালের ম্যান অব দ্য ম্যাচ</div>
             <div class="award-details">
-              <span>খেলোয়াড়:</span><input type="text" class="award-line-lg" id="award-mom-name" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
-              <span>দল:</span><input type="text" class="award-line-md" id="award-mom-team" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
+              <div class="award-field award-field-player">
+                <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
+                <input type="text" class="award-input-text award-line-lg" id="award-mom-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
+              </div>
+              <div class="award-field award-field-team">
+                <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
+                <input type="text" class="award-input-text award-line-md" id="award-mom-team" placeholder="দলের নাম...">
+              </div>
             </div>
           </div>
 
-          <div class="award-item">
+          <div class="award-item award-item-green">
             <div class="award-header green" data-i18n="page1.award_gk">🧤 টুর্নামেন্টের সেরা গোলরক্ষক (গোল্ডেন গ্লাভস)</div>
             <div class="award-details">
-              <span>খেলোয়াড়:</span><input type="text" class="award-line-lg" id="award-gk-name" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
-              <span>দল:</span><input type="text" class="award-line-md" id="award-gk-team" style="border:none; border-bottom:1.2px dotted #555; background:transparent; font-weight:700; outline:none;" placeholder="...">
+              <div class="award-field award-field-player">
+                <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
+                <input type="text" class="award-input-text award-line-lg" id="award-gk-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
+              </div>
+              <div class="award-field award-field-team">
+                <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
+                <input type="text" class="award-input-text award-line-md" id="award-gk-team" placeholder="দলের নাম...">
+              </div>
             </div>
           </div>
         </div>

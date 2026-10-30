@@ -97,6 +97,12 @@ it('Knockout brackets stack to 1 column on mobile phones (< 640px)', () => {
   assert.ok(mainCss.includes('#page1 .bracket-grid-2x2') && mainCss.includes('grid-template-columns: 1fr !important;'), 'Bracket grid must stack to 1 column on phones');
 });
 
+it('Awards & honours section has spacious flexible fields and wraps on narrow phones', () => {
+  assert.ok(mainCss.includes('.award-field-player') && mainCss.includes('flex: 1.6;'), 'Player field has spacious flex layout');
+  assert.ok(mainCss.includes('.award-field-team') && mainCss.includes('flex: 1.2;'), 'Team field has spacious flex layout');
+  assert.ok(mainCss.includes('#page1 .award-details') && mainCss.includes('flex-wrap: wrap !important;'), 'Award details wraps cleanly on narrow phones');
+});
+
 it('Match score inputs & event buttons have touch-action manipulation', () => {
   assert.ok(mainCss.includes('#page1 .score-input') && mainCss.includes('touch-action: manipulation;'), 'Score inputs must have touch-action manipulation');
   assert.ok(mainCss.includes('#page1 .btn-match-event') && mainCss.includes('touch-action: manipulation;'), 'Event buttons must have touch-action manipulation');
