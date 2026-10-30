@@ -511,67 +511,6 @@
         <div class="rule-strip">
           <strong data-i18n="page1.draw_strip">ℹ️ ড্র নিষ্পত্তি নিয়ম:</strong> <span data-i18n="page1.draw_strip_desc">গ্রুপ বা নকআউট পর্বের যেকোনো ম্যাচ ড্র হলে কোনো অতিরিক্ত সময় ছাড়াই সরাসরি পেনাল্টি শুটআউটে (টাইব্রেকার) বিজয়ী নির্ধারিত হবে।</span>
         </div>
-
-        <!-- 3. ব্যক্তিগত পুরস্কার ও সম্মাননা (Awards Box) -->
-        <div class="awards-box">
-          <div class="section-title" style="margin-bottom: 4px;" data-i18n="page1.awards_title">🎖️ ব্যক্তিগত পুরস্কার ও সম্মাননা</div>
-
-          <!-- Auto Golden Boot Leaderboard Strip -->
-          <div class="golden-boot-lead-wrap">
-            <div class="lead-title">
-              <span data-i18n="page1.golden_boot_title">🏆 শীর্ষ গোলদাতা তালিকা (Golden Boot Race):</span>
-              <span style="font-size:8.5px; font-weight:normal; color:#92400e;" data-i18n="page1.golden_boot_sub">ম্যাচ ইভেন্ট থেকে স্বয়ংক্রিয়ভাবে সংকলিত</span>
-            </div>
-            <div class="lead-list" id="golden-boot-top-list">
-              <span class="lead-chip" data-i18n="common.no_goals_logged">কোনো গোল এখনো নথিভুক্ত হয়নি</span>
-            </div>
-          </div>
-          <div class="award-item award-item-gold">
-            <div class="award-header gold" data-i18n="page1.award_top_scorer">⚽ টুর্নামেন্টের সেরা গোলদাতা (গোল্ডেন বুট)</div>
-            <div class="award-details">
-              <div class="award-field award-field-player">
-                <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
-                <input type="text" class="award-input-text award-line-lg" id="award-top-scorer-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
-              </div>
-              <div class="award-field award-field-team">
-                <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
-                <input type="text" class="award-input-text award-line-md" id="award-top-scorer-team" placeholder="দলের নাম...">
-              </div>
-              <div class="award-field award-field-stat">
-                <span class="award-field-lbl" data-i18n="page1.goals_lbl">গোল:</span>
-                <input type="number" min="0" max="99" class="award-box-sm award-input-stat" id="award-top-scorer-goals" placeholder="০">
-              </div>
-            </div>
-          </div>
-
-          <div class="award-item award-item-red">
-            <div class="award-header red" data-i18n="page1.award_mot">🏅 ফাইনালের ম্যান অব দ্য ম্যাচ</div>
-            <div class="award-details">
-              <div class="award-field award-field-player">
-                <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
-                <input type="text" class="award-input-text award-line-lg" id="award-mom-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
-              </div>
-              <div class="award-field award-field-team">
-                <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
-                <input type="text" class="award-input-text award-line-md" id="award-mom-team" placeholder="দলের নাম...">
-              </div>
-            </div>
-          </div>
-
-          <div class="award-item award-item-green">
-            <div class="award-header green" data-i18n="page1.award_gk">🧤 টুর্নামেন্টের সেরা গোলরক্ষক (গোল্ডেন গ্লাভস)</div>
-            <div class="award-details">
-              <div class="award-field award-field-player">
-                <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
-                <input type="text" class="award-input-text award-line-lg" id="award-gk-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
-              </div>
-              <div class="award-field award-field-team">
-                <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
-                <input type="text" class="award-input-text award-line-md" id="award-gk-team" placeholder="দলের নাম...">
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- RIGHT COLUMN (59%): গ্রুপ পর্বের ম্যাচ সূচি ও নকআউট পর্বের ব্র্যাকেট -->
@@ -1027,13 +966,71 @@
         </div>
 
         <!-- CARD 3: TOURNAMENT OVERVIEW & RULES ACTION -->
-        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden;">
+        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden; margin-bottom:8px;">
           <div class="section-title" style="background:linear-gradient(90deg, #0f766e, #0d9488); display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
             <span data-i18n="page2.overview_title">📊 টুর্নামেন্ট ওভারভিউ ও নিয়মাবলী</span>
             <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,0.25); border:1px solid rgba(255,255,255,0.5); color:#fff; font-size:10px; padding:2px 8px; border-radius:4px; cursor:pointer;" onclick="openTournamentRulesModal()" data-i18n="page2.btn_view_rules">📋 নিয়মাবলী দেখুন</button>
           </div>
           <div id="p2-overview-container" style="padding:8px 10px; font-size:11.5px; background:#f8fafc;">
             <!-- Dynamically populated matches count, goals count, cards count -->
+          </div>
+        </div>
+
+        <!-- CARD 4: OFFICIAL CEREMONY AWARDS & HONOURS -->
+        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden;">
+          <div class="section-title" style="background:linear-gradient(90deg, #b45309, #d97706); display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
+            <span data-i18n="page1.awards_title">🎖️ টুর্নামেন্ট সমাপ্তি ও ব্যক্তিগত বিশেষ সম্মাননা</span>
+            <span style="font-size:10px; opacity:0.9;">🏆 অফিসিয়াল ট্রফি ও খেতাব</span>
+          </div>
+          <div style="padding:8px 10px; background:#f8fafc; display:flex; flex-direction:column; gap:6px;">
+            <!-- Golden Boot Award -->
+            <div class="award-item award-item-gold">
+              <div class="award-header gold" data-i18n="page1.award_top_scorer">⚽ টুর্নামেন্টের সেরা গোলদাতা (গোল্ডেন বুট)</div>
+              <div class="award-details">
+                <div class="award-field award-field-player">
+                  <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
+                  <input type="text" class="award-input-text award-line-lg" id="award-top-scorer-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
+                </div>
+                <div class="award-field award-field-team">
+                  <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
+                  <input type="text" class="award-input-text award-line-md" id="award-top-scorer-team" placeholder="দলের নাম...">
+                </div>
+                <div class="award-field award-field-stat">
+                  <span class="award-field-lbl" data-i18n="page1.goals_lbl">গোল:</span>
+                  <input type="number" min="0" max="99" class="award-box-sm award-input-stat" id="award-top-scorer-goals" placeholder="০">
+                </div>
+              </div>
+            </div>
+
+            <!-- Man of the Match / MVP Award -->
+            <div class="award-item award-item-red">
+              <div class="award-header red" data-i18n="page1.award_mot">🏅 ফাইনালের ম্যান অব দ্য ম্যাচ</div>
+              <div class="award-details">
+                <div class="award-field award-field-player">
+                  <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
+                  <input type="text" class="award-input-text award-line-lg" id="award-mom-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
+                </div>
+                <div class="award-field award-field-team">
+                  <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
+                  <input type="text" class="award-input-text award-line-md" id="award-mom-team" placeholder="দলের নাম...">
+                </div>
+              </div>
+            </div>
+
+            <!-- Golden Glove Award -->
+            <div class="award-item award-item-green">
+              <div class="award-header green" data-i18n="page1.award_gk">🧤 টুর্নামেন্টের সেরা গোলরক্ষক (গোল্ডেন গ্লাভস)</div>
+              <div class="award-details">
+                <div class="award-field award-field-player">
+                  <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
+                  <input type="text" class="award-input-text award-line-lg" id="award-gk-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
+                </div>
+                <div class="award-field award-field-team">
+                  <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
+                  <input type="text" class="award-input-text award-line-md" id="award-gk-team" placeholder="দলের নাম...">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

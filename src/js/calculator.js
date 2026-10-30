@@ -371,20 +371,19 @@ function recalculateAll() {
       const topListEl = document.getElementById('golden-boot-top-list');
       const topPlayers = Object.values(playerGoals).sort((a, b) => b.goals - a.goals);
 
-      if (!topListEl) return;
-
-      if (topPlayers.length === 0) {
-        const noGoalsMsg = typeof t === 'function' ? t('common.no_goals_logged') : 'কোনো গোল এখনো নথিভুক্ত হয়নি';
-        topListEl.innerHTML = '<span class="lead-chip" style="background:#f8fafc; border-color:#cbd5e1; color:#64748b;">' + noGoalsMsg + '</span>';
-        return;
+      if (topListEl) {
+        if (topPlayers.length === 0) {
+          const noGoalsMsg = typeof t === 'function' ? t('common.no_goals_logged') : 'কোনো গোল এখনো নথিভুক্ত হয়নি';
+          topListEl.innerHTML = '<span class="lead-chip" style="background:#f8fafc; border-color:#cbd5e1; color:#64748b;">' + noGoalsMsg + '</span>';
+        } else {
+          const medals = ['🥇', '🥈', '🥉'];
+          const goalsWord = typeof t === 'function' ? t('common.goals') : 'গোল';
+          topListEl.innerHTML = topPlayers.slice(0, 5).map((p, i) => {
+            const medal = medals[i] || '';
+            return '<span class="lead-chip">' + (i + 1) + '. ' + p.name + ' (' + p.team + ') — ' + p.goals + ' ' + goalsWord + ' ' + medal + '</span>';
+          }).join('');
+        }
       }
-
-      const medals = ['🥇', '🥈', '🥉'];
-      const goalsWord = typeof t === 'function' ? t('common.goals') : 'গোল';
-      topListEl.innerHTML = topPlayers.slice(0, 5).map((p, i) => {
-        const medal = medals[i] || '';
-        return '<span class="lead-chip">' + (i + 1) + '. ' + p.name + ' (' + p.team + ') — ' + p.goals + ' ' + goalsWord + ' ' + medal + '</span>';
-      }).join('');
 
       // Auto-populate Bottom Award for Golden Boot
       if (topPlayers.length > 0) {

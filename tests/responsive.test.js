@@ -100,7 +100,7 @@ it('Knockout brackets stack to 1 column on mobile phones (< 640px)', () => {
 it('Awards & honours section has spacious flexible fields and wraps on narrow phones', () => {
   assert.ok(mainCss.includes('.award-field-player') && mainCss.includes('flex: 1.6;'), 'Player field has spacious flex layout');
   assert.ok(mainCss.includes('.award-field-team') && mainCss.includes('flex: 1.2;'), 'Team field has spacious flex layout');
-  assert.ok(mainCss.includes('#page1 .award-details') && mainCss.includes('flex-wrap: wrap !important;'), 'Award details wraps cleanly on narrow phones');
+  assert.ok(mainCss.includes('.award-details') && mainCss.includes('flex-wrap: wrap !important;'), 'Award details wraps cleanly on narrow phones');
 });
 
 it('Match score inputs & event buttons have touch-action manipulation', () => {
