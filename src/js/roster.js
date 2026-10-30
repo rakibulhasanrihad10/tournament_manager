@@ -23,7 +23,11 @@ function renderPage2TeamTabs() {
     groupsMap.get(grp).push(t);
   });
 
-  const grpClasses = { 'A': 'ga', 'B': 'gb', 'C': 'gc', 'D': 'gd', 'KO': 'ga' };
+  const grpClasses = {
+    'A': 'ga', 'B': 'gb', 'C': 'gc', 'D': 'gd',
+    'E': 'ge', 'F': 'gf', 'G': 'gg', 'H': 'gh',
+    'KO': 'ga'
+  };
 
   let html = `<span style="font-size:10px; font-weight:800; color:#475569;">${isEn ? 'Select Team:' : 'দল নির্বাচন:'}</span>`;
 
@@ -47,7 +51,16 @@ function switchRosterTeam(teamName) {
   // Update active tab styling
   document.querySelectorAll('.p2-team-tab').forEach(b => b.classList.remove('active'));
   const activeBtn = document.getElementById('tab-btn-' + teamName);
-  if (activeBtn) activeBtn.classList.add('active');
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+    if (typeof activeBtn.scrollIntoView === 'function') {
+      try {
+        activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      } catch (e) {
+        // Smooth scroll fallback
+      }
+    }
+  }
 
   const data = teamRosters[teamName] || { group: '', manager: '', phone: '', players: [] };
 
@@ -58,7 +71,12 @@ function switchRosterTeam(teamName) {
   const phoneInp = document.getElementById('roster-phone-input');
 
   if (nameDisp) nameDisp.textContent = teamName;
-  if (grpDisp) grpDisp.textContent = data.group || '';
+  if (grpDisp) {
+    grpDisp.textContent = data.group || '';
+    const grpColorsMap = { 'A': '#b71c1c', 'B': '#0d47a1', 'C': '#1b5e20', 'D': '#7c3aed', 'E': '#ea580c', 'F': '#0d9488', 'G': '#db2777', 'H': '#d97706' };
+    const cleanGrp = (data.group || '').replace(/[^A-Za-z]/g, '').toUpperCase();
+    if (grpColorsMap[cleanGrp]) grpDisp.style.color = grpColorsMap[cleanGrp];
+  }
   if (mgrInp) mgrInp.value = data.manager || '';
   if (phoneInp) phoneInp.value = data.phone || '';
 

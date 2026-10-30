@@ -485,17 +485,30 @@ function recalculateAll() {
       const groupKeys = Object.keys(activeGroups);
       const type = tournamentConfig.tournamentType || 'groups';
 
-      // For standard default 3-group format with existing markup, if groups match A, B, C, keep IDs
+      // Dynamic group colors with full palette and auto-fallback
       const groupColors = {
-        'A': { border: '#b71c1c', cls: 'ga', titleBn: '🏆 গ্রুপ এ (Group A)', titleEn: '🏆 Group A' },
-        'B': { border: '#0d47a1', cls: 'gb', titleBn: '🏆 গ্রুপ বি (Group B)', titleEn: '🏆 Group B' },
-        'C': { border: '#1b5e20', cls: 'gc', titleBn: '🏆 গ্রুপ সি (Group C)', titleEn: '🏆 Group C' },
-        'D': { border: '#7c3aed', cls: 'gd', titleBn: '🏆 গ্রুপ ডি (Group D)', titleEn: '🏆 Group D' }
+        'A': { bg: '#b71c1c', border: '#b71c1c', cls: 'ga', titleBn: '🏆 গ্রুপ এ (Group A)', titleEn: '🏆 Group A' },
+        'B': { bg: '#0d47a1', border: '#0d47a1', cls: 'gb', titleBn: '🏆 গ্রুপ বি (Group B)', titleEn: '🏆 Group B' },
+        'C': { bg: '#1b5e20', border: '#1b5e20', cls: 'gc', titleBn: '🏆 গ্রুপ সি (Group C)', titleEn: '🏆 Group C' },
+        'D': { bg: '#7c3aed', border: '#7c3aed', cls: 'gd', titleBn: '🏆 গ্রুপ ডি (Group D)', titleEn: '🏆 Group D' },
+        'E': { bg: '#ea580c', border: '#ea580c', cls: 'ge', titleBn: '🏆 গ্রুপ ই (Group E)', titleEn: '🏆 Group E' },
+        'F': { bg: '#0d9488', border: '#0d9488', cls: 'gf', titleBn: '🏆 গ্রুপ এফ (Group F)', titleEn: '🏆 Group F' },
+        'G': { bg: '#db2777', border: '#db2777', cls: 'gg', titleBn: '🏆 গ্রুপ জি (Group G)', titleEn: '🏆 Group G' },
+        'H': { bg: '#d97706', border: '#d97706', cls: 'gh', titleBn: '🏆 গ্রুপ এইচ (Group H)', titleEn: '🏆 Group H' }
       };
 
+      const fallbackPalettes = ['#b71c1c', '#0d47a1', '#1b5e20', '#7c3aed', '#ea580c', '#0d9488', '#db2777', '#d97706'];
+
       let html = '';
-      groupKeys.forEach(grp => {
-        const meta = groupColors[grp] || { border: '#0284c7', cls: 'ga', titleBn: `🏆 গ্রুপ ${grp}`, titleEn: `🏆 Group ${grp}` };
+      groupKeys.forEach((grp, gIdx) => {
+        const fallbackBg = fallbackPalettes[gIdx % fallbackPalettes.length];
+        const meta = groupColors[grp] || {
+          bg: fallbackBg,
+          border: fallbackBg,
+          cls: 'ga',
+          titleBn: `🏆 গ্রুপ ${grp} (Group ${grp})`,
+          titleEn: `🏆 Group ${grp}`
+        };
         const teamsInGrp = activeGroups[grp] || [];
         const grpTitle = isEn ? meta.titleEn : meta.titleBn;
         const teamWord = isEn ? 'Teams' : 'দল';
@@ -503,8 +516,8 @@ function recalculateAll() {
         const matchCount = Math.max(1, Math.round((teamsInGrp.length * (teamsInGrp.length - 1)) / 2));
 
         html += `
-          <div class="grp-table-wrap">
-            <div class="grp-hd ${meta.cls}">
+          <div class="grp-table-wrap" style="border-color:${meta.border};">
+            <div class="grp-hd ${meta.cls}" style="background:${meta.bg}; color:#ffffff;">
               <span>${grpTitle}</span>
               <span style="font-size:9px; opacity:0.9;">${teamsInGrp.length} ${teamWord} • ${matchCount} ${matchWord}</span>
             </div>

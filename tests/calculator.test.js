@@ -157,6 +157,48 @@ const groupBAfterCustomFormat = document.getElementById('tbody-group-B').innerHT
 assert(groupBAfterCustomFormat.includes('<strong>মুকুন্দপুর</strong>'), 'Standings calculation remains 100% decoupled from formatType');
 
 // ==========================================
+// TEST SUITE 6: Dynamic Multi-Group Standings (A, B, C, D & Future Groups)
+// ==========================================
+console.log('\n🎨 Test Suite 6: Dynamic Multi-Group Standings & Color Themes');
+
+// Test 16 teams (4 groups: A, B, C, D)
+const custom16Groups = {
+  'A': ['দল ১', 'দল ২', 'দল ৩', 'দল ৪'],
+  'B': ['দল ৫', 'দল ৬', 'দল ৭', 'দল ৮'],
+  'C': ['দল ৯', 'দল ১০', 'দল ১১', 'দল ১২'],
+  'D': ['দল ১৩', 'দল ১৪', 'দল ১৫', 'দল ১৬']
+};
+
+getActiveGroups = () => custom16Groups;
+renderDynamicStandings();
+
+const standingsContainer = document.getElementById('dynamic-standings-container');
+const standingsHtml = standingsContainer.innerHTML;
+
+assert(standingsHtml.includes('tbody-group-D'), 'Renders tbody-group-D for Group D');
+assert(standingsHtml.includes('দল ১৩') && standingsHtml.includes('দল ১৬'), 'Renders Group D teams');
+assert(standingsHtml.includes('গ্রুপ ডি') || standingsHtml.includes('Group D'), 'Renders Group D title text');
+assert(standingsHtml.includes('grp-hd gd'), 'Applies grp-hd gd class to Group D header');
+assert(standingsHtml.includes('background:#7c3aed'), 'Applies distinct non-white background color to Group D header');
+
+// Test 5 groups (A, B, C, D, E) for dynamic auto-fallback
+const custom5Groups = {
+  ...custom16Groups,
+  'E': ['দল ১৭', 'দল ১৮', 'দল ১৯', 'দল ২০']
+};
+getActiveGroups = () => custom5Groups;
+renderDynamicStandings();
+
+const standings5Html = standingsContainer.innerHTML;
+assert(standings5Html.includes('tbody-group-E'), 'Renders tbody-group-E for Group E');
+assert(standings5Html.includes('গ্রুপ E') || standings5Html.includes('Group E'), 'Renders Group E title text');
+assert(standings5Html.includes('grp-hd ge'), 'Applies grp-hd ge class to Group E header');
+assert(standings5Html.includes('background:#ea580c'), 'Applies distinct non-white background color to Group E header');
+
+// Restore default
+delete global.getActiveGroups;
+
+// ==========================================
 // SUMMARY REPORT
 // ==========================================
 console.log('\n==========================================');
