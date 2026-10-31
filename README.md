@@ -93,13 +93,21 @@ The codebase follows strict **Separation of Concerns (SoC)** with zero external 
 tournament_manager/
 ├── .gitattributes          # Normalizes line endings across OS platforms
 ├── .gitignore              # Ignores OS, IDE, logs, and temporary files
-├── index.html              # Semantic HTML structure & modal containers
+├── index.html              # Assembled single-page application entry point
 ├── README.md               # Project documentation and guide
 │
 ├── assets/                 # Media assets (crests, banners, icons)
 │   └── .gitkeep
 │
 ├── src/                    # Source Code
+│   ├── index.template.html # Master assembly template with modular @@include directives
+│   │
+│   ├── components/         # Modular Component Layer (Separation of Concerns)
+│   │   ├── common/         # Shared markup (head.html, navbar.html, welcome-banner.html, scripts.html)
+│   │   ├── hub/            # Sports Hub homepage & roadmap (sports-hub-view.html)
+│   │   ├── football/       # Football views & print sheets (page1-sheet.html, page2-sheet.html, etc.)
+│   │   └── modals/         # Dedicated modal views (wizard, registration, match-events, poster, etc.)
+│   │
 │   ├── css/                # Presentation Layer
 │   │   ├── hub.css         # Sports Hub navigation & sport preview modal styles
 │   │   ├── main.css        # Design tokens, layout, brackets, tables & awards
@@ -120,14 +128,22 @@ tournament_manager/
 │       ├── poster.js       # Social media promo card generator & clipboard copy
 │       └── app.js          # Application lifecycle, theme engine & print controllers
 │
-├── scripts/                # Development & Verification Scripts
+├── scripts/                # Build, Development & Verification Scripts
+│   ├── build.js            # Zero-dependency component compiler (assembles src/components/ into index.html)
+│   ├── test-all.js         # Comprehensive test runner executing all 12 test suites
 │   └── verify-i18n.js      # Verifies 100% parity between Bengali and English keys
 │
-└── tests/                  # Automated Test Suites (Native Node.js)
-    ├── wizard.test.js       # Setup Wizard, recommendations, visual brackets (114 tests)
-    ├── calculator.test.js   # Standings math, tiebreakers, GD, FP, shootouts (15 tests)
+└── tests/                  # Automated Test Suites (Native Node.js, 450+ Unit Tests)
+    ├── components.test.js   # Modular component structure & build synchronization (4 tests)
+    ├── wizard.test.js       # Setup Wizard, recommendations, visual brackets (211 tests)
+    ├── calculator.test.js   # Standings math, tiebreakers, GD, FP, shootouts (26 tests)
+    ├── page2-dashboard.test.js # Page 2 squad operations, dynamic 26-player roster (42 tests)
     ├── registration.test.js # Registration portal validation & roster sync (32 tests)
-    ├── hub.test.js          # Sports Hub routing, sport previews & modal flows (19 tests)
+    ├── blank-roster.test.js # Printable handwritten squad sheet & rule budget (62 tests)
+    ├── poster.test.js       # Social media promo card & dynamic fixture schedule (23 tests)
+    ├── hub.test.js          # Sports Hub routing, sport previews & modal flows (39 tests)
+    ├── responsive.test.js   # Mobile & desktop responsive layout tests (19 tests)
+    ├── stage-tabs.test.js   # Classic sheet stage tabs & baseline alignment (8 tests)
     ├── theme.test.js        # System dark/light modes & print paper themes (13 tests)
     └── i18n.test.js         # Translations dictionary integrity & live DOM updates (11 tests)
 ```
@@ -136,19 +152,23 @@ tournament_manager/
 
 ## 🧪 Running Automated Unit Tests
 
-The project includes **204 automated unit tests** built with zero external test runner dependencies. Run them directly using Node.js:
+The project includes **over 450 automated unit tests** built with zero external test runner dependencies. Run them directly using Node.js:
 
 ```bash
-# Run all automated test suites:
-node tests/wizard.test.js
-node tests/calculator.test.js
-node tests/registration.test.js
-node tests/hub.test.js
-node tests/theme.test.js
-node tests/i18n.test.js
+# Run all automated test suites and verify component synchronization in one go:
+node scripts/test-all.js
 
-# Verify 100% parity of all HTML i18n dictionary keys:
-node scripts/verify-i18n.js
+# Or run individual test suites:
+node --test tests/components.test.js
+node --test tests/calculator.test.js
+node --test tests/page2-dashboard.test.js
+node --test tests/wizard.test.js
+
+# Compile/rebuild index.html from src/components/:
+node scripts/build.js
+
+# Verify index.html is in sync with components without modifying files:
+node scripts/build.js --check
 ```
 
 ---

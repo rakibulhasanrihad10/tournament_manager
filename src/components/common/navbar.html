@@ -1,0 +1,129 @@
+    <div class="action-bar">
+      <div class="action-bar-inner">
+        <div class="action-bar-brand">
+          <!-- Return to Sports Hub Button -->
+          <button type="button" class="btn btn-hub" onclick="navigateToView('hub')" data-i18n="nav.btn_hub" title="স্পোর্টস হাব / হোম পেজে ফিরে যান">🏠 স্পোর্টস হাব</button>
+          <div class="action-bar-title-wrap">
+            <h2 data-i18n="nav.panel_title">টুর্নামেন্ট প্রিন্ট ও ম্যানেজমেন্ট প্যানেল</h2>
+          </div>
+        </div>
+        <div class="action-btns">
+          <!-- 1. Primary Highlighted Setup CTA (Eye-catching for new & returning users) -->
+          <button type="button" class="btn btn-primary-wizard" id="btn-nav-wizard" onclick="openTournamentWizard()" data-i18n="nav.btn_wizard" data-i18n-title="nav.btn_wizard_title" title="নতুন টুর্নামেন্টের নাম, ভেন্যু, প্রাইজমানি ও নিয়মাবলী সেট করুন">
+            🚀 টুর্নামেন্ট সেটআপ ও রুলস
+          </button>
+
+          <!-- 2. Consolidated Print Dropdown -->
+          <div class="dropdown-wrap" id="print-dropdown-wrap">
+            <button type="button" class="btn btn-dropdown" onclick="toggleDropdown('print-dropdown')" id="btn-print-dropdown" data-i18n-title="nav.dropdown_print_title" title="ফিকশ্চার বা নির্দিষ্ট পেজ প্রিন্ট করুন">
+              <span data-i18n="nav.dropdown_print">🖨️ প্রিন্ট</span> <span class="dropdown-caret">▾</span>
+            </button>
+            <div class="dropdown-menu" id="print-dropdown">
+              <button type="button" class="dropdown-item" onclick="printDocument('all'); closeAllDropdowns();">
+                <span class="item-icon">🖨️</span>
+                <div>
+                  <strong data-i18n="nav.print_all_title">সম্পূর্ণ ফিকশ্চার (২ পেজ)</strong>
+                  <small data-i18n="nav.print_all_sub">গ্রুপ টেবিল, নকআউট ব্র্যাকেট ও রুলস</small>
+                </div>
+              </button>
+              <button type="button" class="dropdown-item" onclick="printDocument('page1'); closeAllDropdowns();">
+                <span class="item-icon">📄</span>
+                <div>
+                  <strong data-i18n="nav.print_p1_title">পেজ ১ (ফিকশ্চার ও টেবিল)</strong>
+                  <small data-i18n="nav.print_p1_sub">পয়েন্ট টেবিল, সেমি ও ফাইনাল</small>
+                </div>
+              </button>
+              <button type="button" class="dropdown-item" onclick="printDocument('page2'); closeAllDropdowns();">
+                <span class="item-icon">📋</span>
+                <div>
+                  <strong data-i18n="nav.print_p2_title">পেজ ২ (রুলস ও প্লেয়ার)</strong>
+                  <small data-i18n="nav.print_p2_sub">অফিশিয়াল রুলস ও দল তালিকা</small>
+                </div>
+              </button>
+              <div class="dropdown-divider"></div>
+              <button type="button" class="dropdown-item" onclick="openBlankRosterConfigModal(); closeAllDropdowns();" id="btn-print-blank-roster">
+                <span class="item-icon">📝</span>
+                <div>
+                  <strong data-i18n="nav.print_blank_roster">খালি প্লেয়ার নিবন্ধন ফর্ম</strong>
+                  <small data-i18n="nav.print_blank_roster_sub">দলের নাম ও খেলোয়াড় তালিকা হাতে লেখার ব্ল্যাঙ্ক শিট</small>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Consolidated Tools & Settings Dropdown -->
+          <div class="dropdown-wrap" id="tools-dropdown-wrap">
+            <button type="button" class="btn btn-dropdown" onclick="toggleDropdown('tools-dropdown')" id="btn-tools-dropdown" data-i18n-title="nav.dropdown_tools_title" title="আরও প্রয়োজনীয় টুলস ও অপশন">
+              <span data-i18n="nav.dropdown_tools">⚙️ টুলস</span> <span class="dropdown-caret">▾</span>
+            </button>
+            <div class="dropdown-menu" id="tools-dropdown">
+              <!-- 1. Fixture & Match Schedule Poster (Phase 2 - Social Media) -->
+              <button type="button" class="dropdown-item" onclick="openPromoPosterModal('fixture'); closeAllDropdowns();" id="btn-fixture-poster">
+                <span class="item-icon">🗓️</span>
+                <div>
+                  <strong data-i18n="nav.btn_fixture_poster">ম্যাচ ফিক্সচার ও সময়সূচি পোস্টার</strong>
+                  <small data-i18n="nav.fixture_poster_sub">সোশ্যাল মিডিয়ায় শেয়ারযোগ্য ফিক্সচার ও ব্র্যাকেট</small>
+                </div>
+              </button>
+              <!-- 2. Announcement / Registration Notice Poster (Phase 1) -->
+              <button type="button" class="dropdown-item" onclick="openPromoPosterModal('promo'); closeAllDropdowns();" id="btn-promo-poster">
+                <span class="item-icon">📢</span>
+                <div>
+                  <strong data-i18n="nav.btn_promo_poster">টুর্নামেন্ট নোটিশ ও প্রচারণামূলক পোস্টার</strong>
+                  <small data-i18n="nav.promo_poster_sub">দল আহ্বানের জন্য ফেসবুক নোটিশ ও ব্যানার</small>
+                </div>
+              </button>
+              <!-- 3. Team Registration Form & Slip -->
+              <button type="button" class="dropdown-item" onclick="openTeamRegistrationModal(); closeAllDropdowns();" id="btn-team-reg">
+                <span class="item-icon">📝</span>
+                <div>
+                  <strong data-i18n="nav.btn_team_reg">দল নিবন্ধন ফর্ম ও স্লিপ</strong>
+                  <small data-i18n="nav.btn_team_reg_sub">দলের নাম, খেলোয়াড় তালিকা ও রসিদ প্রিন্ট</small>
+                </div>
+              </button>
+              <div class="dropdown-divider"></div>
+              <!-- Sheet Theme Toggle -->
+              <button type="button" class="dropdown-item btn-sheet-theme" id="btn-sheet-theme" onclick="toggleSheetTheme();" data-i18n-title="nav.sheet_theme_title" title="প্রিন্ট ও শিটের কালার থিম পরিবর্তন করুন">
+                <span class="item-icon" id="sheet-theme-icon">📄</span>
+                <div>
+                  <strong id="sheet-theme-label" data-i18n="nav.sheet_theme_paper">প্রিন্ট থিম: সাদা কাগজ</strong>
+                  <small data-i18n="nav.sheet_theme_sub">সাদা পেপার বা স্টেডিয়াম ব্যাকগ্রাউন্ড</small>
+                </div>
+              </button>
+              <!-- Demo Data -->
+              <button type="button" class="dropdown-item" onclick="loadSampleTournamentData(); closeAllDropdowns();">
+                <span class="item-icon">⚡</span>
+                <div>
+                  <strong data-i18n="nav.btn_demo">ডেমো ডাটা লোড করুন</strong>
+                  <small data-i18n="nav.demo_sub">নমুনা স্কোর ও দল দিয়ে টেস্ট করুন</small>
+                </div>
+              </button>
+              <div class="dropdown-divider"></div>
+              <!-- Reset Tournament Data -->
+              <button type="button" class="dropdown-item dropdown-item-danger" onclick="resetTournamentData(); closeAllDropdowns();">
+                <span class="item-icon">🔄</span>
+                <div>
+                  <strong data-i18n="nav.btn_reset">সব ডাটা রিসেট করুন</strong>
+                  <small data-i18n="nav.reset_sub">নতুন করে শুরু করার জন্য সব মুছুন</small>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. Language & Theme Utilities -->
+          <div class="nav-utilities">
+            <!-- Language Switcher Pill Toggle -->
+            <div class="lang-switch-wrap" title="Switch Language / ভাষা পরিবর্তন করুন">
+              <button type="button" class="lang-btn lang-btn-bn active" id="btn-lang-bn" onclick="setLanguage('bn')">বাং</button>
+              <button type="button" class="lang-btn lang-btn-en" id="btn-lang-en" onclick="setLanguage('en')">EN</button>
+            </div>
+
+            <!-- App System Color Mode Switcher (Dark / Light) -->
+            <div class="theme-switch-wrap" title="App UI Color Mode / অ্যাপের কালার মোড (ডার্ক/লাইট)" data-i18n-title="nav.theme_title">
+              <button type="button" class="theme-btn theme-btn-dark active" id="btn-theme-dark" onclick="setAppTheme('dark')" title="ডার্ক মোড (Dark Mode)" data-i18n-title="nav.theme_dark">🌙</button>
+              <button type="button" class="theme-btn theme-btn-light" id="btn-theme-light" onclick="setAppTheme('light')" title="লাইট মোড (Light Mode)" data-i18n-title="nav.theme_light">☀️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

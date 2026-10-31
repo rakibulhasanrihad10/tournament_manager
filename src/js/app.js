@@ -340,12 +340,84 @@ function printDocument(mode) {
       }
     });
 
+    // ========================================================
+    // PAGE 1 STAGE / PHASE MANAGEMENT (Classic Sheet Sub-tabs)
+    // Stages:
+    // 'group'    -> Group stage (Standings & Fixtures aligned)
+    // 'knockout' -> Knockout stage (Brackets in focus)
+    // 'all'      -> All-in-one classic A4 sheet
+    // ========================================================
+    var activeP1Stage = 'group';
+
+    function initP1Stage() {
+      let savedStage = 'group';
+      try {
+        savedStage = localStorage.getItem('tm_p1_stage') || 'group';
+      } catch (e) {}
+      switchP1Stage(savedStage);
+    }
+
+    function switchP1Stage(stage) {
+      if (stage !== 'group' && stage !== 'knockout' && stage !== 'all') {
+        stage = 'group';
+      }
+      activeP1Stage = stage;
+      try {
+        localStorage.setItem('tm_p1_stage', stage);
+      } catch (e) {}
+
+      const p1 = document.getElementById('page1');
+      if (p1) {
+        p1.classList.remove('p1-stage-group', 'p1-stage-knockout', 'p1-stage-all');
+        p1.classList.add('p1-stage-' + stage);
+      }
+
+      const btnGroup = document.getElementById('btn-p1-stage-group');
+      const btnKO = document.getElementById('btn-p1-stage-knockout');
+      const btnAll = document.getElementById('btn-p1-stage-all');
+
+      const tabs = [
+        { btn: btnGroup, key: 'group' },
+        { btn: btnKO, key: 'knockout' },
+        { btn: btnAll, key: 'all' }
+      ];
+
+      tabs.forEach(t => {
+        if (t.btn) {
+          if (t.key === stage) {
+            t.btn.classList.add('active');
+            t.btn.setAttribute('aria-selected', 'true');
+          } else {
+            t.btn.classList.remove('active');
+            t.btn.setAttribute('aria-selected', 'false');
+          }
+        }
+      });
+    }
+
     // Initialize on load
     document.addEventListener('DOMContentLoaded', () => {
       initAppState();
       initWelcomeBanner();
+      initP1Stage();
     });
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
       initAppState();
       initWelcomeBanner();
+      initP1Stage();
+    }
+
+    if (typeof window !== 'undefined') {
+      window.initP1Stage = initP1Stage;
+      window.switchP1Stage = switchP1Stage;
+    }
+
+    if (typeof module !== 'undefined' && module.exports) {
+      module.exports = {
+        initP1Stage,
+        switchP1Stage,
+        loadSampleTournamentData,
+        resetTournamentData,
+        printDocument
+      };
     }

@@ -1,0 +1,24 @@
+  <div id="tournament-rules-modal" class="modal-backdrop" style="display:none;" onclick="if(event.target===this)closeTournamentRulesModal()">
+    <div class="modal-box" style="max-width:760px; width:92%; max-height:85vh; border-radius:12px; overflow:hidden;">
+      <div class="modal-header" style="background:linear-gradient(90deg, #072a60, #0d47a1); padding:12px 20px;">
+        <h3 style="margin:0; font-size:15px; font-weight:800; display:flex; align-items:center; gap:8px;">
+          <span>📜</span> <span data-i18n="page2.rules_modal_header">টুর্নামেন্ট পরিচালনা ও খেলার অফিসিয়াল নিয়মাবলী</span>
+        </h3>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:#fff; font-size:10px; padding:3px 10px; border-radius:4px; cursor:pointer;" onclick="closeTournamentRulesModal(); openTournamentWizard('rules');" title="নিয়মাবলী পরিবর্তন ও কাস্টমাইজ করুন" data-i18n="page2.btn_customize_rules">⚙️ নিয়ম কাস্টমাইজ</button>
+          <button type="button" class="modal-close-btn" onclick="closeTournamentRulesModal()">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" style="padding:16px 20px; overflow-y:auto; max-height:calc(85vh - 120px); background:#f8fafc;">
+        <div class="rules-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:12px 16px;">
+          <ul class="rules-list" id="tournament-rules-list" style="margin:0; padding:0; list-style:none;">
+            <!-- Dynamically populated by renderPage2RulesList() -->
+          </ul>
+        </div>
+      </div>
+      <div style="background:#f1f5f9; padding:10px 18px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0;">
+        <span style="font-size:11px; color:#64748b;" data-i18n="page2.rules_modal_note">📌 যেকোনো নিয়ম বা ফরম্যাট পরিবর্তনের জন্য 'নিয়ম কাস্টমাইজ' বাটনে ক্লিক করুন।</span>
+        <button type="button" class="btn" style="background:#072a60; color:#fff; padding:6px 16px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;" onclick="closeTournamentRulesModal()" data-i18n="modal.btn_close">বন্ধ করুন</button>
+      </div>
+    </div>
+  </div>

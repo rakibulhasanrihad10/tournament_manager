@@ -652,6 +652,156 @@ body {
       color: #111111 !important;
     }
 
+    /* Synchronized Match Schedule Scroll Container (Matches Left Column Height) */
+    .p1-schedule-scroll-wrap {
+      max-height: 295px;
+      overflow-y: auto;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #3b82f6 rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+    }
+    .p1-schedule-scroll-wrap::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .p1-schedule-scroll-wrap::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+    }
+    .p1-schedule-scroll-wrap::-webkit-scrollbar-thumb {
+      background: #3b82f6;
+      border-radius: 4px;
+    }
+    .p1-schedule-scroll-wrap table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: #1e293b;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    }
+    body.sheet-theme-paper .p1-schedule-scroll-wrap table thead th,
+    body.light-mode .p1-schedule-scroll-wrap table thead th {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    /* ========================================================
+       PAGE 1 STAGE / PHASE NAVIGATION & DYNAMIC DISPLAY MODES
+       1. Group Stage: Standings & Schedule baseline-aligned (Bracket hidden)
+       2. Knockout Stage: Knockout Brackets expanded full width
+       3. All-in-One: Classic A4 view with all cards
+       ======================================================== */
+    .p1-stage-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin: 0 0 10px 0;
+    }
+    body.sheet-theme-paper .p1-stage-nav,
+    body.light-mode .p1-stage-nav {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .p1-stage-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.sheet-theme-paper .p1-stage-tab,
+    body.light-mode .p1-stage-tab {
+      color: #475569;
+    }
+    .p1-stage-tab:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    body.sheet-theme-paper .p1-stage-tab:hover,
+    body.light-mode .p1-stage-tab:hover {
+      color: #0f172a;
+      background: #e2e8f0;
+    }
+    .p1-stage-tab.active {
+      background: linear-gradient(135deg, #1e40af, #2563eb);
+      color: #ffffff !important;
+      border-color: #3b82f6;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+    }
+    .stage-badge {
+      background: #f59e0b;
+      color: #000;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 8px;
+      margin-left: 2px;
+    }
+
+    /* Stage 1: Group Stage (Perfect Baseline Alignment) */
+    #page1.p1-stage-group #p1-card-bracket {
+      display: none !important;
+    }
+    #page1.p1-stage-group .p1-standings-card {
+      height: 100%;
+    }
+    #page1.p1-stage-group .p1-schedule-card {
+      display: flex !important;
+      flex-direction: column !important;
+      height: 100% !important;
+    }
+    #page1.p1-stage-group .p1-schedule-scroll-wrap {
+      flex: 1 1 auto;
+      max-height: none;
+      overflow-y: auto;
+    }
+
+    /* Stage 2: Knockout Stage (Full Width Brackets Arena) */
+    #page1.p1-stage-knockout .p1-left-col {
+      display: none !important;
+    }
+    #page1.p1-stage-knockout .p1-right-col {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    #page1.p1-stage-knockout #p1-card-schedule {
+      display: none !important;
+    }
+    #page1.p1-stage-knockout #p1-card-bracket {
+      display: block !important;
+      width: 100% !important;
+    }
+
+    /* Stage 3: All-in-One (Classic A4 View) */
+    #page1.p1-stage-all .p1-left-col {
+      display: flex !important;
+      width: 41% !important;
+    }
+    #page1.p1-stage-all .p1-right-col {
+      display: flex !important;
+      width: 59% !important;
+    }
+    #page1.p1-stage-all #p1-card-schedule,
+    #page1.p1-stage-all #p1-card-bracket {
+      display: block !important;
+    }
+    #page1.p1-stage-all .p1-schedule-scroll-wrap {
+      max-height: 295px;
+    }
+
     /* ========================================================
        FAIR PLAY COLUMN, MATCH EVENTS & INTERACTIVE ROSTER STYLES
        ======================================================== */
@@ -979,22 +1129,32 @@ body {
     .best-ru-strip {
       background: #fffbeb;
       border: 1.2px dashed #f59e0b;
-      border-radius: 5px;
-      padding: 2.5px 7px;
-      margin-top: 4px;
+      border-radius: 6px;
+      padding: 4px 8px;
+      margin-top: 5px;
       font-size: 10px;
       font-weight: 700;
       color: #b45309;
       display: flex;
-      align-items: center;
-      gap: 4px;
+      flex-direction: column;
+      gap: 3px;
+      box-sizing: border-box;
+    }
+    body.sheet-theme-paper .best-ru-strip,
+    body.light-mode .best-ru-strip {
+      background: #fffbeb;
+      border-color: #d97706;
+      color: #92400e;
     }
 
     .ru-blank {
-      display: inline-block;
-      flex: 1;
+      display: block;
+      width: 100%;
       border-bottom: 1.5px dotted #f59e0b;
-      height: 13px;
+      min-height: 17px;
+      line-height: 1.35;
+      padding: 1px 2px;
+      box-sizing: border-box;
     }
 
     @media print {
@@ -1503,6 +1663,93 @@ body {
 
     .player-table tr:nth-child(even) {
       background: #f8faf9;
+    }
+
+    /* Page 2 Dynamic Squad Table Scroll & Styling */
+    .p2-player-table-wrap {
+      max-height: 440px;
+      overflow-y: auto;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #3b82f6 rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+      margin-bottom: 6px;
+      border: 1px solid #cbd5e1;
+    }
+    .p2-player-table-wrap::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .p2-player-table-wrap::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    .p2-player-table-wrap::-webkit-scrollbar-thumb {
+      background: #3b82f6;
+      border-radius: 4px;
+    }
+    .p2-player-table-wrap thead th {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      background: #072a60;
+      color: #ffffff;
+    }
+    .squad-section-hd {
+      background: #f1f5f9;
+      border-top: 1.5px solid #cbd5e1;
+      border-bottom: 1.5px solid #cbd5e1;
+    }
+    body.sheet-theme-paper .squad-section-hd,
+    body.light-mode .squad-section-hd {
+      background: #f8fafc;
+    }
+    .squad-section-hd td {
+      padding: 3px 8px !important;
+      font-size: 10px !important;
+      font-weight: 800 !important;
+      color: #334155 !important;
+      letter-spacing: 0.3px !important;
+    }
+    .btn-remove-p2-player {
+      background: transparent;
+      border: 1px solid #fca5a5;
+      color: #ef4444;
+      font-size: 10px;
+      border-radius: 4px;
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+    .btn-remove-p2-player:hover {
+      background: #ef4444;
+      color: #fff;
+      border-color: #dc2626;
+    }
+    .btn-add-p2-player {
+      background: #f0fdf4;
+      border: 1.2px dashed #16a34a;
+      color: #15803d;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 4px;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+    .btn-add-p2-player:hover {
+      background: #dcfce7;
+      border-color: #15803d;
+      color: #14532d;
     }
 
     .player-line-name {
@@ -2243,6 +2490,19 @@ body {
         padding: 3px 8px !important;
       }
 
+      /* Page 1 Stage Navigation on Mobile */
+      .p1-stage-nav {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        padding: 6px !important;
+      }
+      .p1-stage-tab {
+        flex: 1 1 auto !important;
+        justify-content: center !important;
+        padding: 6px 8px !important;
+        font-size: 11px !important;
+      }
+
       /* ========================================================
          PAGE 1: FIXTURE POSTER MOBILE RESPONSIVENESS
          ======================================================== */
@@ -2283,6 +2543,7 @@ body {
         padding: 4px 3px !important;
       }
       #page1 .grp-champ-row,
+      #page1 .best-ru-strip,
       #page1 .best-runnerup-box {
         flex-wrap: wrap !important;
         gap: 4px !important;
@@ -2461,6 +2722,7 @@ body {
         padding: 6px 8px !important;
         font-size: 11px !important;
       }
+
     }
 
     /* Tighter screens (< 640px) */

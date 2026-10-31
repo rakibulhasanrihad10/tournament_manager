@@ -1,0 +1,12 @@
+  <div id="sport-preview-modal" class="modal-backdrop" onclick="if(event.target === this) closeSportPreviewModal()">
+    <div class="modal-box" style="max-width:540px;">
+      <div class="modal-header" style="background:linear-gradient(90deg, #0f172a, #0284c7);">
+        <h3 id="preview-sport-title">🏏 স্পোর্টস টুর্নামেন্ট প্রিভিউ</h3>
+        <button type="button" class="modal-close-btn" onclick="closeSportPreviewModal()">✕</button>
+      </div>
+      <div class="modal-body" id="preview-sport-body" style="padding:16px;"></div>
+      <div style="display:flex; justify-content:flex-end; padding:8px 14px; background:var(--bg-modal-footer); border-top:1px solid var(--border-modal-footer);">
+        <button type="button" class="btn" style="background:#0284c7; color:#fff;" onclick="closeSportPreviewModal()" data-i18n="modal.btn_close_done">বন্ধ করুন ✕</button>
+      </div>
+    </div>
+  </div>

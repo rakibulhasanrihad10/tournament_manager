@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <!-- @@include('common/head.html') -->
+</head>
+<body>
+
+  <!-- ========================================================
+       1. INITIAL SPORTS HUB (HOME DASHBOARD VIEW)
+       ======================================================== -->
+  <!-- @@include('hub/sports-hub-view.html') -->
+
+  <!-- ========================================================
+       2. FOOTBALL TOURNAMENT APP VIEW (THE COMPLETE ENGINE)
+       ======================================================== -->
+  <div id="football-app-view" class="football-app-container">
+    <!-- Floating Print Controls (Hidden on Print) -->
+    <!-- @@include('common/navbar.html') -->
+
+    <!-- Friendly Welcome Onboarding Setup Strip (Hidden on Print) -->
+    <!-- @@include('common/welcome-banner.html') -->
+
+    <!-- ========================================================
+         PAGE 1: সম্পূর্ণ ফিকশ্চার ও ব্র্যাকেট পোস্টার
+         ======================================================== -->
+    <!-- @@include('football/page1-sheet.html') -->
+
+    <!-- PAGE BREAK FOR PRINTING -->
+    <div class="page-break"></div>
+
+    <!-- ========================================================
+         PAGE 2: খেলোয়াড় তালিকা ও টুর্নামেন্ট নিয়মাবলী
+         ======================================================== -->
+    <!-- @@include('football/page2-sheet.html') -->
+
+    <!-- MATCH EVENT LOGGING MODAL -->
+    <!-- @@include('modals/match-events-modal.html') -->
+
+    <!-- ========================================================
+         TOURNAMENT SETUP & RULES WIZARD MODAL
+         ======================================================== -->
+    <!-- @@include('modals/tournament-wizard-modal.html') -->
+
+    <!-- ========================================================
+         PROMOTIONAL & FIXTURE SOCIAL MEDIA POSTER MODAL
+         ======================================================== -->
+    <!-- @@include('modals/promo-poster-modal.html') -->
+
+    <!-- HIDDEN PRINT-ONLY POSTER SHEET (VISIBLE ONLY ON PRINT) -->
+    <!-- @@include('football/poster-sheet.html') -->
+    <!-- HIDDEN PRINT-ONLY BLANK ROSTER SHEET (VISIBLE ONLY ON PRINT) -->
+    <!-- @@include('football/blank-roster-sheet.html') -->
+  </div> <!-- /football-app-view -->
+
+  <!-- FOOTBALL ENTRY CHOICE ONBOARDING MODAL -->
+  <!-- @@include('modals/entry-choice-modal.html') -->
+
+  <!-- ========================================================
+       TEAM REGISTRATION PORTAL MODAL (দল নিবন্ধন পোর্টাল)
+       ======================================================== -->
+  <!-- @@include('modals/team-registration-modal.html') -->
+
+  <!-- BLANK ROSTER SMART PRINT CONFIGURATION MODAL -->
+  <!-- @@include('modals/blank-roster-modal.html') -->
+
+  <!-- UPCOMING SPORT PREVIEW / ROADMAP MODAL -->
+  <!-- @@include('modals/sport-preview-modal.html') -->
+
+  <!-- TOURNAMENT RULES & GUIDELINES MODAL -->
+  <!-- @@include('modals/tournament-rules-modal.html') -->
+
+  <!-- ========================================================
+       MODULAR APPLICATION SCRIPTS
+       ======================================================== -->
+  <!-- @@include('common/scripts.html') -->
+</body>
+</html>

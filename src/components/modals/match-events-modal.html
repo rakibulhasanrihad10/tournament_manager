@@ -1,0 +1,118 @@
+  <div id="match-events-modal" class="modal-backdrop" onclick="if(event.target === this) closeMatchEventsModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-match-title" data-i18n="modal.event_title">⚽ ম্যাচ ইভেন্ট ট্র্যাকার</h3>
+        <button type="button" class="modal-close-btn" onclick="closeMatchEventsModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- LIVE MATCH SCOREBOARD BANNER -->
+        <div class="modal-live-scoreboard">
+          <div class="live-sc-team team-1">
+            <span class="live-sc-badge" data-i18n="modal.live_sc_t1">দল ১</span>
+            <span id="modal-live-t1-name" class="live-sc-name">টিম ১</span>
+          </div>
+          <div class="live-sc-center">
+            <div class="live-sc-label" data-i18n="modal.live_score_lbl">ম্যাচের লাইভ স্কোরবোর্ড</div>
+            <div id="modal-live-score-pill" class="live-sc-pill">০ - ০</div>
+          </div>
+          <div class="live-sc-team team-2">
+            <span class="live-sc-badge" data-i18n="modal.live_sc_t2">দল ২</span>
+            <span id="modal-live-t2-name" class="live-sc-name">টিম ২</span>
+          </div>
+        </div>
+
+        <!-- Instant Toast Notification -->
+        <div id="modal-toast-msg" class="modal-toast"></div>
+
+        <div style="font-size:10.5px; color:#475569; display:flex; justify-content:space-between; align-items:center;">
+          <span data-i18n-html="modal.notice_auto_calc">⚡ গোল বা কার্ড যোগ করার সাথে সাথে <strong>ম্যাচের স্কোর ও পয়েন্ট টেবিল স্বয়ংক্রিয়ভাবে আপডেট</strong> হয়ে যাবে।</span>
+        </div>
+        <div style="font-size:11px; color:#475569; display:flex; justify-content:space-between; align-items:center;">
+          <span data-i18n="modal.sub_instruction">ম্যাচের গোল ও কার্ড (হলুদ/লাল) নথিভুক্ত করুন। পেজ ২-এর নিবন্ধিত তালিকা থেকে ড্রপডাউনে প্লেয়ার আসবে।</span>
+        </div>
+
+        <!-- Team 1 Event Section -->
+        <div class="modal-team-section">
+          <div class="modal-team-title">
+            <span style="color:#0284c7;">🚩</span>
+            <span id="modal-t1-name">টিম ১</span>
+          </div>
+          <div class="event-input-row" style="margin-bottom:6px;">
+            <select id="modal-t1-player-select" class="event-select"></select>
+            <input type="number" id="modal-t1-goal-count" value="1" min="1" max="10" style="width:36px; text-align:center; padding:3px; border:1px solid #cbd5e1; border-radius:4px; font-weight:700;">
+            <button type="button" class="btn-event-add" onclick="addMatchEvent('goal', 1)" data-i18n="modal.btn_add_goal">⚽ গোল যোগ করুন</button>
+          </div>
+          <div class="event-input-row">
+            <select id="modal-t1-card-player-select" class="event-select"></select>
+            <select id="modal-t1-card-type" style="padding:3px; border:1px solid #cbd5e1; border-radius:4px; font-weight:700;">
+              <option value="yellow" data-i18n="modal.opt_yellow">🟨 হলুদ কার্ড (-১ FP)</option>
+              <option value="red" data-i18n="modal.opt_red">🟥 লাল কার্ড (-৩ FP)</option>
+            </select>
+            <button type="button" class="btn-card-add" onclick="addMatchEvent('card', 1)" data-i18n="modal.btn_give_card">কার্ড দিন</button>
+          </div>
+        </div>
+
+        <!-- PENALTY SHOOTOUT SECTION (APPEARS IF MATCH IS DRAWN) -->
+        <div id="modal-penalty-section" class="modal-team-section" style="display:none; background:#fff1f2; border:1.2px solid #fda4af;">
+          <div class="modal-team-title" style="color:#be123c;">
+            <span data-i18n="modal.pen_section_title">🎯 টাইব্রেকার / পেনাল্টি শুটআউট স্কোর (ম্যাচ ড্র হওয়ার কারণে)</span>
+          </div>
+          <div style="font-size:10px; color:#64748b; margin-bottom:4px;" data-i18n="modal.pen_section_sub">
+            উভয় দলের টাইব্রেকারে করা পেনাল্টি গোলের সংখ্যা লিখুন। যার গোল বেশি হবে সে স্বয়ংক্রিয়ভাবে বিজয়ী হবে।
+          </div>
+          <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:4px;">
+              <span id="modal-pen-t1-name" style="font-weight:800; font-size:11px; color:#0f172a;">টিম ১:</span>
+              <input type="number" min="0" max="30" class="pen-score-input" id="modal-pen-s1" placeholder="০" style="width:32px; height:20px; font-size:12px;" oninput="onModalPenScoreChange()">
+            </div>
+            <span style="font-weight:900; color:#be123c;">VS</span>
+            <div style="display:flex; align-items:center; gap:4px;">
+              <span id="modal-pen-t2-name" style="font-weight:800; font-size:11px; color:#0f172a;">টিম ২:</span>
+              <input type="number" min="0" max="30" class="pen-score-input" id="modal-pen-s2" placeholder="০" style="width:32px; height:20px; font-size:12px;" oninput="onModalPenScoreChange()">
+            </div>
+          </div>
+          <div id="modal-pen-winner-badge" style="margin-top:4px; text-align:center; font-weight:800; font-size:10.5px; color:#15803d;"></div>
+        </div>
+
+        <!-- Team 2 Event Section -->
+        <div class="modal-team-section">
+          <div class="modal-team-title">
+            <span style="color:#16a34a;">🚩</span>
+            <span id="modal-t2-name">টিম ২</span>
+          </div>
+          <div class="event-input-row" style="margin-bottom:6px;">
+            <select id="modal-t2-player-select" class="event-select"></select>
+            <input type="number" id="modal-t2-goal-count" value="1" min="1" max="10" style="width:36px; text-align:center; padding:3px; border:1px solid #cbd5e1; border-radius:4px; font-weight:700;">
+            <button type="button" class="btn-event-add" onclick="addMatchEvent('goal', 2)" data-i18n="modal.btn_add_goal">⚽ গোল যোগ করুন</button>
+          </div>
+          <div class="event-input-row">
+            <select id="modal-t2-card-player-select" class="event-select"></select>
+            <select id="modal-t2-card-type" style="padding:3px; border:1px solid #cbd5e1; border-radius:4px; font-weight:700;">
+              <option value="yellow" data-i18n="modal.opt_yellow">🟨 হলুদ কার্ড (-১ FP)</option>
+              <option value="red" data-i18n="modal.opt_red">🟥 লাল কার্ড (-৩ FP)</option>
+            </select>
+            <button type="button" class="btn-card-add" onclick="addMatchEvent('card', 2)" data-i18n="modal.btn_give_card">কার্ড দিন</button>
+          </div>
+        </div>
+
+        <!-- Match Events Logged -->
+        <div>
+          <div style="font-weight:800; font-size:11px; margin-bottom:4px; color:#1e293b; display:flex; justify-content:space-between; align-items:center;">
+            <span data-i18n="modal.events_log_title">📋 এই ম্যাচে নথিভুক্ত ইভেন্টসমূহ:</span>
+            <button type="button" class="btn-match-event" onclick="syncMatchScoreFromEvents()" data-i18n="modal.btn_sync_score">⚡ গোল অনুযায়ী স্কোরবোর্ড অটো-সিঙ্ক করুন</button>
+          </div>
+          <div id="modal-events-log" class="event-log-container">
+            <div style="color:#94a3b8; font-style:italic;">এখনো কোনো গোল বা কার্ড যুক্ত করা হয়নি।</div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:6px; border-top:1px solid #e2e8f0; gap:6px; flex-wrap:wrap;">
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn" style="background:#e11d48; color:#fff; font-size:11px; padding:5px 9px;" onclick="clearCurrentMatchEvents()" data-i18n="modal.btn_reset_match" title="এই ম্যাচের গোল ও কার্ড মুছে ম্যাচটিকে আগের অবস্থায় ফিরিয়ে নিন">🔄 ম্যাচ রিসেট</button>
+            <button type="button" class="btn" style="background:#0284c7; color:#fff; font-size:11px; padding:5px 9px;" onclick="markMatchAsZeroDraw()" data-i18n="modal.btn_confirm_zero_draw" title="গোলহীন ০-০ ড্র হিসেবে ম্যাচ নির্ধারণ করুন এবং টাইব্রেকার চালু করুন">🎯 ০-০ ড্র নিশ্চিত</button>
+          </div>
+          <button type="button" class="btn" style="background:#0f172a; color:#fff; font-size:12px; padding:5px 12px;" onclick="closeMatchEventsModal()" data-i18n="modal.btn_save_close">সংরক্ষণ ও বন্ধ করুন ✕</button>
+        </div>
+      </div>
+    </div>
+  </div>

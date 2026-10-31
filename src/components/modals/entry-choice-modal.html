@@ -1,0 +1,34 @@
+  <div id="football-entry-modal" class="modal-backdrop" onclick="if(event.target === this) closeFootballEntryChoiceModal()">
+    <div class="modal-box modal-entry-box">
+      <button type="button" class="entry-modal-close" onclick="closeFootballEntryChoiceModal()" aria-label="Close" title="বন্ধ করুন">✕</button>
+      <div class="modal-body" style="padding: 24px;">
+        <div id="football-entry-header" style="display:none; margin-bottom: 16px;"></div>
+        <div class="entry-choices-grid" id="football-entry-choices">
+          <!-- Choice 1: Setup My Tournament Directly -->
+          <div class="entry-choice-card choice-setup" onclick="startFootballWithWizard()" role="button" tabindex="0">
+            <div class="choice-icon-wrap" style="background: linear-gradient(135deg, #4f46e5, #6366f1); color: #fff;">
+              🚀
+            </div>
+            <div class="choice-content">
+              <h4 data-i18n="entry.choice_wizard_title">আপনার টুর্নামেন্ট সেটআপ করুন</h4>
+              <p data-i18n="entry.choice_wizard_desc">টুর্নামেন্টের নাম, খেলার মাঠ, প্রাইজমানি ও নিয়মাবলী সেট করে সরাসরি সম্পূর্ণ নতুন ফিকশ্চার শিট তৈরি করুন।</p>
+            </div>
+            <div class="choice-arrow">➜</div>
+          </div>
+
+          <!-- Choice 2: Explore Demo Interface First -->
+          <div class="entry-choice-card choice-demo" onclick="startFootballWithDemo()" role="button" tabindex="0">
+            <div class="choice-icon-wrap" style="background: linear-gradient(135deg, #0284c7, #0ea5e9); color: #fff;">
+              👀
+            </div>
+            <div class="choice-content">
+              <h4 data-i18n="entry.choice_demo_title">ডেমো ইন্টারফেস ঘুরে দেখুন</h4>
+              <p data-i18n="entry.choice_demo_desc">সম্পূর্ণ সাজানো ফিকশ্চার, অটো ক্যালকুলেটর ও স্কোরবোর্ড কীভাবে কাজ করে তা আগে একটু টেস্ট করে দেখুন।</p>
+            </div>
+            <div class="choice-arrow">➜</div>
+          </div>
+        </div>
+        <div id="football-entry-footer" style="display:none; margin-top: 14px; text-align: center;"></div>
+      </div>
+    </div>
+  </div>

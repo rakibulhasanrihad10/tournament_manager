@@ -199,6 +199,15 @@ assert(standings5Html.includes('background:#ea580c'), 'Applies distinct non-whit
 delete global.getActiveGroups;
 
 // ==========================================
+// TEST SUITE 7: Best Runner-Up Display & CSS Integrity
+// ==========================================
+console.log('\n⭐ Test Suite 7: Best Runner-Up Display & CSS Integrity');
+const mainCss = fs.readFileSync(path.join(__dirname, '..', 'src', 'css', 'main.css'), 'utf8');
+
+assert(mainCss.includes('.best-ru-strip') && mainCss.includes('flex-direction: column;'), 'best-ru-strip has flex-direction: column to prevent single-line cramming');
+assert(mainCss.includes('.ru-blank') && mainCss.includes('width: 100%;'), 'ru-blank spans 100% full width');
+
+// ==========================================
 // SUMMARY REPORT
 // ==========================================
 console.log('\n==========================================');

@@ -1,0 +1,144 @@
+  <div id="team-registration-modal" class="modal-backdrop" onclick="if(event.target === this) closeTeamRegistrationModal()">
+    <div class="modal-box modal-wizard modal-registration">
+      <div class="modal-header modal-wizard-header" style="background:linear-gradient(135deg, #064e3b 0%, #0f172a 100%);">
+        <div>
+          <h3 data-i18n="reg.modal_title">📝 অফিশিয়াল দল ও স্কোয়াড নিবন্ধন পোর্টাল</h3>
+          <p class="modal-wizard-subtitle" data-i18n="reg.modal_subtitle">আপনার দলের নাম, ম্যানেজার, কোচ ও খেলোয়াড়দের তালিকা অনলাইনে সরাসরি জমা দিন</p>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeTeamRegistrationModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 1. REGISTRATION FORM SECTION -->
+        <div id="reg-form-section">
+          <!-- Tournament Highlights Banner -->
+          <div class="reg-highlight-banner">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
+              <div style="font-size:13px; font-weight:800; color:#38bdf8;">
+                ⚽ <span id="reg-highlight-title">ফুটবল টুর্নামেন্ট ২০২৬</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button type="button" class="btn" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:10px; padding:2px 8px; border-radius:4px; cursor:pointer;" onclick="openBlankRosterConfigModal()" title="অফলাইন দল তালিকা জমার জন্য খালি প্লেয়ার ফর্ম প্রিন্ট করুন">🖨️ খালি ফর্ম প্রিন্ট</button>
+                <span class="reg-highlight-badge" data-i18n="reg.tourney_summary_badge">টুর্নামেন্ট হাইলাইটস</span>
+              </div>
+            </div>
+            <div class="reg-highlight-grid">
+              <div class="reg-pill">
+                <span data-i18n="reg.lbl_prize">চ্যাম্পিয়ন প্রাইজ:</span>
+                <strong id="reg-highlight-prize">৩০,০০০ টাকা + ট্রফি</strong>
+              </div>
+              <div class="reg-pill">
+                <span data-i18n="reg.lbl_fee">এন্ট্রি ফি:</span>
+                <strong id="reg-highlight-fee">২,০০০ টাকা</strong>
+              </div>
+              <div class="reg-pill">
+                <span data-i18n="reg.lbl_deadline">নিবন্ধনের শেষ সময়:</span>
+                <strong id="reg-highlight-deadline">ম্যাচ শুরুর পূর্বে</strong>
+              </div>
+              <div class="reg-pill">
+                <span data-i18n="reg.lbl_venue">খেলার মাঠ:</span>
+                <strong id="reg-highlight-venue">স্টেডিয়াম মাঠ</strong>
+              </div>
+              <div class="reg-pill">
+                <span data-i18n="reg.lbl_squad_rule">স্কোয়াড আকার:</span>
+                <strong id="reg-highlight-squad">১১ মাঠে + ৫ বেঞ্চ</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Official Rules & Agreement Accordion / Card -->
+          <div class="w-card-section" style="margin-top:12px;">
+            <div class="w-card-title" data-i18n="reg.rules_card_title">📜 টুর্নামেন্ট পরিচালনা ও শৃঙ্খলা নিয়মাবলী</div>
+            <div id="reg-rules-summary-box" class="reg-rules-summary-box"></div>
+            <label class="reg-terms-label">
+              <input type="checkbox" id="reg-terms-agree" required>
+              <span data-i18n="reg.terms_checkbox">আমি এবং আমার দলের সকল খেলোয়াড় টুর্নামেন্টের সকল অফিশিয়াল নিয়মাবলী ও রেফারির সিদ্ধান্ত মেনে নিতে সম্মত আছি।</span>
+            </label>
+          </div>
+
+          <!-- Team Information Section -->
+          <div class="w-card-section" style="margin-top:12px;">
+            <div class="w-card-title" data-i18n="reg.sec_team_info">⚽ দল ও ম্যানেজমেন্ট বিবরণ</div>
+            <div class="w-grid-2">
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_team_name">দলের পূর্ণ নাম: *</label>
+                <input type="text" id="reg-team-name" class="w-input" placeholder="যেমন: তরুণ একাদশ / ফ্রেন্ডস ক্লাব" data-i18n-placeholder="reg.ph_team_name" required>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_manager">ম্যানেজার / অধিনায়কের নাম: *</label>
+                <input type="text" id="reg-manager-name" class="w-input" placeholder="ম্যানেজারের পূর্ণ নাম..." data-i18n-placeholder="reg.ph_manager" required>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_phone">মোবাইল ও হোয়াটসঅ্যাপ নম্বর: *</label>
+                <input type="tel" id="reg-manager-phone" class="w-input" placeholder="০১xxxxxxxxx" data-i18n-placeholder="reg.ph_phone" required>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_coach">প্রধান কোচ / সহকারী (ঐচ্ছিক):</label>
+                <input type="text" id="reg-coach-name" class="w-input" placeholder="কোচের নাম..." data-i18n-placeholder="reg.ph_coach">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_jersey">দলের জার্সির মূল রঙ (ঐচ্ছিক):</label>
+                <input type="text" id="reg-jersey-color" class="w-input" placeholder="যেমন: লাল-সাদা / গাঢ় নীল" data-i18n-placeholder="reg.ph_jersey">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="reg.lbl_payment_note">ফি পরিশোধের তথ্য / ট্রানজেকশন আইডি (ঐচ্ছিক):</label>
+                <input type="text" id="reg-payment-note" class="w-input" placeholder="যেমন: বিকাশ ট্রানজেকশন আইডি বা মাঠে জমা দেওয়া হবে" data-i18n-placeholder="reg.ph_payment_note">
+              </div>
+            </div>
+          </div>
+
+          <!-- Squad Players List Table -->
+          <div class="w-card-section" style="margin-top:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div class="w-card-title" style="margin:0;" data-i18n="reg.sec_squad">👥 স্কোয়াড খেলোয়াড়দের তালিকা (১১ থেকে ১৫ জন)</div>
+              <button type="button" class="btn-reg-add-player" onclick="addRegistrationPlayerRow()" data-i18n="reg.btn_add_player">+ আরও খেলোয়াড় যোগ করুন</button>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="reg-players-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px; text-align:center;" data-i18n="reg.th_sl">ক্রমিক</th>
+                    <th style="width:75px; text-align:center;" data-i18n="reg.th_jersey">জার্সি নং</th>
+                    <th data-i18n="reg.th_name">খেলোয়াড়ের পূর্ণ নাম</th>
+                    <th style="width:115px;" data-i18n="reg.th_role">ভূমিকা / পজিশন</th>
+                    <th style="width:36px; text-align:center;">✕</th>
+                  </tr>
+                </thead>
+                <tbody id="reg-players-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Form Actions Footer -->
+          <div class="modal-wizard-footer" style="margin-top:14px; border-radius:12px; padding:12px 16px;">
+            <button type="button" class="btn btn-wizard-cancel" onclick="closeTeamRegistrationModal()" data-i18n="reg.btn_cancel">✕ বাতিল</button>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn btn-sm btn-reg-share-link" onclick="copyRegistrationLink(this)" data-i18n="reg.btn_copy_link">🔗 রেজিস্ট্রেশন লিংক কপি</button>
+              <button type="button" class="btn btn-wizard-save" onclick="submitTeamRegistration(event)" data-i18n="reg.btn_submit">✅ দল নিবন্ধন সম্পন্ন করুন</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. REGISTRATION SUCCESS SECTION -->
+        <div id="reg-success-section" style="display:none;">
+          <div class="reg-success-banner">
+            <div class="reg-success-icon">✓</div>
+            <h3 data-i18n="reg.success_title" style="margin:4px 0 2px; color:#15803d; font-size:16px;">🎉 দল নিবন্ধন সফলভাবে সম্পন্ন হয়েছে!</h3>
+            <p data-i18n="reg.success_sub" style="margin:0; font-size:12px; color:#166534;">আপনার দল অফিসিয়াল টুর্নামেন্ট ড্যাশবোর্ড ও ফিক্সচারে সফলভাবে অন্তর্ভুক্ত হয়েছে</p>
+          </div>
+
+          <!-- Printable Slip -->
+          <div id="reg-slip-container" style="margin-top:12px;"></div>
+
+          <!-- Success Actions -->
+          <div class="modal-wizard-footer" style="margin-top:14px; border-radius:12px; padding:12px 16px;">
+            <button type="button" class="btn btn-wizard-cancel" onclick="closeTeamRegistrationModal()" data-i18n="reg.btn_done">বন্ধ করুন ✕</button>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn btn-primary" onclick="printRegistrationSlip()" data-i18n="reg.btn_print_slip">🖨️ রসিদ প্রিন্ট / PDF সংরক্ষণ</button>
+              <button type="button" class="btn btn-wa-share" onclick="shareRegistrationOnWhatsApp()" data-i18n="reg.btn_share_wa">📲 হোয়াটসঅ্যাপে আয়োজককে জানান</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

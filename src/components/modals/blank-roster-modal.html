@@ -1,0 +1,124 @@
+  <div id="blank-roster-config-modal" class="modal-backdrop" onclick="if(event.target === this) closeBlankRosterConfigModal()">
+    <div class="modal-box modal-blank-roster" style="max-width: 880px; width: 95%; border-radius: 14px; box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.45);">
+      <div class="modal-header" style="background: linear-gradient(90deg, #072a60, #0d47a1); padding: 14px 22px; border-radius: 14px 14px 0 0;">
+        <h3 id="blank-roster-modal-title" style="display:flex; align-items:center; gap:10px; font-size:16px;">
+          <span>📋</span> <span data-i18n="blank_roster.modal_title">খালি প্লেয়ার নিবন্ধন ফর্ম ও প্রিন্ট সেটআপ</span>
+        </h3>
+        <button type="button" class="modal-close-btn" onclick="closeBlankRosterConfigModal()">✕</button>
+      </div>
+      
+      <div class="modal-body" style="padding: 20px 24px; max-height: calc(85vh - 130px); overflow-y: auto;">
+        
+        <!-- SECTION 1: SQUAD SIZE & SPLIT -->
+        <div style="background: var(--bg-card, #f8fafc); border: 1px solid var(--border-color, #cbd5e1); border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
+          <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #072a60; display:flex; align-items:center; gap:8px;">
+            <span>👥</span> <span data-i18n="blank_roster.squad_setup_title">স্কোয়াড ও খেলোয়াড় সংখ্যা নির্ধারণ</span>
+          </h4>
+          <div style="display: flex; gap: 18px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+              <label style="font-size: 12px; font-weight: 700; color: #334155; display:block; margin-bottom: 5px;" data-i18n="blank_roster.starting_players_lbl">মূল একাদশ / শুরুর খেলোয়াড়:</label>
+              <select id="blank-roster-starting-select" class="form-control" style="width:100%; padding:8px 12px; font-size:13px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterConfigChange()">
+                <option value="5">৫ জন (Futsal / Minibar)</option>
+                <option value="6">৬ জন (6-a-side)</option>
+                <option value="7">৭ জন (7-a-side)</option>
+                <option value="8">৮ জন (8-a-side)</option>
+                <option value="9">৯ জন (9-a-side)</option>
+                <option value="11" selected>১১ জন (FIFA 11-a-side)</option>
+              </select>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+              <label style="font-size: 12px; font-weight: 700; color: #334155; display:block; margin-bottom: 5px;" data-i18n="blank_roster.bench_players_lbl">অতিরিক্ত / বিকল্প খেলোয়াড়:</label>
+              <select id="blank-roster-bench-select" class="form-control" style="width:100%; padding:8px 12px; font-size:13px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterConfigChange()">
+                <option value="2">২ জন</option>
+                <option value="3">৩ জন</option>
+                <option value="4">৪ জন</option>
+                <option value="5" selected>৫ জন (স্ট্যান্ডার্ড)</option>
+                <option value="6">৬ জন</option>
+                <option value="7">৭ জন</option>
+                <option value="9">৯ জন</option>
+              </select>
+            </div>
+          </div>
+          <div id="blank-roster-squad-summary" style="margin-top: 12px; font-size: 12.5px; color: #0284c7; font-weight: 700; background:#e0f2fe; padding:6px 14px; border-radius:6px; display:inline-block;">
+            📝 সর্বমোট স্কোয়াড: ১৬ জন (১১ জন মূল + ৫ জন বিকল্প)
+          </div>
+        </div>
+
+        <!-- SECTION 1.5: HEADER LOGOS CUSTOMIZER -->
+        <div style="background: #f0f7ff; border: 1.5px solid #93c5fd; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
+          <h4 style="margin: 0 0 12px 0; font-size: 14px; color: #072a60; display:flex; align-items:center; gap:8px;">
+            <span>🖼️</span> <span data-i18n="blank_roster.logos_title">হেডার লোগো ও ছবি নির্বাচন (বাম ও ডান পাশ)</span>
+          </h4>
+          <div style="display:flex; gap:18px; flex-wrap:wrap;">
+            <!-- LEFT LOGO -->
+            <div style="flex:1; min-width:240px; background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:12px 14px;">
+              <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;" data-i18n="blank_roster.left_logo_lbl">বাম পাশের লোগো / প্রতীক:</label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <select id="blank-roster-left-logo-select" class="form-control" style="flex:1; padding:7px 10px; font-size:12.5px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterLogoTypeChange('left')">
+                  <option value="default_ball" selected data-i18n="blank_roster.opt_default_ball">⚽ স্পিড ফুটবল (ডিফল্ট)</option>
+                  <option value="trophy" data-i18n="blank_roster.opt_trophy">🏆 champions ট্রফি</option>
+                  <option value="star" data-i18n="blank_roster.opt_star">🌟 স্টার ব্যাজ</option>
+                  <option value="custom" data-i18n="blank_roster.opt_custom">📁 নিজস্ব ছবি আপলোড...</option>
+                </select>
+                <div id="blank-roster-left-logo-preview" style="width:54px; height:46px; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;"></div>
+              </div>
+              <div id="blank-roster-left-file-wrap" style="display:none; margin-top:8px;">
+                <input type="file" id="blank-roster-left-file" accept="image/*" style="font-size:11.5px;" onchange="handleBlankRosterImageUpload('left', event)">
+              </div>
+            </div>
+
+            <!-- RIGHT LOGO -->
+            <div style="flex:1; min-width:240px; background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:12px 14px;">
+              <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;" data-i18n="blank_roster.right_logo_lbl">ডান পাশের ছবি / ভেন্যু / স্পনসর:</label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <select id="blank-roster-right-logo-select" class="form-control" style="flex:1; padding:7px 10px; font-size:12.5px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterLogoTypeChange('right')">
+                  <option value="default_stadium" selected data-i18n="blank_roster.opt_default_stadium">🏟️ স্টেডিয়াম আর্ট (ডিফল্ট)</option>
+                  <option value="kick" data-i18n="blank_roster.opt_kick">⚽ ফুটবল কিক আর্ট</option>
+                  <option value="sponsor" data-i18n="blank_roster.opt_sponsor">🤝 স্পনসর / ফেয়ার প্লে</option>
+                  <option value="custom" data-i18n="blank_roster.opt_custom">📁 নিজস্ব ছবি আপলোড...</option>
+                </select>
+                <div id="blank-roster-right-logo-preview" style="width:54px; height:46px; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;"></div>
+              </div>
+              <div id="blank-roster-right-file-wrap" style="display:none; margin-top:8px;">
+                <input type="file" id="blank-roster-right-file" accept="image/*" style="font-size:11.5px;" onchange="handleBlankRosterImageUpload('right', event)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: SMART RULE BUDGET & METER -->
+        <div style="background: #fffdf5; border: 1.5px solid #ffe082; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; flex-wrap:wrap; gap:8px;">
+            <h4 style="margin: 0; font-size: 14px; color: #b71c1c; display:flex; align-items:center; gap:8px;">
+              <span>📜</span> <span data-i18n="blank_roster.rules_budget_title">খেলার নিয়মাবলী বাজেট ও নির্বাচন (A4 ১-পেজ ফিট)</span>
+            </h4>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn" style="background:#16a34a; color:#fff; font-size:11.5px; padding:5px 12px; border-radius:6px; font-weight:700; cursor:pointer;" onclick="autoFitBlankRosterRules()" data-i18n="blank_roster.btn_autofit">⚡ ১ পেজে অটো-ফিট</button>
+              <button type="button" class="btn" style="background:#e2e8f0; color:#334155; font-size:11.5px; padding:5px 12px; border-radius:6px; cursor:pointer;" onclick="uncheckAllBlankRosterRules()" data-i18n="blank_roster.btn_clear_rules">সব মুছুন</button>
+            </div>
+          </div>
+
+          <!-- RULE CAPACITY METER BADGE -->
+          <div id="blank-roster-rule-budget-meter" style="padding: 8px 12px; border-radius: 6px; font-size: 12.5px; font-weight: 700; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+            <!-- Dynamically populated -->
+          </div>
+
+          <div style="font-size: 11.5px; color: #64748b; margin-bottom: 10px;">
+            💡 A4 Portrait পেপারে এক পাতার মধ্যে সুন্দরভাবে ধরে রাখার জন্য সর্বোচ্চ <strong>৬ থেকে ৮টি মূল নিয়ম</strong> রাখা আদর্শ।
+          </div>
+
+          <!-- CHECKABLE RULES LIST (SPACIOUS 2-COLUMN RESPONSIVE GRID) -->
+          <div id="blank-roster-rules-checklist" style="max-height: 280px; overflow-y: auto; border: 1.5px solid #cbd5e1; border-radius: 8px; background: #fff; padding: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 10px;">
+            <!-- Dynamic checklist items -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div style="display:flex; justify-content:space-between; align-items:center; padding: 14px 24px; background: #f1f5f9; border-top: 1px solid #cbd5e1; border-radius: 0 0 14px 14px;">
+        <button type="button" class="btn" style="background:#64748b; color:#fff; padding:8px 18px; font-size:13px; border-radius:6px; cursor:pointer;" onclick="closeBlankRosterConfigModal()" data-i18n="modal.btn_close">বাতিল</button>
+        <button type="button" class="btn btn-primary" style="background:linear-gradient(135deg, #072a60, #0d47a1); font-weight:800; padding:10px 22px; font-size:13.5px; border-radius:6px; cursor:pointer;" onclick="applyBlankRosterConfigAndPrint()" data-i18n="blank_roster.btn_print_a4">🖨️ এ ফোর পোর্ট্রেটে প্রিন্ট করুন</button>
+      </div>
+    </div>
+  </div>

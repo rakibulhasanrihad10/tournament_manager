@@ -13,7 +13,8 @@
       }
 
       .action-bar,
-      .football-welcome-banner {
+      .football-welcome-banner,
+      .p1-stage-nav {
         display: none !important;
       }
 
@@ -79,8 +80,36 @@
         background: transparent !important;
         color: #000 !important;
       }
-      .pen-picker-wrap, .btn-demo, .btn-reset, .live-status-pill {
+      .pen-picker-wrap, .btn-demo, .btn-reset, .live-status-pill,
+      .btn-remove-p2-player, .btn-add-p2-player {
         display: none !important;
+      }
+      .p1-schedule-scroll-wrap,
+      .p2-player-table-wrap {
+        max-height: none !important;
+        overflow: visible !important;
+        border: none !important;
+      }
+      .p1-schedule-scroll-wrap table thead th,
+      .p2-player-table-wrap thead th {
+        position: static !important;
+      }
+
+      /* Guarantee Full Classic Sheet Layout on Print regardless of screen stage */
+      #page1 .p1-left-col {
+        display: flex !important;
+        width: 41% !important;
+      }
+      #page1 .p1-right-col {
+        display: flex !important;
+        width: 59% !important;
+      }
+      #page1 #p1-card-standings,
+      #page1 #p1-card-schedule,
+      #page1 #p1-card-bracket {
+        display: block !important;
+        width: auto !important;
+        height: auto !important;
       }
 
       /* White Paper / Ink-Saving Sheet Theme during Print */

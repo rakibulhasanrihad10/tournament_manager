@@ -1,0 +1,425 @@
+  <div id="tournament-wizard-modal" class="modal-backdrop" onclick="if(event.target === this) closeTournamentWizard()">
+    <div class="modal-box modal-wizard">
+      <div class="modal-header modal-wizard-header">
+        <div>
+          <h3 data-i18n="modal.wizard_title">⚙️ টুর্নামেন্ট সেটআপ ও নিয়মাবলী</h3>
+          <p class="modal-wizard-subtitle" data-i18n="modal.wizard_subtitle">আপনার টুর্নামেন্টের নাম, ফরম্যাট, প্রাইজমানি ও নিয়মাবলী সহজে সাজিয়ে নিন</p>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeTournamentWizard()">✕</button>
+      </div>
+
+      <!-- Wizard Tab Bar -->
+      <div class="w-tab-bar">
+        <button type="button" class="w-tab-btn active" id="wtab-btn-info" onclick="switchWizardTab('info')">
+          <span class="w-tab-step-dot" data-i18n="wizard.step_1">১</span>
+          <span data-i18n="modal.tab_info">📋 সাধারণ তথ্য</span>
+        </button>
+        <button type="button" class="w-tab-btn" id="wtab-btn-prizes" onclick="switchWizardTab('prizes')">
+          <span class="w-tab-step-dot" data-i18n="wizard.step_2">২</span>
+          <span data-i18n="modal.tab_prizes">🏆 প্রাইজমানি ও ফি</span>
+        </button>
+        <button type="button" class="w-tab-btn" id="wtab-btn-rules" onclick="switchWizardTab('rules')">
+          <span class="w-tab-step-dot" data-i18n="wizard.step_3">৩</span>
+          <span data-i18n="modal.tab_rules">📜 নিয়ম</span> (<span id="w-selected-rules-count">০</span>)
+        </button>
+        <button type="button" class="w-tab-btn" id="wtab-btn-teams" onclick="switchWizardTab('teams')">
+          <span class="w-tab-step-dot" data-i18n="wizard.step_4">৪</span>
+          <span data-i18n="modal.tab_teams">👥 দল ও স্কোয়াড</span> (<span id="w-teams-count-badge">৯</span>)
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- TAB 1: General Info & Format -->
+        <div id="wtab-content-info" class="w-tab-content active">
+          <div class="w-grid-2">
+            <div class="w-card-section w-card-identity">
+              <div class="w-card-header">
+                <div class="w-card-title" data-i18n="wizard.sec_general">⚽ টুর্নামেন্ট ও আয়োজক বিবরণ</div>
+                <span class="w-card-chip chip-blue" data-i18n="wizard.chip_identity">১ • সাধারণ পরিচয়</span>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_title">টুর্নামেন্টের পূর্ণ নাম:</label>
+                <input type="text" id="w-cfg-title" class="w-input" placeholder="যেমন: ফুটবল বিশ্বকাপ ২০২৬ / চ্যাম্পিয়নশিপ ফুটবল কাপ" data-i18n-placeholder="wizard.ph_title">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_org">আয়োজক কমিটি / ক্লাবের নাম:</label>
+                <input type="text" id="w-cfg-organizer" class="w-input" placeholder="যেমন: ফিফা / বাংলাদেশ ফুটবল ফেডারেশন (বাফুফে)" data-i18n-placeholder="wizard.ph_org">
+              </div>
+            </div>
+
+            <div class="w-card-section w-card-timing">
+              <div class="w-card-header">
+                <div class="w-card-title" data-i18n="wizard.sec_timing">📍 ভেন্যু ও শুরুর তারিখ</div>
+                <span class="w-card-chip chip-purple" data-i18n="wizard.chip_timing">২ • ভেন্যু ও সূচি</span>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_venue">খেলার মাঠ ও ভেন্যুর ঠিকানা:</label>
+                <input type="text" id="w-cfg-venue" class="w-input" placeholder="যেমন: বঙ্গবন্ধু জাতীয় স্টেডিয়াম মাঠ, ঢাকা" data-i18n-placeholder="wizard.ph_venue">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_date">টুর্নামেন্ট শুরুর সম্ভাব্য তারিখ ও বছর:</label>
+                <input type="text" id="w-cfg-startDate" class="w-input" placeholder="যেমন: ২০২৬ / ১৫ নভেম্বর ২০২৬" data-i18n-placeholder="wizard.ph_date">
+              </div>
+            </div>
+
+            <!-- Squad Size, Substitution Rules & Match Duration Section -->
+            <div class="w-card-section w-card-squad w-squad-config-card" style="grid-column: 1 / -1;">
+              <div class="w-squad-header-bar">
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <div class="w-card-title" style="margin-bottom:0;" data-i18n="wizard.sec_squad_rules">👥 খেলোয়াড় সংখ্যা, বেঞ্চ, বদলি ও খেলার সময়কাল</div>
+                  <span class="w-card-chip chip-emerald" data-i18n="wizard.chip_squad">৩ • স্কোয়াড ও সময়কাল</span>
+                </div>
+                <div class="w-squad-presets-wrap">
+                  <button type="button" class="btn-squad-preset" onclick="applySquadPreset('fifa')" title="FIFA World Cup Standard">🏆 <span data-i18n="wizard.preset_fifa">ফিফা বিশ্বকাপ (১১+১৫ ও ৫ বদলি)</span></button>
+                  <button type="button" class="btn-squad-preset" onclick="applySquadPreset('standard')" title="Standard Football 11s">⚽ <span data-i18n="wizard.preset_std">সাধারণ একাদশ (১১+৫ ও ৩ বদলি)</span></button>
+                  <button type="button" class="btn-squad-preset" onclick="applySquadPreset('futsal')" title="5-a-side Minibar">🥅 <span data-i18n="wizard.preset_mini">৫-এ-সাইড মিনিবার (৫+৫ ও রোলিং)</span></button>
+                </div>
+              </div>
+
+              <div class="w-grid-3" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-top:12px;">
+                <div class="w-field">
+                  <label class="w-label" data-i18n="wizard.lbl_starting_players">🏟️ মাঠে মূল খেলোয়াড় সংখ্যা (Starting XI):</label>
+                  <input type="number" id="w-cfg-startingPlayers" min="3" max="11" class="w-input" value="" oninput="updateSquadCalculations(); if (typeof syncRulesWithSquadSettings === 'function') syncRulesWithSquadSettings();" onblur="validateStartingPlayers(this)" placeholder="যেমন: ১১" data-i18n-placeholder="wizard.ph_starting_players">
+                  <div id="w-starting-players-warning" class="w-field-warning" style="display:none;"></div>
+                </div>
+                <div class="w-field">
+                  <label class="w-label" data-i18n="wizard.lbl_bench_players">🪑 অতিরিক্ত / বেঞ্চ খেলোয়াড় (Substitutes):</label>
+                  <input type="number" id="w-cfg-benchPlayers" min="0" max="15" class="w-input" value="" oninput="updateSquadCalculations()" placeholder="যেমন: ৫" data-i18n-placeholder="wizard.ph_bench_players">
+                </div>
+                <div class="w-field">
+                  <label class="w-label" data-i18n="wizard.lbl_max_substitutes">🔄 ম্যাচে সর্বোচ্চ বদলি খেলোয়াড় (Max Subs):</label>
+                  <input type="number" id="w-cfg-maxSubstitutes" min="1" max="15" class="w-input" value="" oninput="updateSquadCalculations()" placeholder="যেমন: ৫" data-i18n-placeholder="wizard.ph_max_substitutes">
+                </div>
+              </div>
+
+              <!-- Live Squad Summary Badge Bar -->
+              <div id="w-squad-calc-summary" class="w-squad-summary-bar">
+                <!-- Dynamically populated by updateSquadCalculations() -->
+              </div>
+
+              <!-- Match Duration & Halves Selection Section -->
+              <div class="w-match-duration-box" style="margin-top: 16px; padding: 14px 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-action-bar, rgba(255,255,255,0.1)); border-radius: 12px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:16px;">⏱️</span>
+                    <strong style="font-size:13.5px; color:var(--text-action-title);" data-i18n="wizard.sec_match_duration">ম্যাচের খেলার সময়কাল (হাফ ও বিরতি নির্বাচন)</strong>
+                  </div>
+                  <div class="w-duration-quick-chips" style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button type="button" class="btn-time-chip" onclick="applyTimePreset(10, 10, 2)" title="১০+১০ মিনিট">১০+১০ মি.</button>
+                    <button type="button" class="btn-time-chip" onclick="applyTimePreset(15, 15, 5)" title="১৫+১৫ মিনিট">১৫+১৫ মি.</button>
+                    <button type="button" class="btn-time-chip" onclick="applyTimePreset(20, 20, 5)" title="২০+২০ মিনিট">২০+২০ মি.</button>
+                    <button type="button" class="btn-time-chip" onclick="applyTimePreset(25, 25, 5)" title="২৫+২৫ মিনিট">২৫+২৫ মি.</button>
+                    <button type="button" class="btn-time-chip" onclick="applyTimePreset(30, 30, 10)" title="৩০+৩০ মিনিট">৩০+৩০ মি.</button>
+                    <button type="button" class="btn-time-chip" onclick="applyTimePreset(45, 45, 15)" title="৪৫+৪৫ মিনিট (FIFA)">৪৫+৪৫ মি.</button>
+                  </div>
+                </div>
+
+                <div class="w-grid-3" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+                  <!-- 1st Half -->
+                  <div class="w-field" style="margin-bottom:0;">
+                    <label class="w-label" style="font-size:12px;" data-i18n="wizard.lbl_half1">🥇 প্রথম অর্ধ (১ম হাফ):</label>
+                    <select id="w-cfg-half1" class="w-input" onchange="onHalf1Change(this.value)">
+                      <option value="" data-i18n="wizard.opt_choose_half">-- নির্বাচন করুন --</option>
+                      <option value="10">১০ মিনিট</option>
+                      <option value="12">১২ মিনিট</option>
+                      <option value="15">১৫ মিনিট</option>
+                      <option value="20">২০ মিনিট</option>
+                      <option value="25">২৫ মিনিট</option>
+                      <option value="30">৩০ মিনিট</option>
+                      <option value="35">৩৫ মিনিট</option>
+                      <option value="40">৪০ মিনিট</option>
+                      <option value="45">৪৫ মিনিট (ফিফা স্ট্যান্ডার্ড)</option>
+                    </select>
+                  </div>
+
+                  <!-- 2nd Half -->
+                  <div class="w-field" style="margin-bottom:0;">
+                    <label class="w-label" style="font-size:12px;" data-i18n="wizard.lbl_half2">🥈 দ্বিতীয় অর্ধ (২য় হাফ):</label>
+                    <select id="w-cfg-half2" class="w-input" onchange="updateMatchDurationFromHalves()">
+                      <option value="" data-i18n="wizard.opt_choose_half">-- নির্বাচন করুন --</option>
+                      <option value="10">১০ মিনিট</option>
+                      <option value="12">১২ মিনিট</option>
+                      <option value="15">১৫ মিনিট</option>
+                      <option value="20">২০ মিনিট</option>
+                      <option value="25">২৫ মিনিট</option>
+                      <option value="30">৩০ মিনিট</option>
+                      <option value="35">৩৫ মিনিট</option>
+                      <option value="40">৪০ মিনিট</option>
+                      <option value="45">৪৫ মিনিট (ফিফা স্ট্যান্ডার্ড)</option>
+                    </select>
+                  </div>
+
+                  <!-- Half-Time Break -->
+                  <div class="w-field" style="margin-bottom:0;">
+                    <label class="w-label" style="font-size:12px;" data-i18n="wizard.lbl_break">☕ মধ্যবিরতি (হাফ-টাইম):</label>
+                    <select id="w-cfg-break" class="w-input" onchange="updateMatchDurationFromHalves()">
+                      <option value="0" data-i18n="wizard.opt_no_break">বিরতি নেই (০ মিনিট)</option>
+                      <option value="2">২ মিনিট</option>
+                      <option value="3">৩ মিনিট</option>
+                      <option value="5">৫ মিনিট</option>
+                      <option value="10">১০ মিনিট</option>
+                      <option value="15">১৫ মিনিট</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Hidden Input for Backward Compatibility & Form Persistence -->
+                <input type="hidden" id="w-cfg-matchDuration" value="">
+                <div id="w-duration-calc-summary" style="margin-top:10px; display:flex; align-items:center; gap:8px; font-size:12.5px; padding:6px 12px; border-radius:8px; background:rgba(56, 189, 248, 0.08); border:1px solid rgba(56, 189, 248, 0.2); color:#38bdf8;">
+                  <span>⏱️</span>
+                  <span id="w-duration-summary-text">প্রথম ও দ্বিতীয় অর্ধ নির্বাচন করলে মোট খেলার সময় স্বয়ংক্রিয়ভাবে তৈরি হবে।</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tournament Structure & Format Section -->
+            <div class="w-card-section w-card-format" style="grid-column: 1 / -1;">
+              <div class="w-card-header">
+                <div class="w-card-title" data-i18n="wizard.sec_structure">📐 টুর্নামেন্ট কাঠামো, দল সংখ্যা ও খেলার পদ্ধতি নির্বাচন</div>
+                <span class="w-card-chip chip-amber" data-i18n="wizard.chip_format">৪ • টুর্নামেন্ট ফরম্যাট</span>
+              </div>
+
+              <!-- Step 4.1: Team Count Selection -->
+              <div class="w-step-box">
+                <div class="w-step-title-row">
+                  <span class="w-step-num-pill" data-i18n="wizard.step_4_1">ধাপ ৪.১</span>
+                  <label class="w-label" style="margin-bottom:0;" data-i18n="wizard.lbl_team_count">অংশগ্রহণকারী মোট দলের সংখ্যা নির্বাচন করুন:</label>
+                </div>
+                <div class="w-team-count-row">
+                  <input type="number" min="2" max="32" id="w-cfg-teamCount" class="w-input w-team-count-input" value="" placeholder="যেমন: ৪, ৮, ৯..." data-i18n-placeholder="wizard.ph_team_count" oninput="onWizardTeamCountChange(this.value)">
+                  <div class="w-quick-team-chips" id="w-quick-team-chips">
+                    <button type="button" class="w-team-chip" data-count="4" onclick="onWizardTeamCountChange(4)">৪ দল</button>
+                    <button type="button" class="w-team-chip" data-count="5" onclick="onWizardTeamCountChange(5)">৫ দল</button>
+                    <button type="button" class="w-team-chip" data-count="6" onclick="onWizardTeamCountChange(6)">৬ দল</button>
+                    <button type="button" class="w-team-chip" data-count="7" onclick="onWizardTeamCountChange(7)">৭ দল</button>
+                    <button type="button" class="w-team-chip" data-count="8" onclick="onWizardTeamCountChange(8)">৮ দল</button>
+                    <button type="button" class="w-team-chip" data-count="9" onclick="onWizardTeamCountChange(9)">৯ দল</button>
+                    <button type="button" class="w-team-chip" data-count="10" onclick="onWizardTeamCountChange(10)">১০ দল</button>
+                    <button type="button" class="w-team-chip" data-count="12" onclick="onWizardTeamCountChange(12)">১২ দল</button>
+                    <button type="button" class="w-team-chip" data-count="16" onclick="onWizardTeamCountChange(16)">১৬ দল</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 4.2: Tournament Format Selection & Intelligent Recommendations -->
+              <div class="w-step-box" style="margin-top:14px;">
+                <div class="w-step-title-row">
+                  <span class="w-step-num-pill" data-i18n="wizard.step_4_2">ধাপ ৪.২</span>
+                  <label class="w-label" style="margin-bottom:0;" data-i18n="wizard.lbl_tourney_type">টুর্নামেন্ট পরিচালনার পদ্ধতি নির্বাচন করুন (দল সংখ্যার উপর ভিত্তি করে স্বয়ংক্রিয় সাজেশন):</label>
+                </div>
+                <div class="w-structure-cards-grid-3">
+                  <!-- Card 1: Groups + Knockout -->
+                  <div class="w-struct-card" id="btn-tourney-type-groups" onclick="setWizardTournamentType('groups')">
+                    <div class="w-struct-header-row">
+                      <div class="w-struct-icon">🏆</div>
+                      <span id="w-rec-pill-groups" class="w-struct-rec-pill rec-best">⭐ সেরা ও সুপারিশকৃত</span>
+                    </div>
+                    <div class="w-struct-title" data-i18n="wizard.type_groups_title">গ্রুপ পর্ব + নকআউট</div>
+                    <div id="w-rec-desc-groups" class="w-struct-desc" data-i18n="wizard.type_groups_desc">বিশ্বকাপ স্টাইল • গ্রুপে পয়েন্ট টেবিল • সেরা দলগুলো নিয়ে সেমিফাইনাল ও ফাইনাল</div>
+                  </div>
+
+                  <!-- Card 2: Single League -->
+                  <div class="w-struct-card" id="btn-tourney-type-league" onclick="setWizardTournamentType('league')">
+                    <div class="w-struct-header-row">
+                      <div class="w-struct-icon">🔄</div>
+                      <span id="w-rec-pill-league" class="w-struct-rec-pill rec-good">⚡ উপযুক্ত বিকল্প</span>
+                    </div>
+                    <div class="w-struct-title" data-i18n="wizard.type_league_title">একক লিগ টেবিল</div>
+                    <div id="w-rec-desc-league" class="w-struct-desc" data-i18n="wizard.type_league_desc">রাউন্ড-রবিন • সবাই সবার সাথে খেলবে • পয়েন্ট টেবিলের শীর্ষে থাকা দল চ্যাম্পিয়ন</div>
+                  </div>
+
+                  <!-- Card 3: Direct Knockout -->
+                  <div class="w-struct-card" id="btn-tourney-type-knockout" onclick="setWizardTournamentType('knockout')">
+                    <div class="w-struct-header-row">
+                      <div class="w-struct-icon">⚡</div>
+                      <span id="w-rec-pill-knockout" class="w-struct-rec-pill rec-warn">⚠️ অসুপারিশকৃত</span>
+                    </div>
+                    <div class="w-struct-title" data-i18n="wizard.type_ko_title">সরাসরি নকআউট</div>
+                    <div id="w-rec-desc-knockout" class="w-struct-desc" data-i18n="wizard.type_ko_desc">একক এলিমিনেশন • কোনো পয়েন্ট টেবিল নেই • প্রথম ম্যাচ থেকেই হারলেই বাদ</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Smart Structure Summary Banner & Live Visual Fixture Bracket -->
+              <div class="w-smart-summary-box" style="margin-top:14px;">
+                <div class="w-smart-summary-header">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-size:16px;">📅</span>
+                    <strong data-i18n="wizard.summary_title">ফিক্সচার প্রিভিউ:</strong>
+                  </div>
+                  <div id="w-bracket-stats-bar" class="w-bracket-stats-bar">
+                    <!-- Populated dynamically by updateWizardStructureSummary() -->
+                  </div>
+                </div>
+
+                <!-- Live Visual Interactive Fixture Bracket / Flow Diagram -->
+                <div class="w-visual-bracket-wrapper" id="w-visual-bracket-wrapper">
+                  <!-- Normal / Fullscreen Top Toolbar -->
+                  <div class="w-visual-bracket-topbar">
+                    <div class="w-visual-bracket-hint">
+                      <span>💡</span>
+                      <span data-i18n="wizard.bracket_hint">নিচে আপনার নির্বাচিত দল সংখ্যা ও পদ্ধতির ভিত্তিতে স্বয়ংক্রিয় ফিক্সচার রোডম্যাপ ও ব্র্যাকেট দেখানো হলো:</span>
+                    </div>
+                    <div class="w-bracket-actions-group">
+                      <!-- Fullscreen Toggle Button -->
+                      <button type="button" class="w-bracket-fullscreen-btn" id="w-bracket-fullscreen-toggle" onclick="toggleBracketFullscreen()" title="ফুল স্ক্রিন মোডে দেখুন">
+                        <span class="fs-icon">⛶</span>
+                        <span class="fs-label" data-i18n="wizard.bracket_fullscreen_btn">ফুল স্ক্রিন ভিউ</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div id="w-visual-bracket-tree" class="w-visual-bracket-tree">
+                    <!-- Populated dynamically by renderWizardVisualFixtureBracket() -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Fees, Prizes & Contact -->
+        <div id="wtab-content-prizes" class="w-tab-content">
+          <div class="w-grid-2">
+            <div class="w-card-section w-card-prizes">
+              <div class="w-card-header">
+                <div class="w-card-title" data-i18n="wizard.sec_prizes">🏆 পুরস্কার ও ট্রফি (Prize Pool)</div>
+                <span class="w-card-chip chip-amber" data-i18n="wizard.chip_prizes">১ • ট্রফি ও পুরস্কার</span>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_champ_prize">🥇 চ্যাম্পিয়ন দলের প্রাইজমানি ও পুরস্কার:</label>
+                <input type="text" id="w-cfg-championPrize" class="w-input" placeholder="যেমন: ৩০,০০০ টাকা ও আকর্ষণীয় চ্যাম্পিয়ন ট্রফি" data-i18n-placeholder="wizard.ph_champ_prize">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_ru_prize">🥈 রানার্স-আপ দলের প্রাইজমানি ও পুরস্কার:</label>
+                <input type="text" id="w-cfg-runnerUpPrize" class="w-input" placeholder="যেমন: ১৫,০০০ টাকা ও রানার্স-আপ ট্রফি" data-i18n-placeholder="wizard.ph_ru_prize">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_third_prize">🥉 ৩য় স্থান / ফেয়ার প্লে পুরস্কার:</label>
+                <input type="text" id="w-cfg-thirdPrize" class="w-input" placeholder="যেমন: ৫,০০০ টাকা অথবা ট্রফি ও মেডেল" data-i18n-placeholder="wizard.ph_third_prize">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_indiv_prizes">🎖️ ব্যক্তিগত পুরস্কারসমূহ:</label>
+                <input type="text" id="w-cfg-otherPrizes" class="w-input" placeholder="যেমন: গোল্ডেন বুট, গোল্ডেন গ্লাভস, ফাইনালের ম্যান অব দ্য ম্যাচ" data-i18n-placeholder="wizard.ph_indiv_prizes">
+              </div>
+            </div>
+
+            <div class="w-card-section w-card-fees">
+              <div class="w-card-header">
+                <div class="w-card-title" data-i18n="wizard.sec_fees">💰 এন্ট্রি ফি ও যোগাযোগ মাধ্যম</div>
+                <span class="w-card-chip chip-teal" data-i18n="wizard.chip_fees">২ • ফি ও পেমেন্ট</span>
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_fee">প্রতি দলের এন্ট্রি ফি (টাকা):</label>
+                <input type="text" id="w-cfg-entryFee" class="w-input" placeholder="যেমন: ২,০০০ টাকা (অফেরতযোগ্য)" data-i18n-placeholder="wizard.ph_fee">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_deadline">রেজিস্ট্রেশনের শেষ সময়সীমা:</label>
+                <input type="text" id="w-cfg-regDeadline" class="w-input" placeholder="যেমন: ম্যাচ শুরুর ৩০ মিনিট পূর্বে / ১০ নভেম্বর" data-i18n-placeholder="wizard.ph_deadline">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_contact">যোগাযোগের মোবাইল নাম্বার(সমূহ):</label>
+                <input type="text" id="w-cfg-contactPhone" class="w-input" placeholder="যেমন: ০১৭১১-xxxxxx, ০১৮১২-xxxxxx" data-i18n-placeholder="wizard.ph_contact">
+              </div>
+              <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_payment">ফি জমাদানের মাধ্যম (বিকাশ/নগদ/হাতে হাতে):</label>
+                <input type="text" id="w-cfg-paymentMethod" class="w-input" placeholder="যেমন: বিকাশ / নগদ (পার্সোনাল) অথবা অফিসে সরাসরি" data-i18n-placeholder="wizard.ph_payment">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Rules Catalog -->
+        <div id="wtab-content-rules" class="w-tab-content">
+          <!-- Tournament Rules Format Selection Cards -->
+          <div class="w-format-selector-section">
+            <div class="w-format-selector-header">
+              <span class="w-format-step-badge" data-i18n="modal.format_step_badge">রুলস টেমপ্লেট</span>
+              <span class="w-format-selector-title" data-i18n="modal.format_selector_title">নিয়মাবলীর ধরন নির্বাচন করুন:</span>
+              <span class="w-format-selector-sub" data-i18n="modal.format_selector_sub">যেকোনো একটি বেছে নিলে সংশ্লিষ্ট নিয়মাবলী ও সময়কাল স্বয়ংক্রিয়ভাবে সাজানো হবে</span>
+            </div>
+            <div class="w-format-cards-grid">
+              <!-- Card 1: Standard Football -->
+              <div class="w-format-card" id="btn-preset-standard" onclick="applyWizardPreset('standard')">
+                <div class="w-format-card-top">
+                  <div class="w-format-card-icon">🏆</div>
+                  <div class="w-format-card-info">
+                    <div class="w-format-card-title" data-i18n="modal.format_std_title">স্ট্যান্ডার্ড পূর্ণাঙ্গ ফুটবল (১১-এ-সাইড)</div>
+                    <div class="w-format-card-desc" data-i18n="modal.format_std_desc">বড় মাঠ • অফসাইড নিয়ম কার্যকর • ৪৫+৪৫ মিনিট দীর্ঘ ম্যাচ • অফিসিয়াল ফিফা রুলস</div>
+                  </div>
+                  <div class="w-format-check-circle"><span class="w-format-check-tick">✓</span></div>
+                </div>
+                <div class="w-format-card-footer">
+                  <span class="w-format-pill" data-i18n="modal.format_std_pill">ক্লিক করলে স্ট্যান্ডার্ড নিয়ম লোড হবে</span>
+                </div>
+              </div>
+
+              <!-- Card 2: Minibar / Futsal -->
+              <div class="w-format-card" id="btn-preset-minibar" onclick="applyWizardPreset('minibar')">
+                <div class="w-format-card-top">
+                  <div class="w-format-card-icon">⚡</div>
+                  <div class="w-format-card-info">
+                    <div class="w-format-card-title" data-i18n="modal.format_mini_title">মিনিবার / শর্ট-পিচ ফুটবল (৫-এ-সাইড)</div>
+                    <div class="w-format-card-desc" data-i18n="modal.format_mini_desc">ছোট মাঠ / ফুটসাল • নো-অফসাইড • রোলিং সাবস্টিটিউট • ৭+৭ বা ১৫ মি. দ্রুত ম্যাচ</div>
+                  </div>
+                  <div class="w-format-check-circle"><span class="w-format-check-tick">✓</span></div>
+                </div>
+                <div class="w-format-card-footer">
+                  <span class="w-format-pill" data-i18n="modal.format_mini_pill">ক্লিক করলে মিনিবার নিয়ম লোড হবে</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Rule Addition Box (Placed at Top) -->
+          <div class="w-custom-box">
+            <div class="w-custom-box-title">
+              <span>➕</span>
+              <span data-i18n="modal.custom_rules_header">আপনার এলাকার নিজস্ব বিশেষ নিয়ম যোগ করুন</span>
+              <span class="w-custom-box-guide" data-i18n="modal.custom_rules_guide">(নিচে অনেকগুলো স্ট্যান্ডার্ড নিয়ম দেওয়া আছে, সেখান থেকেও বাছাই করতে পারেন):</span>
+            </div>
+            <div class="w-custom-inputs">
+              <input type="text" id="w-custom-rule-title" class="w-input" style="flex:1; min-width:160px;" placeholder="নিয়মের শিরোনাম (যেমন: মাঠের পূর্ব দেওয়াল)" data-i18n-placeholder="modal.custom_rule_title_ph">
+              <input type="text" id="w-custom-rule-desc" class="w-input" style="flex:2; min-width:240px;" placeholder="নিয়মের পূর্ণ বিবরণ..." data-i18n-placeholder="modal.custom_rule_desc_ph">
+              <button type="button" class="btn" style="background:#15803d; color:#fff; font-size:12px; padding:8px 14px; border-radius:8px;" onclick="addCustomRule()" data-i18n="modal.btn_add_rule">+ নিয়ম যোগ করুন</button>
+            </div>
+            <!-- Custom Rules List Container -->
+            <div id="w-custom-rules-container" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;"></div>
+          </div>
+
+          <div class="w-rules-toolbar">
+            <input type="text" id="w-rules-search-input" class="w-rules-search" placeholder="🔍 নিয়ম খুঁজুন (যেমন: কার্ড, ওয়াকওভার, টাইব্রেকার...)" data-i18n-placeholder="modal.search_rules_placeholder" oninput="filterRulesInWizard(this.value)">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="w-rules-summary-pill" id="w-rules-active-count">সিলেক্টেড: ০টি</span>
+              <button type="button" class="btn" style="background:#0284c7; color:#fff; font-size:11px; padding:5px 12px; border-radius:6px;" onclick="selectAllMasterRules(true)" data-i18n="modal.btn_select_all">সব নির্বাচন</button>
+              <button type="button" class="btn" style="background:#f1f5f9; color:#475569; font-size:11px; padding:5px 12px; border-radius:6px; border:1px solid #cbd5e1;" onclick="selectAllMasterRules(false)" data-i18n="modal.btn_deselect_all">সব বাতিল</button>
+            </div>
+          </div>
+
+          <!-- Dynamic Rules Categories Checklist Container -->
+          <div id="w-rules-catalog-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+
+        <!-- TAB 4: Teams & Player Roster Dashboard -->
+        <div id="wtab-content-teams" class="w-tab-content">
+          <div class="w-teams-dashboard-intro" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <span data-i18n="modal.teams_dashboard_intro">💡 দলগুলোর নাম, টিম ম্যানেজার, মোবাইল নম্বর ও এন্ট্রি ফি পরিশোধের অবস্থা ট্র্যাক করুন। খেলার আগেও খেলোয়াড় পরিবর্তন করা যাবে:</span>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button type="button" class="btn btn-sm btn-reg-share-link" onclick="copyRegistrationLink(this)" data-i18n="reg.btn_copy_link">🔗 রেজিস্ট্রেশন লিংক কপি</button>
+              <button type="button" class="btn btn-sm btn-reg-open-portal" onclick="openTeamRegistrationModal()" data-i18n="reg.btn_open_portal">📝 নতুন দল নিবন্ধন করুন</button>
+            </div>
+          </div>
+          <div id="w-teams-dashboard-container"></div>
+        </div>
+      </div>
+
+      <!-- Wizard Action Footer -->
+      <div class="modal-wizard-footer">
+        <span class="w-footer-tip" data-i18n="modal.wizard_footer_tip">💡 সেভ করলেই ফিকশ্চার ও সোশ্যাল মিডিয়া পোস্টার স্বয়ংক্রিয়ভাবে আপডেট হয়ে যাবে।</span>
+        <div class="modal-wizard-actions">
+          <button type="button" class="btn btn-wizard-cancel" onclick="closeTournamentWizard()" data-i18n="modal.btn_close">✕ বাতিল</button>
+          <button type="button" class="btn btn-wizard-save" onclick="saveTournamentConfigFromWizard()" data-i18n="modal.btn_save_config">💾 টুর্নামেন্ট সংরক্ষণ ও সক্রিয় করুন</button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -92,6 +92,12 @@ it('Match schedule table in card supports horizontal swipe without cramping', ()
   assert.ok(mainCss.includes('#page1 .p1-right-col table') && mainCss.includes('min-width: 480px !important;'), 'Schedule table must maintain min-width');
 });
 
+it('Match schedule has synchronized internal scroll wrapper with sticky header', () => {
+  assert.ok(mainCss.includes('.p1-schedule-scroll-wrap') && mainCss.includes('max-height: 295px;'), 'Schedule has max-height for baseline synchronization');
+  assert.ok(mainCss.includes('position: sticky;') && mainCss.includes('top: 0;'), 'Schedule table header is sticky');
+  assert.ok(printCss.includes('.p1-schedule-scroll-wrap') && printCss.includes('max-height: none !important;'), 'Print mode disables max-height');
+});
+
 it('Knockout brackets stack to 1 column on mobile phones (< 640px)', () => {
   assert.ok(mainCss.includes('@media screen and (max-width: 640px)'), 'Must include max-width: 640px query');
   assert.ok(mainCss.includes('#page1 .bracket-grid-2x2') && mainCss.includes('grid-template-columns: 1fr !important;'), 'Bracket grid must stack to 1 column on phones');

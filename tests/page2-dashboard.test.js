@@ -208,6 +208,53 @@ assert(!rulesModalEl.classList.contains('active'), 'closeTournamentRulesModal re
 assert(rulesModalEl.style.display === 'none', 'closeTournamentRulesModal sets display:none');
 
 // ---------------------------------------------------------------------
+// TEST SUITE 5: DYNAMIC 26-PLAYER SQUAD & EXPANDABLE BENCH
+// ---------------------------------------------------------------------
+console.log('\n🌟 Test Suite 5: Dynamic 26-Player Squad & Expandable Bench');
+
+// Register 26 players for team 'মুকুন্দপুর'
+const mukundapurPlayers = [];
+for (let i = 1; i <= 26; i++) {
+  mukundapurPlayers.push({
+    no: i,
+    jersey: i === 25 ? 99 : i,
+    name: i === 15 ? 'মাহমুদুল্লাহ রিয়াদ' : (i === 25 ? 'নাসির হোসেন' : `খেলোয়াড় ${i}`)
+  });
+}
+context.teamRosters['মুকুন্দপুর'] = {
+  group: 'B',
+  manager: 'খালেদ মাহমুদ',
+  phone: '01811223344',
+  players: mukundapurPlayers
+};
+
+// Add a goal for player 15 (substitute) in matchEvents
+context.matchEvents[3] = [
+  { id: 201, team: 'মুকুন্দপুর', player: 'মাহমুদুল্লাহ রিয়াদ', type: 'goal', count: 1 },
+  { id: 202, team: 'মুকুন্দপুর', player: 'নাসির হোসেন', type: 'card', cardType: 'yellow' }
+];
+
+context.switchRosterTeam('মুকুন্দপুর');
+
+const msqTbody = getMockElement('roster-players-tbody');
+assert(msqTbody.innerHTML.includes('মাহমুদুল্লাহ রিয়াদ'), 'Dynamic table renders substitute player 15 Mahmudullah Riyad');
+assert(msqTbody.innerHTML.includes('নাসির হোসেন'), 'Dynamic table renders substitute player 25 Nasir Hossain');
+assert(msqTbody.innerHTML.includes('p-jersey-26'), 'Dynamic table renders row for all 26 players');
+assert(msqTbody.innerHTML.includes('squad-section-hd'), 'Dynamic table renders Starting Lineup and Bench section dividers');
+assert(msqTbody.innerHTML.includes('perf-badge-goal') && msqTbody.innerHTML.includes('⚽ 1'), 'Displays live ⚽ 1 goal badge for substitute player 15');
+assert(msqTbody.innerHTML.includes('perf-badge-yellow') && msqTbody.innerHTML.includes('🟨 1'), 'Displays live 🟨 1 yellow card badge for substitute player 25');
+
+const squadBadge = getMockElement('p2-team-squad-badge');
+assert(squadBadge.textContent.includes('26') || squadBadge.textContent.includes('২৬'), 'Squad count badge dynamically reflects 26 players');
+
+const mainCss = fs.readFileSync(path.join(__dirname, '../src/css/main.css'), 'utf8');
+const printCss = fs.readFileSync(path.join(__dirname, '../src/css/print.css'), 'utf8');
+assert(indexHtml.includes('class="p2-player-table-wrap"'), 'index.html contains .p2-player-table-wrap');
+assert(indexHtml.includes('class="btn-add-p2-player"'), 'index.html contains .btn-add-p2-player button');
+assert(mainCss.includes('.p2-player-table-wrap') && mainCss.includes('max-height: 440px;'), 'main.css contains scrollable .p2-player-table-wrap');
+assert(printCss.includes('.p2-player-table-wrap') && printCss.includes('max-height: none !important;'), 'print.css ensures table expands without scroll on print');
+
+// ---------------------------------------------------------------------
 // SUMMARY
 // ---------------------------------------------------------------------
 console.log(`\n==========================================`);

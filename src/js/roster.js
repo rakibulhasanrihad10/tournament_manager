@@ -80,7 +80,7 @@ function switchRosterTeam(teamName) {
   if (mgrInp) mgrInp.value = data.manager || '';
   if (phoneInp) phoneInp.value = data.phone || '';
 
-  // Render 11 players table with Live Performance Badges
+  // Render dynamic players table with Live Performance Badges
   const tbody = document.getElementById('roster-players-tbody');
   if (tbody) {
     const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
@@ -92,7 +92,34 @@ function switchRosterTeam(teamName) {
     let teamYellows = 0;
     let teamReds = 0;
 
-    for (let i = 1; i <= 11; i++) {
+    const cfg = (typeof tournamentConfig !== 'undefined' && tournamentConfig) ? tournamentConfig : {};
+    const startingCount = (cfg.startingPlayers !== undefined && cfg.startingPlayers !== null) ? parseInt(cfg.startingPlayers, 10) : 11;
+    const existingPlayers = (data.players && Array.isArray(data.players)) ? data.players : [];
+    const totalCount = Math.max(startingCount, existingPlayers.length);
+
+    // Update Squad count badges
+    const toBn = (n) => String(n).replace(/[0-9]/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+    const squadBadge = document.getElementById('p2-team-squad-badge');
+    const stripCountEl = document.getElementById('p2-strip-players-count');
+    if (squadBadge) {
+      squadBadge.textContent = isEn ? `${totalCount} Players` : `${toBn(totalCount)} জন`;
+    }
+    if (stripCountEl) {
+      stripCountEl.textContent = isEn ? `${totalCount} registered` : `${toBn(totalCount)} জন নিবন্ধিত`;
+    }
+
+    for (let i = 1; i <= totalCount; i++) {
+      // Optional Section Dividers if squad has substitutes
+      if (totalCount > startingCount) {
+        if (i === 1) {
+          const xiTitle = isEn ? `🌟 Starting Lineup (1 - ${startingCount})` : `🌟 মূল একাদশ (১ - ${toBn(startingCount)})`;
+          rowsHtml += `<tr class="squad-section-hd"><td colspan="4">${xiTitle}</td></tr>`;
+        } else if (i === startingCount + 1) {
+          const benchTitle = isEn ? `⚡ Substitutes & Reserves (${startingCount + 1} - ${totalCount})` : `⚡ অতিরিক্ত খেলোয়াড় / বেঞ্চ (${toBn(startingCount + 1)} - ${toBn(totalCount)})`;
+          rowsHtml += `<tr class="squad-section-hd"><td colspan="4">${benchTitle}</td></tr>`;
+        }
+      }
+
       const p = (data.players && data.players.find(x => x.no === i)) || { no: i, jersey: i, name: '' };
       const pName = (p.name || '').trim();
 
@@ -138,13 +165,17 @@ function switchRosterTeam(teamName) {
       }
 
       const escName = typeof escapeHtml === 'function' ? escapeHtml(p.name || '') : (p.name || '');
+      const isSub = i > startingCount;
+      const removeBtnHtml = isSub
+        ? `<button type="button" class="btn-remove-p2-player" onclick="removeP2PlayerRow(${i})" title="${isEn ? 'Remove Player' : 'খেলোয়াড় বাদ দিন'}">✕</button>`
+        : '';
 
-      rowsHtml += '<tr>' +
-        '<td style="text-align:center; font-weight:700; color:#64748b;">' + i + '</td>' +
-        '<td style="text-align:center;"><input type="number" class="player-input-jersey" id="p-jersey-' + i + '" value="' + (p.jersey || i) + '" min="1" max="99" oninput="saveCurrentRoster()"></td>' +
-        '<td><input type="text" class="player-input-text" id="p-name-' + i + '" value="' + escName + '" placeholder="' + namePlaceholder + '" oninput="saveCurrentRoster()"></td>' +
-        '<td style="text-align:center;">' + perfHtml + '</td>' +
-      '</tr>';
+      rowsHtml += `<tr class="p2-player-row ${isSub ? 'p2-sub-row' : 'p2-starting-row'}" data-player-no="${i}">` +
+        `<td style="text-align:center; font-weight:700; color:${isSub ? '#64748b' : '#072a60'};">${i}</td>` +
+        `<td style="text-align:center;"><input type="number" class="player-input-jersey" id="p-jersey-${i}" value="${p.jersey || i}" min="1" max="99" oninput="saveCurrentRoster()"></td>` +
+        `<td><div style="display:flex; align-items:center; gap:6px;"><input type="text" class="player-input-text" id="p-name-${i}" value="${escName}" placeholder="${namePlaceholder}" oninput="saveCurrentRoster()" style="flex:1;">${removeBtnHtml}</div></td>` +
+        `<td style="text-align:center;">${perfHtml}</td>` +
+      `</tr>`;
     }
     tbody.innerHTML = rowsHtml;
 
@@ -166,6 +197,7 @@ function switchRosterTeam(teamName) {
 }
 
 function saveCurrentRoster() {
+  if (!currentRosterTeam) return;
   if (!teamRosters[currentRosterTeam]) {
     teamRosters[currentRosterTeam] = { group: '', manager: '', phone: '', players: [] };
   }
@@ -176,24 +208,81 @@ function saveCurrentRoster() {
   if (phoneInp) teamRosters[currentRosterTeam].phone = phoneInp.value.trim();
 
   const players = [];
-  for (let i = 1; i <= 11; i++) {
-    const jEl = document.getElementById('p-jersey-' + i);
-    const nEl = document.getElementById('p-name-' + i);
-    const jerseyVal = jEl ? parseInt(jEl.value, 10) || i : i;
-    const nameVal = nEl ? nEl.value.trim() : '';
-    players.push({ no: i, jersey: jerseyVal, name: nameVal || ('খেলোয়াড় ' + i) });
+  const rows = document.querySelectorAll('#roster-players-tbody tr.p2-player-row');
+  if (rows && rows.length > 0) {
+    rows.forEach((row, idx) => {
+      const i = idx + 1;
+      const jEl = document.getElementById('p-jersey-' + i);
+      const nEl = document.getElementById('p-name-' + i);
+      const jerseyVal = jEl ? parseInt(jEl.value, 10) || i : i;
+      const nameVal = nEl ? nEl.value.trim() : '';
+      players.push({ no: i, jersey: jerseyVal, name: nameVal || ('খেলোয়াড় ' + i) });
+    });
+  } else {
+    for (let i = 1; i <= 11; i++) {
+      const jEl = document.getElementById('p-jersey-' + i);
+      const nEl = document.getElementById('p-name-' + i);
+      const jerseyVal = jEl ? parseInt(jEl.value, 10) || i : i;
+      const nameVal = nEl ? nEl.value.trim() : '';
+      players.push({ no: i, jersey: jerseyVal, name: nameVal || ('খেলোয়াড় ' + i) });
+    }
   }
-  teamRosters[currentRosterTeam].players = players;
 
+  teamRosters[currentRosterTeam].players = players;
   saveRosters();
 
   // If an event modal is open, refresh dropdowns
-  if (activeModalMatchId) {
+  if (activeModalMatchId && typeof populateModalDropdowns === 'function') {
     populateModalDropdowns(activeModalMatchId);
   }
 
   if (typeof renderPage2OperationsHub === 'function') {
     renderPage2OperationsHub();
+  }
+}
+
+function addP2PlayerRow() {
+  if (!currentRosterTeam) return;
+  if (!teamRosters[currentRosterTeam]) {
+    teamRosters[currentRosterTeam] = { group: '', manager: '', phone: '', players: [] };
+  }
+  const players = teamRosters[currentRosterTeam].players || [];
+  const nextNo = players.length + 1;
+  players.push({
+    no: nextNo,
+    jersey: nextNo,
+    name: ''
+  });
+  teamRosters[currentRosterTeam].players = players;
+  saveRosters();
+  switchRosterTeam(currentRosterTeam);
+
+  setTimeout(() => {
+    const newInp = document.getElementById('p-name-' + nextNo);
+    if (newInp) newInp.focus();
+  }, 50);
+}
+
+function removeP2PlayerRow(playerNo) {
+  if (!currentRosterTeam || !teamRosters[currentRosterTeam]) return;
+  const players = teamRosters[currentRosterTeam].players || [];
+  if (players.length <= 1) return;
+
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const targetP = players.find(x => x.no === playerNo);
+  const pName = targetP ? targetP.name : '';
+  const confirmMsg = isEn 
+    ? `Are you sure you want to remove player #${playerNo} (${pName || 'Unnamed'}) from this squad?`
+    : `আপনি কি স্কোয়াড থেকে #${playerNo} নম্বর খেলোয়াড় (${pName || 'নামহীন'}) বাদ দিতে চান?`;
+
+  if (confirm(confirmMsg)) {
+    const updated = players.filter(x => x.no !== playerNo);
+    updated.forEach((p, idx) => {
+      p.no = idx + 1;
+    });
+    teamRosters[currentRosterTeam].players = updated;
+    saveRosters();
+    switchRosterTeam(currentRosterTeam);
   }
 }
 
@@ -1151,11 +1240,18 @@ function renderBlankRosterSheet(configOverride) {
   }
 }
 
+if (typeof window !== 'undefined') {
+  window.addP2PlayerRow = addP2PlayerRow;
+  window.removeP2PlayerRow = removeP2PlayerRow;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderPage2TeamTabs,
     switchRosterTeam,
     saveCurrentRoster,
+    addP2PlayerRow,
+    removeP2PlayerRow,
     renderPage2RulesList,
     renderPage2OperationsHub,
     openTournamentRulesModal,

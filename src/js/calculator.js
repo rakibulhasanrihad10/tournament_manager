@@ -218,11 +218,16 @@ function recalculateAll() {
       const bestRuDisp = document.getElementById('best-ru-display');
       if (bestRuDisp) {
         if (bestRunnerUp && groupKeys.length >= 3) {
-          const grpWord = isEn ? 'Group' : 'গ্রুপ';
-          const ptsWord = isEn ? 'pts' : 'পয়েন্ট';
-          const gdWord = isEn ? 'GD' : 'ব্যবধান';
-          const gdVal = bestRunnerUp.gd > 0 ? '+' + bestRunnerUp.gd : bestRunnerUp.gd;
-          bestRuDisp.textContent = `${bestRunnerUp.name} (${grpWord} ${bestRunnerUp.group} - ${bestRunnerUp.pts} ${ptsWord}, ${gdWord} ${gdVal})`;
+          if (isEn) {
+            const gdVal = bestRunnerUp.gd > 0 ? '+' + bestRunnerUp.gd : '' + bestRunnerUp.gd;
+            bestRuDisp.textContent = `${bestRunnerUp.name} (Group ${bestRunnerUp.group} — ${bestRunnerUp.pts} pts, GD ${gdVal})`;
+          } else {
+            const toBn = (n) => String(n).replace(/[0-9]/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+            const grpLetter = bestRunnerUp.group === 'A' ? 'এ' : bestRunnerUp.group === 'B' ? 'বি' : bestRunnerUp.group === 'C' ? 'সি' : bestRunnerUp.group === 'D' ? 'ডি' : bestRunnerUp.group;
+            const sign = bestRunnerUp.gd > 0 ? '+' : (bestRunnerUp.gd < 0 ? '-' : '');
+            const gdBn = sign + toBn(Math.abs(bestRunnerUp.gd));
+            bestRuDisp.textContent = `${bestRunnerUp.name} (গ্রুপ ${grpLetter} — ${toBn(bestRunnerUp.pts)} পয়েন্ট, ব্যবধান ${gdBn})`;
+          }
         } else {
           bestRuDisp.textContent = '';
         }
@@ -324,6 +329,9 @@ function recalculateAll() {
       updateGoldenBootLeaderboard(playerGoals);
       if (typeof renderPage2OperationsHub === 'function') {
         renderPage2OperationsHub(playerGoals, teamStats);
+      }
+      if (typeof updateSmartMatchCenter === 'function') {
+        updateSmartMatchCenter();
       }
     }
 

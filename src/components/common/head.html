@@ -1,0 +1,24 @@
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ফুটবল বিশ্বকাপ ২০২৬ - অফিসিয়াল ফিকশ্চার ও স্কোরবোর্ড</title>
+  <link rel="stylesheet" href="src/css/style.css">
+  <link rel="stylesheet" href="src/css/main.css">
+  <link rel="stylesheet" href="src/css/modals.css">
+  <link rel="stylesheet" href="src/css/hub.css">
+  <link rel="stylesheet" href="src/css/print.css">
+  <script>
+    // Immediate pre-render theme setup to prevent Flash of Incorrect Theme (FOIT)
+    (function() {
+      try {
+        const savedTheme = localStorage.getItem('tournament_theme_mode');
+        const systemLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+        const theme = savedTheme || (systemLight ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', theme);
+
+        const savedSheet = localStorage.getItem('tournament_sheet_theme');
+        if (savedSheet === 'paper') {
+          document.documentElement.classList.add('sheet-theme-paper');
+        }
+      } catch (e) {}
+    })();
+  </script>

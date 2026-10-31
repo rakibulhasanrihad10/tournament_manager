@@ -1,0 +1,551 @@
+  <div class="page-sheet page-1 p1-stage-group" id="page1">
+    <div class="header">
+      <h1 id="app-title-display">⚽ <span id="app-title-accent">ফুটবল বিশ্বকাপ</span> <span id="app-title-rest">২০২৬</span></h1>
+      <p id="app-meta-display"><span data-i18n="page1.meta_organizer">আয়োজনে:</span> <span id="app-org-display">ফিফা ও বাংলাদেশ ফুটবল ফেডারেশন</span> &nbsp;|&nbsp; <span data-i18n="page1.meta_venue">স্থান:</span> <span id="app-venue-display">বঙ্গবন্ধু জাতীয় স্টেডিয়াম মাঠ, ঢাকা</span> <span class="live-status-pill"><span class="pulse-dot"></span> <span data-i18n="page1.live_status">লাইভ স্কোরবোর্ড ও অটো-ক্যালকুলেটর সক্রিয়</span></span></p>
+    </div>
+
+    <!-- Stage / Phase Navigation within Page 1 (Screen only, hidden on print) -->
+    <div class="p1-stage-nav" id="p1-stage-nav">
+      <button type="button" class="p1-stage-tab active" id="btn-p1-stage-group" onclick="switchP1Stage('group')">
+        <span class="stage-icon">📊</span>
+        <span class="stage-name" data-i18n="page1.stage_group">গ্রুপ পর্ব (পয়েন্ট টেবিল ও সূচি)</span>
+      </button>
+      <button type="button" class="p1-stage-tab" id="btn-p1-stage-knockout" onclick="switchP1Stage('knockout')">
+        <span class="stage-icon">👑</span>
+        <span class="stage-name" data-i18n="page1.stage_knockout">নকআউট পর্ব (সেমি ও মেগা ফাইনাল)</span>
+        <span class="stage-badge" data-i18n="page1.stage_ko_badge">ফাইনাল স্টেজ</span>
+      </button>
+      <button type="button" class="p1-stage-tab" id="btn-p1-stage-all" onclick="switchP1Stage('all')">
+        <span class="stage-icon">📑</span>
+        <span class="stage-name" data-i18n="page1.stage_all">এক নজরে সব (A4 পূর্ণাঙ্গ ভিউ)</span>
+      </button>
+    </div>
+
+        <div class="page1-layout">
+      <!-- LEFT COLUMN (41%): গ্রুপ পয়েন্ট ট্র্যাকার, নিয়ম ও ব্যক্তিগত পুরস্কার -->
+      <div class="p1-left-col">
+        <!-- 1. দল, গ্রুপ পয়েন্ট ক্যালকুলেটর ও সেমিফাইনালিস্ট নির্ধারণ -->
+        <div class="p1-card p1-standings-card" id="p1-card-standings" style="padding: 5px 7px;">
+          <div class="section-title" style="margin-bottom: 4px;" data-i18n="page1.left_col_title">দল, গ্রুপ পয়েন্ট ও সেমিফাইনালিস্ট নির্ধারণ</div>
+
+          <div id="dynamic-standings-container">
+          <!-- গ্রুপ এ (Group A) -->
+          <div class="grp-table-wrap">
+            <div class="grp-hd ga">
+              <span data-i18n="page1.group_a_title">🏆 গ্রুপ এ (Group A)</span>
+              <span style="font-size:9px; opacity:0.9;" data-i18n="page1.group_meta">৩ দল • ৩ ম্যাচ</span>
+            </div>
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th style="width: 5%;" data-i18n="page1.th_pos">#</th>
+                  <th style="width: 32%; text-align: left; padding-left: 5px;" data-i18n="page1.th_team">দলের নাম</th>
+                  <th style="width: 7%;" title="ম্যাচ খেলেছে (Played)" data-i18n="page1.th_pl" data-i18n-title="page1.th_pl_title">PL</th>
+                  <th style="width: 6%;" title="জয় (Won)" data-i18n="page1.th_w">W</th>
+                  <th style="width: 6%;" title="ড্র (Drawn)" data-i18n="page1.th_d">D</th>
+                  <th style="width: 6%;" title="হার (Lost)" data-i18n="page1.th_l">L</th>
+                  <th style="width: 11%;" title="দেওয়া-খাওয়া গোল (+/-)" data-i18n="page1.th_gfga">+/-</th>
+                  <th style="width: 7%;" title="গোল ব্যবধান (Goal Difference)" data-i18n="page1.th_gd">GD</th>
+                  <th style="width: 6%;" title="ফেয়ার প্লে পয়েন্ট (কার্ড শৃঙ্খলা: 🟨 -১, 🟥 -৩)" data-i18n="page1.th_fp" data-i18n-title="page1.th_fp_title">FP</th>
+                  <th style="width: 7%;" title="মোট পয়েন্ট (Points)" data-i18n="page1.th_pts">PTS</th>
+                  <th style="width: 11%;" title="সাম্প্রতিক ফর্ম (Form)" data-i18n="page1.th_form">Form</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-group-A">
+                <tr class="rank-1">
+                  <td>১</td>
+                  <td class="team-name-cell">মুড়িয়ারা</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-2">
+                  <td>২</td>
+                  <td class="team-name-cell">নোয়াপাড়া</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-3">
+                  <td>৩</td>
+                  <td class="team-name-cell">চিতড্ডা</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="grp-champ-row">
+              <span data-i18n="page1.champ_a_lbl">🏆 গ্রুপ এ চ্যাম্পিয়ন:</span>
+              <span class="champ-blank"><span id="champ-a-display" class="champ-blank-content"></span></span>
+            </div>
+          </div>
+
+          <!-- গ্রুপ বি (Group B) -->
+          <div class="grp-table-wrap">
+            <div class="grp-hd gb">
+              <span data-i18n="page1.group_b_title">🏆 গ্রুপ বি (Group B)</span>
+              <span style="font-size:9px; opacity:0.9;" data-i18n="page1.group_meta">৩ দল • ৩ ম্যাচ</span>
+            </div>
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th style="width: 5%;" data-i18n="page1.th_pos">#</th>
+                  <th style="width: 32%; text-align: left; padding-left: 5px;" data-i18n="page1.th_team">দলের নাম</th>
+                  <th style="width: 7%;" title="ম্যাচ খেলেছে (Played)" data-i18n="page1.th_pl" data-i18n-title="page1.th_pl_title">PL</th>
+                  <th style="width: 6%;" title="জয় (Won)" data-i18n="page1.th_w">W</th>
+                  <th style="width: 6%;" title="ড্র (Drawn)" data-i18n="page1.th_d">D</th>
+                  <th style="width: 6%;" title="হার (Lost)" data-i18n="page1.th_l">L</th>
+                  <th style="width: 11%;" title="দেওয়া-খাওয়া গোল (+/-)" data-i18n="page1.th_gfga">+/-</th>
+                  <th style="width: 7%;" title="গোল ব্যবধান (Goal Difference)" data-i18n="page1.th_gd">GD</th>
+                  <th style="width: 6%;" title="ফেয়ার প্লে পয়েন্ট (কার্ড শৃঙ্খলা: 🟨 -১, 🟥 -৩)" data-i18n="page1.th_fp" data-i18n-title="page1.th_fp_title">FP</th>
+                  <th style="width: 7%;" title="মোট পয়েন্ট (Points)" data-i18n="page1.th_pts">PTS</th>
+                  <th style="width: 11%;" title="সাম্প্রতিক ফর্ম (Form)" data-i18n="page1.th_form">Form</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-group-B">
+                <tr class="rank-1">
+                  <td>১</td>
+                  <td class="team-name-cell">মুকুন্দপুর</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-2">
+                  <td>২</td>
+                  <td class="team-name-cell">উত্তর ওড্ডা</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-3">
+                  <td>৩</td>
+                  <td class="team-name-cell">দক্ষিণ ওড্ডা</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="grp-champ-row">
+              <span data-i18n="page1.champ_b_lbl">🏆 গ্রুপ বি চ্যাম্পিয়ন:</span>
+              <span class="champ-blank"><span id="champ-b-display" class="champ-blank-content"></span></span>
+            </div>
+          </div>
+
+          <!-- গ্রুপ সি (Group C) -->
+          <div class="grp-table-wrap">
+            <div class="grp-hd gc">
+              <span data-i18n="page1.group_c_title">🏆 গ্রুপ সি (Group C)</span>
+              <span style="font-size:9px; opacity:0.9;" data-i18n="page1.group_meta">৩ দল • ৩ ম্যাচ</span>
+            </div>
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th style="width: 5%;" data-i18n="page1.th_pos">#</th>
+                  <th style="width: 32%; text-align: left; padding-left: 5px;" data-i18n="page1.th_team">দলের নাম</th>
+                  <th style="width: 7%;" title="ম্যাচ খেলেছে (Played)" data-i18n="page1.th_pl" data-i18n-title="page1.th_pl_title">PL</th>
+                  <th style="width: 6%;" title="জয় (Won)" data-i18n="page1.th_w">W</th>
+                  <th style="width: 6%;" title="ড্র (Drawn)" data-i18n="page1.th_d">D</th>
+                  <th style="width: 6%;" title="হার (Lost)" data-i18n="page1.th_l">L</th>
+                  <th style="width: 11%;" title="দেওয়া-খাওয়া গোল (+/-)" data-i18n="page1.th_gfga">+/-</th>
+                  <th style="width: 7%;" title="গোল ব্যবধান (Goal Difference)" data-i18n="page1.th_gd">GD</th>
+                  <th style="width: 6%;" title="ফেয়ার প্লে পয়েন্ট (কার্ড শৃঙ্খলা: 🟨 -১, 🟥 -৩)" data-i18n="page1.th_fp" data-i18n-title="page1.th_fp_title">FP</th>
+                  <th style="width: 7%;" title="মোট পয়েন্ট (Points)" data-i18n="page1.th_pts">PTS</th>
+                  <th style="width: 11%;" title="সাম্প্রতিক ফর্ম (Form)" data-i18n="page1.th_form">Form</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-group-C">
+                <tr class="rank-1">
+                  <td>১</td>
+                  <td class="team-name-cell">বাতাবাড়িয়া</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-2">
+                  <td>২</td>
+                  <td class="team-name-cell">মোহাম্মদপুর</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+                <tr class="rank-3">
+                  <td>৩</td>
+                  <td class="team-name-cell">ভংগুয়া</td>
+                  <td>০</td><td>০</td><td>০</td><td>০</td>
+                  <td class="goal-record">০-০</td>
+                  <td class="gd-record gd-zero">০</td>
+                  <td><span class="pts-badge">০</span></td>
+                  <td><span class="form-empty">-</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="grp-champ-row">
+              <span data-i18n="page1.champ_c_lbl">🏆 গ্রুপ সি চ্যাম্পিয়ন:</span>
+              <span class="champ-blank"><span id="champ-c-display" class="champ-blank-content"></span></span>
+            </div>
+          </div>
+
+          <!-- সেরা রানার্স-আপ -->
+          <div class="best-ru-strip">
+            <span data-i18n="page1.best_runner_up_strip">⭐ সেমিফাইনালে খেলার যোগ্য সেরা রানার্স-আপ (Best Runner-up):</span>
+            <span class="ru-blank"><span id="best-ru-display" class="ru-blank-content"></span></span>
+          </div>
+          </div> <!-- end #dynamic-standings-container -->
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN (59%): গ্রুপ পর্বের ম্যাচ সূচি ও নকআউট পর্বের ব্র্যাকেট -->
+      <div class="p1-right-col">
+        <!-- 1. গ্রুপ পর্বের ম্যাচ সূচি (ম্যাচ ১-৯) -->
+        <div class="p1-card p1-schedule-card" id="p1-card-schedule" style="padding: 5px 8px;">
+          <div class="section-title" style="margin-bottom: 3px;" data-i18n="page1.group_schedule_title">গ্রুপ পর্বের ম্যাচ সূচি</div>
+          <div class="p1-schedule-scroll-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:8%;" data-i18n="page1.th_match_no">ম্যাচ নং</th>
+                <th style="width:13%;" data-i18n="page1.th_time">সময়</th>
+                <th style="width:12%;" data-i18n="page1.th_group">গ্রুপ</th>
+                <th style="width:38%;" data-i18n="page1.th_versus">মুখোমুখি দল</th>
+                <th style="width:14%;" data-i18n="page1.th_score">স্কোর</th>
+                <th style="width:15%;" data-i18n="page1.th_winner">ফলাফল / বিজয়ী</th>
+              </tr>
+            </thead>
+            <tbody id="dynamic-schedule-tbody">
+              <tr>
+                <td>১</td>
+                <td>সন্ধ্যা ৬:০০</td>
+                <td style="color:#0d47a1;">গ্রুপ বি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">মুকুন্দপুর</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">উত্তর ওড্ডা</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(1)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m1-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m1-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(1)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m1-winner" class="match-winner-txt">__________________</span>
+                  <div id="m1-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>২</td>
+                <td>সন্ধ্যা ৬:৩০</td>
+                <td style="color:#b71c1c;">গ্রুপ এ</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">মুড়িয়ারা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">নোয়াপাড়া</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(2)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m2-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m2-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(2)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m2-winner" class="match-winner-txt">__________________</span>
+                  <div id="m2-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৩</td>
+                <td>রাত ৭:০০</td>
+                <td style="color:#1b5e20;">গ্রুপ সি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">বাতাবাড়িয়া</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">মোহাম্মদপুর</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(3)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m3-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m3-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(3)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m3-winner" class="match-winner-txt">__________________</span>
+                  <div id="m3-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৪</td>
+                <td>রাত ৭:৩০</td>
+                <td style="color:#b71c1c;">গ্রুপ এ</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">নোয়াপাড়া</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">চিতড্ডা</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(4)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m4-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m4-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(4)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m4-winner" class="match-winner-txt">__________________</span>
+                  <div id="m4-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৫</td>
+                <td>রাত ৮:০০</td>
+                <td style="color:#0d47a1;">গ্রুপ বি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">উত্তর ওড্ডা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">দক্ষিণ ওড্ডা</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(5)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m5-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m5-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(5)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m5-winner" class="match-winner-txt">__________________</span>
+                  <div id="m5-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৬</td>
+                <td>রাত ৮:৩০</td>
+                <td style="color:#1b5e20;">গ্রুপ সি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">মোহাম্মদপুর</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">ভংগুয়া</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(6)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m6-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m6-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(6)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m6-winner" class="match-winner-txt">__________________</span>
+                  <div id="m6-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৭</td>
+                <td>রাত ৯:০০</td>
+                <td style="color:#b71c1c;">গ্রুপ এ</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">চিতড্ডা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">মুড়িয়ারা</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(7)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m7-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m7-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(7)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m7-winner" class="match-winner-txt">__________________</span>
+                  <div id="m7-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৮</td>
+                <td>রাত ৯:৩০</td>
+                <td style="color:#0d47a1;">গ্রুপ বি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">দক্ষিণ ওড্ডা</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">মুকুন্দপুর</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(8)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m8-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m8-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(8)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m8-winner" class="match-winner-txt">__________________</span>
+                  <div id="m8-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>৯</td>
+                <td>রাত ১০:০০</td>
+                <td style="color:#1b5e20;">গ্রুপ সি</td>
+                <td>
+                  <div class="match-vs-grid">
+                    <div class="team-left">ভংগুয়া</div>
+                    <div><span class="vs-badge">VS</span></div>
+                    <div class="team-right">বাতাবাড়িয়া</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="score-wrap" onclick="openMatchEventsModal(9)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="m9-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="m9-s2" readonly placeholder="০">
+                  </div>
+                  <div style="margin-top:2px; text-align:center;"><button type="button" class="btn-match-event" onclick="openMatchEventsModal(9)" data-i18n="page1.btn_event">⚽/🟨 ইভেন্ট</button></div>
+                </td>
+                <td>
+                  <span id="m9-winner" class="match-winner-txt">__________________</span>
+                  <div id="m9-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+
+        <!-- 2. নকআউট পর্বের ব্র্যাকেট (ম্যাচ ১০-১৩) ও বিশেষ দ্রষ্টব্য -->
+        <div class="p1-card p1-bracket-card" id="p1-card-bracket" style="padding: 5px 8px;">
+          <div class="bracket-header">
+            <div>
+              <div class="section-title" style="margin-bottom: 2px;" data-i18n="page1.bracket_title">👑 নকআউট পর্বের ব্র্যাকেট</div>
+              <p style="font-weight:700; font-size: 11.5px; color: #333;" data-i18n="page1.bracket_sub">৩ গ্রুপের চ্যাম্পিয়ন + সেরা রানার্স-আপ = ৪ দল</p>
+            </div>
+            <div class="trophies-showcase">
+              <div class="trophy-item t-gold"><span class="trophy-icon">🏆</span> <span data-i18n="page1.badge_champ">চ্যাম্পিয়ন</span></div>
+              <div class="trophy-item t-silver"><span class="trophy-icon">🏆</span> <span data-i18n="page1.badge_ru">রানার্স-আপ</span></div>
+              <div class="trophy-item t-bronze"><span class="trophy-icon">🏆</span> <span data-i18n="page1.badge_3rd">৩য় স্থান</span></div>
+            </div>
+          </div>
+
+          <div class="bracket-grid-2x2">
+            <!-- ১ম সেমিফাইনাল -->
+            <div class="match-card">
+              <div class="mc-head mc-red" data-i18n="page1.semi_1_hd">১ম সেমিফাইনাল (ম্যাচ ১০) | রাত ১০:৩০</div>
+              <div class="mc-body">
+                <div><span id="ko10-t1" class="team-badge-txt">গ্রুপ এ চ্যাম্পিয়ন</span> <span class="vs-badge" style="display:inline-block; width:16px; height:16px; font-size:8px;">VS</span> <span id="ko10-t2" class="team-badge-txt">সেরা রানার্স-আপ</span></div>
+                <div class="mc-score-row">
+                  স্কোর: 
+                  <div class="score-wrap" onclick="openMatchEventsModal(10)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="ko10-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="ko10-s2" readonly placeholder="০">
+                  </div>
+                  <button type="button" class="btn-match-event" onclick="openMatchEventsModal(10)" style="margin-left:4px; font-size:9px; padding:1px 5px;">⚽/🟨</button>
+                </div>
+                <div id="ko10-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                <div class="winner-input"><span data-i18n="page1.winner_lbl">বিজয়ী দল</span><div class="winner-blank" id="ko10-winner"><div class="winner-blank-content"></div></div></div>
+              </div>
+            </div>
+
+            <!-- ২য় সেমিফাইনাল -->
+            <div class="match-card">
+              <div class="mc-head mc-blue" data-i18n="page1.semi_2_hd">২য় সেমিফাইনাল (ম্যাচ ১১) | রাত ১১:০০</div>
+              <div class="mc-body">
+                <div><span id="ko11-t1" class="team-badge-txt">গ্রুপ বি চ্যাম্পিয়ন</span> <span class="vs-badge" style="display:inline-block; width:16px; height:16px; font-size:8px;">VS</span> <span id="ko11-t2" class="team-badge-txt">গ্রুপ সি চ্যাম্পিয়ন</span></div>
+                <div class="mc-score-row">
+                  স্কোর: 
+                  <div class="score-wrap" onclick="openMatchEventsModal(11)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="ko11-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="ko11-s2" readonly placeholder="০">
+                  </div>
+                  <button type="button" class="btn-match-event" onclick="openMatchEventsModal(11)" style="margin-left:4px; font-size:9px; padding:1px 5px;">⚽/🟨</button>
+                </div>
+                <div id="ko11-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                <div class="winner-input"><span data-i18n="page1.winner_lbl">বিজয়ী দল</span><div class="winner-blank" id="ko11-winner"><div class="winner-blank-content"></div></div></div>
+              </div>
+            </div>
+
+            <!-- ৩য় স্থান নির্ধারণী -->
+            <div class="match-card">
+              <div class="mc-head mc-purple" data-i18n="page1.play3_hd">🥉 ৩য় স্থান নির্ধারণী (ম্যাচ ১২) | রাত ১১:৩০</div>
+              <div class="mc-body">
+                <div><span id="ko12-t1" class="team-badge-txt">১ম সেমি পরাজিত</span> <span class="vs-badge" style="display:inline-block; width:16px; height:16px; font-size:8px;">VS</span> <span id="ko12-t2" class="team-badge-txt">২য় সেমি পরাজিত</span></div>
+                <div class="mc-score-row">
+                  স্কোর: 
+                  <div class="score-wrap" onclick="openMatchEventsModal(12)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="ko12-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="ko12-s2" readonly placeholder="০">
+                  </div>
+                  <button type="button" class="btn-match-event" onclick="openMatchEventsModal(12)" style="margin-left:4px; font-size:9px; padding:1px 5px;">⚽/🟨</button>
+                </div>
+                <div id="ko12-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                <div class="winner-input"><span data-i18n="page1.winner_3rd_lbl">৩য় স্থান বিজয়ী দল</span><div class="winner-blank" id="ko12-winner"><div class="winner-blank-content"></div></div></div>
+              </div>
+            </div>
+
+            <!-- গ্র্যান্ড ফাইনাল -->
+            <div class="match-card" style="border-color: #f5b915;">
+              <div class="mc-head mc-dark" data-i18n="page1.final_hd">🏆 গ্র্যান্ড ফাইনাল (ম্যাচ ১৩) | রাত ১২:০০</div>
+              <div class="mc-body">
+                <div><span id="ko13-t1" class="team-badge-txt">১ম সেমি বিজয়ী</span> <span class="vs-badge" style="display:inline-block; width:16px; height:16px; font-size:8px;">VS</span> <span id="ko13-t2" class="team-badge-txt">২য় সেমি বিজয়ী</span></div>
+                <div class="mc-score-row">
+                  স্কোর: 
+                  <div class="score-wrap" onclick="openMatchEventsModal(13)" title="ক্লিক করে গোল ও কার্ড যোগ করুন">
+                    <input type="number" min="0" max="99" class="score-input" id="ko13-s1" readonly placeholder="০">
+                    <span>-</span>
+                    <input type="number" min="0" max="99" class="score-input" id="ko13-s2" readonly placeholder="০">
+                  </div>
+                  <button type="button" class="btn-match-event" onclick="openMatchEventsModal(13)" style="margin-left:4px; font-size:9px; padding:1px 5px;">⚽/🟨</button>
+                </div>
+                <div id="ko13-pen-wrap" class="pen-picker-wrap" style="display:none;"></div>
+                <div class="winner-input final-win"><span data-i18n="page1.winner_champ_lbl">🏆 টুর্নামেন্ট চ্যাম্পিয়ন দল</span><div class="winner-blank" id="ko13-winner"><div class="winner-blank-content"></div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="special-note" id="swap-notification-note">
+            <strong data-i18n="page1.swap_note_title">ℹ️ বিশেষ দ্রষ্টব্য:</strong> <span data-i18n="page1.swap_note_desc">১ম সেমিফাইনালে সেরা রানার্স-আপ দলটি যদি আবার 'গ্রুপ এ' থেকেই আসে, তবে নিয়ম অনুযায়ী নিজেদের গ্রুপের চ্যাম্পিয়নের সাথে না খেলিয়ে তাদের 'গ্রুপ বি' বা 'সি' চ্যাম্পিয়নের সাথে অদলবদল করে দেওয়া যাবে।</span>
+          </div>
+        </div>
+      </div></div>
+  </div>
