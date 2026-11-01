@@ -1735,55 +1735,55 @@ function generateBlankRosterSheetHtml(configOverride) {
           <div class="sign-row blank-sign-row" style="display:flex; justify-content:space-between; gap:8px; margin-top:0; margin-bottom:4px;">
             
             <!-- BLOCK 1: TEAM MANAGER -->
-            <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:5px 8px; display:flex; flex-direction:column; justify-content:space-between; min-height:68px;">
-              <div style="font-size:10.5px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:2px; margin-bottom:4px; display:flex; align-items:center; gap:5px;">
+            <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:6px 10px; display:flex; flex-direction:column; justify-content:space-between; min-height:88px; box-sizing:border-box;">
+              <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:3px; margin-bottom:5px; display:flex; align-items:center; gap:5px;">
                 <span>👤</span> <span>${tFn('blank_roster.manager_name')}</span>
               </div>
-              <div style="display:flex; align-items:center; gap:5px; margin-bottom:3px;">
+              <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
                 <strong style="font-size:9.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
-                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:15px;"></span>
+                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:22px;"></span>
               </div>
-              <div style="display:flex; align-items:center; gap:5px; margin-bottom:3px;">
+              <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
                 <strong style="font-size:9.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
-                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:15px;"></span>
+                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:22px;"></span>
               </div>
-              <div style="display:flex; align-items:center; gap:5px; margin-top:auto; padding-top:2px; border-top:1px dashed #cbd5e1;">
+              <div style="display:flex; align-items:center; gap:5px; margin-top:auto; padding-top:4px; border-top:1px dashed #cbd5e1;">
                 <strong style="font-size:9px; color:#475569; white-space:nowrap;">${tFn('blank_roster.lbl_sign')}</strong>
-                <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:13px;"></span>
+                <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:20px;"></span>
               </div>
             </div>
 
             <!-- BLOCK 2: TEAM COACH -->
-            <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:5px 8px; display:flex; flex-direction:column; justify-content:flex-start; min-height:68px;">
-              <div style="font-size:10.5px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:2px; margin-bottom:4px; display:flex; align-items:center; gap:5px;">
+            <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:6px 10px; display:flex; flex-direction:column; justify-content:flex-start; min-height:88px; box-sizing:border-box; gap:4px;">
+              <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:3px; margin-bottom:5px; display:flex; align-items:center; gap:5px;">
                 <span>📋</span> <span>${tFn('blank_roster.coach_name')}</span>
               </div>
-              <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <div style="display:flex; align-items:center; gap:5px; margin-bottom:6px;">
                 <strong style="font-size:9.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
-                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:15px;"></span>
+                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:22px;"></span>
               </div>
-              <div style="display:flex; align-items:center; gap:5px; margin-bottom:3px;">
+              <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
                 <strong style="font-size:9.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
-                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:15px;"></span>
+                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:22px;"></span>
               </div>
             </div>
 
             <!-- BLOCK 3: ORGANIZING COMMITTEE -->
-            <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:5px 8px; display:flex; flex-direction:column; justify-content:space-between; min-height:68px;">
-              <div style="font-size:10.5px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:2px; margin-bottom:4px; display:flex; align-items:center; gap:5px;">
+            <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:6px 10px; display:flex; flex-direction:column; justify-content:space-between; min-height:88px; box-sizing:border-box;">
+              <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:3px; margin-bottom:5px; display:flex; align-items:center; gap:5px;">
                 <span>🏛️</span> <span>${tFn('blank_roster.committee_name')}</span>
               </div>
-              <div style="display:flex; align-items:center; gap:5px; margin-bottom:3px;">
+              <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
                 <strong style="font-size:9.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
-                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:15px;"></span>
+                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:22px;"></span>
               </div>
-              <div style="display:flex; align-items:center; gap:5px; margin-bottom:3px;">
+              <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
                 <strong style="font-size:9.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
-                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:15px;"></span>
+                <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:22px;"></span>
               </div>
-              <div style="display:flex; align-items:center; gap:5px; margin-top:auto; padding-top:2px; border-top:1px dashed #cbd5e1;">
+              <div style="display:flex; align-items:center; gap:5px; margin-top:auto; padding-top:4px; border-top:1px dashed #cbd5e1;">
                 <strong style="font-size:9px; color:#475569; white-space:nowrap;">${tFn('blank_roster.lbl_sign')}</strong>
-                <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:13px;"></span>
+                <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:20px;"></span>
               </div>
             </div>
 
