@@ -37,18 +37,18 @@
   justify-content: space-between;
   gap: 16px;
   padding: 10px 22px;
-  background: rgba(13, 22, 44, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(13, 22, 44, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.45);
 }
 
 [data-theme="light"] .hub-nav-inner {
   background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(203, 213, 225, 0.8);
-  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.1);
+  border-color: rgba(203, 213, 225, 0.5);
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06);
 }
 
 .hub-brand {
