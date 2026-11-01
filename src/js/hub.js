@@ -223,10 +223,10 @@ function openFootballEntryChoiceModal() {
             ${isEn ? 'Saved in Browser' : 'ব্রাউজারে সংরক্ষিত'}
           </span>
         </div>
-        <h3 style="margin:0 0 6px; font-size:1.25rem; font-weight:800; color:var(--text-modal-main, #0f172a); line-height:1.3;">
+        <h3 style="margin:0 0 6px; font-size:1.25rem; font-weight:800; color:var(--text-modal-main, #f8fafc); line-height:1.3;">
           ${escTitle}
         </h3>
-        <p style="margin:0; font-size:0.875rem; color:var(--text-modal-sub, #64748b); line-height:1.4;">
+        <p style="margin:0; font-size:0.875rem; color:var(--text-modal-sub, #94a3b8); line-height:1.4;">
           ${isEn ? 'Your custom tournament is ready. Choose an option to proceed:' : 'আপনার তৈরি করা টুর্নামেন্ট সক্রিয় রয়েছে। নিচের যেকোনো অপশন বেছে নিন:'}
         </p>
       `;
@@ -235,12 +235,12 @@ function openFootballEntryChoiceModal() {
     if (choicesGrid) {
       choicesGrid.innerHTML = `
         <!-- Choice 1: Resume Tournament Management (Primary) -->
-        <div class="entry-choice-card choice-resume" onclick="startFootballWithDemo()" role="button" tabindex="0" style="border: 2px solid #10b981; background: rgba(16, 185, 129, 0.06);">
+        <div class="entry-choice-card choice-resume" onclick="startFootballWithDemo()" role="button" tabindex="0">
           <div class="choice-icon-wrap" style="background: linear-gradient(135deg, #059669, #10b981); color: #fff;">
             ▶️
           </div>
           <div class="choice-content">
-            <h4 style="color:#059669; font-weight:800;">${isEn ? 'Resume Tournament Management' : 'আপনার টুর্নামেন্ট পরিচালনা করুন'}</h4>
+            <h4 style="color:#10b981; font-weight:800;">${isEn ? 'Resume Tournament Management' : 'আপনার টুর্নামেন্ট পরিচালনা করুন'}</h4>
             <p>${isEn ? 'Enter your tournament dashboard directly to record match results, update points table, and print sheets.' : 'সরাসরি টুর্নামেন্ট ড্যাশবোর্ডে প্রবেশ করে পয়েন্ট টেবিল, লাইভ স্কোর ও ফিকশ্চার পরিচালনা করুন।'}</p>
           </div>
           <div class="choice-arrow" style="color:#059669; font-weight:bold;">➜</div>
