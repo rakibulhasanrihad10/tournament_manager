@@ -232,6 +232,7 @@
         width: 100% !important;
         box-sizing: border-box !important;
         min-height: 0 !important;
+        margin-bottom: 4px !important;
       }
       body.print-only-blank-roster .page-blank-roster .blank-roster-bottom-section {
         margin-top: auto !important;
@@ -241,11 +242,14 @@
         flex-shrink: 0 !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
+        position: relative !important;
+        z-index: 10 !important;
       }
       body.print-only-blank-roster .page-blank-roster .p2-layout {
         display: flex !important;
         gap: 8px !important;
         align-items: flex-start !important;
+        margin-bottom: 0 !important;
       }
       body.print-only-blank-roster .page-blank-roster .p2-left {
         width: calc(54% - 4px) !important;
@@ -272,6 +276,7 @@
       }
       body.print-only-blank-roster .page-blank-roster .p2-right {
         width: calc(46% - 4px) !important;
+        max-height: 585px !important;
         border: 1.5px solid #93c5fd !important;
         border-radius: 8px !important;
       }

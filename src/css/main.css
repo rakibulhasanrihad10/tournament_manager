@@ -1816,6 +1816,7 @@ body {
       width: 100%;
       box-sizing: border-box;
       min-height: 0;
+      margin-bottom: 4px;
     }
     .page-blank-roster .blank-roster-bottom-section {
       margin-top: auto;
@@ -1823,11 +1824,14 @@ body {
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
+      position: relative;
+      z-index: 10;
     }
     .page-blank-roster .p2-layout {
       display: flex;
       gap: 8px;
       align-items: flex-start;
+      margin-bottom: 0;
     }
     .page-blank-roster .p2-left {
       width: calc(54% - 4px);
@@ -1853,6 +1857,7 @@ body {
     }
     .page-blank-roster .p2-right {
       width: calc(46% - 4px);
+      max-height: 585px;
       background: #ffffff;
       color: #111;
       border-radius: 8px;

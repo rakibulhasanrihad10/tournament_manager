@@ -1235,7 +1235,7 @@ function getSelectedBlankRosterRuleIds() {
   return ids;
 }
 
-function calculateBlankRosterRulesBudget(selectedRuleIds, maxPixelBudget = 660) {
+function calculateBlankRosterRulesBudget(selectedRuleIds, maxPixelBudget = 500) {
   const masterCatalog = typeof MASTER_RULES_CATALOG !== 'undefined' ? MASTER_RULES_CATALOG : [];
   const c = typeof tournamentConfig !== 'undefined' ? tournamentConfig : {};
   const customRules = c.customRules || [];
@@ -1307,7 +1307,7 @@ function updateRuleBudgetMeter() {
     return;
   }
 
-  const budget = calculateBlankRosterRulesBudget(selectedIds, 660);
+  const budget = calculateBlankRosterRulesBudget(selectedIds, 500);
   const accepted = budget.acceptedCount;
   const omitted = budget.omittedCount;
   const h = Math.round(budget.currentHeight);
@@ -1317,8 +1317,8 @@ function updateRuleBudgetMeter() {
     meterEl.style.color = '#166534';
     meterEl.style.border = '1px solid #86efac';
     meterEl.innerHTML = isEn
-      ? `✅ <strong>Perfect 1-Page Fit:</strong> All ${accepted} selected rules fit comfortably (Height: ~${h}px / 660px line budget).`
-      : `✅ <strong>নিখুঁত ১-পেজ ফিট:</strong> নির্বাচিত ${accepted}টি নিয়মের সবগুলোই সুন্দরভাবে ধরবে (উচ্চতা: ~${h}px / ৬৬০px লাইন বাজেট)।`;
+      ? `✅ <strong>Perfect 1-Page Fit:</strong> All ${accepted} selected rules fit comfortably (Height: ~${h}px / 500px line budget).`
+      : `✅ <strong>নিখুঁত ১-পেজ ফিট:</strong> নির্বাচিত ${accepted}টি নিয়মের সবগুলোই সুন্দরভাবে ধরবে (উচ্চতা: ~${h}px / ৫০০px লাইন বাজেট)।`;
   } else {
     meterEl.style.background = '#fef3c7';
     meterEl.style.color = '#92400e';
@@ -1340,7 +1340,7 @@ function autoFitBlankRosterRules() {
     const cb = document.querySelector(`.br-rule-chk[value="${id}"]`);
     if (cb) {
       const testList = [...selected, id];
-      const testBudget = calculateBlankRosterRulesBudget(testList, 660);
+      const testBudget = calculateBlankRosterRulesBudget(testList, 500);
       if (testBudget.omittedCount === 0) {
         cb.checked = true;
         selected.push(id);
@@ -1351,7 +1351,7 @@ function autoFitBlankRosterRules() {
   checkboxes.forEach(cb => {
     if (!cb.checked) {
       const testList = [...selected, cb.value];
-      const testBudget = calculateBlankRosterRulesBudget(testList, 660);
+      const testBudget = calculateBlankRosterRulesBudget(testList, 500);
       if (testBudget.omittedCount === 0) {
         cb.checked = true;
         selected.push(cb.value);
@@ -1462,7 +1462,7 @@ function generateBlankRosterSheetHtml(configOverride) {
     selectedRuleIds = [];
   }
 
-  const budgetResult = calculateBlankRosterRulesBudget(selectedRuleIds, 660);
+  const budgetResult = calculateBlankRosterRulesBudget(selectedRuleIds, 500);
   const acceptedRules = budgetResult.acceptedRules;
   const omittedCount = budgetResult.omittedCount;
 
@@ -1636,7 +1636,7 @@ function generateBlankRosterSheetHtml(configOverride) {
       </div>
 
       <!-- SHEET BODY CONTENT (EXPANDS DYNAMICALLY TO FILL VERTICAL SPACE) -->
-      <div class="blank-roster-body" style="flex:1 1 auto; display:flex; flex-direction:column; padding:0 16px; width:100%; box-sizing:border-box; min-height:0;">
+      <div class="blank-roster-body" style="flex:1 1 auto; display:flex; flex-direction:column; padding:0 16px; width:100%; box-sizing:border-box; min-height:0; margin-bottom:4px;">
 
         <!-- TEAM DETAILS (HANDWRITTEN ENTRIES IN SOFT BLUE CARD) -->
         <div class="team-meta-container blank-team-meta-box" style="background:#f0f7ff; border:1.5px solid #93c5fd; border-radius:6px; padding:8px 14px; margin-bottom:8px;">
@@ -1649,7 +1649,7 @@ function generateBlankRosterSheetHtml(configOverride) {
         </div>
 
         <!-- TWO-COLUMN SPLIT LAYOUT (EXACT MATCH TO REFERENCE IMAGE) -->
-        <div class="p2-layout" style="display:flex; gap:8px; align-items:flex-start; margin-bottom:8px;">
+        <div class="p2-layout" style="display:flex; gap:8px; align-items:flex-start; margin-bottom:0;">
           
           <!-- LEFT COLUMN: SQUAD PLAYERS TABLES (CARD 1: STARTING XI, CARD 2: BENCH) -->
           <div class="p2-left" style="width:calc(54% - 4px); display:flex; flex-direction:column; justify-content:flex-start; gap:8px; background:transparent; border:none; padding:0;">
@@ -1699,7 +1699,7 @@ function generateBlankRosterSheetHtml(configOverride) {
           </div>
 
           <!-- RIGHT COLUMN: RULES & GUIDELINES + BOTTOM SLOGAN RIBBON -->
-          <div class="p2-right" style="width:calc(46% - 4px); border:1.5px solid #93c5fd; border-radius:8px; overflow:hidden; background:#fff; display:flex; flex-direction:column;">
+          <div class="p2-right" style="width:calc(46% - 4px); max-height:585px; border:1.5px solid #93c5fd; border-radius:8px; overflow:hidden; background:#fff; display:flex; flex-direction:column;">
             <!-- CARD HEADER -->
             <div style="background:#072a60; color:#fff; padding:5px 8px; font-size:11px; font-weight:800; display:flex; align-items:center; gap:6px;">
               <span>📄</span> <span data-i18n="page2.rules_card_title">${tFn('page2.rules_card_title')}</span>
@@ -1722,7 +1722,7 @@ function generateBlankRosterSheetHtml(configOverride) {
       </div>
 
       <!-- BOTTOM PINNED SECTION (DECLARATION, SIGNATURES & BOTTOM WAVE PERMANENTLY AT BASE) -->
-      <div class="blank-roster-bottom-section" style="margin-top:auto; width:100%; display:flex; flex-direction:column; flex-shrink:0; padding:0; box-sizing:border-box;">
+      <div class="blank-roster-bottom-section" style="margin-top:auto; width:100%; display:flex; flex-direction:column; flex-shrink:0; padding:0; box-sizing:border-box; position:relative; z-index:10;">
         <div style="padding:0 16px; width:100%; box-sizing:border-box;">
           <!-- FOOTER DECLARATION BOX -->
           <div class="blank-roster-footer-box" style="background:#f0f7ff; border:1.5px solid #93c5fd; border-radius:6px; padding:5px 12px; font-size:9.5px; margin-bottom:5px;">
