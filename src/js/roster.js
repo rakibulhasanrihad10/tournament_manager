@@ -525,8 +525,57 @@ let blankRosterImages = {
   leftType: 'default_ball',
   rightType: 'default_stadium',
   customLeft: null,
-  customRight: null
+  customRight: null,
+  coverType: 'default_stadium_trophy',
+  coverPosition: 35,
+  activeCoverUrl: 'assets/football-cover.jpg',
+  customCover: null
 };
+
+const BLANK_ROSTER_UNSPLASH_PRESETS = [
+  {
+    id: 'u_floodlight',
+    title: 'ফ্লাডলাইট অ্যারিনা',
+    titleEn: 'Floodlight Arena',
+    url: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1200&q=80',
+    thumb: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=240&q=60'
+  },
+  {
+    id: 'u_pitch_ball',
+    title: 'সবুজ ঘাস ও বল',
+    titleEn: 'Pitch & Soccer Ball',
+    url: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1200&q=80',
+    thumb: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=240&q=60'
+  },
+  {
+    id: 'u_stadium_crowd',
+    title: 'ম্যাচ ডে স্টেডিয়াম',
+    titleEn: 'Matchday Stadium',
+    url: 'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?auto=format&fit=crop&w=1200&q=80',
+    thumb: 'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?auto=format&fit=crop&w=240&q=60'
+  },
+  {
+    id: 'u_sunset_pitch',
+    title: 'গোধূলি স্টেডিয়াম',
+    titleEn: 'Sunset Stadium',
+    url: 'https://images.unsplash.com/photo-1551958219-acbc608c6377?auto=format&fit=crop&w=1200&q=80',
+    thumb: 'https://images.unsplash.com/photo-1551958219-acbc608c6377?auto=format&fit=crop&w=240&q=60'
+  },
+  {
+    id: 'u_championship_lights',
+    title: 'চ্যাম্পিয়নশিপ লাইটস',
+    titleEn: 'Championship Lights',
+    url: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=1200&q=80',
+    thumb: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=240&q=60'
+  },
+  {
+    id: 'u_goal_net',
+    title: 'গোলপোস্ট ও জাল',
+    titleEn: 'Goalpost & Net',
+    url: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1200&q=80',
+    thumb: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=240&q=60'
+  }
+];
 
 if (typeof localStorage !== 'undefined') {
   try {
@@ -539,11 +588,73 @@ if (typeof localStorage !== 'undefined') {
     if (savedLeftType) blankRosterImages.leftType = savedLeftType;
     if (savedRightType) blankRosterImages.rightType = savedRightType;
 
+    const savedCoverType = localStorage.getItem('tm_blank_roster_type_cover');
+    const savedCoverPos = localStorage.getItem('tm_blank_roster_pos_cover');
+    const savedCustomCover = localStorage.getItem('tm_blank_roster_img_cover');
+    const savedActiveCover = localStorage.getItem('tm_blank_roster_active_cover');
+    if (savedCoverType) blankRosterImages.coverType = savedCoverType;
+    if (savedCoverPos) blankRosterImages.coverPosition = parseInt(savedCoverPos, 10);
+    if (savedCustomCover) blankRosterImages.customCover = savedCustomCover;
+    if (savedActiveCover) blankRosterImages.activeCoverUrl = savedActiveCover;
+
     const savedConfig = localStorage.getItem('tm_blank_roster_config');
     if (savedConfig) {
       blankRosterConfig = JSON.parse(savedConfig);
     }
   } catch (e) {}
+}
+
+function getBlankRosterActiveCoverUrl() {
+  const type = blankRosterImages.coverType || 'default_stadium_trophy';
+  if (type === 'none') return '';
+  if (type === 'custom' && blankRosterImages.customCover) {
+    return blankRosterImages.customCover;
+  }
+  if ((type === 'url' || type === 'unsplash_preset') && blankRosterImages.activeCoverUrl) {
+    return blankRosterImages.activeCoverUrl;
+  }
+  return 'assets/football-cover.jpg';
+}
+
+function getGoldenTrophySvgHtml() {
+  return `
+    <svg viewBox="0 0 120 170" width="46" height="66" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 4px 10px rgba(0,0,0,0.65)); display:block;">
+      <defs>
+        <linearGradient id="goldGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fffbeb"/>
+          <stop offset="25%" stop-color="#fde047"/>
+          <stop offset="50%" stop-color="#eab308"/>
+          <stop offset="75%" stop-color="#ca8a04"/>
+          <stop offset="100%" stop-color="#854d0e"/>
+        </linearGradient>
+        <linearGradient id="goldShine" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85"/>
+          <stop offset="100%" stop-color="#eab308" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="baseGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#064e3b"/>
+          <stop offset="50%" stop-color="#047857"/>
+          <stop offset="100%" stop-color="#064e3b"/>
+        </linearGradient>
+      </defs>
+      <!-- Base Pedestal (Green Malachite Bands & Gold) -->
+      <rect x="25" y="145" width="70" height="15" rx="3" fill="#1e293b" stroke="#ca8a04" stroke-width="1.5"/>
+      <rect x="30" y="148" width="60" height="4" fill="url(#baseGreen)"/>
+      <rect x="30" y="153" width="60" height="4" fill="url(#baseGreen)"/>
+      <polygon points="32,145 38,128 82,128 88,145" fill="url(#goldGrad1)"/>
+      
+      <!-- Trophy Stem & Spiraling Athletes -->
+      <path d="M42,128 C42,105 32,90 38,72 C42,60 52,56 60,56 C68,56 78,60 82,72 C88,90 78,105 78,128 Z" fill="url(#goldGrad1)"/>
+      <path d="M48,128 C46,105 54,92 58,74 C60,65 60,60 60,56 C60,60 60,65 62,74 C66,92 74,105 72,128 Z" fill="#fef08a" opacity="0.6"/>
+      
+      <!-- Globe at the top (World Cup sphere held aloft) -->
+      <circle cx="60" cy="38" r="26" fill="url(#goldGrad1)"/>
+      <!-- Continental Relief Lines on Globe -->
+      <path d="M42,28 C48,22 65,22 75,32 C68,36 60,34 52,44 C45,40 40,34 42,28 Z" fill="#ca8a04" opacity="0.75"/>
+      <path d="M55,42 C64,40 72,48 78,42 C82,50 72,58 64,56 Z" fill="#ca8a04" opacity="0.75"/>
+      <ellipse cx="52" cy="26" rx="14" ry="7" fill="url(#goldShine)"/>
+    </svg>
+  `;
 }
 
 function getBlankRosterLogoHtml(side) {
@@ -623,14 +734,19 @@ function getBlankRosterLogoHtml(side) {
 
 function getBlankRosterBottomAccentHtml() {
   return `
-    <div style="margin-top: 6px; position: relative; text-align: center; height: 24px; overflow: hidden;">
-      <svg viewBox="0 0 600 28" width="100%" height="24" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="0,24 250,24 265,4 0,4" fill="#16a34a"/>
-        <polygon points="12,27 242,27 254,9 12,9" fill="#072a60"/>
-        <circle cx="300" cy="14" r="11" fill="#ffffff" stroke="#072a60" stroke-width="2"/>
-        <polygon points="300,8 304,11 302,16 298,16 296,11" fill="#072a60"/>
-        <polygon points="350,24 600,24 600,4 335,4" fill="#16a34a"/>
-        <polygon points="358,27 588,27 588,9 346,9" fill="#072a60"/>
+    <div class="blank-footer-swoosh" style="margin-top: 6px; position: relative; text-align: center; height: 26px; overflow: hidden;">
+      <svg viewBox="0 0 800 36" width="100%" height="26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,28 Q180,6 360,20 L360,36 L0,36 Z" fill="#fbbf24"/>
+        <path d="M0,32 Q180,14 365,24 L365,36 L0,36 Z" fill="#072a60"/>
+        <path d="M800,28 Q620,6 440,20 L440,36 L800,36 Z" fill="#fbbf24"/>
+        <path d="M800,32 Q620,14 435,24 L435,36 L800,36 Z" fill="#072a60"/>
+        <circle cx="400" cy="18" r="13" fill="#ffffff" stroke="#072a60" stroke-width="2"/>
+        <polygon points="400,10 406,14 404,21 396,21 394,14" fill="#072a60"/>
+        <line x1="400" y1="10" x2="400" y2="5" stroke="#072a60" stroke-width="1.5"/>
+        <line x1="406" y1="14" x2="412" y2="12" stroke="#072a60" stroke-width="1.5"/>
+        <line x1="404" y1="21" x2="408" y2="27" stroke="#072a60" stroke-width="1.5"/>
+        <line x1="396" y1="21" x2="392" y2="27" stroke="#072a60" stroke-width="1.5"/>
+        <line x1="394" y1="14" x2="388" y2="12" stroke="#072a60" stroke-width="1.5"/>
       </svg>
     </div>
   `;
@@ -656,6 +772,24 @@ function openBlankRosterConfigModal() {
 
   updateBlankRosterLogoPreview('left');
   updateBlankRosterLogoPreview('right');
+
+  const coverSel = document.getElementById('blank-roster-cover-type-select');
+  if (coverSel) coverSel.value = blankRosterImages.coverType || 'default_stadium_trophy';
+
+  const coverSlider = document.getElementById('blank-roster-cover-pos-slider');
+  const coverValDisplay = document.getElementById('blank-roster-cover-pos-display');
+  const currentPos = blankRosterImages.coverPosition !== undefined ? blankRosterImages.coverPosition : 35;
+  if (coverSlider) coverSlider.value = String(currentPos);
+  if (coverValDisplay) coverValDisplay.textContent = currentPos + '%';
+
+  const urlInput = document.getElementById('blank-roster-cover-url-input');
+  if (urlInput && blankRosterImages.coverType === 'url') {
+    urlInput.value = blankRosterImages.activeCoverUrl || '';
+  }
+
+  onBlankRosterCoverTypeChange();
+  renderBlankRosterUnsplashPresets();
+  setupBlankRosterCoverDrag();
 
   renderBlankRosterRulesChecklist();
   onBlankRosterConfigChange();
@@ -720,6 +854,220 @@ function updateBlankRosterLogoPreview(side) {
   const preview = document.getElementById(`blank-roster-${side}-logo-preview`);
   if (preview) {
     preview.innerHTML = getBlankRosterLogoHtml(side);
+  }
+}
+
+let isCoverDragging = false;
+let coverDragStartY = 0;
+let coverDragInitialPos = 35;
+
+function setupBlankRosterCoverDrag() {
+  const box = document.getElementById('blank-roster-drag-box');
+  if (!box || box._dragSetupDone) return;
+  box._dragSetupDone = true;
+
+  const onDragStart = (clientY) => {
+    isCoverDragging = true;
+    coverDragStartY = clientY;
+    coverDragInitialPos = (blankRosterImages.coverPosition !== undefined) ? blankRosterImages.coverPosition : 35;
+    box.style.cursor = 'grabbing';
+  };
+
+  const onDragMove = (clientY) => {
+    if (!isCoverDragging) return;
+    const height = box.offsetHeight || 130;
+    const deltaY = clientY - coverDragStartY;
+    let newPos = Math.round(coverDragInitialPos - (deltaY / height) * 60);
+    newPos = Math.max(0, Math.min(100, newPos));
+    setBlankRosterCoverPosition(newPos);
+  };
+
+  const onDragEnd = () => {
+    if (!isCoverDragging) return;
+    isCoverDragging = false;
+    box.style.cursor = 'grab';
+  };
+
+  box.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    onDragStart(e.clientY);
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (isCoverDragging) onDragMove(e.clientY);
+  });
+  window.addEventListener('mouseup', onDragEnd);
+
+  box.addEventListener('touchstart', (e) => {
+    if (e.touches && e.touches[0]) onDragStart(e.touches[0].clientY);
+  }, { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    if (isCoverDragging && e.touches && e.touches[0]) onDragMove(e.touches[0].clientY);
+  }, { passive: true });
+  window.addEventListener('touchend', onDragEnd);
+}
+
+function setBlankRosterCoverPosition(pos) {
+  pos = Math.max(0, Math.min(100, parseInt(pos, 10) || 0));
+  blankRosterImages.coverPosition = pos;
+
+  const slider = document.getElementById('blank-roster-cover-pos-slider');
+  const valDisplay = document.getElementById('blank-roster-cover-pos-display');
+  const previewImg = document.getElementById('blank-roster-modal-cover-img');
+
+  if (slider) slider.value = String(pos);
+  if (valDisplay) valDisplay.textContent = pos + '%';
+  if (previewImg) previewImg.style.objectPosition = `center ${pos}%`;
+
+  if (typeof localStorage !== 'undefined') {
+    try {
+      localStorage.setItem('tm_blank_roster_pos_cover', String(pos));
+    } catch (e) {}
+  }
+}
+
+function onBlankRosterCoverPosSlider(val) {
+  setBlankRosterCoverPosition(val);
+}
+
+function resetBlankRosterCoverPos() {
+  setBlankRosterCoverPosition(35);
+}
+
+function onBlankRosterCoverTypeChange() {
+  const sel = document.getElementById('blank-roster-cover-type-select');
+  const type = sel ? sel.value : 'default_stadium_trophy';
+  blankRosterImages.coverType = type;
+
+  const unsplashGrid = document.getElementById('blank-roster-unsplash-grid');
+  const urlWrap = document.getElementById('blank-roster-url-wrap');
+  const customFileWrap = document.getElementById('blank-roster-custom-file-wrap');
+  const previewSection = document.getElementById('blank-roster-cover-preview-section');
+
+  if (unsplashGrid) unsplashGrid.style.display = (type === 'unsplash_preset') ? 'block' : 'none';
+  if (urlWrap) urlWrap.style.display = (type === 'url') ? 'block' : 'none';
+  if (customFileWrap) customFileWrap.style.display = (type === 'custom') ? 'block' : 'none';
+  if (previewSection) previewSection.style.display = (type === 'none') ? 'none' : 'block';
+
+  if (type === 'default_stadium_trophy') {
+    blankRosterImages.activeCoverUrl = 'assets/football-cover.jpg';
+  } else if (type === 'unsplash_preset' && (!blankRosterImages.activeCoverUrl || !blankRosterImages.activeCoverUrl.startsWith('http'))) {
+    blankRosterImages.activeCoverUrl = BLANK_ROSTER_UNSPLASH_PRESETS[0].url;
+  }
+
+  if (typeof localStorage !== 'undefined') {
+    try {
+      localStorage.setItem('tm_blank_roster_type_cover', type);
+      if (blankRosterImages.activeCoverUrl) {
+        localStorage.setItem('tm_blank_roster_active_cover', blankRosterImages.activeCoverUrl);
+      }
+    } catch (e) {}
+  }
+
+  updateBlankRosterCoverPreview();
+}
+
+function selectBlankRosterUnsplashPreset(presetId) {
+  const preset = BLANK_ROSTER_UNSPLASH_PRESETS.find(p => p.id === presetId);
+  if (!preset) return;
+
+  blankRosterImages.coverType = 'unsplash_preset';
+  blankRosterImages.activeCoverUrl = preset.url;
+
+  const sel = document.getElementById('blank-roster-cover-type-select');
+  if (sel) sel.value = 'unsplash_preset';
+
+  if (typeof document !== 'undefined' && document.querySelectorAll) {
+    document.querySelectorAll('.unsplash-preset-card').forEach(c => {
+      c.style.borderColor = (c.dataset.presetId === presetId) ? '#0284c7' : '#cbd5e1';
+      c.style.transform = (c.dataset.presetId === presetId) ? 'scale(1.04)' : 'scale(1)';
+    });
+  }
+
+  if (typeof localStorage !== 'undefined') {
+    try {
+      localStorage.setItem('tm_blank_roster_type_cover', 'unsplash_preset');
+      localStorage.setItem('tm_blank_roster_active_cover', preset.url);
+    } catch (e) {}
+  }
+
+  updateBlankRosterCoverPreview();
+}
+
+function applyBlankRosterCoverUrl() {
+  const input = document.getElementById('blank-roster-cover-url-input');
+  const url = input ? input.value.trim() : '';
+  if (!url) return;
+
+  blankRosterImages.coverType = 'url';
+  blankRosterImages.activeCoverUrl = url;
+
+  if (typeof localStorage !== 'undefined') {
+    try {
+      localStorage.setItem('tm_blank_roster_type_cover', 'url');
+      localStorage.setItem('tm_blank_roster_active_cover', url);
+    } catch (e) {}
+  }
+
+  updateBlankRosterCoverPreview();
+}
+
+function handleBlankRosterCoverUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  if (typeof FileReader !== 'undefined') {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const dataUrl = e.target.result;
+      blankRosterImages.customCover = dataUrl;
+      blankRosterImages.activeCoverUrl = dataUrl;
+      blankRosterImages.coverType = 'custom';
+
+      const sel = document.getElementById('blank-roster-cover-type-select');
+      if (sel) sel.value = 'custom';
+
+      if (typeof localStorage !== 'undefined') {
+        try {
+          localStorage.setItem('tm_blank_roster_type_cover', 'custom');
+          localStorage.setItem('tm_blank_roster_img_cover', dataUrl);
+          localStorage.setItem('tm_blank_roster_active_cover', dataUrl);
+        } catch (err) {}
+      }
+      updateBlankRosterCoverPreview();
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function renderBlankRosterUnsplashPresets() {
+  const container = (typeof document !== 'undefined' && document.querySelector) ? document.querySelector('.unsplash-presets-row') : null;
+  if (!container) return;
+
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const activeUrl = blankRosterImages.activeCoverUrl;
+
+  container.innerHTML = BLANK_ROSTER_UNSPLASH_PRESETS.map(p => {
+    const isSelected = (activeUrl === p.url);
+    const title = isEn ? p.titleEn : p.title;
+    return `
+      <div class="unsplash-preset-card" data-preset-id="${p.id}" onclick="selectBlankRosterUnsplashPreset('${p.id}')" style="cursor:pointer; border-radius:6px; overflow:hidden; border:2px solid ${isSelected ? '#0284c7' : '#cbd5e1'}; background:#fff; text-align:center; transition:all 0.2s; box-shadow:0 2px 4px rgba(0,0,0,0.06); transform:${isSelected ? 'scale(1.04)' : 'scale(1)'};">
+        <img src="${p.thumb}" alt="${p.titleEn}" style="width:100%; height:55px; object-fit:cover; display:block;" loading="lazy">
+        <div style="font-size:10px; font-weight:700; color:#0f172a; padding:4px 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          ${title}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateBlankRosterCoverPreview() {
+  const previewImg = document.getElementById('blank-roster-modal-cover-img');
+  const activeUrl = getBlankRosterActiveCoverUrl();
+  const pos = (blankRosterImages.coverPosition !== undefined) ? blankRosterImages.coverPosition : 35;
+
+  if (previewImg && activeUrl) {
+    previewImg.src = activeUrl;
+    previewImg.style.objectPosition = `center ${pos}%`;
   }
 }
 
@@ -1056,9 +1404,72 @@ function generateBlankRosterSheetHtml(configOverride) {
     ? `Substitutes / Bench Players (${benchCount} Players)`
     : `বিকল্প / অতিরিক্ত খেলোয়াড় (${benchCount} জন)`;
 
-  return `
-    <div class="page-blank-roster" style="width:100%; max-width:100%; padding:0; margin:0 auto; background:#fff; font-family:inherit; border:none; box-shadow:none;">
-      <!-- TOP HEADER: LEFT LOGO, TITLE, RIGHT GRAPHIC -->
+  const coverType = (blankRosterImages && blankRosterImages.coverType) || 'default_stadium_trophy';
+  const coverUrl = getBlankRosterActiveCoverUrl();
+  const coverPos = (blankRosterImages && blankRosterImages.coverPosition !== undefined) ? blankRosterImages.coverPosition : 35;
+
+  let headerBannerHtml = '';
+  if (coverType !== 'none' && coverUrl) {
+    headerBannerHtml = `
+      <!-- TOP STADIUM COVER BANNER (MATCHING REFERENCE DESIGN) -->
+      <div class="blank-cover-banner" style="position:relative; width:100%; border-radius:0; margin-bottom:8px; background:#072a60; overflow:hidden;">
+        <!-- Background Stadium Image with Focal Crop & Ambient Lighting -->
+        <div class="blank-cover-bg-wrap" style="position:absolute; inset:0; overflow:hidden; z-index:1;">
+          <img src="${coverUrl}" alt="Stadium Banner" class="blank-cover-img" style="width:100%; height:100%; object-fit:cover; object-position:center ${coverPos}%; display:block;">
+          <div class="blank-cover-overlay" style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(7, 26, 68, 0.45) 0%, rgba(3, 12, 38, 0.18) 50%, rgba(5, 18, 50, 0.65) 100%);"></div>
+        </div>
+
+        <!-- Foreground: Left Polaroid Logo, Golden Trophy, Center Title & Right Polaroid Photo -->
+        <div class="blank-cover-content" style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:10px 16px 14px; min-height:102px;">
+          
+          <!-- Left Logo / Photo (Framed Polaroid/Badge like Reference Image) -->
+          <div class="header-logo-left blank-framed-photo-left" style="width:84px; height:66px; display:flex; align-items:center; justify-content:center; background:#ffffff; padding:3px; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.5); transform:rotate(-2deg); border:1.5px solid #fbbf24; flex-shrink:0;">
+            <div style="width:100%; height:100%; overflow:hidden; border-radius:4px; display:flex; align-items:center; justify-content:center; background:#072a60;">
+              ${getBlankRosterLogoHtml('left')}
+            </div>
+          </div>
+
+          <!-- Golden World Cup Trophy -->
+          <div class="blank-trophy-wrap" style="margin:0 4px 0 10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            ${getGoldenTrophySvgHtml()}
+          </div>
+
+          <!-- Center: Title & Meta Info -->
+          <div class="header-center blank-cover-center" style="text-align:center; flex:1; padding:0 8px;">
+            <h1 style="font-size:24px; font-weight:900; color:#ffffff; margin:0 0 4px 0; letter-spacing:0.8px; text-shadow:0 2px 8px rgba(0,0,0,0.85), 0 0 18px rgba(56,189,248,0.5); line-height:1.2;">
+              ⚽ ${esc(c.title || defaultTitle)} ⚽
+            </h1>
+            <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(7, 26, 68, 0.82); border:1px solid rgba(255,255,255,0.28); border-radius:20px; padding:3px 14px; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); box-shadow:0 2px 8px rgba(0,0,0,0.45);">
+              <span style="font-size:11px; color:#f1f5f9; font-weight:700;">
+                <span>${tFn('page1.meta_organizer')}</span> <strong>${esc(c.organizer || defaultOrg)}</strong>
+              </span>
+              <span style="color:rgba(255,255,255,0.4); font-size:10px;">|</span>
+              <span style="font-size:11px; color:#f1f5f9; font-weight:700;">
+                <span>${tFn('page1.meta_venue')}</span> <strong>${esc(c.venue || defaultVenue)}</strong>
+              </span>
+            </div>
+          </div>
+
+          <!-- Right Logo / Photo (Framed Polaroid/Badge like Reference Image) -->
+          <div class="header-logo-right blank-framed-photo-right" style="width:84px; height:66px; display:flex; align-items:center; justify-content:center; background:#ffffff; padding:3px; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.5); transform:rotate(2deg); border:1.5px solid #fbbf24; flex-shrink:0;">
+            <div style="width:100%; height:100%; overflow:hidden; border-radius:4px; display:flex; align-items:center; justify-content:center; background:#072a60;">
+              ${getBlankRosterLogoHtml('right')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Curved Gold & Royal Blue Wavy Ribbon Swoosh -->
+        <div class="blank-cover-swoosh-wrap" style="position:relative; z-index:3; width:100%; height:16px; margin-top:-6px; overflow:hidden;">
+          <svg viewBox="0 0 1000 36" preserveAspectRatio="none" style="width:100%; height:100%; display:block;">
+            <path d="M0,0 C200,32 350,36 500,20 C650,4 800,28 1000,0 L1000,36 L0,36 Z" fill="#fbbf24" opacity="0.95"/>
+            <path d="M0,8 C220,36 370,32 500,24 C630,16 780,36 1000,10 L1000,36 L0,36 Z" fill="#072a60"/>
+          </svg>
+        </div>
+      </div>
+    `;
+  } else {
+    headerBannerHtml = `
+      <!-- TOP HEADER: LEFT LOGO, TITLE, RIGHT GRAPHIC (CLEAN WHITE PAPER MODE) -->
       <div class="blank-header-wrap" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:7px;">
         <div class="header-logo-left" style="width:80px; height:60px; display:flex; align-items:center; justify-content:center;">
           ${getBlankRosterLogoHtml('left')}
@@ -1074,6 +1485,12 @@ function generateBlankRosterSheetHtml(configOverride) {
           ${getBlankRosterLogoHtml('right')}
         </div>
       </div>
+    `;
+  }
+
+  return `
+    <div class="page-blank-roster" style="width:100%; max-width:100%; padding:0; margin:0 auto; background:#fff; font-family:inherit; border:none; box-shadow:none;">
+      ${headerBannerHtml}
 
       <!-- TITLE BANNER -->
       <div class="page-title-banner" style="background:#072a60; color:#fff; text-align:center; padding:5px 12px; font-weight:800; font-size:13px; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:8px;">
@@ -1243,6 +1660,14 @@ function renderBlankRosterSheet(configOverride) {
 if (typeof window !== 'undefined') {
   window.addP2PlayerRow = addP2PlayerRow;
   window.removeP2PlayerRow = removeP2PlayerRow;
+  window.onBlankRosterCoverTypeChange = onBlankRosterCoverTypeChange;
+  window.selectBlankRosterUnsplashPreset = selectBlankRosterUnsplashPreset;
+  window.applyBlankRosterCoverUrl = applyBlankRosterCoverUrl;
+  window.handleBlankRosterCoverUpload = handleBlankRosterCoverUpload;
+  window.setBlankRosterCoverPosition = setBlankRosterCoverPosition;
+  window.onBlankRosterCoverPosSlider = onBlankRosterCoverPosSlider;
+  window.resetBlankRosterCoverPos = resetBlankRosterCoverPos;
+  window.getBlankRosterActiveCoverUrl = getBlankRosterActiveCoverUrl;
 }
 
 if (typeof module !== 'undefined' && module.exports) {
@@ -1261,6 +1686,14 @@ if (typeof module !== 'undefined' && module.exports) {
     onBlankRosterConfigChange,
     onBlankRosterLogoTypeChange,
     handleBlankRosterImageUpload,
+    onBlankRosterCoverTypeChange,
+    selectBlankRosterUnsplashPreset,
+    applyBlankRosterCoverUrl,
+    handleBlankRosterCoverUpload,
+    setBlankRosterCoverPosition,
+    onBlankRosterCoverPosSlider,
+    resetBlankRosterCoverPos,
+    getBlankRosterActiveCoverUrl,
     updateRuleBudgetMeter,
     autoFitBlankRosterRules,
     uncheckAllBlankRosterRules,

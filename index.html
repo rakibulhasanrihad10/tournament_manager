@@ -1974,6 +1974,82 @@
             </div>
           </div>
 
+          <!-- SECTION 1.6: HEADER COVER BANNER & UNSPASH / DRAG REPOSITIONING -->
+          <div style="background: #f8fafc; border: 1.5px solid #0284c7; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:8px;">
+              <h4 style="margin: 0; font-size: 14px; color: #072a60; display:flex; align-items:center; gap:8px;">
+                <span>🏟️</span> <span data-i18n="blank_roster.cover_title">হেডার কভার ব্যানার ও স্টেডিয়াম ব্যাকগ্রাউন্ড</span>
+              </h4>
+              <span style="font-size:11.5px; background:#dbeafe; color:#1d4ed8; font-weight:700; padding:3px 10px; border-radius:20px;" data-i18n="blank_roster.cover_badge">
+                A4 পোর্ট্রেট কভার আর্ট
+              </span>
+            </div>
+
+            <!-- COVER TYPE SELECTOR ROW -->
+            <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:12px;">
+              <div style="flex:1; min-width:240px;">
+                <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:5px;" data-i18n="blank_roster.cover_type_lbl">কভারের ধরন নির্বাচন করুন:</label>
+                <select id="blank-roster-cover-type-select" class="form-control" style="width:100%; padding:8px 12px; font-size:13px; font-weight:700; border:1px solid #0284c7; border-radius:6px;" onchange="onBlankRosterCoverTypeChange()">
+                  <option value="default_stadium_trophy" selected data-i18n="blank_roster.opt_cover_default">🏟️ ডিফল্ট স্টেডিয়াম ও গোল্ডেন ট্রফি (রেফারেন্স ডিজাইন)</option>
+                  <option value="unsplash_preset" data-i18n="blank_roster.opt_cover_unsplash">🌟 আনস্প্ল্যাশ কিউরেটেড কালেকশন (বাছাইকৃত সেরা স্টেডিয়াম)</option>
+                  <option value="url" data-i18n="blank_roster.opt_cover_url">🔗 আনস্প্ল্যাশ বা ওয়েব ইমেজ লিঙ্ক পেস্ট...</option>
+                  <option value="custom" data-i18n="blank_roster.opt_cover_custom">📁 নিজস্ব কভার ছবি আপলোড...</option>
+                  <option value="none" data-i18n="blank_roster.opt_cover_none">⚪ সাদা ব্যাকগ্রাউন্ড / কোনো কভার নয় (কালি সাশ্রয়)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- UNSPASH PRESETS GRID (Visible when unsplash_preset is selected) -->
+            <div id="blank-roster-unsplash-grid" style="display:none; margin-bottom:14px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:8px; padding:12px;">
+              <div style="font-size:12px; font-weight:700; color:#0f172a; margin-bottom:8px;">
+                <span data-i18n="blank_roster.unsplash_pick_lbl">📸 আনস্প্ল্যাশ থেকে পছন্দের স্টেডিয়াম নির্বাচন করুন (১ ক্লিকে সেট):</span>
+              </div>
+              <div class="unsplash-presets-row" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(115px, 1fr)); gap:8px;"></div>
+            </div>
+
+            <!-- DIRECT URL INPUT (Visible when url is selected) -->
+            <div id="blank-roster-url-wrap" style="display:none; margin-bottom:14px; background:#f0f9ff; border:1px solid #7dd3fc; border-radius:8px; padding:12px;">
+              <label style="font-size:12px; font-weight:700; color:#0369a1; display:block; margin-bottom:6px;" data-i18n="blank_roster.url_input_lbl">🔗 আনস্প্ল্যাশ বা যেকোনো ছবির লিঙ্ক দিন:</label>
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="blank-roster-cover-url-input" placeholder="https://images.unsplash.com/..." style="flex:1; padding:8px 12px; font-size:12px; border:1px solid #0284c7; border-radius:6px;">
+                <button type="button" class="btn" style="background:#0284c7; color:#fff; font-size:12px; font-weight:700; padding:8px 14px; border-radius:6px; cursor:pointer;" onclick="applyBlankRosterCoverUrl()" data-i18n="blank_roster.btn_apply_url">⚡ ছবি সেট করুন</button>
+              </div>
+            </div>
+
+            <!-- CUSTOM FILE UPLOAD WRAP (Visible when custom is selected) -->
+            <div id="blank-roster-custom-file-wrap" style="display:none; margin-bottom:14px; background:#f8fafc; border:1.5px dashed #0284c7; border-radius:8px; padding:14px; text-align:center;">
+              <input type="file" id="blank-roster-cover-file" accept="image/*" style="display:none;" onchange="handleBlankRosterCoverUpload(event)">
+              <button type="button" class="btn" style="background:#0284c7; color:#fff; font-size:12.5px; font-weight:700; padding:7px 16px; border-radius:6px; cursor:pointer;" onclick="document.getElementById('blank-roster-cover-file').click()" data-i18n="blank_roster.btn_browse_cover">📁 কম্পিউটার থেকে কভার ছবি নির্বাচন করুন</button>
+              <p style="font-size:11px; color:#64748b; margin:6px 0 0 0;" data-i18n="blank_roster.upload_tip">যেকোনো হাই-রেজোলিউশন স্টেডিয়াম, মাঠ বা ল্যান্ডস্কেপ ছবি আপলোড করুন</p>
+            </div>
+
+            <!-- LIVE INTERACTIVE DRAG-TO-REPOSITION BOX -->
+            <div id="blank-roster-cover-preview-section" style="margin-top:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-size:12px; font-weight:700; color:#334155; display:flex; align-items:center; gap:6px;">
+                  <span>✋</span> <span data-i18n="blank_roster.drag_instruction">মাউস দিয়ে টেনে ওপরে-নিচে পজিশন ঠিক করুন (Drag to Reposition):</span>
+                </span>
+                <button type="button" style="background:none; border:none; color:#0284c7; font-size:11.5px; font-weight:700; cursor:pointer; text-decoration:underline;" onclick="resetBlankRosterCoverPos()" data-i18n="blank_roster.btn_reset_pos">↺ রিসেট (ডিফল্ট ৩৫%)</button>
+              </div>
+
+              <!-- The draggable viewport frame -->
+              <div id="blank-roster-drag-box" class="blank-roster-drag-box" style="position:relative; width:100%; height:130px; border-radius:8px; overflow:hidden; border:2px solid #0284c7; cursor:grab; user-select:none; background:#072a60; box-shadow:inset 0 0 10px rgba(0,0,0,0.5);">
+                <img id="blank-roster-modal-cover-img" src="assets/football-cover.jpg" alt="Cover" style="width:100%; height:100%; object-fit:cover; object-position:center 35%; pointer-events:none; display:block; transition:none;">
+                <!-- Overlay badge -->
+                <div style="position:absolute; top:8px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.65); color:#fff; font-size:11px; font-weight:700; padding:3px 12px; border-radius:20px; backdrop-filter:blur(4px); pointer-events:none; display:flex; align-items:center; gap:5px;">
+                  <span>↕️</span> <span data-i18n="blank_roster.drag_hint">ড্র্যাগ করে ফোকাস অ্যাডজাস্ট করুন</span>
+                </div>
+              </div>
+
+              <!-- Slider fallback & precise fine-tuner -->
+              <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
+                <label style="font-size:11.5px; font-weight:700; color:#475569; white-space:nowrap;" data-i18n="blank_roster.slider_lbl">↕️ সূক্ষ্ম অ্যাডজাস্ট:</label>
+                <input type="range" id="blank-roster-cover-pos-slider" min="0" max="100" value="35" style="flex:1; cursor:pointer;" oninput="onBlankRosterCoverPosSlider(this.value)">
+                <span id="blank-roster-cover-pos-display" style="font-size:11.5px; font-weight:800; color:#0284c7; min-width:36px; text-align:right;">35%</span>
+              </div>
+            </div>
+          </div>
+
           <!-- SECTION 2: SMART RULE BUDGET & METER -->
           <div style="background: #fffdf5; border: 1.5px solid #ffe082; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; flex-wrap:wrap; gap:8px;">

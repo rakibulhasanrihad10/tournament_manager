@@ -258,6 +258,23 @@ assert(typeof context.onBlankRosterLogoTypeChange === 'function', 'onBlankRoster
 assert(typeof context.handleBlankRosterImageUpload === 'function', 'handleBlankRosterImageUpload is exported');
 
 // ---------------------------------------------------------------------
+// TEST SUITE 8: DYNAMIC STADIUM COVER HEADER, UNSPASH & DRAG-TO-REPOSITION
+// ---------------------------------------------------------------------
+console.log('\n🏟️ Test Suite 8: Dynamic Stadium Cover Header & Drag-to-Reposition');
+
+assert(blankHtml.includes('blank-cover-banner'), 'Renders .blank-cover-banner stadium cover header');
+assert(blankHtml.includes('blank-trophy-wrap'), 'Renders 3D Golden Trophy beside title');
+assert(blankHtml.includes('blank-cover-swoosh-wrap'), 'Renders curved gold and blue wavy swoosh ribbon');
+assert(blankHtml.includes('blank-footer-swoosh'), 'Renders matching bottom curved swoosh ribbon with central soccer ball');
+assert(typeof context.onBlankRosterCoverTypeChange === 'function', 'onBlankRosterCoverTypeChange is exported');
+assert(typeof context.selectBlankRosterUnsplashPreset === 'function', 'selectBlankRosterUnsplashPreset is exported');
+assert(typeof context.applyBlankRosterCoverUrl === 'function', 'applyBlankRosterCoverUrl is exported');
+assert(typeof context.handleBlankRosterCoverUpload === 'function', 'handleBlankRosterCoverUpload is exported');
+assert(typeof context.setBlankRosterCoverPosition === 'function', 'setBlankRosterCoverPosition is exported');
+assert(typeof context.onBlankRosterCoverPosSlider === 'function', 'onBlankRosterCoverPosSlider is exported');
+assert(typeof context.resetBlankRosterCoverPos === 'function', 'resetBlankRosterCoverPos is exported');
+
+// ---------------------------------------------------------------------
 // SUMMARY
 // ---------------------------------------------------------------------
 console.log(`\n==========================================`);
