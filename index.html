@@ -108,7 +108,7 @@
       <!-- 3 Sport Cards Grid with Ambient Glows & 3D Artwork -->
       <main class="hub-grid">
         <!-- 1. FOOTBALL TOURNAMENT (ACTIVE) -->
-        <div class="sport-card card-football">
+        <div class="sport-card card-football" onclick="openFootballEntryChoiceModal()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openFootballEntryChoiceModal();}">
           <div class="card-glow-mesh"></div>
           <!-- Integrated Background Photographic Cover -->
           <div class="card-bg-cover" aria-hidden="true">
@@ -123,14 +123,14 @@
               </span>
             </div>
             <h2 class="sport-title" data-i18n="hub.football_title">Football Tournament</h2>
-            <button type="button" class="btn-launch-sport btn-football-launch" id="btn-football-launch" onclick="openFootballEntryChoiceModal()" data-i18n="hub.football_btn">
+            <button type="button" class="btn-launch-sport btn-football-launch" id="btn-football-launch" onclick="event.stopPropagation(); openFootballEntryChoiceModal()" data-i18n="hub.football_btn">
               🚀 Football Tournament ➜
             </button>
           </div>
         </div>
 
         <!-- 2. CRICKET TOURNAMENT (COMING SOON) -->
-        <div class="sport-card card-cricket">
+        <div class="sport-card card-cricket" onclick="openSportPreviewModal('cricket')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSportPreviewModal('cricket');}">
           <div class="card-glow-mesh"></div>
           <!-- Integrated Background Photographic Cover -->
           <div class="card-bg-cover" aria-hidden="true">
@@ -145,14 +145,14 @@
               </span>
             </div>
             <h2 class="sport-title" data-i18n="hub.cricket_title">Cricket Tournament</h2>
-            <button type="button" class="btn-launch-sport btn-upcoming-preview" onclick="openSportPreviewModal('cricket')" data-i18n="hub.cricket_btn">
+            <button type="button" class="btn-launch-sport btn-upcoming-preview" onclick="event.stopPropagation(); openSportPreviewModal('cricket')" data-i18n="hub.cricket_btn">
               🔍 Feature Roadmap & Preview
             </button>
           </div>
         </div>
 
         <!-- 3. BADMINTON TOURNAMENT (COMING SOON) -->
-        <div class="sport-card card-badminton">
+        <div class="sport-card card-badminton" onclick="openSportPreviewModal('badminton')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSportPreviewModal('badminton');}">
           <div class="card-glow-mesh"></div>
           <!-- Integrated Background Photographic Cover -->
           <div class="card-bg-cover" aria-hidden="true">
@@ -167,7 +167,7 @@
               </span>
             </div>
             <h2 class="sport-title" data-i18n="hub.badminton_title">Badminton Tournament</h2>
-            <button type="button" class="btn-launch-sport btn-upcoming-preview" onclick="openSportPreviewModal('badminton')" data-i18n="hub.badminton_btn">
+            <button type="button" class="btn-launch-sport btn-upcoming-preview" onclick="event.stopPropagation(); openSportPreviewModal('badminton')" data-i18n="hub.badminton_btn">
               🔍 Feature Roadmap & Preview
             </button>
           </div>
