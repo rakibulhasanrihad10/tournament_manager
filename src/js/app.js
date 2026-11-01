@@ -311,7 +311,7 @@ function printDocument(mode) {
       } else if (mode === 'blank-roster') {
         // A4 Portrait for Blank Squad Registration Form (edge-to-edge cover banner with padded body)
         if (pageStyle) {
-          pageStyle.textContent = '@page { size: A4 portrait; margin: 0 !important; } @page blankRosterPage { size: A4 portrait; margin: 0 !important; }';
+          pageStyle.textContent = '@page { size: A4 portrait; margin: 0; }';
         }
         if (typeof renderBlankRosterSheet === 'function') {
           renderBlankRosterSheet();

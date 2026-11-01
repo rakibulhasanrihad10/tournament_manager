@@ -1235,7 +1235,7 @@ function getSelectedBlankRosterRuleIds() {
   return ids;
 }
 
-function calculateBlankRosterRulesBudget(selectedRuleIds, maxPixelBudget = 530) {
+function calculateBlankRosterRulesBudget(selectedRuleIds, maxPixelBudget = 660) {
   const masterCatalog = typeof MASTER_RULES_CATALOG !== 'undefined' ? MASTER_RULES_CATALOG : [];
   const c = typeof tournamentConfig !== 'undefined' ? tournamentConfig : {};
   const customRules = c.customRules || [];
@@ -1264,12 +1264,13 @@ function calculateBlankRosterRulesBudget(selectedRuleIds, maxPixelBudget = 530) 
     // Item height: badge/title line (13px) + desc text (descLines * 10.5px) + margin/padding (2.5px)
     const ruleHeight = 13 + (descLines * 10.5) + 2.5;
 
-    // Check if adding this rule exceeds the allowed budget
-    const effectiveBudget = (omittedRules.length > 0 || (currentHeight + ruleHeight > maxPixelBudget - noticeHeight && acceptedRules.length >= 6))
-      ? (maxPixelBudget - noticeHeight)
-      : maxPixelBudget;
+    // Check if adding this rule exceeds the allowed budget (Greedy line-budget check)
+    const remainingBudget = maxPixelBudget - currentHeight;
+    const canFit = omittedRules.length === 0
+      ? (ruleHeight <= remainingBudget)
+      : (ruleHeight <= remainingBudget - noticeHeight);
 
-    if (currentHeight + ruleHeight <= effectiveBudget) {
+    if (canFit) {
       acceptedRules.push({ id: ruleId, rule: r, height: ruleHeight, title, desc });
       currentHeight += ruleHeight;
     } else {
@@ -1306,7 +1307,7 @@ function updateRuleBudgetMeter() {
     return;
   }
 
-  const budget = calculateBlankRosterRulesBudget(selectedIds, 530);
+  const budget = calculateBlankRosterRulesBudget(selectedIds, 660);
   const accepted = budget.acceptedCount;
   const omitted = budget.omittedCount;
   const h = Math.round(budget.currentHeight);
@@ -1316,8 +1317,8 @@ function updateRuleBudgetMeter() {
     meterEl.style.color = '#166534';
     meterEl.style.border = '1px solid #86efac';
     meterEl.innerHTML = isEn
-      ? `✅ <strong>Perfect 1-Page Fit:</strong> All ${accepted} selected rules fit comfortably (Height: ~${h}px / 530px line budget).`
-      : `✅ <strong>নিখুঁত ১-পেজ ফিট:</strong> নির্বাচিত ${accepted}টি নিয়মের সবগুলোই সুন্দরভাবে ধরবে (উচ্চতা: ~${h}px / ৫৩০px লাইন বাজেট)।`;
+      ? `✅ <strong>Perfect 1-Page Fit:</strong> All ${accepted} selected rules fit comfortably (Height: ~${h}px / 660px line budget).`
+      : `✅ <strong>নিখুঁত ১-পেজ ফিট:</strong> নির্বাচিত ${accepted}টি নিয়মের সবগুলোই সুন্দরভাবে ধরবে (উচ্চতা: ~${h}px / ৬৬০px লাইন বাজেট)।`;
   } else {
     meterEl.style.background = '#fef3c7';
     meterEl.style.color = '#92400e';
@@ -1339,7 +1340,7 @@ function autoFitBlankRosterRules() {
     const cb = document.querySelector(`.br-rule-chk[value="${id}"]`);
     if (cb) {
       const testList = [...selected, id];
-      const testBudget = calculateBlankRosterRulesBudget(testList, 530);
+      const testBudget = calculateBlankRosterRulesBudget(testList, 660);
       if (testBudget.omittedCount === 0) {
         cb.checked = true;
         selected.push(id);
@@ -1350,7 +1351,7 @@ function autoFitBlankRosterRules() {
   checkboxes.forEach(cb => {
     if (!cb.checked) {
       const testList = [...selected, cb.value];
-      const testBudget = calculateBlankRosterRulesBudget(testList, 530);
+      const testBudget = calculateBlankRosterRulesBudget(testList, 660);
       if (testBudget.omittedCount === 0) {
         cb.checked = true;
         selected.push(cb.value);
@@ -1461,7 +1462,7 @@ function generateBlankRosterSheetHtml(configOverride) {
     selectedRuleIds = [];
   }
 
-  const budgetResult = calculateBlankRosterRulesBudget(selectedRuleIds, 530);
+  const budgetResult = calculateBlankRosterRulesBudget(selectedRuleIds, 660);
   const acceptedRules = budgetResult.acceptedRules;
   const omittedCount = budgetResult.omittedCount;
 

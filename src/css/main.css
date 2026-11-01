@@ -1804,7 +1804,8 @@ body {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 295mm;
+      min-height: 272mm;
+      max-height: 275mm;
       box-sizing: border-box;
     }
     .page-blank-roster .blank-roster-body {

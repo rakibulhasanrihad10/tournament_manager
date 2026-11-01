@@ -15,10 +15,13 @@
       .action-bar,
       .football-welcome-banner,
       .p1-stage-nav,
+      #sports-hub-view,
+      .sports-hub-container,
       .sports-hub-view,
       .hub-footer,
       footer,
       .modal,
+      .modal-backdrop,
       .app-footer {
         display: none !important;
       }
@@ -65,10 +68,16 @@
       body.print-only-blank-roster .page-2,
       body.print-only-blank-roster .page-poster,
       body.print-only-blank-roster .page-break,
+      body.print-only-blank-roster #sports-hub-view,
+      body.print-only-blank-roster .sports-hub-container,
       body.print-only-blank-roster .sports-hub-view,
       body.print-only-blank-roster footer,
       body.print-only-blank-roster .app-footer,
-      body.print-only-blank-roster .modal {
+      body.print-only-blank-roster .modal,
+      body.print-only-blank-roster .modal-backdrop {
+        display: none !important;
+      }
+      body.print-only-blank-roster > *:not(#football-app-view) {
         display: none !important;
       }
       body.print-only-blank-roster #football-app-view > *:not(#page-blank-roster) {
@@ -176,7 +185,7 @@
       /* Blank Squad Sheet: Edge-to-edge 0 margin & NO outside border (matching reference image) */
       @page blankRosterPage {
         size: A4 portrait;
-        margin: 0mm !important;
+        margin: 0mm;
       }
       body.print-only-blank-roster {
         margin: 0 !important;
@@ -211,8 +220,8 @@
         page-break-after: avoid !important;
         break-after: avoid !important;
         box-sizing: border-box !important;
-        height: 295mm !important;
-        max-height: 296mm !important;
+        height: 272mm !important;
+        max-height: 275mm !important;
         overflow: hidden !important;
       }
       body.print-only-blank-roster .page-blank-roster .blank-roster-body {

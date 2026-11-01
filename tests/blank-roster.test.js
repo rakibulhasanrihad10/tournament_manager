@@ -258,7 +258,13 @@ assert(!html11Rules.includes('rules-omitted-notice'), 'All 11 rules fit naturall
 assert(html11Rules.includes('>11<'), 'Renders 11th selected rule');
 
 // Test 16 rules rendering shows omitted notice when exceeding budget
-const manyRules = [...all11RuleIds, 'r_offside_fifa', 'r_sub_5', 'r_duration_90', 'r_points_system', 'r_coach_residency'];
+const manyRules = [
+  'r_squad_11', 'r_onfield_11', 'r_squad_minibar', 'r_onfield_6',
+  'r_residency', 'r_single_team', 'r_hire_players_no', 'r_hire_players_limit',
+  'r_match_duration_90', 'r_extra_time_fifa', 'r_match_duration', 'r_early_reporting',
+  'r_walkover', 'r_dress_code', 'r_fifa_points', 'r_pen_count_fifa',
+  'r_direct_shootout', 'r_referee_final'
+];
 const htmlManyRules = context.generateBlankRosterSheetHtml({ selectedRules: manyRules });
 assert(htmlManyRules.includes('rules-omitted-notice'), 'Renders rules-omitted-notice when rules exceed expanded budget');
 assert(blankHtml.includes('blank-roster-bottom-section'), 'Renders bottom-pinned section with signatures and footer');
