@@ -2052,6 +2052,10 @@ body {
       size: A4 landscape;
       margin: 5mm 6mm;
     }
+    @page blankRosterPage {
+      size: A4 portrait;
+      margin: 0mm !important;
+    }
 
     .page-break {
       page-break-after: always;

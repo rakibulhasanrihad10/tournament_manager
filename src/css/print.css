@@ -161,7 +161,17 @@
         color: #ff5252 !important;
       }
 
-      /* Blank Squad Sheet: Edge-to-edge minimal margin & NO outside border (matching reference image) */
+      /* Blank Squad Sheet: Edge-to-edge 0 margin & NO outside border (matching reference image) */
+      @page blankRosterPage {
+        size: A4 portrait;
+        margin: 0mm !important;
+      }
+      body.print-only-blank-roster {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+      }
       body.print-only-blank-roster .page-sheet.page-blank-roster,
       body.print-only-blank-roster .page-blank-roster,
       .page-blank-roster {
@@ -173,8 +183,9 @@
         color: #0f172a !important;
       }
       body.print-only-blank-roster .page-blank-roster {
+        page: blankRosterPage !important;
         display: block !important;
-        margin: 0 auto !important;
+        margin: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
         padding: 0 !important;

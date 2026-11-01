@@ -734,20 +734,91 @@ function getBlankRosterLogoHtml(side) {
 
 function getBlankRosterBottomAccentHtml() {
   return `
-    <div class="blank-footer-swoosh" style="margin-top: 6px; position: relative; text-align: center; height: 26px; overflow: hidden;">
-      <svg viewBox="0 0 800 36" width="100%" height="26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0,28 Q180,6 360,20 L360,36 L0,36 Z" fill="#fbbf24"/>
-        <path d="M0,32 Q180,14 365,24 L365,36 L0,36 Z" fill="#072a60"/>
-        <path d="M800,28 Q620,6 440,20 L440,36 L800,36 Z" fill="#fbbf24"/>
-        <path d="M800,32 Q620,14 435,24 L435,36 L800,36 Z" fill="#072a60"/>
-        <circle cx="400" cy="18" r="13" fill="#ffffff" stroke="#072a60" stroke-width="2"/>
-        <polygon points="400,10 406,14 404,21 396,21 394,14" fill="#072a60"/>
-        <line x1="400" y1="10" x2="400" y2="5" stroke="#072a60" stroke-width="1.5"/>
-        <line x1="406" y1="14" x2="412" y2="12" stroke="#072a60" stroke-width="1.5"/>
-        <line x1="404" y1="21" x2="408" y2="27" stroke="#072a60" stroke-width="1.5"/>
-        <line x1="396" y1="21" x2="392" y2="27" stroke="#072a60" stroke-width="1.5"/>
-        <line x1="394" y1="14" x2="388" y2="12" stroke="#072a60" stroke-width="1.5"/>
+    <div class="blank-footer-swoosh" style="position:relative; width:100%; height:46px; margin-top:4px; overflow:visible; display:block;">
+      <!-- Vector Curved Blue & Gold Waves (Edge to Edge) -->
+      <svg viewBox="0 0 1000 52" preserveAspectRatio="none" style="width:100%; height:100%; display:block;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="footerNavyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#0b2b68"/>
+            <stop offset="50%" stop-color="#072050"/>
+            <stop offset="100%" stop-color="#03102c"/>
+          </linearGradient>
+          <linearGradient id="footerGoldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#d97706"/>
+            <stop offset="25%" stop-color="#fbbf24"/>
+            <stop offset="50%" stop-color="#fef08a"/>
+            <stop offset="75%" stop-color="#fbbf24"/>
+            <stop offset="100%" stop-color="#d97706"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Base Deep Navy Ribbon -->
+        <path d="M0,26 C220,44 370,44 500,24 C630,4 780,44 1000,20 L1000,52 L0,52 Z" fill="url(#footerNavyGrad)"/>
+
+        <!-- Flowing Curved Gold Swoosh (Left to Center) -->
+        <path d="M0,20 C180,36 340,38 460,18 L460,24 C340,42 180,40 0,26 Z" fill="url(#footerGoldGrad)" opacity="0.95"/>
+
+        <!-- Flowing Curved Gold Swoosh (Right to Center) -->
+        <path d="M1000,14 C820,36 660,38 540,18 L540,24 C660,42 820,40 1000,20 Z" fill="url(#footerGoldGrad)" opacity="0.95"/>
+
+        <!-- Lower Gold Accent Line -->
+        <path d="M0,36 C220,48 360,48 500,34 C640,20 780,46 1000,32 L1000,35 C780,49 640,23 500,37 C360,51 220,51 0,39 Z" fill="#fde047" opacity="0.75"/>
       </svg>
+
+      <!-- Center 3D Realistic Soccer Ball (Bridging Waves and Page) -->
+      <div style="position:absolute; left:50%; bottom:4px; transform:translateX(-50%); width:40px; height:40px; z-index:5; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.65));">
+        <svg viewBox="0 0 100 100" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="ballShade" cx="35%" cy="32%" r="65%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="55%" stop-color="#f1f5f9"/>
+              <stop offset="85%" stop-color="#cbd5e1"/>
+              <stop offset="100%" stop-color="#64748b"/>
+            </radialGradient>
+            <radialGradient id="specularGlow" cx="30%" cy="25%" r="35%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- Ball Outer Sphere with 3D Radial Shading -->
+          <circle cx="50" cy="50" r="47" fill="url(#ballShade)" stroke="#0f172a" stroke-width="2"/>
+          
+          <!-- Center Pentagon -->
+          <polygon points="50,34 65,45 59,62 41,62 35,45" fill="#0f172a"/>
+          
+          <!-- Seams Connecting Center Pentagon to Outer Pentagons -->
+          <line x1="50" y1="34" x2="50" y2="18" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="65" y1="45" x2="80" y2="40" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="59" y1="62" x2="68" y2="78" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="41" y1="62" x2="32" y2="78" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="35" y1="45" x2="20" y2="40" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+
+          <!-- Top Pentagon Panel -->
+          <polygon points="50,18 40,7 60,7" fill="#0f172a"/>
+          <line x1="40" y1="7" x2="28" y2="16" stroke="#0f172a" stroke-width="2.2"/>
+          <line x1="60" y1="7" x2="72" y2="16" stroke="#0f172a" stroke-width="2.2"/>
+
+          <!-- Right Top Panel -->
+          <polygon points="80,40 93,30 96,48" fill="#0f172a"/>
+          <line x1="72" y1="16" x2="93" y2="30" stroke="#0f172a" stroke-width="2.2"/>
+          <line x1="96" y1="48" x2="88" y2="68" stroke="#0f172a" stroke-width="2.2"/>
+
+          <!-- Left Top Panel -->
+          <polygon points="20,40 7,30 4,48" fill="#0f172a"/>
+          <line x1="28" y1="16" x2="7" y2="30" stroke="#0f172a" stroke-width="2.2"/>
+          <line x1="4" y1="48" x2="12" y2="68" stroke="#0f172a" stroke-width="2.2"/>
+
+          <!-- Bottom Right Panel -->
+          <polygon points="68,78 88,68 76,90 58,95" fill="#0f172a"/>
+
+          <!-- Bottom Left Panel -->
+          <polygon points="32,78 12,68 24,90 42,95" fill="#0f172a"/>
+          <line x1="42" y1="95" x2="58" y2="95" stroke="#0f172a" stroke-width="2.2"/>
+
+          <!-- Specular Light Highlight -->
+          <ellipse cx="38" cy="30" rx="18" ry="12" fill="url(#specularGlow)"/>
+        </svg>
+      </div>
     </div>
   `;
 }
@@ -1269,7 +1340,7 @@ function generateBlankRosterSheetHtml(configOverride) {
   for (let i = 1; i <= startingCount; i++) {
     starterRowsHtml += `
       <tr class="player-row starter-row">
-        <td class="player-sl-cell" style="width:10%; text-align:center; font-weight:700; color:#072a60; background:#f8fafc; border:1px solid #bfdbfe; height:26px;">${i}</td>
+        <td class="player-sl-cell" style="width:10%; text-align:center; font-weight:700; color:#072a60; background:#f8fafc; border:1px solid #bfdbfe; height:22px;">${i}</td>
         <td class="player-name-cell blank-cell-write" style="width:64%; border:1px solid #bfdbfe; background:#fff;"></td>
         <td class="player-pos-cell blank-cell-write" style="width:26%; border:1px solid #bfdbfe; background:#fff;"></td>
       </tr>
@@ -1281,7 +1352,7 @@ function generateBlankRosterSheetHtml(configOverride) {
   for (let i = startingCount + 1; i <= totalCount; i++) {
     benchRowsHtml += `
       <tr class="player-row bench-row">
-        <td class="player-sl-cell bench-sl" style="width:10%; text-align:center; font-weight:700; color:#15803d; background:#f0fdf4; border:1px solid #bfdbfe; height:26px;">${i}</td>
+        <td class="player-sl-cell bench-sl" style="width:10%; text-align:center; font-weight:700; color:#15803d; background:#f0fdf4; border:1px solid #bfdbfe; height:22px;">${i}</td>
         <td class="player-name-cell blank-cell-write" style="width:64%; border:1px solid #bfdbfe; background:#fff;"></td>
         <td class="player-pos-cell blank-cell-write" style="width:26%; border:1px solid #bfdbfe; background:#fff;"></td>
       </tr>
@@ -1582,58 +1653,58 @@ function generateBlankRosterSheetHtml(configOverride) {
         </div>
 
         <!-- OFFICIAL DETAILS & SIGNATURES BLOCK (SPACIOUS THREE CARDS) -->
-        <div class="sign-row blank-sign-row" style="display:flex; justify-content:space-between; gap:10px; margin-top:8px; margin-bottom:8px;">
+        <div class="sign-row blank-sign-row" style="display:flex; justify-content:space-between; gap:8px; margin-top:6px; margin-bottom:4px;">
           
           <!-- BLOCK 1: TEAM MANAGER -->
-          <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:8px 10px; display:flex; flex-direction:column; justify-content:space-between; min-height:92px;">
-            <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:4px; margin-bottom:7px; display:flex; align-items:center; gap:5px;">
+          <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:6px 8px; display:flex; flex-direction:column; justify-content:space-between; min-height:72px;">
+            <div style="font-size:10.5px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:3px; margin-bottom:5px; display:flex; align-items:center; gap:5px;">
               <span>👤</span> <span>${tFn('blank_roster.manager_name')}</span>
             </div>
-            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
-              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <strong style="font-size:10px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:16px;"></span>
             </div>
-            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
-              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <strong style="font-size:10px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:16px;"></span>
             </div>
-            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; padding-top:4px; border-top:1px dashed #cbd5e1;">
-              <strong style="font-size:10px; color:#475569; white-space:nowrap;">${tFn('blank_roster.lbl_sign')}</strong>
-              <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:16px;"></span>
+            <div style="display:flex; align-items:center; gap:5px; margin-top:auto; padding-top:3px; border-top:1px dashed #cbd5e1;">
+              <strong style="font-size:9.5px; color:#475569; white-space:nowrap;">${tFn('blank_roster.lbl_sign')}</strong>
+              <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:14px;"></span>
             </div>
           </div>
 
           <!-- BLOCK 2: TEAM COACH -->
-          <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:8px 10px; display:flex; flex-direction:column; justify-content:flex-start; min-height:92px;">
-            <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:4px; margin-bottom:7px; display:flex; align-items:center; gap:5px;">
+          <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:6px 8px; display:flex; flex-direction:column; justify-content:flex-start; min-height:72px;">
+            <div style="font-size:10.5px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:3px; margin-bottom:5px; display:flex; align-items:center; gap:5px;">
               <span>📋</span> <span>${tFn('blank_roster.coach_name')}</span>
             </div>
-            <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
-              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
-              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            <div style="display:flex; align-items:center; gap:5px; margin-bottom:6px;">
+              <strong style="font-size:10px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:16px;"></span>
             </div>
-            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
-              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <strong style="font-size:10px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:16px;"></span>
             </div>
           </div>
 
           <!-- BLOCK 3: ORGANIZING COMMITTEE -->
-          <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:8px 10px; display:flex; flex-direction:column; justify-content:space-between; min-height:92px;">
-            <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:4px; margin-bottom:7px; display:flex; align-items:center; gap:5px;">
+          <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:6px 8px; display:flex; flex-direction:column; justify-content:space-between; min-height:72px;">
+            <div style="font-size:10.5px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:3px; margin-bottom:5px; display:flex; align-items:center; gap:5px;">
               <span>🏛️</span> <span>${tFn('blank_roster.committee_name')}</span>
             </div>
-            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
-              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <strong style="font-size:10px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:16px;"></span>
             </div>
-            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
-              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <strong style="font-size:10px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:16px;"></span>
             </div>
-            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; padding-top:4px; border-top:1px dashed #cbd5e1;">
-              <strong style="font-size:10px; color:#475569; white-space:nowrap;">${tFn('blank_roster.lbl_sign')}</strong>
-              <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:16px;"></span>
+            <div style="display:flex; align-items:center; gap:5px; margin-top:auto; padding-top:3px; border-top:1px dashed #cbd5e1;">
+              <strong style="font-size:9.5px; color:#475569; white-space:nowrap;">${tFn('blank_roster.lbl_sign')}</strong>
+              <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:14px;"></span>
             </div>
           </div>
 

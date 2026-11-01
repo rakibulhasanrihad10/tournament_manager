@@ -310,7 +310,9 @@ function printDocument(mode) {
         document.body.classList.add('print-only-poster');
       } else if (mode === 'blank-roster') {
         // A4 Portrait for Blank Squad Registration Form (edge-to-edge cover banner with padded body)
-        if (pageStyle) pageStyle.textContent = '@page { size: A4 portrait; margin: 0; }';
+        if (pageStyle) {
+          pageStyle.textContent = '@page { size: A4 portrait; margin: 0 !important; } @page blankRosterPage { size: A4 portrait; margin: 0 !important; }';
+        }
         if (typeof renderBlankRosterSheet === 'function') {
           renderBlankRosterSheet();
         }
@@ -319,12 +321,19 @@ function printDocument(mode) {
       if (typeof window !== 'undefined' && typeof window.print === 'function') {
         window.print();
       }
-      setTimeout(() => {
+      const cleanupPrint = () => {
         document.body.classList.remove('print-only-1', 'print-only-2', 'print-only-poster', 'print-only-reg-slip', 'print-only-blank-roster');
         if (pageStyle) {
           pageStyle.textContent = '@page { size: A4 landscape; margin: 5mm 6mm; }';
         }
-      }, 1200);
+        if (typeof window !== 'undefined' && typeof window.removeEventListener === 'function') {
+          window.removeEventListener('afterprint', cleanupPrint);
+        }
+      };
+      if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+        window.addEventListener('afterprint', cleanupPrint);
+      }
+      setTimeout(cleanupPrint, 60000);
     }
 
     // Close modals and dropdowns on Escape key
