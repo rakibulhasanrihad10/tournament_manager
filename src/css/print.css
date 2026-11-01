@@ -14,7 +14,12 @@
 
       .action-bar,
       .football-welcome-banner,
-      .p1-stage-nav {
+      .p1-stage-nav,
+      .sports-hub-view,
+      .hub-footer,
+      footer,
+      .modal,
+      .app-footer {
         display: none !important;
       }
 
@@ -59,11 +64,18 @@
       body.print-only-blank-roster .page-1,
       body.print-only-blank-roster .page-2,
       body.print-only-blank-roster .page-poster,
-      body.print-only-blank-roster .page-break {
+      body.print-only-blank-roster .page-break,
+      body.print-only-blank-roster .sports-hub-view,
+      body.print-only-blank-roster footer,
+      body.print-only-blank-roster .app-footer,
+      body.print-only-blank-roster .modal {
+        display: none !important;
+      }
+      body.print-only-blank-roster #football-app-view > *:not(#page-blank-roster) {
         display: none !important;
       }
       body.print-only-blank-roster .page-blank-roster {
-        display: block !important;
+        display: flex !important;
         margin: 0 auto !important;
       }
     }
@@ -184,8 +196,10 @@
       }
       body.print-only-blank-roster .page-blank-roster {
         page: blankRosterPage !important;
-        display: block !important;
-        margin: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        margin: 0 auto !important;
         width: 100% !important;
         max-width: 100% !important;
         padding: 0 !important;
@@ -194,7 +208,12 @@
         border-radius: 0 !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
         box-sizing: border-box !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        overflow: hidden !important;
       }
       body.print-only-blank-roster .page-blank-roster .p2-layout {
         display: flex !important;

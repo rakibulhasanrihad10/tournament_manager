@@ -318,9 +318,11 @@ function printDocument(mode) {
         }
         document.body.classList.add('print-only-blank-roster');
       }
-      if (typeof window !== 'undefined' && typeof window.print === 'function') {
-        window.print();
-      }
+      setTimeout(() => {
+        if (typeof window !== 'undefined' && typeof window.print === 'function') {
+          window.print();
+        }
+      }, 50);
       const cleanupPrint = () => {
         document.body.classList.remove('print-only-1', 'print-only-2', 'print-only-poster', 'print-only-reg-slip', 'print-only-blank-roster');
         if (pageStyle) {

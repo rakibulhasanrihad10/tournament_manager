@@ -1388,14 +1388,14 @@ function generateBlankRosterSheetHtml(configOverride) {
         const desc = (isEn && mr.descEn) ? mr.descEn : mr.desc;
         const icon = mr.categoryIcon || ruleIcons[(ruleIdx - 1) % ruleIcons.length];
         rulesHtml += `
-          <li style="list-style:none; margin-bottom:5px;">
-            <div class="rule-ref-item" style="display:flex; align-items:flex-start; gap:8px;">
-              <div class="rule-badge-num" style="min-width:20px; height:20px; border-radius:50%; background:#15803d; color:#fff; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px;">${ruleIdx}</div>
+          <li style="list-style:none; margin-bottom:2.5px;">
+            <div class="rule-ref-item" style="display:flex; align-items:flex-start; gap:6px;">
+              <div class="rule-badge-num" style="min-width:18px; height:18px; border-radius:50%; background:#15803d; color:#fff; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px;">${ruleIdx}</div>
               <div style="flex:1;">
-                <div style="font-size:10.5px; font-weight:800; color:#072a60; line-height:1.25;">
+                <div style="font-size:10px; font-weight:800; color:#072a60; line-height:1.2;">
                   <span>${icon}</span> <span class="rules-highlight">${esc(title)}:</span>
                 </div>
-                <div style="font-size:9px; color:#334155; line-height:1.3; margin-top:1px;">
+                <div style="font-size:8.5px; color:#334155; line-height:1.2; margin-top:1px;">
                   ${esc(desc)}
                 </div>
               </div>
@@ -1411,14 +1411,14 @@ function generateBlankRosterSheetHtml(configOverride) {
       if (cr) {
         const icon = ruleIcons[(ruleIdx - 1) % ruleIcons.length];
         rulesHtml += `
-          <li style="list-style:none; margin-bottom:5px;">
-            <div class="rule-ref-item" style="display:flex; align-items:flex-start; gap:8px;">
-              <div class="rule-badge-num" style="min-width:20px; height:20px; border-radius:50%; background:#15803d; color:#fff; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px;">${ruleIdx}</div>
+          <li style="list-style:none; margin-bottom:2.5px;">
+            <div class="rule-ref-item" style="display:flex; align-items:flex-start; gap:6px;">
+              <div class="rule-badge-num" style="min-width:18px; height:18px; border-radius:50%; background:#15803d; color:#fff; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px;">${ruleIdx}</div>
               <div style="flex:1;">
-                <div style="font-size:10.5px; font-weight:800; color:#072a60; line-height:1.25;">
+                <div style="font-size:10px; font-weight:800; color:#072a60; line-height:1.2;">
                   <span>${icon}</span> <span class="rules-highlight">${esc(cr.title)}:</span>
                 </div>
-                <div style="font-size:9px; color:#334155; line-height:1.3; margin-top:1px;">
+                <div style="font-size:8.5px; color:#334155; line-height:1.2; margin-top:1px;">
                   ${esc(cr.desc)}
                 </div>
               </div>
@@ -1448,14 +1448,14 @@ function generateBlankRosterSheetHtml(configOverride) {
 
     defaultRulesData.forEach(r => {
       rulesHtml += `
-        <li style="list-style:none; margin-bottom:5px;">
-          <div class="rule-ref-item" style="display:flex; align-items:flex-start; gap:8px;">
-            <div class="rule-badge-num" style="min-width:20px; height:20px; border-radius:50%; background:#15803d; color:#fff; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px;">${ruleIdx}</div>
+        <li style="list-style:none; margin-bottom:2.5px;">
+          <div class="rule-ref-item" style="display:flex; align-items:flex-start; gap:6px;">
+            <div class="rule-badge-num" style="min-width:18px; height:18px; border-radius:50%; background:#15803d; color:#fff; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px;">${ruleIdx}</div>
             <div style="flex:1;">
-              <div style="font-size:10.5px; font-weight:800; color:#072a60; line-height:1.25;">
+              <div style="font-size:10px; font-weight:800; color:#072a60; line-height:1.2;">
                 <span>${r.icon}</span> <span class="rules-highlight">${esc(r.title)}:</span>
               </div>
-              <div style="font-size:9px; color:#334155; line-height:1.3; margin-top:1px;">
+              <div style="font-size:8.5px; color:#334155; line-height:1.2; margin-top:1px;">
                 ${esc(r.desc)}
               </div>
             </div>
@@ -1712,7 +1712,7 @@ function generateBlankRosterSheetHtml(configOverride) {
       </div>
 
       <!-- BOTTOM SPORTS GEOMETRIC FOOTER WITH SOCCER BALL (FULL-BLEED) -->
-      <div class="blank-roster-bottom-accent" style="width:100%; margin:4px 0 0 0; padding:0; overflow:hidden;">
+      <div class="blank-roster-bottom-accent" style="width:100%; margin-top:auto; margin-bottom:0; padding:0; overflow:visible;">
         ${getBlankRosterBottomAccentHtml()}
       </div>
     </div>
