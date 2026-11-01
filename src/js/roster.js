@@ -1235,7 +1235,7 @@ function getSelectedBlankRosterRuleIds() {
   return ids;
 }
 
-function calculateBlankRosterRulesBudget(selectedRuleIds, maxPixelBudget = 500) {
+function calculateBlankRosterRulesBudget(selectedRuleIds, maxPixelBudget = 615) {
   const masterCatalog = typeof MASTER_RULES_CATALOG !== 'undefined' ? MASTER_RULES_CATALOG : [];
   const c = typeof tournamentConfig !== 'undefined' ? tournamentConfig : {};
   const customRules = c.customRules || [];
@@ -1307,7 +1307,7 @@ function updateRuleBudgetMeter() {
     return;
   }
 
-  const budget = calculateBlankRosterRulesBudget(selectedIds, 500);
+  const budget = calculateBlankRosterRulesBudget(selectedIds, 615);
   const accepted = budget.acceptedCount;
   const omitted = budget.omittedCount;
   const h = Math.round(budget.currentHeight);
@@ -1317,8 +1317,8 @@ function updateRuleBudgetMeter() {
     meterEl.style.color = '#166534';
     meterEl.style.border = '1px solid #86efac';
     meterEl.innerHTML = isEn
-      ? `✅ <strong>Perfect 1-Page Fit:</strong> All ${accepted} selected rules fit comfortably (Height: ~${h}px / 500px line budget).`
-      : `✅ <strong>নিখুঁত ১-পেজ ফিট:</strong> নির্বাচিত ${accepted}টি নিয়মের সবগুলোই সুন্দরভাবে ধরবে (উচ্চতা: ~${h}px / ৫০০px লাইন বাজেট)।`;
+      ? `✅ <strong>Perfect 1-Page Fit:</strong> All ${accepted} selected rules fit comfortably (Height: ~${h}px / 615px line budget).`
+      : `✅ <strong>নিখুঁত ১-পেজ ফিট:</strong> নির্বাচিত ${accepted}টি নিয়মের সবগুলোই সুন্দরভাবে ধরবে (উচ্চতা: ~${h}px / ৬১৫px লাইন বাজেট)।`;
   } else {
     meterEl.style.background = '#fef3c7';
     meterEl.style.color = '#92400e';
@@ -1340,7 +1340,7 @@ function autoFitBlankRosterRules() {
     const cb = document.querySelector(`.br-rule-chk[value="${id}"]`);
     if (cb) {
       const testList = [...selected, id];
-      const testBudget = calculateBlankRosterRulesBudget(testList, 500);
+      const testBudget = calculateBlankRosterRulesBudget(testList, 615);
       if (testBudget.omittedCount === 0) {
         cb.checked = true;
         selected.push(id);
@@ -1351,7 +1351,7 @@ function autoFitBlankRosterRules() {
   checkboxes.forEach(cb => {
     if (!cb.checked) {
       const testList = [...selected, cb.value];
-      const testBudget = calculateBlankRosterRulesBudget(testList, 500);
+      const testBudget = calculateBlankRosterRulesBudget(testList, 615);
       if (testBudget.omittedCount === 0) {
         cb.checked = true;
         selected.push(cb.value);
@@ -1462,7 +1462,7 @@ function generateBlankRosterSheetHtml(configOverride) {
     selectedRuleIds = [];
   }
 
-  const budgetResult = calculateBlankRosterRulesBudget(selectedRuleIds, 500);
+  const budgetResult = calculateBlankRosterRulesBudget(selectedRuleIds, 615);
   const acceptedRules = budgetResult.acceptedRules;
   const omittedCount = budgetResult.omittedCount;
 
@@ -1699,7 +1699,7 @@ function generateBlankRosterSheetHtml(configOverride) {
           </div>
 
           <!-- RIGHT COLUMN: RULES & GUIDELINES + BOTTOM SLOGAN RIBBON -->
-          <div class="p2-right" style="width:calc(46% - 4px); max-height:585px; border:1.5px solid #93c5fd; border-radius:8px; overflow:hidden; background:#fff; display:flex; flex-direction:column;">
+          <div class="p2-right" style="width:calc(46% - 4px); max-height:715px; border:1.5px solid #93c5fd; border-radius:8px; overflow:hidden; background:#fff; display:flex; flex-direction:column;">
             <!-- CARD HEADER -->
             <div style="background:#072a60; color:#fff; padding:5px 8px; font-size:11px; font-weight:800; display:flex; align-items:center; gap:6px;">
               <span>📄</span> <span data-i18n="page2.rules_card_title">${tFn('page2.rules_card_title')}</span>

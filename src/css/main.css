@@ -1804,8 +1804,8 @@ body {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 272mm;
-      max-height: 275mm;
+      min-height: 297mm;
+      max-height: 297mm;
       box-sizing: border-box;
     }
     .page-blank-roster .blank-roster-body {
@@ -1857,7 +1857,7 @@ body {
     }
     .page-blank-roster .p2-right {
       width: calc(46% - 4px);
-      max-height: 585px;
+      max-height: 715px;
       background: #ffffff;
       color: #111;
       border-radius: 8px;

@@ -220,8 +220,8 @@
         page-break-after: avoid !important;
         break-after: avoid !important;
         box-sizing: border-box !important;
-        height: 272mm !important;
-        max-height: 275mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
         overflow: hidden !important;
       }
       body.print-only-blank-roster .page-blank-roster .blank-roster-body {
@@ -276,7 +276,7 @@
       }
       body.print-only-blank-roster .page-blank-roster .p2-right {
         width: calc(46% - 4px) !important;
-        max-height: 585px !important;
+        max-height: 715px !important;
         border: 1.5px solid #93c5fd !important;
         border-radius: 8px !important;
       }
