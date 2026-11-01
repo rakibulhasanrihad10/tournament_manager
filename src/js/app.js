@@ -309,8 +309,8 @@ function printDocument(mode) {
         renderPrintablePosterSheet();
         document.body.classList.add('print-only-poster');
       } else if (mode === 'blank-roster') {
-        // A4 Portrait for Blank Squad Registration Form (minimal edge margins for maximum printable width)
-        if (pageStyle) pageStyle.textContent = '@page { size: A4 portrait; margin: 3.5mm 4mm; }';
+        // A4 Portrait for Blank Squad Registration Form (edge-to-edge cover banner with padded body)
+        if (pageStyle) pageStyle.textContent = '@page { size: A4 portrait; margin: 0; }';
         if (typeof renderBlankRosterSheet === 'function') {
           renderBlankRosterSheet();
         }

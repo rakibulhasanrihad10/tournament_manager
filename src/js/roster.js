@@ -618,7 +618,7 @@ function getBlankRosterActiveCoverUrl() {
 
 function getGoldenTrophySvgHtml() {
   return `
-    <svg viewBox="0 0 120 170" width="46" height="66" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 4px 10px rgba(0,0,0,0.65)); display:block;">
+    <svg viewBox="0 0 120 170" width="54" height="78" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 4px 12px rgba(0,0,0,0.7)); display:block;">
       <defs>
         <linearGradient id="goldGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="#fffbeb"/>
@@ -662,7 +662,7 @@ function getBlankRosterLogoHtml(side) {
   const custom = side === 'left' ? blankRosterImages.customLeft : blankRosterImages.customRight;
 
   if (type === 'custom' && custom) {
-    return `<img src="${custom}" alt="${side} logo" style="max-width:100%; max-height:58px; object-fit:contain; border-radius:4px;">`;
+    return `<img src="${custom}" alt="${side} logo" style="width:100%; height:100%; object-fit:cover; border-radius:6px; display:block;">`;
   }
 
   if (side === 'left') {
@@ -1411,55 +1411,51 @@ function generateBlankRosterSheetHtml(configOverride) {
   let headerBannerHtml = '';
   if (coverType !== 'none' && coverUrl) {
     headerBannerHtml = `
-      <!-- TOP STADIUM COVER BANNER (MATCHING REFERENCE DESIGN) -->
-      <div class="blank-cover-banner" style="position:relative; width:100%; border-radius:0; margin-bottom:8px; background:#072a60; overflow:hidden;">
+      <!-- TOP STADIUM COVER BANNER (FULL-BLEED EDGE-TO-EDGE) -->
+      <div class="blank-cover-banner" style="position:relative; width:100%; border-radius:0; margin:0; padding:0; background:#072a60; overflow:hidden;">
         <!-- Background Stadium Image with Focal Crop & Ambient Lighting -->
         <div class="blank-cover-bg-wrap" style="position:absolute; inset:0; overflow:hidden; z-index:1;">
           <img src="${coverUrl}" alt="Stadium Banner" class="blank-cover-img" style="width:100%; height:100%; object-fit:cover; object-position:center ${coverPos}%; display:block;">
-          <div class="blank-cover-overlay" style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(7, 26, 68, 0.45) 0%, rgba(3, 12, 38, 0.18) 50%, rgba(5, 18, 50, 0.65) 100%);"></div>
+          <div class="blank-cover-overlay" style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(7, 26, 68, 0.4) 0%, rgba(3, 12, 38, 0.15) 50%, rgba(5, 18, 50, 0.6) 100%);"></div>
         </div>
 
-        <!-- Foreground: Left Polaroid Logo, Golden Trophy, Center Title & Right Polaroid Photo -->
-        <div class="blank-cover-content" style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:10px 16px 14px; min-height:102px;">
+        <!-- Foreground: Left Borderless Photo, Golden Trophy, Center Title & Right Borderless Photo -->
+        <div class="blank-cover-content" style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:12px 20px 14px 20px; min-height:130px; box-sizing:border-box;">
           
-          <!-- Left Logo / Photo (Framed Polaroid/Badge like Reference Image) -->
-          <div class="header-logo-left blank-framed-photo-left" style="width:84px; height:66px; display:flex; align-items:center; justify-content:center; background:#ffffff; padding:3px; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.5); transform:rotate(-2deg); border:1.5px solid #fbbf24; flex-shrink:0;">
-            <div style="width:100%; height:100%; overflow:hidden; border-radius:4px; display:flex; align-items:center; justify-content:center; background:#072a60;">
-              ${getBlankRosterLogoHtml('left')}
-            </div>
+          <!-- Left Logo / Photo (Clean, Borderless Natural Fit) -->
+          <div class="header-logo-left blank-framed-photo-left" style="width:96px; height:80px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; padding:0; border-radius:6px; overflow:hidden; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.6));">
+            ${getBlankRosterLogoHtml('left')}
           </div>
 
           <!-- Golden World Cup Trophy -->
-          <div class="blank-trophy-wrap" style="margin:0 4px 0 10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+          <div class="blank-trophy-wrap" style="margin:0 6px 0 14px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
             ${getGoldenTrophySvgHtml()}
           </div>
 
-          <!-- Center: Title & Meta Info -->
-          <div class="header-center blank-cover-center" style="text-align:center; flex:1; padding:0 8px;">
-            <h1 style="font-size:24px; font-weight:900; color:#ffffff; margin:0 0 4px 0; letter-spacing:0.8px; text-shadow:0 2px 8px rgba(0,0,0,0.85), 0 0 18px rgba(56,189,248,0.5); line-height:1.2;">
+          <!-- Center: Title & Translucent Glass Meta Pill -->
+          <div class="header-center blank-cover-center" style="text-align:center; flex:1; padding:0 10px;">
+            <h1 style="font-size:27px; font-weight:900; color:#ffffff; margin:0 0 5px 0; letter-spacing:0.8px; text-shadow:0 2px 10px rgba(0,0,0,0.85), 0 0 20px rgba(56,189,248,0.45); line-height:1.2;">
               ⚽ ${esc(c.title || defaultTitle)} ⚽
             </h1>
-            <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(7, 26, 68, 0.82); border:1px solid rgba(255,255,255,0.28); border-radius:20px; padding:3px 14px; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); box-shadow:0 2px 8px rgba(0,0,0,0.45);">
-              <span style="font-size:11px; color:#f1f5f9; font-weight:700;">
+            <div class="blank-cover-meta-pill" style="display:inline-flex; align-items:center; gap:10px; background:rgba(255, 255, 255, 0.18); border:1px solid rgba(255, 255, 255, 0.42); border-radius:24px; padding:3.5px 20px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 3px 12px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.3);">
+              <span style="font-size:11.5px; color:#ffffff; font-weight:700; text-shadow:0 1px 3px rgba(0,0,0,0.65);">
                 <span>${tFn('page1.meta_organizer')}</span> <strong>${esc(c.organizer || defaultOrg)}</strong>
               </span>
-              <span style="color:rgba(255,255,255,0.4); font-size:10px;">|</span>
-              <span style="font-size:11px; color:#f1f5f9; font-weight:700;">
+              <span style="color:rgba(255,255,255,0.65); font-size:11px;">|</span>
+              <span style="font-size:11.5px; color:#ffffff; font-weight:700; text-shadow:0 1px 3px rgba(0,0,0,0.65);">
                 <span>${tFn('page1.meta_venue')}</span> <strong>${esc(c.venue || defaultVenue)}</strong>
               </span>
             </div>
           </div>
 
-          <!-- Right Logo / Photo (Framed Polaroid/Badge like Reference Image) -->
-          <div class="header-logo-right blank-framed-photo-right" style="width:84px; height:66px; display:flex; align-items:center; justify-content:center; background:#ffffff; padding:3px; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.5); transform:rotate(2deg); border:1.5px solid #fbbf24; flex-shrink:0;">
-            <div style="width:100%; height:100%; overflow:hidden; border-radius:4px; display:flex; align-items:center; justify-content:center; background:#072a60;">
-              ${getBlankRosterLogoHtml('right')}
-            </div>
+          <!-- Right Logo / Photo (Clean, Borderless Natural Fit) -->
+          <div class="header-logo-right blank-framed-photo-right" style="width:96px; height:80px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; padding:0; border-radius:6px; overflow:hidden; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.6));">
+            ${getBlankRosterLogoHtml('right')}
           </div>
         </div>
 
         <!-- Dynamic Curved Gold & Royal Blue Wavy Ribbon Swoosh -->
-        <div class="blank-cover-swoosh-wrap" style="position:relative; z-index:3; width:100%; height:16px; margin-top:-6px; overflow:hidden;">
+        <div class="blank-cover-swoosh-wrap" style="position:relative; z-index:3; width:100%; height:22px; margin-top:-8px; overflow:hidden;">
           <svg viewBox="0 0 1000 36" preserveAspectRatio="none" style="width:100%; height:100%; display:block;">
             <path d="M0,0 C200,32 350,36 500,20 C650,4 800,28 1000,0 L1000,36 L0,36 Z" fill="#fbbf24" opacity="0.95"/>
             <path d="M0,8 C220,36 370,32 500,24 C630,16 780,36 1000,10 L1000,36 L0,36 Z" fill="#072a60"/>
@@ -1470,7 +1466,7 @@ function generateBlankRosterSheetHtml(configOverride) {
   } else {
     headerBannerHtml = `
       <!-- TOP HEADER: LEFT LOGO, TITLE, RIGHT GRAPHIC (CLEAN WHITE PAPER MODE) -->
-      <div class="blank-header-wrap" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:7px;">
+      <div class="blank-header-wrap" style="display:flex; justify-content:space-between; align-items:center; padding:0 16px; margin-bottom:7px;">
         <div class="header-logo-left" style="width:80px; height:60px; display:flex; align-items:center; justify-content:center;">
           ${getBlankRosterLogoHtml('left')}
         </div>
@@ -1492,160 +1488,167 @@ function generateBlankRosterSheetHtml(configOverride) {
     <div class="page-blank-roster" style="width:100%; max-width:100%; padding:0; margin:0 auto; background:#fff; font-family:inherit; border:none; box-shadow:none;">
       ${headerBannerHtml}
 
-      <!-- TITLE BANNER -->
-      <div class="page-title-banner" style="background:#072a60; color:#fff; text-align:center; padding:5px 12px; font-weight:800; font-size:13px; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:8px;">
-        <span>📝</span> <span>${tFn('blank_roster.banner_title')}</span>
-      </div>
-
-      <!-- TEAM DETAILS (HANDWRITTEN ENTRIES IN SOFT BLUE CARD) -->
-      <div class="team-meta-container blank-team-meta-box" style="background:#f0f7ff; border:1.5px solid #93c5fd; border-radius:6px; padding:8px 14px; margin-bottom:8px;">
-        <div class="blank-meta-row" style="display:flex; align-items:center; width:100%;">
-          <div class="meta-item blank-meta-field" style="flex:1; display:flex; align-items:center; gap:10px;">
-            <strong style="color:#072a60; font-size:12px; white-space:nowrap;">${tFn('blank_roster.team_name')}</strong>
-            <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
-          </div>
+      <!-- ATTACHED FORM TITLE RIBBON (SEAMLESSLY OVERLAPPING BANNER WAVES) -->
+      <div class="blank-attached-ribbon-wrap" style="position:relative; z-index:10; display:flex; justify-content:center; margin-top:${coverType !== 'none' && coverUrl ? '-17px' : '6px'}; margin-bottom:10px; width:100%;">
+        <div class="page-title-banner blank-roster-pill-ribbon" style="background:linear-gradient(180deg, #072a60 0%, #031435 100%); color:#ffffff; text-align:center; padding:6px 24px; font-weight:800; font-size:12px; border-radius:24px; border:1.8px solid #fbbf24; box-shadow:0 6px 16px rgba(0,0,0,0.45), 0 0 12px rgba(251,191,36,0.25); display:inline-flex; align-items:center; justify-content:center; gap:8px;">
+          <span>📝</span> <span>📝</span> <span>${tFn('blank_roster.banner_title')}</span>
         </div>
       </div>
 
-      <!-- TWO-COLUMN SPLIT LAYOUT (EXACT MATCH TO REFERENCE IMAGE) -->
-      <div class="p2-layout" style="display:flex; gap:8px; align-items:flex-start; margin-bottom:8px;">
-        
-        <!-- LEFT COLUMN: SQUAD PLAYERS TABLES (CARD 1: STARTING XI, CARD 2: BENCH) -->
-        <div class="p2-left" style="width:calc(54% - 4px); display:flex; flex-direction:column; justify-content:flex-start; gap:8px; background:transparent; border:none; padding:0;">
+      <!-- SHEET BODY CONTENT (PADDED WITHIN PRINTABLE MARGINS) -->
+      <div class="blank-roster-body" style="padding:0 16px; width:100%; box-sizing:border-box;">
+        <!-- TEAM DETAILS (HANDWRITTEN ENTRIES IN SOFT BLUE CARD) -->
+        <div class="team-meta-container blank-team-meta-box" style="background:#f0f7ff; border:1.5px solid #93c5fd; border-radius:6px; padding:8px 14px; margin-bottom:8px;">
+          <div class="blank-meta-row" style="display:flex; align-items:center; width:100%;">
+            <div class="meta-item blank-meta-field" style="flex:1; display:flex; align-items:center; gap:10px;">
+              <strong style="color:#072a60; font-size:12px; white-space:nowrap;">${tFn('blank_roster.team_name')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TWO-COLUMN SPLIT LAYOUT (EXACT MATCH TO REFERENCE IMAGE) -->
+        <div class="p2-layout" style="display:flex; gap:8px; align-items:flex-start; margin-bottom:8px;">
           
-          <!-- CARD 1: STARTING PLAYERS TABLE -->
-          <div class="roster-card starter-card" style="border:1.5px solid #93c5fd; border-radius:8px; overflow:hidden; background:#fff; width:100%;">
-            <div class="roster-table-subheader starting-subheader" style="background:#072a60; color:#fff; padding:5px 8px; font-size:11px; font-weight:800; display:flex; align-items:center; gap:6px;">
-              <span>👥</span> <span data-i18n="page2.roster_card_title">${starterTitle}</span>
+          <!-- LEFT COLUMN: SQUAD PLAYERS TABLES (CARD 1: STARTING XI, CARD 2: BENCH) -->
+          <div class="p2-left" style="width:calc(54% - 4px); display:flex; flex-direction:column; justify-content:flex-start; gap:8px; background:transparent; border:none; padding:0;">
+            
+            <!-- CARD 1: STARTING PLAYERS TABLE -->
+            <div class="roster-card starter-card" style="border:1.5px solid #93c5fd; border-radius:8px; overflow:hidden; background:#fff; width:100%;">
+              <div class="roster-table-subheader starting-subheader" style="background:#072a60; color:#fff; padding:5px 8px; font-size:11px; font-weight:800; display:flex; align-items:center; gap:6px;">
+                <span>👥</span> <span data-i18n="page2.roster_card_title">${starterTitle}</span>
+              </div>
+              <table class="player-table blank-roster-player-table" style="width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed;">
+                <colgroup>
+                  <col style="width:10%;">
+                  <col style="width:64%;">
+                  <col style="width:26%;">
+                </colgroup>
+                <thead>
+                  <tr style="background:#072a60; color:#fff; border-top:1px solid rgba(255,255,255,0.2);">
+                    <th style="width:10%; padding:3px 4px; text-align:center;">${tFn('blank_roster.th_sl')}</th>
+                    <th style="width:64%; padding:3px 8px; text-align:left;">${tFn('blank_roster.th_name')}</th>
+                    <th style="width:26%; padding:3px 6px; text-align:center;">${tFn('blank_roster.th_pos')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${starterRowsHtml}
+                </tbody>
+              </table>
             </div>
-            <table class="player-table blank-roster-player-table" style="width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed;">
-              <colgroup>
-                <col style="width:10%;">
-                <col style="width:64%;">
-                <col style="width:26%;">
-              </colgroup>
-              <thead>
-                <tr style="background:#072a60; color:#fff; border-top:1px solid rgba(255,255,255,0.2);">
-                  <th style="width:10%; padding:3px 4px; text-align:center;">${tFn('blank_roster.th_sl')}</th>
-                  <th style="width:64%; padding:3px 8px; text-align:left;">${tFn('blank_roster.th_name')}</th>
-                  <th style="width:26%; padding:3px 6px; text-align:center;">${tFn('blank_roster.th_pos')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${starterRowsHtml}
-              </tbody>
-            </table>
+
+            <!-- CARD 2: BENCH / SUBSTITUTES TABLE -->
+            ${benchCount > 0 ? `
+            <div class="roster-card bench-card" style="border:1.5px solid #93c5fd; border-radius:8px; overflow:hidden; background:#fff; width:100%;">
+              <div class="roster-table-subheader bench-subheader" style="background:#15803d; color:#fff; padding:4px 8px; font-size:10.5px; font-weight:800; display:flex; align-items:center; gap:6px;">
+                <span>👥</span> <span>${benchTitle}</span>
+              </div>
+              <table class="player-table blank-roster-player-table" style="width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed;">
+                <colgroup>
+                  <col style="width:10%;">
+                  <col style="width:64%;">
+                  <col style="width:26%;">
+                </colgroup>
+                <tbody>
+                  ${benchRowsHtml}
+                </tbody>
+              </table>
+            </div>
+            ` : ''}
           </div>
 
-          <!-- CARD 2: BENCH / SUBSTITUTES TABLE -->
-          ${benchCount > 0 ? `
-          <div class="roster-card bench-card" style="border:1.5px solid #93c5fd; border-radius:8px; overflow:hidden; background:#fff; width:100%;">
-            <div class="roster-table-subheader bench-subheader" style="background:#15803d; color:#fff; padding:4px 8px; font-size:10.5px; font-weight:800; display:flex; align-items:center; gap:6px;">
-              <span>👥</span> <span>${benchTitle}</span>
+          <!-- RIGHT COLUMN: RULES & GUIDELINES + BOTTOM SLOGAN RIBBON -->
+          <div class="p2-right" style="width:calc(46% - 4px); border:1.5px solid #93c5fd; border-radius:8px; overflow:hidden; background:#fff; display:flex; flex-direction:column;">
+            <!-- CARD HEADER -->
+            <div style="background:#072a60; color:#fff; padding:5px 8px; font-size:11px; font-weight:800; display:flex; align-items:center; gap:6px;">
+              <span>📄</span> <span data-i18n="page2.rules_card_title">${tFn('page2.rules_card_title')}</span>
             </div>
-            <table class="player-table blank-roster-player-table" style="width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed;">
-              <colgroup>
-                <col style="width:10%;">
-                <col style="width:64%;">
-                <col style="width:26%;">
-              </colgroup>
-              <tbody>
-                ${benchRowsHtml}
-              </tbody>
-            </table>
+
+            <!-- RULES LIST WITH CIRCULAR GREEN NUMBER BADGES -->
+            <div class="rules-card" style="padding:6px 8px; flex:1; display:flex; flex-direction:column; justify-content:space-between; background:#fff; border:none;">
+              <ul class="rules-list" style="list-style:none; margin:0; padding:0; flex:1;">
+                ${rulesHtml}
+              </ul>
+
+              <!-- SLOGAN RIBBON (EXACT MATCH TO GREEN SPORTS RIBBON) -->
+              <div class="rule-slogan-ribbon" style="background:linear-gradient(90deg, #15803d, #16a34a); color:#fff; border-radius:20px; text-align:center; padding:5px 12px; font-weight:800; font-size:11.5px; margin-top:auto; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <span>⚽</span> <span>খেলায় থাকুক সৌহার্দ্য, জিতুক ফুটবল</span> <span>⚽</span>
+              </div>
+            </div>
           </div>
-          ` : ''}
+
         </div>
 
-        <!-- RIGHT COLUMN: RULES & GUIDELINES + BOTTOM SLOGAN RIBBON -->
-        <div class="p2-right" style="width:calc(46% - 4px); border:1.5px solid #93c5fd; border-radius:8px; overflow:hidden; background:#fff; display:flex; flex-direction:column;">
-          <!-- CARD HEADER -->
-          <div style="background:#072a60; color:#fff; padding:5px 8px; font-size:11px; font-weight:800; display:flex; align-items:center; gap:6px;">
-            <span>📄</span> <span data-i18n="page2.rules_card_title">${tFn('page2.rules_card_title')}</span>
-          </div>
-
-          <!-- RULES LIST WITH CIRCULAR GREEN NUMBER BADGES -->
-          <div class="rules-card" style="padding:6px 8px; flex:1; display:flex; flex-direction:column; justify-content:space-between; background:#fff; border:none;">
-            <ul class="rules-list" style="list-style:none; margin:0; padding:0; flex:1;">
-              ${rulesHtml}
-            </ul>
-
-            <!-- SLOGAN RIBBON (EXACT MATCH TO GREEN SPORTS RIBBON) -->
-            <div class="rule-slogan-ribbon" style="background:linear-gradient(90deg, #15803d, #16a34a); color:#fff; border-radius:20px; text-align:center; padding:5px 12px; font-weight:800; font-size:11.5px; margin-top:auto; display:flex; align-items:center; justify-content:center; gap:8px;">
-              <span>⚽</span> <span>খেলায় থাকুক সৌহার্দ্য, জিতুক ফুটবল</span> <span>⚽</span>
-            </div>
+        <!-- FOOTER DECLARATION BOX -->
+        <div class="blank-roster-footer-box" style="background:#f0f7ff; border:1.5px solid #93c5fd; border-radius:6px; padding:6px 12px; font-size:10px; margin-bottom:8px;">
+          <div style="font-size:9.5px; color:#1e293b; font-weight:700; line-height:1.4;">
+            ${tFn('blank_roster.terms')}
           </div>
         </div>
 
+        <!-- OFFICIAL DETAILS & SIGNATURES BLOCK (SPACIOUS THREE CARDS) -->
+        <div class="sign-row blank-sign-row" style="display:flex; justify-content:space-between; gap:10px; margin-top:8px; margin-bottom:8px;">
+          
+          <!-- BLOCK 1: TEAM MANAGER -->
+          <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:8px 10px; display:flex; flex-direction:column; justify-content:space-between; min-height:92px;">
+            <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:4px; margin-bottom:7px; display:flex; align-items:center; gap:5px;">
+              <span>👤</span> <span>${tFn('blank_roster.manager_name')}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; padding-top:4px; border-top:1px dashed #cbd5e1;">
+              <strong style="font-size:10px; color:#475569; white-space:nowrap;">${tFn('blank_roster.lbl_sign')}</strong>
+              <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:16px;"></span>
+            </div>
+          </div>
+
+          <!-- BLOCK 2: TEAM COACH -->
+          <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:8px 10px; display:flex; flex-direction:column; justify-content:flex-start; min-height:92px;">
+            <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:4px; margin-bottom:7px; display:flex; align-items:center; gap:5px;">
+              <span>📋</span> <span>${tFn('blank_roster.coach_name')}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
+              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            </div>
+          </div>
+
+          <!-- BLOCK 3: ORGANIZING COMMITTEE -->
+          <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:8px 10px; display:flex; flex-direction:column; justify-content:space-between; min-height:92px;">
+            <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:4px; margin-bottom:7px; display:flex; align-items:center; gap:5px;">
+              <span>🏛️</span> <span>${tFn('blank_roster.committee_name')}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+              <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
+              <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; padding-top:4px; border-top:1px dashed #cbd5e1;">
+              <strong style="font-size:10px; color:#475569; white-space:nowrap;">${tFn('blank_roster.lbl_sign')}</strong>
+              <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:16px;"></span>
+            </div>
+          </div>
+
+        </div>
       </div>
 
-      <!-- FOOTER DECLARATION BOX -->
-      <div class="blank-roster-footer-box" style="background:#f0f7ff; border:1.5px solid #93c5fd; border-radius:6px; padding:6px 12px; font-size:10px; margin-bottom:8px;">
-        <div style="font-size:9.5px; color:#1e293b; font-weight:700; line-height:1.4;">
-          ${tFn('blank_roster.terms')}
-        </div>
+      <!-- BOTTOM SPORTS GEOMETRIC FOOTER WITH SOCCER BALL (FULL-BLEED) -->
+      <div class="blank-roster-bottom-accent" style="width:100%; margin:4px 0 0 0; padding:0; overflow:hidden;">
+        ${getBlankRosterBottomAccentHtml()}
       </div>
-
-      <!-- OFFICIAL DETAILS & SIGNATURES BLOCK (SPACIOUS THREE CARDS) -->
-      <div class="sign-row blank-sign-row" style="display:flex; justify-content:space-between; gap:10px; margin-top:8px; margin-bottom:8px;">
-        
-        <!-- BLOCK 1: TEAM MANAGER -->
-        <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:8px 10px; display:flex; flex-direction:column; justify-content:space-between; min-height:92px;">
-          <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:4px; margin-bottom:7px; display:flex; align-items:center; gap:5px;">
-            <span>👤</span> <span>${tFn('blank_roster.manager_name')}</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-            <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
-            <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
-          </div>
-          <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-            <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
-            <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
-          </div>
-          <div style="display:flex; align-items:center; gap:6px; margin-top:auto; padding-top:4px; border-top:1px dashed #cbd5e1;">
-            <strong style="font-size:10px; color:#475569; white-space:nowrap;">${tFn('blank_roster.lbl_sign')}</strong>
-            <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:16px;"></span>
-          </div>
-        </div>
-
-        <!-- BLOCK 2: TEAM COACH -->
-        <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:8px 10px; display:flex; flex-direction:column; justify-content:flex-start; min-height:92px;">
-          <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:4px; margin-bottom:7px; display:flex; align-items:center; gap:5px;">
-            <span>📋</span> <span>${tFn('blank_roster.coach_name')}</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
-            <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
-            <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
-          </div>
-          <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-            <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
-            <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
-          </div>
-        </div>
-
-        <!-- BLOCK 3: ORGANIZING COMMITTEE -->
-        <div class="sign-block blank-sign-block" style="flex:1; border:1.5px solid #93c5fd; background:#f0f7ff; border-radius:6px; padding:8px 10px; display:flex; flex-direction:column; justify-content:space-between; min-height:92px;">
-          <div style="font-size:11px; font-weight:800; color:#072a60; border-bottom:1px solid #bfdbfe; padding-bottom:4px; margin-bottom:7px; display:flex; align-items:center; gap:5px;">
-            <span>🏛️</span> <span>${tFn('blank_roster.committee_name')}</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-            <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_name')}</strong>
-            <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
-          </div>
-          <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-            <strong style="font-size:10.5px; color:#1e293b; white-space:nowrap;">${tFn('blank_roster.lbl_mobile')}</strong>
-            <span class="meta-line blank-write-line" style="flex:1; border-bottom:1.3px dotted #475569; height:18px;"></span>
-          </div>
-          <div style="display:flex; align-items:center; gap:6px; margin-top:auto; padding-top:4px; border-top:1px dashed #cbd5e1;">
-            <strong style="font-size:10px; color:#475569; white-space:nowrap;">${tFn('blank_roster.lbl_sign')}</strong>
-            <span class="sign-line blank-sign-line" style="flex:1; border-bottom:1.4px solid #072a60; height:16px;"></span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- BOTTOM SPORTS GEOMETRIC FOOTER WITH SOCCER BALL -->
-      ${getBlankRosterBottomAccentHtml()}
     </div>
   `;
 }
