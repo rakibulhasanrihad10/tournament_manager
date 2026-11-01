@@ -41,6 +41,11 @@ const TRANSLATIONS = {
     "hub.tag_tabletennis": "🏓 টেবিল টেনিস",
     "hub.tag_carrom": "🎯 ক্যারাম",
     "hub.tag_chess": "♟️ দাবা",
+    "hub.nav_home": "হোম",
+    "hub.nav_tournaments": "টুর্নামেন্ট",
+    "hub.nav_schedule": "সময়সূচি",
+    "hub.nav_teams": "দলসমূহ",
+    "hub.nav_events": "ইভেন্ট",
     "nav.panel_title": "টুর্নামেন্ট প্রিন্ট ও ম্যানেজমেন্ট প্যানেল",
     "nav.panel_sub": "যেকোনো টুর্নামেন্টের জন্য কাস্টমাইজযোগ্য ফিকশ্চার ও সোশ্যাল মিডিয়া পোস্টার সিস্টেম",
     "nav.btn_wizard": "🚀 টুর্নামেন্ট সেটআপ ও রুলস",
@@ -521,6 +526,11 @@ const TRANSLATIONS = {
     "hub.tag_tabletennis": "🏓 Table Tennis",
     "hub.tag_carrom": "🎯 Carrom",
     "hub.tag_chess": "♟️ Chess",
+    "hub.nav_home": "Home",
+    "hub.nav_tournaments": "Tournaments",
+    "hub.nav_schedule": "Schedule",
+    "hub.nav_teams": "Teams",
+    "hub.nav_events": "Events",
     "nav.panel_title": "Tournament Print & Management Panel",
     "nav.panel_sub": "Universal Tournament Fixtures, Live Scoring & Social Media Notice Platform",
     "nav.btn_wizard": "🚀 Tournament Setup & Rules",
@@ -1009,6 +1019,10 @@ function setLanguage(lang, persist = true) {
     document.querySelectorAll('.lang-btn-en, #btn-lang-en').forEach(b => {
       if (b && b.classList) b.classList.toggle('active', lang === 'en');
     });
+    const hubLangLbl = document.getElementById('hub-current-lang-lbl');
+    if (hubLangLbl) {
+      hubLangLbl.textContent = lang === 'bn' ? 'বাংলা' : 'English';
+    }
   }
 
   // 1. Text Content Translations
@@ -1076,4 +1090,9 @@ function setLanguage(lang, persist = true) {
   if (promoModal && promoModal.classList.contains('active') && typeof openPromoPosterModal === 'function') {
     openPromoPosterModal();
   }
+}
+
+function toggleLanguage() {
+  const next = currentLang === 'bn' ? 'en' : 'bn';
+  setLanguage(next, true);
 }

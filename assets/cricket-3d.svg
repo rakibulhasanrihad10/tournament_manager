@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="200" height="160">
+  <defs>
+    <!-- Pitch lighting glow -->
+    <radialGradient id="pitchGlow" cx="50%" cy="80%" r="65%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35" />
+      <stop offset="60%" stop-color="#b45309" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#451a03" stop-opacity="0" />
+    </radialGradient>
+    <!-- Red Leather Cricket Ball Sphere Gradient -->
+    <radialGradient id="cricketBallShade" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ff4d4f" />
+      <stop offset="35%" stop-color="#dc2626" />
+      <stop offset="70%" stop-color="#991b1b" />
+      <stop offset="90%" stop-color="#7f1d1d" />
+      <stop offset="100%" stop-color="#450a0a" />
+    </radialGradient>
+    <!-- Ground Shadow -->
+    <radialGradient id="cricketGroundShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#261005" stop-opacity="0.95" />
+      <stop offset="60%" stop-color="#451a03" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#78350f" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Pitch Surface & Ambient Ground Shadow -->
+  <ellipse cx="115" cy="138" rx="78" ry="18" fill="url(#pitchGlow)" />
+  <ellipse cx="112" cy="135" rx="56" ry="14" fill="url(#cricketGroundShadow)" />
+
+  <!-- Cricket Pitch Dirt Texture Lines -->
+  <g stroke="#92400e" stroke-width="1.2" opacity="0.4">
+    <path d="M50 142 Q 90 146 150 143" />
+    <path d="M65 148 Q 110 151 175 147" stroke="#78350f" />
+    <path d="M75 137 Q 105 139 140 137" opacity="0.6" />
+  </g>
+
+  <!-- 3D Red Leather Cricket Ball -->
+  <g id="cricketBall">
+    <!-- Ball Base Sphere -->
+    <circle cx="110" cy="85" r="54" fill="url(#cricketBallShade)" />
+
+    <!-- Prominent Curved Seam / Stitches across Ball -->
+    <path d="M68 62 C 85 75, 115 105, 138 132" fill="none" stroke="#fef08a" stroke-width="4.5" opacity="0.95" />
+    <path d="M68 62 C 85 75, 115 105, 138 132" fill="none" stroke="#450a0a" stroke-width="6.5" opacity="0.3" />
+
+    <!-- Individual White Thread Stitches along Seam -->
+    <g stroke="#ffffff" stroke-width="1.8" stroke-linecap="round">
+      <line x1="72" y1="62" x2="68" y2="68" />
+      <line x1="78" y1="67" x2="74" y2="73" />
+      <line x1="84" y1="72" x2="80" y2="78" />
+      <line x1="90" y1="78" x2="86" y2="84" />
+      <line x1="96" y1="84" x2="92" y2="90" />
+      <line x1="103" y1="91" x2="99" y2="97" />
+      <line x1="110" y1="98" x2="106" y2="104" />
+      <line x1="117" y1="106" x2="113" y2="112" />
+      <line x1="124" y1="114" x2="120" y2="120" />
+      <line x1="131" y1="122" x2="127" y2="128" />
+    </g>
+
+    <!-- Glossy Specular Highlights (Polished Cricket Leather) -->
+    <ellipse cx="94" cy="62" rx="20" ry="12" fill="#ffffff" opacity="0.4" transform="rotate(-30 94 62)" />
+    <circle cx="88" cy="54" r="6" fill="#ffffff" opacity="0.75" />
+    <circle cx="98" cy="66" r="3" fill="#ffffff" opacity="0.5" />
+
+    <!-- Ball Outer Rim Shadow -->
+    <circle cx="110" cy="85" r="54" fill="none" stroke="rgba(40,0,0,0.4)" stroke-width="3" />
+  </g>
+</svg>

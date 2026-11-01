@@ -2,28 +2,60 @@
     <!-- Hub Top Navigation Bar -->
     <header class="hub-header">
       <div class="hub-nav-inner">
+        <!-- Left: Brand Logo & Title -->
         <div class="hub-brand">
           <span class="hub-logo-icon">🏆</span>
-          <div>
+          <div class="hub-brand-text">
             <div class="hub-brand-title">
-              <span data-i18n="hub.brand_title">স্পোর্টস টুর্নামেন্ট প্রো</span>
-              <span class="hub-brand-badge" data-i18n="hub.brand_badge">মাল্টি-স্পোর্টস</span>
+              <span data-i18n="hub.brand_title">Sports Tournament Pro</span>
+              <span class="hub-brand-badge" data-i18n="hub.brand_badge">Multi-Sport</span>
             </div>
-            <div class="hub-brand-sub" data-i18n="hub.brand_sub">অল-ইন-ওয়ান টুর্নামেন্ট ম্যানেজমেন্ট প্ল্যাটফর্ম</div>
+            <div class="hub-brand-sub" data-i18n="hub.brand_sub">All-in-One Tournament Management Platform</div>
           </div>
         </div>
 
+        <!-- Center: Navigation Pills -->
+        <nav class="hub-nav-center" aria-label="Main Navigation">
+          <button type="button" class="hub-nav-pill active" onclick="navigateToView('hub')">
+            <span class="nav-pill-icon">🏠</span>
+            <span data-i18n="hub.nav_home">Home</span>
+          </button>
+          <button type="button" class="hub-nav-pill" onclick="openFootballEntryChoiceModal()">
+            <span class="nav-pill-icon">🏆</span>
+            <span data-i18n="hub.nav_tournaments">Tournaments</span>
+          </button>
+          <button type="button" class="hub-nav-pill" onclick="navigateToView('football')">
+            <span class="nav-pill-icon">📅</span>
+            <span data-i18n="hub.nav_schedule">Schedule</span>
+          </button>
+          <button type="button" class="hub-nav-pill" onclick="navigateToView('football'); if(typeof switchPage==='function')switchPage(2);">
+            <span class="nav-pill-icon">👥</span>
+            <span data-i18n="hub.nav_teams">Teams</span>
+          </button>
+          <button type="button" class="hub-nav-pill" onclick="navigateToView('football'); if(typeof openMatchEventsModal==='function')openMatchEventsModal(1);">
+            <span class="nav-pill-icon">🗓️</span>
+            <span data-i18n="hub.nav_events">Events</span>
+          </button>
+        </nav>
+
+        <!-- Right Controls: Theme Toggle, Language Switcher & Avatar -->
         <div class="hub-controls">
-          <!-- Language Switcher -->
-          <div class="lang-switch-wrap" title="Switch Language / ভাষা পরিবর্তন করুন">
-            <button type="button" class="lang-btn lang-btn-bn active" onclick="setLanguage('bn')">বাংলা</button>
-            <button type="button" class="lang-btn lang-btn-en" onclick="setLanguage('en')">English</button>
+          <!-- Theme Switcher Pill (☀️ 🌙) -->
+          <div class="theme-switch-pill" title="Toggle Theme (Dark / Light)">
+            <button type="button" class="theme-btn theme-btn-light" id="btn-theme-light" onclick="setAppTheme('light')" title="Light Mode">☀️</button>
+            <button type="button" class="theme-btn theme-btn-dark active" id="btn-theme-dark" onclick="setAppTheme('dark')" title="Dark Mode">🌙</button>
           </div>
 
-          <!-- Color Mode Switcher -->
-          <div class="theme-switch-wrap" title="App UI Color Mode / অ্যাপের কালার মোড (ডার্ক/লাইট)">
-            <button type="button" class="theme-btn theme-btn-dark active" onclick="setAppTheme('dark')" title="ডার্ক মোড">🌙</button>
-            <button type="button" class="theme-btn theme-btn-light" onclick="setAppTheme('light')" title="লাইট মোড">☀️</button>
+          <!-- Language Dropdown/Button Pill (🌐 English ⌵) -->
+          <button type="button" class="lang-pill-btn" onclick="toggleLanguage()" title="Switch Language / ভাষা পরিবর্তন">
+            <span>🌐</span>
+            <span id="hub-current-lang-lbl">English</span>
+            <span class="pill-caret">⌵</span>
+          </button>
+
+          <!-- User Profile Avatar Pill (👤) -->
+          <div class="hub-user-avatar" title="Organizer Profile / অ্যাডমিন প্রোফাইল" tabindex="0">
+            <span class="avatar-icon">👤</span>
           </div>
         </div>
       </div>
@@ -32,75 +64,90 @@
     <!-- Hub Hero Section -->
     <section class="hub-hero">
       <div class="hub-hero-badge">
-        <span data-i18n="hub.hero_badge">⚡ যেকোনো টুর্নামেন্ট পরিচালনা করুন পেশাদারভাবে</span>
+        <span class="hero-bolt">⚡</span>
+        <span data-i18n="hub.hero_badge">Manage Any Sports Tournament Professionally</span>
       </div>
       <h1 class="hub-hero-title">
-        <span data-i18n="hub.hero_title_1">আপনার টুর্নামেন্ট পরিচালনা করুন</span><br>
-        <span class="gradient-text" data-i18n="hub.hero_title_2">সহজ ও পেশাদারভাবে</span>
+        <span class="hero-title-main" data-i18n="hub.hero_title_1">Manage Your Sports Tournaments</span><br>
+        <span class="gradient-text hero-title-gradient" data-i18n="hub.hero_title_2">Effortlessly & Professionally</span>
       </h1>
       <p class="hub-hero-desc" data-i18n="hub.hero_desc">
-        ফিকশ্চার তৈরি, লাইভ অটো পয়েন্ট টেবিল, কার্ড ও ম্যাচ ইভেন্ট ট্র্যাক করুন।
+        Generate fixtures, live automated points tables, cards and track events
       </p>
     </section>
 
-    <!-- 3 Sport Cards Grid -->
+    <!-- 3 Sport Cards Grid with Ambient Glows & 3D Artwork -->
     <main class="hub-grid">
       <!-- 1. FOOTBALL TOURNAMENT (ACTIVE) -->
       <div class="sport-card card-football">
-        <div>
+        <div class="card-glow-mesh"></div>
+        <div class="card-content">
           <div class="card-top">
-            <div class="sport-icon-wrap">⚽</div>
+            <div class="sport-icon-wrap icon-football">⚽</div>
             <span class="sport-status-badge status-active">
-              <span class="pulse-dot" style="background:#10b981;"></span>
-              <span data-i18n="hub.status_active">সক্রিয় 🟢</span>
+              <span class="pulse-dot"></span>
+              <span data-i18n="hub.status_active">Active</span>
             </span>
           </div>
-          <h2 class="sport-title" data-i18n="hub.football_title">ফুটবল টুর্নামেন্ট</h2>
+          <h2 class="sport-title" data-i18n="hub.football_title">Football Tournament</h2>
           <p class="sport-desc" data-i18n="hub.football_desc">
-            অটো গোল ডিফারেন্স ও ফেয়ার প্লে টেবিল, সোশ্যাল মিডিয়া পোস্টার এবং প্রিন্ট রেডি ফিকশ্চার শিট।
+            Automated GD & Fair Play points table, social media poster and print-ready fixture sheets.
           </p>
+          <button type="button" class="btn-launch-sport btn-football-launch" id="btn-football-launch" onclick="openFootballEntryChoiceModal()" data-i18n="hub.football_btn">
+            🚀 Football Tournament ➜
+          </button>
         </div>
-        <button type="button" class="btn-launch-sport btn-football-launch" id="btn-football-launch" onclick="openFootballEntryChoiceModal()" data-i18n="hub.football_btn">
-          🚀 ফুটবল টুর্নামেন্টে প্রবেশ করুন ➜
-        </button>
+        <div class="sport-card-visual visual-football" aria-hidden="true">
+          <img src="assets/football-3d.svg" alt="Football on turf" class="sport-art-img">
+        </div>
       </div>
 
       <!-- 2. CRICKET TOURNAMENT (COMING SOON) -->
       <div class="sport-card card-cricket">
-        <div>
+        <div class="card-glow-mesh"></div>
+        <div class="card-content">
           <div class="card-top">
-            <div class="sport-icon-wrap">🏏</div>
+            <div class="sport-icon-wrap icon-cricket">🏏</div>
             <span class="sport-status-badge status-upcoming">
-              <span data-i18n="hub.status_upcoming">শীঘ্রই আসছে ⏳</span>
+              <span class="clock-icon">🕒</span>
+              <span data-i18n="hub.status_upcoming">Coming Soon</span>
             </span>
           </div>
-          <h2 class="sport-title" data-i18n="hub.cricket_title">ক্রিকেট টুর্নামেন্ট</h2>
+          <h2 class="sport-title" data-i18n="hub.cricket_title">Cricket Tournament</h2>
           <p class="sport-desc" data-i18n="hub.cricket_desc">
-            নেট রান রেট (NRR) অটো ক্যালকুলেটর, ওভার ও বল ট্র্যাকার, অফিশিয়াল স্কোরবুক শিট এবং প্রিন্ট রেডি ফিকশ্চার শিট।
+            Net Run Rate (NRR), auto-calculator, overs & ball tracker, official scorebook sheets and print-ready fixture sheets.
           </p>
+          <button type="button" class="btn-launch-sport btn-upcoming-preview" onclick="openSportPreviewModal('cricket')" data-i18n="hub.cricket_btn">
+            🔍 Feature Roadmap & Preview
+          </button>
         </div>
-        <button type="button" class="btn-launch-sport btn-upcoming-preview" onclick="openSportPreviewModal('cricket')" data-i18n="hub.cricket_btn">
-          🔍 ফিচার রোডম্যাপ ও প্রিভিউ
-        </button>
+        <div class="sport-card-visual visual-cricket" aria-hidden="true">
+          <img src="assets/cricket-3d.svg" alt="Cricket ball on pitch" class="sport-art-img">
+        </div>
       </div>
 
       <!-- 3. BADMINTON TOURNAMENT (COMING SOON) -->
       <div class="sport-card card-badminton">
-        <div>
+        <div class="card-glow-mesh"></div>
+        <div class="card-content">
           <div class="card-top">
-            <div class="sport-icon-wrap">🏸</div>
+            <div class="sport-icon-wrap icon-badminton">🏸</div>
             <span class="sport-status-badge status-upcoming">
-              <span data-i18n="hub.status_upcoming">শীঘ্রই আসছে ⏳</span>
+              <span class="clock-icon">🕒</span>
+              <span data-i18n="hub.status_upcoming">Coming Soon</span>
             </span>
           </div>
-          <h2 class="sport-title" data-i18n="hub.badminton_title">ব্যাডমিন্টন টুর্নামেন্ট</h2>
+          <h2 class="sport-title" data-i18n="hub.badminton_title">Badminton Tournament</h2>
           <p class="sport-desc" data-i18n="hub.badminton_desc">
-            দেশীয় বাংলা (সার্ভ-কাট) ও আন্তর্জাতিক BWF স্কোরিং, নকআউট ব্র্যাকেট এবং প্রিন্ট রেডি কোর্ট ফিক্সচার শিট।
+            Bangla Service-Over & International BWF scoring, visual knockout brackets and print-ready court fixture sheets.
           </p>
+          <button type="button" class="btn-launch-sport btn-upcoming-preview" onclick="openSportPreviewModal('badminton')" data-i18n="hub.badminton_btn">
+            🔍 Feature Roadmap & Preview
+          </button>
         </div>
-        <button type="button" class="btn-launch-sport btn-upcoming-preview" onclick="openSportPreviewModal('badminton')" data-i18n="hub.badminton_btn">
-          🔍 ফিচার রোডম্যাপ ও প্রিভিউ
-        </button>
+        <div class="sport-card-visual visual-badminton" aria-hidden="true">
+          <img src="assets/badminton-3d.svg" alt="Shuttlecock on court" class="sport-art-img">
+        </div>
       </div>
     </main>
 
@@ -108,14 +155,14 @@
     <div class="hub-future-strip">
       <div class="future-inner">
         <div class="future-text">
-          <span>✨</span>
-          <span class="future-title" data-i18n="hub.future_title">ভবিষ্যতে আরও স্পোর্টস আসছে:</span>
+          <span class="future-speaker-icon">📢</span>
+          <span class="future-title" data-i18n="hub.future_title">More Sports Coming Soon:</span>
         </div>
         <div class="future-sports-tags">
-          <span class="future-tag" data-i18n="hub.tag_volleyball">🏐 ভলিবল</span>
-          <span class="future-tag" data-i18n="hub.tag_tabletennis">🏓 টেবিল টেনিস</span>
-          <span class="future-tag" data-i18n="hub.tag_carrom">🎯 ক্যারাম</span>
-          <span class="future-tag" data-i18n="hub.tag_chess">♟️ দাবা</span>
+          <span class="future-tag" data-i18n="hub.tag_volleyball">🏐 Volleyball</span>
+          <span class="future-tag" data-i18n="hub.tag_tabletennis">🏓 Table Tennis</span>
+          <span class="future-tag" data-i18n="hub.tag_carrom">🎯 Carrom</span>
+          <span class="future-tag" data-i18n="hub.tag_chess">♟️ Chess</span>
         </div>
       </div>
     </div>

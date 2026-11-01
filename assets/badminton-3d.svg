@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="200" height="160">
+  <defs>
+    <!-- Court ambient violet glow -->
+    <radialGradient id="badmintonGlow" cx="50%" cy="80%" r="65%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.35" />
+      <stop offset="60%" stop-color="#6b21a8" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#3b0764" stop-opacity="0" />
+    </radialGradient>
+    <!-- Cork head 3D shading -->
+    <radialGradient id="corkShade" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="45%" stop-color="#fde68a" />
+      <stop offset="80%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#78350f" />
+    </radialGradient>
+    <!-- Ground Shadow -->
+    <radialGradient id="badmintonShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1e1035" stop-opacity="0.95" />
+      <stop offset="60%" stop-color="#3b0764" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#581c87" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Court Floor Glow & Drop Shadow -->
+  <ellipse cx="115" cy="138" rx="78" ry="18" fill="url(#badmintonGlow)" />
+  <ellipse cx="115" cy="135" rx="55" ry="13" fill="url(#badmintonShadow)" />
+
+  <!-- Court Line Markings -->
+  <line x1="45" y1="138" x2="185" y2="138" stroke="#ffffff" stroke-width="2.5" opacity="0.35" />
+
+  <!-- 3D Shuttlecock -->
+  <g id="shuttlecock" transform="translate(15, -5)">
+    <!-- Feather Cone / Skirt Fan -->
+    <!-- Back Feathers (shaded) -->
+    <polygon points="90,45 130,45 110,105" fill="#cbd5e1" opacity="0.7" />
+    <polygon points="75,50 145,50 110,105" fill="#94a3b8" opacity="0.5" />
+
+    <!-- Individual Feather Shafts & Spines -->
+    <g stroke="#e2e8f0" stroke-width="2" stroke-linecap="round">
+      <line x1="72" y1="52" x2="108" y2="108" />
+      <line x1="84" y1="48" x2="109" y2="108" />
+      <line x1="96" y1="46" x2="110" y2="108" />
+      <line x1="108" y1="45" x2="110" y2="108" />
+      <line x1="120" y1="46" x2="111" y2="108" />
+      <line x1="132" y1="48" x2="112" y2="108" />
+      <line x1="144" y1="52" x2="113" y2="108" />
+    </g>
+
+    <!-- Overlapping Feather Webbing (Front) -->
+    <path d="M68 56 Q 108 42 148 56 L 118 108 Q 110 110 102 108 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" opacity="0.95" />
+
+    <!-- Feather Ribbons / Binding Threads -->
+    <path d="M78 72 Q 108 64 138 72" fill="none" stroke="#60a5fa" stroke-width="2.5" opacity="0.8" />
+    <path d="M88 88 Q 108 82 128 88" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.8" />
+
+    <!-- Red Collar Ribbon between feathers and cork -->
+    <rect x="100" y="106" width="20" height="4" rx="2" fill="#ef4444" stroke="#991b1b" stroke-width="0.8" />
+
+    <!-- Cork Rounded Base (Hemisphere) -->
+    <path d="M100 110 C 100 126, 120 126, 120 110 Z" fill="url(#corkShade)" stroke="#78350f" stroke-width="1.2" />
+
+    <!-- Specular Highlight on Cork -->
+    <ellipse cx="106" cy="116" rx="4" ry="2.5" fill="#ffffff" opacity="0.65" transform="rotate(-20 106 116)" />
+    <!-- Specular Highlight on Feathers -->
+    <ellipse cx="112" cy="56" rx="14" ry="5" fill="#ffffff" opacity="0.45" />
+  </g>
+</svg>
