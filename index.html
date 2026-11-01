@@ -2080,9 +2080,17 @@
         </div>
 
         <!-- FOOTER -->
-        <div style="display:flex; justify-content:space-between; align-items:center; padding: 14px 24px; background: #f1f5f9; border-top: 1px solid #cbd5e1; border-radius: 0 0 14px 14px;">
-          <button type="button" class="btn" style="background:#64748b; color:#fff; padding:8px 18px; font-size:13px; border-radius:6px; cursor:pointer;" onclick="closeBlankRosterConfigModal()" data-i18n="modal.btn_close">বাতিল</button>
-          <button type="button" class="btn btn-primary" style="background:linear-gradient(135deg, #072a60, #0d47a1); font-weight:800; padding:10px 22px; font-size:13.5px; border-radius:6px; cursor:pointer;" onclick="applyBlankRosterConfigAndPrint()" data-i18n="blank_roster.btn_print_a4">🖨️ এ ফোর পোর্ট্রেটে প্রিন্ট করুন</button>
+        <div style="padding: 14px 24px; background: #f8fafc; border-top: 1px solid #cbd5e1; border-radius: 0 0 14px 14px; display: flex; flex-direction: column; gap: 10px;">
+          <!-- ACTION BUTTONS ROW -->
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <button type="button" class="btn" style="background:#64748b; color:#fff; padding:8px 18px; font-size:13px; border-radius:6px; cursor:pointer;" onclick="closeBlankRosterConfigModal()" data-i18n="modal.btn_close">বাতিল</button>
+            <button type="button" class="btn btn-primary" style="background:linear-gradient(135deg, #072a60, #0d47a1); font-weight:800; padding:10px 22px; font-size:13.5px; border-radius:6px; cursor:pointer; box-shadow:0 4px 12px rgba(7, 42, 96, 0.25);" onclick="applyBlankRosterConfigAndPrint()" data-i18n="blank_roster.btn_print_a4">🖨️ A4 প্রিন্ট / PDF সংরক্ষণ করুন</button>
+          </div>
+
+          <!-- PDF & PRINT HELPER TIP BANNER -->
+          <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 8px 12px; font-size: 11.5px; color: #1e40af; display: flex; align-items: center; gap: 8px; line-height: 1.4;">
+            <span data-i18n="blank_roster.print_pdf_hint">💡 <strong>পিডিএফ ফাইল পেতে:</strong> প্রিন্ট উইন্ডো এলে Destination / Printer অপশন থেকে <strong>"Save as PDF"</strong> নির্বাচন করে <strong>Save</strong> বাটনে ক্লিক করুন।</span>
+          </div>
         </div>
       </div>
     </div>
