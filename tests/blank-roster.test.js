@@ -252,9 +252,16 @@ const budgetResult = context.calculateBlankRosterRulesBudget(all11RuleIds, 380);
 assert(budgetResult.acceptedCount >= 7, 'Budget accepts maximum safe rules within line budget');
 assert(budgetResult.omittedCount > 0, 'Excess rules beyond line budget are omitted to protect 1-page fit');
 
-// Test 11 rules rendering shows omitted notice instead of pushing to page 2
+// Test 11 rules all fit naturally in expanded layout without omission
 const html11Rules = context.generateBlankRosterSheetHtml({ selectedRules: all11RuleIds });
-assert(html11Rules.includes('rules-omitted-notice'), 'Renders rules-omitted-notice when rules exceed line budget');
+assert(!html11Rules.includes('rules-omitted-notice'), 'All 11 rules fit naturally in expanded layout');
+assert(html11Rules.includes('>11<'), 'Renders 11th selected rule');
+
+// Test 16 rules rendering shows omitted notice when exceeding budget
+const manyRules = [...all11RuleIds, 'r_offside_fifa', 'r_sub_5', 'r_duration_90', 'r_points_system', 'r_coach_residency'];
+const htmlManyRules = context.generateBlankRosterSheetHtml({ selectedRules: manyRules });
+assert(htmlManyRules.includes('rules-omitted-notice'), 'Renders rules-omitted-notice when rules exceed expanded budget');
+assert(blankHtml.includes('blank-roster-bottom-section'), 'Renders bottom-pinned section with signatures and footer');
 
 // Test player list single-page clamp (11 starters + 9 bench = 20 players)
 const html20Players = context.generateBlankRosterSheetHtml({ startingPlayers: 11, benchPlayers: 9 });

@@ -1800,6 +1800,29 @@ body {
       box-shadow: none !important;
       border-radius: 0 !important;
     }
+    .page-blank-roster {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 295mm;
+      box-sizing: border-box;
+    }
+    .page-blank-roster .blank-roster-body {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      padding: 0 16px;
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 0;
+    }
+    .page-blank-roster .blank-roster-bottom-section {
+      margin-top: auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
     .page-blank-roster .p2-layout {
       display: flex;
       gap: 8px;
