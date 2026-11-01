@@ -916,6 +916,88 @@
   color: #818cf8;
 }
 
+/* ============================================================
+   Minimal Seamless Hub Footer (Border-Free Floating Aesthetic)
+   ============================================================ */
+.hub-footer {
+  margin: 32px auto 28px;
+  text-align: center;
+  padding: 0 20px;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  position: relative;
+  z-index: 2;
+}
+
+.hub-footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-made-by {
+  font-size: 13.5px;
+  color: #94a3b8;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.footer-made-by strong {
+  color: #f1f5f9;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.footer-heart {
+  display: inline-block;
+  color: #ef4444;
+  font-size: 14px;
+  animation: heartPulse 2.4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes heartPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(1.25);
+  }
+  30% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.15);
+  }
+}
+
+.footer-copyright {
+  font-size: 11.5px;
+  color: #64748b;
+  margin: 0;
+  letter-spacing: 0.3px;
+  opacity: 0.85;
+}
+
+/* Light Theme Adaptations for Footer */
+[data-theme="light"] .footer-made-by {
+  color: #64748b;
+}
+
+[data-theme="light"] .footer-made-by strong {
+  color: #0f172a;
+}
+
+[data-theme="light"] .footer-copyright {
+  color: #94a3b8;
+}
+
 /* Responsive Rules */
 @media screen and (max-width: 1024px) {
   .hub-grid {
