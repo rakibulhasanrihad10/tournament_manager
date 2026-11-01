@@ -52,7 +52,7 @@ const context = {
       'page1.meta_venue': 'স্থান:',
       'page2.roster_card_title': 'খেলোয়াড়দের পূর্ণ নামের তালিকা (সর্বোচ্চ ১১ জন)',
       'page2.rules_card_title': 'খেলার নিয়ম ও টুর্নামেন্ট নির্দেশনা',
-      'blank_roster.banner_title': '📝 অফিশিয়াল দল ও স্কোয়াড নিবন্ধন ফর্ম (প্লেয়ার তালিকা জমাদান শিট)',
+      'blank_roster.banner_title': 'অফিশিয়াল দল ও স্কোয়াড নিবন্ধন ফর্ম (প্লেয়ার তালিকা জমাদান শিট)',
       'blank_roster.team_name': 'দলের নাম:',
       'blank_roster.jersey_color': 'জার্সির রং:',
       'blank_roster.group_lot': 'গ্রুপ / লট নং:',
@@ -263,7 +263,7 @@ assert(typeof context.handleBlankRosterImageUpload === 'function', 'handleBlankR
 console.log('\n🏟️ Test Suite 8: Dynamic Stadium Cover Header & Drag-to-Reposition');
 
 assert(blankHtml.includes('blank-cover-banner'), 'Renders .blank-cover-banner stadium cover header');
-assert(blankHtml.includes('blank-trophy-wrap'), 'Renders 3D Golden Trophy beside title');
+assert(blankHtml.includes('blank-cover-center'), 'Renders symmetrically centered title and glass meta pill');
 assert(blankHtml.includes('blank-cover-swoosh-wrap'), 'Renders curved gold and blue wavy swoosh ribbon');
 assert(blankHtml.includes('blank-footer-swoosh'), 'Renders matching bottom curved swoosh ribbon with central soccer ball');
 assert(typeof context.onBlankRosterCoverTypeChange === 'function', 'onBlankRosterCoverTypeChange is exported');

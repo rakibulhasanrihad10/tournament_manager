@@ -1419,25 +1419,20 @@ function generateBlankRosterSheetHtml(configOverride) {
           <div class="blank-cover-overlay" style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(7, 26, 68, 0.4) 0%, rgba(3, 12, 38, 0.15) 50%, rgba(5, 18, 50, 0.6) 100%);"></div>
         </div>
 
-        <!-- Foreground: Left Borderless Photo, Golden Trophy, Center Title & Right Borderless Photo -->
-        <div class="blank-cover-content" style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:12px 20px 14px 20px; min-height:130px; box-sizing:border-box;">
+        <!-- Foreground: Left Borderless Photo, Center Title & Right Borderless Photo -->
+        <div class="blank-cover-content" style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:12px 24px 14px 24px; min-height:130px; box-sizing:border-box;">
           
           <!-- Left Logo / Photo (Clean, Borderless Natural Fit) -->
           <div class="header-logo-left blank-framed-photo-left" style="width:96px; height:80px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; padding:0; border-radius:6px; overflow:hidden; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.6));">
             ${getBlankRosterLogoHtml('left')}
           </div>
 
-          <!-- Golden World Cup Trophy -->
-          <div class="blank-trophy-wrap" style="margin:0 6px 0 14px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-            ${getGoldenTrophySvgHtml()}
-          </div>
-
           <!-- Center: Title & Translucent Glass Meta Pill -->
-          <div class="header-center blank-cover-center" style="text-align:center; flex:1; padding:0 10px;">
-            <h1 style="font-size:27px; font-weight:900; color:#ffffff; margin:0 0 5px 0; letter-spacing:0.8px; text-shadow:0 2px 10px rgba(0,0,0,0.85), 0 0 20px rgba(56,189,248,0.45); line-height:1.2;">
+          <div class="header-center blank-cover-center" style="text-align:center; flex:1; padding:0 16px;">
+            <h1 style="font-size:28px; font-weight:900; color:#ffffff; margin:0 0 6px 0; letter-spacing:0.8px; text-shadow:0 2px 10px rgba(0,0,0,0.85), 0 0 20px rgba(56,189,248,0.45); line-height:1.2;">
               ⚽ ${esc(c.title || defaultTitle)} ⚽
             </h1>
-            <div class="blank-cover-meta-pill" style="display:inline-flex; align-items:center; gap:10px; background:rgba(255, 255, 255, 0.18); border:1px solid rgba(255, 255, 255, 0.42); border-radius:24px; padding:3.5px 20px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 3px 12px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.3);">
+            <div class="blank-cover-meta-pill" style="display:inline-flex; align-items:center; gap:10px; background:rgba(255, 255, 255, 0.18); border:1px solid rgba(255, 255, 255, 0.42); border-radius:24px; padding:3.5px 22px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 3px 12px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.3);">
               <span style="font-size:11.5px; color:#ffffff; font-weight:700; text-shadow:0 1px 3px rgba(0,0,0,0.65);">
                 <span>${tFn('page1.meta_organizer')}</span> <strong>${esc(c.organizer || defaultOrg)}</strong>
               </span>
@@ -1490,8 +1485,8 @@ function generateBlankRosterSheetHtml(configOverride) {
 
       <!-- ATTACHED FORM TITLE RIBBON (SEAMLESSLY OVERLAPPING BANNER WAVES) -->
       <div class="blank-attached-ribbon-wrap" style="position:relative; z-index:10; display:flex; justify-content:center; margin-top:${coverType !== 'none' && coverUrl ? '-17px' : '6px'}; margin-bottom:10px; width:100%;">
-        <div class="page-title-banner blank-roster-pill-ribbon" style="background:linear-gradient(180deg, #072a60 0%, #031435 100%); color:#ffffff; text-align:center; padding:6px 24px; font-weight:800; font-size:12px; border-radius:24px; border:1.8px solid #fbbf24; box-shadow:0 6px 16px rgba(0,0,0,0.45), 0 0 12px rgba(251,191,36,0.25); display:inline-flex; align-items:center; justify-content:center; gap:8px;">
-          <span>📝</span> <span>📝</span> <span>${tFn('blank_roster.banner_title')}</span>
+        <div class="page-title-banner blank-roster-pill-ribbon" style="background:linear-gradient(180deg, #072a60 0%, #031435 100%); color:#ffffff; text-align:center; padding:6px 28px; font-weight:800; font-size:12px; border-radius:24px; border:1.8px solid #fbbf24; box-shadow:0 6px 16px rgba(0,0,0,0.45), 0 0 12px rgba(251,191,36,0.25); display:inline-flex; align-items:center; justify-content:center; letter-spacing:0.5px;">
+          <span>${tFn('blank_roster.banner_title')}</span>
         </div>
       </div>
 
