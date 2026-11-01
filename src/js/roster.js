@@ -1205,12 +1205,26 @@ function onBlankRosterConfigChange() {
   const start = parseInt(startSel ? startSel.value : 11, 10) || 11;
   const bench = parseInt(benchSel ? benchSel.value : 5, 10) || 5;
   const total = start + bench;
+  const maxSafe = 16;
 
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
   if (summaryEl) {
-    summaryEl.innerHTML = isEn
-      ? `📝 Total Squad: <strong>${total} Players</strong> (${start} Starters + ${bench} Substitutes)`
-      : `📝 সর্বমোট স্কোয়াড: <strong>${total} জন</strong> (${start} জন মূল + ${bench} জন বিকল্প)`;
+    if (total <= maxSafe) {
+      summaryEl.style.background = '#e0f2fe';
+      summaryEl.style.color = '#0284c7';
+      summaryEl.style.border = '1px solid #bae6fd';
+      summaryEl.innerHTML = isEn
+        ? `📝 Total Squad: <strong>${total} Players</strong> (${start} Starters + ${bench} Substitutes) — ✅ Perfect 1-Page Fit`
+        : `📝 সর্বমোট স্কোয়াড: <strong>${total} জন</strong> (${start} জন মূল + ${bench} জন অতিরিক্ত) — ✅ ১ পেজে পারফেক্ট ফিট`;
+    } else {
+      const excess = total - maxSafe;
+      summaryEl.style.background = '#fef3c7';
+      summaryEl.style.color = '#b45309';
+      summaryEl.style.border = '1px solid #fde68a';
+      summaryEl.innerHTML = isEn
+        ? `⚠️ Total Squad: <strong>${total} Players</strong>. Maximum ${maxSafe} players fit on 1 page (+${excess} bench players omitted on print sheet to prevent 2nd page).`
+        : `⚠️ সর্বমোট স্কোয়াড: <strong>${total} জন</strong>। A4 ১-পেজে সর্বোচ্চ ${maxSafe} জন ধরবে (২য় পেজ এড়াতে শিটে অতিরিক্ত +${excess} জন সংক্ষেপিত থাকবে)।`;
+    }
   }
 }
 
@@ -1221,11 +1235,65 @@ function getSelectedBlankRosterRuleIds() {
   return ids;
 }
 
+function calculateBlankRosterRulesBudget(selectedRuleIds, maxPixelBudget = 380) {
+  const masterCatalog = typeof MASTER_RULES_CATALOG !== 'undefined' ? MASTER_RULES_CATALOG : [];
+  const c = typeof tournamentConfig !== 'undefined' ? tournamentConfig : {};
+  const customRules = c.customRules || [];
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+
+  const acceptedRules = [];
+  const omittedRules = [];
+  let currentHeight = 0;
+  const noticeHeight = 22; // reserved space for omitted notice banner if any rule is dropped
+
+  (selectedRuleIds || []).forEach(ruleId => {
+    let r = masterCatalog.find(mr => mr.id === ruleId);
+    if (!r) {
+      r = customRules.find((cr, idx) => (cr.id || `custom_${idx}`) === ruleId || cr.title === ruleId);
+    }
+    if (!r) {
+      r = { id: ruleId, title: ruleId, desc: ruleId };
+    }
+
+    const title = (isEn && r.titleEn) ? r.titleEn : r.title;
+    const desc = (isEn && r.descEn) ? r.descEn : r.desc;
+
+    // Approximate character capacity per line:
+    // Rules card text container is ~270px width at font-size 8.5px (~48 chars/line)
+    const descLines = Math.max(1, Math.ceil(((desc || '').length) / 48));
+    // Item height: badge/title line (13px) + desc text (descLines * 10.5px) + margin/padding (2.5px)
+    const ruleHeight = 13 + (descLines * 10.5) + 2.5;
+
+    // Check if adding this rule exceeds the allowed budget
+    const effectiveBudget = (omittedRules.length > 0 || (currentHeight + ruleHeight > maxPixelBudget - noticeHeight && acceptedRules.length >= 6))
+      ? (maxPixelBudget - noticeHeight)
+      : maxPixelBudget;
+
+    if (currentHeight + ruleHeight <= effectiveBudget) {
+      acceptedRules.push({ id: ruleId, rule: r, height: ruleHeight, title, desc });
+      currentHeight += ruleHeight;
+    } else {
+      omittedRules.push({ id: ruleId, rule: r, height: ruleHeight, title, desc });
+    }
+  });
+
+  return {
+    acceptedRules,
+    omittedRules,
+    currentHeight,
+    maxPixelBudget,
+    totalSelected: (selectedRuleIds || []).length,
+    acceptedCount: acceptedRules.length,
+    omittedCount: omittedRules.length
+  };
+}
+
 function updateRuleBudgetMeter() {
   const meterEl = document.getElementById('blank-roster-rule-budget-meter');
   if (!meterEl) return;
 
-  const selectedCount = getSelectedBlankRosterRuleIds().length;
+  const selectedIds = getSelectedBlankRosterRuleIds();
+  const selectedCount = selectedIds.length;
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
 
   if (selectedCount === 0) {
@@ -1235,27 +1303,28 @@ function updateRuleBudgetMeter() {
     meterEl.innerHTML = isEn
       ? 'ℹ️ No rules selected (Rules card on print sheet will be empty).'
       : 'ℹ️ কোনো নিয়ম নির্বাচন করা হয়নি (প্রিন্ট শিটে নিয়মের কার্ড খালি থাকবে)।';
-  } else if (selectedCount <= 7) {
+    return;
+  }
+
+  const budget = calculateBlankRosterRulesBudget(selectedIds, 380);
+  const accepted = budget.acceptedCount;
+  const omitted = budget.omittedCount;
+  const h = Math.round(budget.currentHeight);
+
+  if (omitted === 0) {
     meterEl.style.background = '#dcfce7';
     meterEl.style.color = '#166534';
     meterEl.style.border = '1px solid #86efac';
     meterEl.innerHTML = isEn
-      ? `✅ <strong>Perfect 1-Page Fit:</strong> ${selectedCount}/7 rules selected (A4 Portrait single page guaranteed).`
-      : `✅ <strong>নিখুঁত ১-পেজ ফিট:</strong> ${selectedCount}/৭টি নিয়ম নির্বাচিত (A4 পোর্ট্রেটে ১ পেজের মধ্যেই থাকবে)।`;
-  } else if (selectedCount === 8) {
-    meterEl.style.background = '#fef9c3';
-    meterEl.style.color = '#854d0e';
-    meterEl.style.border = '1px solid #fde047';
-    meterEl.innerHTML = isEn
-      ? `ℹ️ <strong>Tight 1-Page Fit:</strong> ${selectedCount} rules selected (fits snugly on 1 page).`
-      : `ℹ️ <strong>টাইট ১-পেজ ফিট:</strong> ${selectedCount}টি নিয়ম নির্বাচিত (১ পাতার শেষ সীমানা পর্যন্ত পূর্ণ থাকবে)।`;
+      ? `✅ <strong>Perfect 1-Page Fit:</strong> All ${accepted} selected rules fit comfortably (Height: ~${h}px / 380px line budget).`
+      : `✅ <strong>নিখুঁত ১-পেজ ফিট:</strong> নির্বাচিত ${accepted}টি নিয়মের সবগুলোই সুন্দরভাবে ধরবে (উচ্চতা: ~${h}px / ৩৮০px লাইন বাজেট)।`;
   } else {
-    meterEl.style.background = '#fee2e2';
-    meterEl.style.color = '#991b1b';
-    meterEl.style.border = '1px solid #fca5a5';
+    meterEl.style.background = '#fef3c7';
+    meterEl.style.color = '#92400e';
+    meterEl.style.border = '1px solid #fcd34d';
     meterEl.innerHTML = isEn
-      ? `⚠️ <strong>Page Overflow Warning:</strong> ${selectedCount} rules selected. Too many rules may push to Page 2! (Recommended: 6–7 rules).`
-      : `⚠️ <strong>পেজ ওভারফ্লো সতর্কতা:</strong> ${selectedCount}টি নিয়ম নির্বাচিত। অতিরিক্ত নিয়মের কারণে ২য় পেজে চলে যেতে পারে! (সর্বোচ্চ ৬–৭টি নিয়ম সুপারিশকৃত)।`;
+      ? `⚠️ <strong>Page Overflow Protection:</strong> ${selectedCount} rules selected. First ${accepted} rules will print (~${h}px); remaining ${omitted} rules omitted to guarantee 1-page fit.`
+      : `⚠️ <strong>১-পেজ সুরক্ষা সতর্কবার্তা:</strong> ${selectedCount}টি নিয়ম নির্বাচিত। প্রথম ${accepted}টি নিয়ম প্রিন্ট হবে (~${h}px); বাকি ${omitted}টি নিয়ম ২য় পেজ এড়াতে স্বয়ংক্রিয়ভাবে বাদ থাকবে।`;
   }
 }
 
@@ -1263,25 +1332,31 @@ function autoFitBlankRosterRules() {
   const checkboxes = document.querySelectorAll('.br-rule-chk');
   checkboxes.forEach(cb => { cb.checked = false; });
 
-  const priorityIds = ['r_squad_11', 'r_squad_minibar', 'r_report_15', 'r_referee_final', 'r_tiebreaker_pen', 'r_points_system', 'r_discipline_conduct'];
-  let checkedCount = 0;
-
-  priorityIds.forEach(id => {
+  const priorityIds = ['r_squad_11', 'r_squad_minibar', 'r_report_15', 'r_referee_final', 'r_tiebreaker_pen', 'r_points_system', 'r_discipline_conduct', 'r_single_team'];
+  
+  const selected = [];
+  for (const id of priorityIds) {
     const cb = document.querySelector(`.br-rule-chk[value="${id}"]`);
-    if (cb && checkedCount < 6) {
-      cb.checked = true;
-      checkedCount++;
+    if (cb) {
+      const testList = [...selected, id];
+      const testBudget = calculateBlankRosterRulesBudget(testList, 380);
+      if (testBudget.omittedCount === 0) {
+        cb.checked = true;
+        selected.push(id);
+      }
+    }
+  }
+
+  checkboxes.forEach(cb => {
+    if (!cb.checked) {
+      const testList = [...selected, cb.value];
+      const testBudget = calculateBlankRosterRulesBudget(testList, 380);
+      if (testBudget.omittedCount === 0) {
+        cb.checked = true;
+        selected.push(cb.value);
+      }
     }
   });
-
-  if (checkedCount < 6) {
-    checkboxes.forEach(cb => {
-      if (!cb.checked && checkedCount < 6) {
-        cb.checked = true;
-        checkedCount++;
-      }
-    });
-  }
 
   updateRuleBudgetMeter();
 }
@@ -1330,10 +1405,13 @@ function generateBlankRosterSheetHtml(configOverride) {
   const defaultOrg = isEn ? 'Fifa' : 'Fifa';
   const defaultVenue = isEn ? 'Qatar Stadium' : 'Qatar Stadium';
 
-  // 1. Calculate dynamic Starting XI and Bench split
+  // 1. Calculate dynamic Starting XI and Bench split (Clamped to 16 players to guarantee single page fit)
   const startingCount = parseInt(cfg.startingPlayers, 10) || parseInt(c.startingPlayers, 10) || 11;
   const benchCount = parseInt(cfg.benchPlayers, 10) || parseInt(c.benchPlayers, 10) || 5;
   const totalCount = startingCount + benchCount;
+  const maxSafePlayers = 16;
+  const renderBenchCount = totalCount > maxSafePlayers ? Math.max(0, maxSafePlayers - startingCount) : benchCount;
+  const excessBench = benchCount - renderBenchCount;
 
   // 2. Generate Starting XI Table Rows
   let starterRowsHtml = '';
@@ -1349,7 +1427,7 @@ function generateBlankRosterSheetHtml(configOverride) {
 
   // 3. Generate Bench/Substitutes Table Rows
   let benchRowsHtml = '';
-  for (let i = startingCount + 1; i <= totalCount; i++) {
+  for (let i = startingCount + 1; i <= startingCount + renderBenchCount; i++) {
     benchRowsHtml += `
       <tr class="player-row bench-row">
         <td class="player-sl-cell bench-sl" style="width:10%; text-align:center; font-weight:700; color:#15803d; background:#f0fdf4; border:1px solid #bfdbfe; height:22px;">${i}</td>
@@ -1359,7 +1437,17 @@ function generateBlankRosterSheetHtml(configOverride) {
     `;
   }
 
-  // 4. Resolve active rules
+  if (excessBench > 0) {
+    benchRowsHtml += `
+      <tr class="player-row bench-overflow-notice">
+        <td colspan="3" style="text-align:center; font-size:9.5px; font-weight:700; color:#92400e; background:#fffbeb; padding:2px 4px; border:1px dashed #f59e0b;">
+          ${isEn ? `+${excessBench} more bench players omitted to ensure single A4 page fit` : `+${excessBench} জন অতিরিক্ত খেলোয়াড় ১ পেজে ফিট রাখার জন্য শিটে সংক্ষেপিত`}
+        </td>
+      </tr>
+    `;
+  }
+
+  // 4. Resolve active rules and calculate dynamic line & height budget
   let selectedRuleIds = cfg.selectedRules;
   if (selectedRuleIds === undefined || selectedRuleIds === null) {
     if (c.selectedRules && c.selectedRules.length > 0) {
@@ -1373,60 +1461,36 @@ function generateBlankRosterSheetHtml(configOverride) {
     selectedRuleIds = [];
   }
 
-  const masterCatalog = typeof MASTER_RULES_CATALOG !== 'undefined' ? MASTER_RULES_CATALOG : [];
-  const customRules = c.customRules || [];
+  const budgetResult = calculateBlankRosterRulesBudget(selectedRuleIds, 380);
+  const acceptedRules = budgetResult.acceptedRules;
+  const omittedCount = budgetResult.omittedCount;
+
   const ruleIcons = ['⚽', '👥', '👤', '🚫', '⏱️', '🏆', '⭐', '📋', '🎯', '🚩', '🏅', '⚖️'];
   let rulesHtml = '';
   let ruleIdx = 1;
 
-  if (selectedRuleIds.length > 0) {
-    selectedRuleIds.forEach(ruleId => {
-      // Find in master catalog
-      const mr = masterCatalog.find(r => r.id === ruleId);
-      if (mr) {
-        const title = (isEn && mr.titleEn) ? mr.titleEn : mr.title;
-        const desc = (isEn && mr.descEn) ? mr.descEn : mr.desc;
-        const icon = mr.categoryIcon || ruleIcons[(ruleIdx - 1) % ruleIcons.length];
-        rulesHtml += `
-          <li style="list-style:none; margin-bottom:2.5px;">
-            <div class="rule-ref-item" style="display:flex; align-items:flex-start; gap:6px;">
-              <div class="rule-badge-num" style="min-width:18px; height:18px; border-radius:50%; background:#15803d; color:#fff; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px;">${ruleIdx}</div>
-              <div style="flex:1;">
-                <div style="font-size:10px; font-weight:800; color:#072a60; line-height:1.2;">
-                  <span>${icon}</span> <span class="rules-highlight">${esc(title)}:</span>
-                </div>
-                <div style="font-size:8.5px; color:#334155; line-height:1.2; margin-top:1px;">
-                  ${esc(desc)}
-                </div>
+  if (acceptedRules.length > 0) {
+    acceptedRules.forEach(item => {
+      const mr = item.rule;
+      const title = item.title;
+      const desc = item.desc;
+      const icon = mr.categoryIcon || ruleIcons[(ruleIdx - 1) % ruleIcons.length];
+      rulesHtml += `
+        <li style="list-style:none; margin-bottom:2.5px;">
+          <div class="rule-ref-item" style="display:flex; align-items:flex-start; gap:6px;">
+            <div class="rule-badge-num" style="min-width:18px; height:18px; border-radius:50%; background:#15803d; color:#fff; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px;">${ruleIdx}</div>
+            <div style="flex:1;">
+              <div style="font-size:10px; font-weight:800; color:#072a60; line-height:1.2;">
+                <span>${icon}</span> <span class="rules-highlight">${esc(title)}:</span>
+              </div>
+              <div style="font-size:8.5px; color:#334155; line-height:1.2; margin-top:1px;">
+                ${esc(desc)}
               </div>
             </div>
-          </li>
-        `;
-        ruleIdx++;
-        return;
-      }
-
-      // Find in custom rules
-      const cr = customRules.find((cr, idx) => (cr.id || `custom_${idx}`) === ruleId || cr.title === ruleId);
-      if (cr) {
-        const icon = ruleIcons[(ruleIdx - 1) % ruleIcons.length];
-        rulesHtml += `
-          <li style="list-style:none; margin-bottom:2.5px;">
-            <div class="rule-ref-item" style="display:flex; align-items:flex-start; gap:6px;">
-              <div class="rule-badge-num" style="min-width:18px; height:18px; border-radius:50%; background:#15803d; color:#fff; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px;">${ruleIdx}</div>
-              <div style="flex:1;">
-                <div style="font-size:10px; font-weight:800; color:#072a60; line-height:1.2;">
-                  <span>${icon}</span> <span class="rules-highlight">${esc(cr.title)}:</span>
-                </div>
-                <div style="font-size:8.5px; color:#334155; line-height:1.2; margin-top:1px;">
-                  ${esc(cr.desc)}
-                </div>
-              </div>
-            </div>
-          </li>
-        `;
-        ruleIdx++;
-      }
+          </div>
+        </li>
+      `;
+      ruleIdx++;
     });
   } else if (cfg.selectedRules === undefined && (!c.selectedRules || c.selectedRules.length === 0)) {
     // 6 Standard reference rules only when clean slate and no rules configured
@@ -1466,14 +1530,23 @@ function generateBlankRosterSheetHtml(configOverride) {
     });
   }
 
+  let omittedNoticeHtml = '';
+  if (omittedCount > 0) {
+    omittedNoticeHtml = `
+      <div class="rules-omitted-notice" style="font-size:8.5px; color:#92400e; font-weight:700; text-align:center; padding:2px 6px; background:#fef3c7; border:1px dashed #f59e0b; border-radius:4px; margin-top:2px; margin-bottom:4px;">
+        ℹ️ ${isEn ? `+${omittedCount} additional rules omitted to maintain single A4 page fit.` : `+${omittedCount}টি অতিরিক্ত নিয়ম এক পেজে ফিট রাখার জন্য শিটে সংক্ষেপিত করা হয়েছে।`}
+      </div>
+    `;
+  }
+
   // Titles
   const starterTitle = isEn
     ? `Squad Player List (Total ${totalCount}: ${startingCount} Starters + ${benchCount} Subs)`
     : `খেলোয়াড়দের পূর্ণ নামের তালিকা (মোট ${totalCount} জন: ${startingCount} জন মূল + ${benchCount} জন অতিরিক্ত)`;
 
   const benchTitle = isEn
-    ? `Substitutes / Bench Players (${benchCount} Players)`
-    : `বিকল্প / অতিরিক্ত খেলোয়াড় (${benchCount} জন)`;
+    ? (excessBench > 0 ? `Substitutes (${renderBenchCount} Shown / ${benchCount} Registered)` : `Substitutes / Bench Players (${benchCount} Players)`)
+    : (excessBench > 0 ? `বিকল্প / অতিরিক্ত খেলোয়াড় (${renderBenchCount} জন প্রদর্শিত / মোট ${benchCount} জন)` : `বিকল্প / অতিরিক্ত খেলোয়াড় (${benchCount} জন)`);
 
   const coverType = (blankRosterImages && blankRosterImages.coverType) || 'default_stadium_trophy';
   const coverUrl = getBlankRosterActiveCoverUrl();
@@ -1631,11 +1704,11 @@ function generateBlankRosterSheetHtml(configOverride) {
             </div>
 
             <!-- RULES LIST WITH CIRCULAR GREEN NUMBER BADGES -->
-            <div class="rules-card" style="padding:6px 8px; flex:1; display:flex; flex-direction:column; justify-content:space-between; background:#fff; border:none;">
+            <div class="rules-card" style="padding:6px 8px; flex:1; display:flex; flex-direction:column; justify-content:space-between; background:#fff; border:none; overflow:hidden;">
               <ul class="rules-list" style="list-style:none; margin:0; padding:0; flex:1;">
                 ${rulesHtml}
               </ul>
-
+              ${omittedNoticeHtml}
               <!-- SLOGAN RIBBON (EXACT MATCH TO GREEN SPORTS RIBBON) -->
               <div class="rule-slogan-ribbon" style="background:linear-gradient(90deg, #15803d, #16a34a); color:#fff; border-radius:20px; text-align:center; padding:5px 12px; font-weight:800; font-size:11.5px; margin-top:auto; display:flex; align-items:center; justify-content:center; gap:8px;">
                 <span>⚽</span> <span>খেলায় থাকুক সৌহার্দ্য, জিতুক ফুটবল</span> <span>⚽</span>
@@ -1737,6 +1810,7 @@ if (typeof window !== 'undefined') {
   window.onBlankRosterCoverPosSlider = onBlankRosterCoverPosSlider;
   window.resetBlankRosterCoverPos = resetBlankRosterCoverPos;
   window.getBlankRosterActiveCoverUrl = getBlankRosterActiveCoverUrl;
+  window.calculateBlankRosterRulesBudget = calculateBlankRosterRulesBudget;
 }
 
 if (typeof module !== 'undefined' && module.exports) {
@@ -1763,6 +1837,7 @@ if (typeof module !== 'undefined' && module.exports) {
     onBlankRosterCoverPosSlider,
     resetBlankRosterCoverPos,
     getBlankRosterActiveCoverUrl,
+    calculateBlankRosterRulesBudget,
     updateRuleBudgetMeter,
     autoFitBlankRosterRules,
     uncheckAllBlankRosterRules,

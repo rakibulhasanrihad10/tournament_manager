@@ -92,6 +92,10 @@ const context = {
 
 vm.createContext(context);
 
+// Load constants.js
+const constantsCode = fs.readFileSync(path.join(__dirname, '../src/js/constants.js'), 'utf8');
+vm.runInContext(constantsCode, context);
+
 // Load roster.js
 const rosterCode = fs.readFileSync(path.join(__dirname, '../src/js/roster.js'), 'utf8');
 vm.runInContext(rosterCode, context);
@@ -240,6 +244,23 @@ const multiRulesHtml = context.generateBlankRosterSheetHtml({
 });
 assert(multiRulesHtml.includes('>7<'), 'Renders 7th selected rule (no 6-rule truncation bug)');
 assert(multiRulesHtml.includes('>8<'), 'Renders 8th selected rule (no 6-rule truncation bug)');
+
+// Test dynamic rules line & height budget calculation
+assert(typeof context.calculateBlankRosterRulesBudget === 'function', 'calculateBlankRosterRulesBudget is exported');
+const all11RuleIds = ['r_squad_11', 'r_onfield_11', 'r_squad_minibar', 'r_single_team', 'r_hire_players_no', 'r_hire_quota', 'r_walkover_15m', 'r_pen_direct', 'r_ref_final', 'r_card_yellow_fp', 'r_rain_abandon'];
+const budgetResult = context.calculateBlankRosterRulesBudget(all11RuleIds, 380);
+assert(budgetResult.acceptedCount >= 7, 'Budget accepts maximum safe rules within line budget');
+assert(budgetResult.omittedCount > 0, 'Excess rules beyond line budget are omitted to protect 1-page fit');
+
+// Test 11 rules rendering shows omitted notice instead of pushing to page 2
+const html11Rules = context.generateBlankRosterSheetHtml({ selectedRules: all11RuleIds });
+assert(html11Rules.includes('rules-omitted-notice'), 'Renders rules-omitted-notice when rules exceed line budget');
+
+// Test player list single-page clamp (11 starters + 9 bench = 20 players)
+const html20Players = context.generateBlankRosterSheetHtml({ startingPlayers: 11, benchPlayers: 9 });
+assert(html20Players.includes('bench-overflow-notice'), 'Renders bench-overflow-notice when players exceed single page capacity (16)');
+assert(html20Players.includes('>16<'), 'Renders up to row 16 for single page fit');
+assert(!html20Players.includes('>17<'), 'Prevents row 17 from pushing page to 2 sheets');
 
 // ---------------------------------------------------------------------
 // TEST SUITE 7: VISUAL THEME CONFORMANCE TO REFERENCE IMAGE
