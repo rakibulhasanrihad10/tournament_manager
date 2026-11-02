@@ -154,6 +154,42 @@
       body.light-mode .header p {
         color: #333333 !important;
       }
+
+      /* Management Panel Cover Hero Banner print optimization */
+      .cover-hero-banner {
+        width: 100% !important;
+        margin: 0 0 4px 0 !important;
+        border-radius: 0 !important;
+        min-height: auto !important;
+        background: transparent !important;
+      }
+      .cover-hero-bg-wrap {
+        display: none !important;
+      }
+      .cover-hero-content {
+        min-height: auto !important;
+        padding: 2px 4px !important;
+      }
+      .hero-logo-left,
+      .hero-logo-right {
+        width: 48px !important;
+        height: 36px !important;
+      }
+      .cover-hero-banner .hero-center-content h1 {
+        font-size: 18px !important;
+        margin-bottom: 2px !important;
+        text-shadow: none !important;
+      }
+      .hero-meta-pill {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+      }
+      .cover-hero-swoosh-wrap {
+        display: none !important;
+      }
       body.sheet-theme-paper .p1-card,
       body.sheet-theme-paper .awards-box,
       body.light-mode .p1-card,

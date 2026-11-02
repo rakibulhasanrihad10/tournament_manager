@@ -2336,6 +2336,34 @@ function openTournamentWizard(initialTab = 'info') {
   renderCustomRulesList();
   renderWizardTeamsDashboard();
 
+  // Populate Branding & Cover fields in Wizard
+  const coverSelect = document.getElementById('w-cfg-coverType');
+  const leftSelect = document.getElementById('w-cfg-leftLogo');
+  const rightSelect = document.getElementById('w-cfg-rightLogo');
+  const previewImg = document.getElementById('w-cover-preview-img');
+
+  if (typeof blankRosterImages !== 'undefined') {
+    if (coverSelect) {
+      if (blankRosterImages.coverType === 'custom') coverSelect.value = 'custom';
+      else if (blankRosterImages.coverType === 'unsplash_preset') {
+        const found = (typeof BLANK_ROSTER_UNSPLASH_PRESETS !== 'undefined')
+          ? BLANK_ROSTER_UNSPLASH_PRESETS.find(p => p.url === blankRosterImages.activeCoverUrl)
+          : null;
+        coverSelect.value = found ? found.id : 'default_stadium_trophy';
+      } else {
+        coverSelect.value = blankRosterImages.coverType || 'default_stadium_trophy';
+      }
+    }
+    if (leftSelect) leftSelect.value = blankRosterImages.leftType || 'trophy';
+    if (rightSelect) rightSelect.value = blankRosterImages.rightType || 'default_stadium';
+    if (previewImg) {
+      const activeUrl = (typeof getBlankRosterActiveCoverUrl === 'function')
+        ? getBlankRosterActiveCoverUrl()
+        : 'assets/football-cover.jpg';
+      previewImg.src = activeUrl || 'assets/football-cover.jpg';
+    }
+  }
+
   const modal = document.getElementById('tournament-wizard-modal');
   if (modal) {
     modal.classList.add('active');
@@ -3090,9 +3118,122 @@ function saveTournamentConfigFromWizard() {
   };
 
   saveTournamentConfig(newConfig);
+
+  // Persist branding images in localStorage
+  if (typeof blankRosterImages !== 'undefined' && typeof localStorage !== 'undefined') {
+    try {
+      localStorage.setItem('tm_blank_roster_type_cover', blankRosterImages.coverType || 'default_stadium_trophy');
+      if (blankRosterImages.activeCoverUrl) localStorage.setItem('tm_blank_roster_active_cover', blankRosterImages.activeCoverUrl);
+      if (blankRosterImages.customCover) localStorage.setItem('tm_blank_roster_img_cover', blankRosterImages.customCover);
+      localStorage.setItem('tm_blank_roster_type_left', blankRosterImages.leftType || 'trophy');
+      localStorage.setItem('tm_blank_roster_type_right', blankRosterImages.rightType || 'default_stadium');
+      if (blankRosterImages.customLeft) localStorage.setItem('tm_blank_roster_img_left', blankRosterImages.customLeft);
+      if (blankRosterImages.customRight) localStorage.setItem('tm_blank_roster_img_right', blankRosterImages.customRight);
+    } catch (e) {}
+  }
+  if (typeof updateHeroStadiumCover === 'function') updateHeroStadiumCover();
+  if (typeof renderBlankRosterSheet === 'function') renderBlankRosterSheet();
+
   closeTournamentWizard();
 
   alert(isEn
     ? '✅ Tournament configuration & rules successfully saved!\nFixtures, rules list and promotional poster have been updated.'
     : '✅ টুর্নামেন্ট কনফিগারেশন এবং নিয়মাবলী সফলভাবে সংরক্ষিত হয়েছে!\nফিকশ্চার, নিয়ম তালিকা ও সোশ্যাল মিডিয়া পোস্টার স্বয়ংক্রিয়ভাবে আপডেট হয়ে গেছে।');
+}
+
+function onWizardCoverTypeChange(type) {
+  if (typeof blankRosterImages === 'undefined') return;
+  if (type === 'custom') {
+    const fileInp = document.getElementById('w-cfg-custom-cover-file');
+    if (fileInp) fileInp.click();
+    return;
+  }
+  if (type === 'default_stadium_trophy') {
+    blankRosterImages.coverType = 'default_stadium_trophy';
+    blankRosterImages.activeCoverUrl = 'assets/football-cover.jpg';
+  } else if (type.startsWith('u_')) {
+    const preset = (typeof BLANK_ROSTER_UNSPLASH_PRESETS !== 'undefined')
+      ? BLANK_ROSTER_UNSPLASH_PRESETS.find(p => p.id === type)
+      : null;
+    if (preset) {
+      blankRosterImages.coverType = 'unsplash_preset';
+      blankRosterImages.activeCoverUrl = preset.url;
+    }
+  }
+  const previewImg = document.getElementById('w-cover-preview-img');
+  if (previewImg && blankRosterImages.activeCoverUrl) {
+    previewImg.src = blankRosterImages.activeCoverUrl;
+  }
+}
+
+function handleWizardCoverUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    if (typeof blankRosterImages !== 'undefined') {
+      blankRosterImages.customCover = dataUrl;
+      blankRosterImages.activeCoverUrl = dataUrl;
+      blankRosterImages.coverType = 'custom';
+      const previewImg = document.getElementById('w-cover-preview-img');
+      if (previewImg) previewImg.src = dataUrl;
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function onWizardLeftLogoChange(type) {
+  if (typeof blankRosterImages === 'undefined') return;
+  if (type === 'custom') {
+    const fileInp = document.getElementById('w-cfg-custom-left-file');
+    if (fileInp) fileInp.click();
+    return;
+  }
+  blankRosterImages.leftType = type;
+}
+
+function handleWizardLeftLogoUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    if (typeof blankRosterImages !== 'undefined') {
+      blankRosterImages.customLeft = e.target.result;
+      blankRosterImages.leftType = 'custom';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function onWizardRightLogoChange(type) {
+  if (typeof blankRosterImages === 'undefined') return;
+  if (type === 'custom') {
+    const fileInp = document.getElementById('w-cfg-custom-right-file');
+    if (fileInp) fileInp.click();
+    return;
+  }
+  blankRosterImages.rightType = type;
+}
+
+function handleWizardRightLogoUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    if (typeof blankRosterImages !== 'undefined') {
+      blankRosterImages.customRight = e.target.result;
+      blankRosterImages.rightType = 'custom';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+if (typeof window !== 'undefined') {
+  window.onWizardCoverTypeChange = onWizardCoverTypeChange;
+  window.handleWizardCoverUpload = handleWizardCoverUpload;
+  window.onWizardLeftLogoChange = onWizardLeftLogoChange;
+  window.handleWizardLeftLogoUpload = handleWizardLeftLogoUpload;
+  window.onWizardRightLogoChange = onWizardRightLogoChange;
+  window.handleWizardRightLogoUpload = handleWizardRightLogoUpload;
 }

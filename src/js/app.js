@@ -411,11 +411,13 @@ function printDocument(mode) {
       initAppState();
       initWelcomeBanner();
       initP1Stage();
+      if (typeof updateHeroStadiumCover === 'function') updateHeroStadiumCover();
     });
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
       initAppState();
       initWelcomeBanner();
       initP1Stage();
+      if (typeof updateHeroStadiumCover === 'function') updateHeroStadiumCover();
     }
 
     if (typeof window !== 'undefined') {

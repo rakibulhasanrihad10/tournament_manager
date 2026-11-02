@@ -415,6 +415,9 @@ function escapeHtml(str) {
       if (typeof renderPrintablePosterSheet === 'function') {
         renderPrintablePosterSheet();
       }
+      if (typeof updateHeroStadiumCover === 'function') {
+        updateHeroStadiumCover();
+      }
       const posterTarget = document.getElementById('promo-poster-render-target');
       if (posterTarget && typeof activePosterTab !== 'undefined') {
         posterTarget.innerHTML = activePosterTab === 'fixture'

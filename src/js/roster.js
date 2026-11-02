@@ -1799,6 +1799,35 @@ function generateBlankRosterSheetHtml(configOverride) {
   `;
 }
 
+function updateHeroStadiumCover() {
+  if (typeof document === 'undefined') return;
+  const coverUrl = (typeof getBlankRosterActiveCoverUrl === 'function')
+    ? getBlankRosterActiveCoverUrl()
+    : 'assets/football-cover.jpg';
+  const leftHtml = (typeof getBlankRosterLogoHtml === 'function')
+    ? getBlankRosterLogoHtml('left')
+    : '';
+  const rightHtml = (typeof getBlankRosterLogoHtml === 'function')
+    ? getBlankRosterLogoHtml('right')
+    : '';
+  const pos = (typeof blankRosterImages !== 'undefined' && blankRosterImages && blankRosterImages.coverPosition !== undefined)
+    ? blankRosterImages.coverPosition
+    : 35;
+
+  ['p1', 'p2'].forEach(prefix => {
+    const imgEl = document.getElementById(`${prefix}-hero-cover-img`);
+    if (imgEl) {
+      if (coverUrl) imgEl.src = coverUrl;
+      if (imgEl.style) imgEl.style.objectPosition = `center ${pos}%`;
+    }
+    const leftEl = document.getElementById(`${prefix}-hero-logo-left`);
+    if (leftEl) leftEl.innerHTML = leftHtml;
+
+    const rightEl = document.getElementById(`${prefix}-hero-logo-right`);
+    if (rightEl) rightEl.innerHTML = rightHtml;
+  });
+}
+
 function renderBlankRosterSheet(configOverride) {
   const container = document.getElementById('page-blank-roster');
   if (container) {
@@ -1818,6 +1847,7 @@ if (typeof window !== 'undefined') {
   window.resetBlankRosterCoverPos = resetBlankRosterCoverPos;
   window.getBlankRosterActiveCoverUrl = getBlankRosterActiveCoverUrl;
   window.calculateBlankRosterRulesBudget = calculateBlankRosterRulesBudget;
+  window.updateHeroStadiumCover = updateHeroStadiumCover;
 }
 
 if (typeof module !== 'undefined' && module.exports) {
@@ -1850,7 +1880,8 @@ if (typeof module !== 'undefined' && module.exports) {
     uncheckAllBlankRosterRules,
     applyBlankRosterConfigAndPrint,
     generateBlankRosterSheetHtml,
-    renderBlankRosterSheet
+    renderBlankRosterSheet,
+    updateHeroStadiumCover
   };
 }
 
