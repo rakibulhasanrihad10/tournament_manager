@@ -321,6 +321,8 @@ assert(promoPoster.includes('poster-hero-cover-banner'), 'Promo poster renders .
 assert(promoPoster.includes('poster-hero-img'), 'Promo poster renders stadium cover img');
 assert(promoPoster.includes('poster-hero-logo'), 'Promo poster renders left and right logos');
 assert(promoPoster.includes('poster-hero-swoosh'), 'Promo poster renders gold & blue curved swoosh ribbon');
+assert(!promoPoster.includes('promo-badge-tag'), 'Promo poster cleanly omits redundant notice badge text');
+assert(fixPoster.includes('promo-badge-tag'), 'Fixture poster retains official fixture schedule badge tag');
 
 // ---------------------------------------------------------------------
 // TEST SUITE 5: PRINT DISPATCHER & SINGLE-PAGE A4 PORTRAIT CONFORMANCE

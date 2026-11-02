@@ -170,7 +170,7 @@ function generatePosterHeroBannerHtml(opts) {
 
         <!-- Center Content -->
         <div class="poster-hero-center" style="text-align:center; flex:1; min-width:0;">
-          <span class="promo-badge-tag" style="${badgeStyle || ''}">${badgeText}</span>
+          ${badgeText ? `<span class="promo-badge-tag" style="${badgeStyle || ''}">${badgeText}</span>` : ''}
           <h1 class="promo-hero-title" style="margin:2px 0 4px 0; font-size:22px; font-weight:900; color:#ffca28; text-shadow:0 2px 8px rgba(0,0,0,0.85), 0 0 16px rgba(251,191,36,0.4); line-height:1.25;">
             ⚽ ${esc(c.title || defaultTitle)} ⚽
           </h1>
@@ -391,8 +391,8 @@ function generatePromoPosterCardHtml() {
   const tFn = typeof t === 'function' ? t : (k) => k;
 
   const heroHtml = generatePosterHeroBannerHtml({
-    badgeText: tFn('poster.badge'),
-    badgeStyle: 'background: #b91c1c;',
+    badgeText: '',
+    badgeStyle: '',
     extraMeta: `🗓️ <strong>${esc(c.startDate || defaultDate)}</strong>`,
     c,
     defaultTitle,
