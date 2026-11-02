@@ -1169,11 +1169,11 @@ function renderBlankRosterRulesChecklist() {
     const title = (isEn && r.titleEn) ? r.titleEn : r.title;
     const catIcon = r.categoryIcon || '📋';
     html += `
-      <label class="br-rule-item-card" style="display:flex; align-items:flex-start; gap:10px; padding:8px 12px; border:1px solid #e2e8f0; border-radius:6px; background:#f8fafc; font-size:12px; cursor:pointer; transition:all 0.15s ease;">
+      <label class="br-rule-item-card">
         <input type="checkbox" class="br-rule-chk" value="${r.id}" ${isChecked} onchange="updateRuleBudgetMeter()" style="margin-top:2px; width:16px; height:16px; accent-color:#16a34a; cursor:pointer;">
         <div style="flex:1;">
-          <span style="font-weight:700; color:#072a60; font-size:12px; display:block; margin-bottom:2px;">${catIcon} ${esc(title)}</span>
-          <span style="display:block; font-size:10.5px; color:#64748b; line-height:1.35;">${esc((isEn && r.descEn) ? r.descEn : r.desc)}</span>
+          <span class="rule-title">${catIcon} ${esc(title)}</span>
+          <span class="rule-desc">${esc((isEn && r.descEn) ? r.descEn : r.desc)}</span>
         </div>
       </label>
     `;
@@ -1183,11 +1183,11 @@ function renderBlankRosterRulesChecklist() {
     const customId = cr.id || `custom_${idx}`;
     const isChecked = checkedSet.has(customId) ? 'checked' : '';
     html += `
-      <label class="br-rule-item-card" style="display:flex; align-items:flex-start; gap:10px; padding:8px 12px; border:1px solid #fed7aa; border-radius:6px; background:#fff7ed; font-size:12px; cursor:pointer; transition:all 0.15s ease;">
+      <label class="br-rule-item-card is-custom">
         <input type="checkbox" class="br-rule-chk" value="${customId}" ${isChecked} onchange="updateRuleBudgetMeter()" style="margin-top:2px; width:16px; height:16px; accent-color:#ea580c; cursor:pointer;">
         <div style="flex:1;">
-          <span style="font-weight:700; color:#c2410c; font-size:12px; display:block; margin-bottom:2px;">⭐ ${esc(cr.title)}</span>
-          <span style="display:block; font-size:10.5px; color:#64748b; line-height:1.35;">${esc(cr.desc)}</span>
+          <span class="rule-title">⭐ ${esc(cr.title)}</span>
+          <span class="rule-desc">${esc(cr.desc)}</span>
         </div>
       </label>
     `;
@@ -1210,17 +1210,19 @@ function onBlankRosterConfigChange() {
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
   if (summaryEl) {
     if (total <= maxSafe) {
-      summaryEl.style.background = '#e0f2fe';
-      summaryEl.style.color = '#0284c7';
-      summaryEl.style.border = '1px solid #bae6fd';
+      summaryEl.className = 'blank-squad-summary is-safe';
+      summaryEl.style.background = '';
+      summaryEl.style.color = '';
+      summaryEl.style.border = '';
       summaryEl.innerHTML = isEn
         ? `📝 Total Squad: <strong>${total} Players</strong> (${start} Starters + ${bench} Substitutes) — ✅ Perfect 1-Page Fit`
         : `📝 সর্বমোট স্কোয়াড: <strong>${total} জন</strong> (${start} জন মূল + ${bench} জন অতিরিক্ত) — ✅ ১ পেজে পারফেক্ট ফিট`;
     } else {
       const excess = total - maxSafe;
-      summaryEl.style.background = '#fef3c7';
-      summaryEl.style.color = '#b45309';
-      summaryEl.style.border = '1px solid #fde68a';
+      summaryEl.className = 'blank-squad-summary is-warning';
+      summaryEl.style.background = '';
+      summaryEl.style.color = '';
+      summaryEl.style.border = '';
       summaryEl.innerHTML = isEn
         ? `⚠️ Total Squad: <strong>${total} Players</strong>. Maximum ${maxSafe} players fit on 1 page (+${excess} bench players omitted on print sheet to prevent 2nd page).`
         : `⚠️ সর্বমোট স্কোয়াড: <strong>${total} জন</strong>। A4 ১-পেজে সর্বোচ্চ ${maxSafe} জন ধরবে (২য় পেজ এড়াতে শিটে অতিরিক্ত +${excess} জন সংক্ষেপিত থাকবে)।`;
@@ -1296,11 +1298,12 @@ function updateRuleBudgetMeter() {
   const selectedIds = getSelectedBlankRosterRuleIds();
   const selectedCount = selectedIds.length;
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const isDark = (typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute && document.documentElement.getAttribute('data-theme') === 'dark');
 
   if (selectedCount === 0) {
-    meterEl.style.background = '#f1f5f9';
-    meterEl.style.color = '#475569';
-    meterEl.style.border = '1px solid #cbd5e1';
+    meterEl.style.background = isDark ? 'rgba(30, 41, 59, 0.7)' : '#f1f5f9';
+    meterEl.style.color = isDark ? '#94a3b8' : '#475569';
+    meterEl.style.border = isDark ? '1px solid #334155' : '1px solid #cbd5e1';
     meterEl.innerHTML = isEn
       ? 'ℹ️ No rules selected (Rules card on print sheet will be empty).'
       : 'ℹ️ কোনো নিয়ম নির্বাচন করা হয়নি (প্রিন্ট শিটে নিয়মের কার্ড খালি থাকবে)।';
@@ -1313,16 +1316,16 @@ function updateRuleBudgetMeter() {
   const h = Math.round(budget.currentHeight);
 
   if (omitted === 0) {
-    meterEl.style.background = '#dcfce7';
-    meterEl.style.color = '#166534';
-    meterEl.style.border = '1px solid #86efac';
+    meterEl.style.background = isDark ? 'rgba(22, 101, 52, 0.35)' : '#dcfce7';
+    meterEl.style.color = isDark ? '#4ade80' : '#166534';
+    meterEl.style.border = isDark ? '1px solid rgba(74, 222, 128, 0.4)' : '1px solid #86efac';
     meterEl.innerHTML = isEn
       ? `✅ <strong>Perfect 1-Page Fit:</strong> All ${accepted} selected rules fit comfortably (Height: ~${h}px / 615px line budget).`
       : `✅ <strong>নিখুঁত ১-পেজ ফিট:</strong> নির্বাচিত ${accepted}টি নিয়মের সবগুলোই সুন্দরভাবে ধরবে (উচ্চতা: ~${h}px / ৬১৫px লাইন বাজেট)।`;
   } else {
-    meterEl.style.background = '#fef3c7';
-    meterEl.style.color = '#92400e';
-    meterEl.style.border = '1px solid #fcd34d';
+    meterEl.style.background = isDark ? 'rgba(180, 83, 9, 0.35)' : '#fef3c7';
+    meterEl.style.color = isDark ? '#fbbf24' : '#92400e';
+    meterEl.style.border = isDark ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid #fcd34d';
     meterEl.innerHTML = isEn
       ? `⚠️ <strong>Page Overflow Protection:</strong> ${selectedCount} rules selected. First ${accepted} rules will print (~${h}px); remaining ${omitted} rules omitted to guarantee 1-page fit.`
       : `⚠️ <strong>১-পেজ সুরক্ষা সতর্কবার্তা:</strong> ${selectedCount}টি নিয়ম নির্বাচিত। প্রথম ${accepted}টি নিয়ম প্রিন্ট হবে (~${h}px); বাকি ${omitted}টি নিয়ম ২য় পেজ এড়াতে স্বয়ংক্রিয়ভাবে বাদ থাকবে।`;

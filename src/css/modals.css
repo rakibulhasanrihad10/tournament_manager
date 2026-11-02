@@ -2852,10 +2852,171 @@
 
     .modal-box.modal-blank-roster {
       max-width: 880px;
-      width: 94%;
+      width: 95%;
       border-radius: 14px;
     }
-      flex-wrap: wrap;
+
+    .blank-modal-card {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .blank-modal-card.accent-blue {
+      background: #f0f7ff;
+      border-color: #93c5fd;
+    }
+    .blank-modal-card.accent-amber {
+      background: #fffdf5;
+      border-color: #ffe082;
+    }
+    .blank-modal-title {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      font-weight: 800;
+      color: #072a60;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .blank-modal-card.accent-amber .blank-modal-title {
+      color: #b71c1c;
+    }
+    .blank-modal-badge {
+      font-size: 11.5px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .blank-modal-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .blank-modal-subcard {
+      background: #ffffff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .blank-modal-select,
+    .blank-modal-input {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #0f172a;
+      box-sizing: border-box;
+    }
+    .blank-preview-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background: #f8fafc;
+    }
+    .blank-sub-box {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+    .blank-tip-sub {
+      color: #64748b;
+    }
+    .blank-rules-grid {
+      max-height: 280px;
+      overflow-y: auto;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 10px;
+    }
+    .blank-modal-footer {
+      padding: 14px 24px;
+      background: #f8fafc;
+      border-top: 1px solid #cbd5e1;
+      border-radius: 0 0 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .blank-modal-tip {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 11.5px;
+      color: #1e40af;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.4;
+    }
+    .blank-squad-summary {
+      margin-top: 12px;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 6px;
+      display: inline-block;
+      transition: all 0.2s ease;
+    }
+    .blank-squad-summary.is-safe {
+      background: #e0f2fe;
+      color: #0284c7;
+      border: 1px solid #bae6fd;
+    }
+    .blank-squad-summary.is-warning {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .br-rule-item-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      background: #f8fafc;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .br-rule-item-card:hover {
+      background: #f1f5f9;
+      border-color: #0284c7;
+    }
+    .br-rule-item-card.is-custom {
+      border-color: #fed7aa;
+      background: #fff7ed;
+    }
+    .br-rule-item-card .rule-title {
+      font-weight: 700;
+      color: #072a60;
+      font-size: 12px;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .br-rule-item-card.is-custom .rule-title {
+      color: #c2410c;
+    }
+    .br-rule-item-card .rule-desc {
+      display: block;
+      font-size: 10.5px;
+      color: #64748b;
+      line-height: 1.35;
     }
 
     /* Poster Modal Tabs & Dual Mode Navigation */
@@ -4421,6 +4582,126 @@
       background: #fef3c7;
       color: #b45309;
       border: 1px solid #fde68a;
+    }
+
+    /* ========================================================
+       DARK THEME ADAPTATION FOR BLANK ROSTER MODAL
+       ======================================================== */
+    [data-theme="dark"] .modal-box.modal-blank-roster {
+      background: #0b1329;
+      border-color: #273b5b;
+      box-shadow: 0 25px 70px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+    [data-theme="dark"] .modal-blank-roster .modal-body {
+      background: #070d19;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-card {
+      background: #0f1a30;
+      border-color: #1e2d4a;
+      color: #f1f5f9;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-card.accent-blue {
+      background: #0c1c38;
+      border-color: #0284c7;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-card.accent-amber {
+      background: #171c14;
+      border-color: #b45309;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-title {
+      color: #38bdf8;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-card.accent-amber .blank-modal-title {
+      color: #fbbf24;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-badge {
+      background: rgba(2, 132, 199, 0.25);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-label {
+      color: #cbd5e1;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-subcard {
+      background: #0b1426;
+      border-color: #1e2d4a;
+      color: #f1f5f9;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-select,
+    [data-theme="dark"] .modal-blank-roster .blank-modal-input {
+      background: #070e1d;
+      color: #f8fafc;
+      border-color: #273b5b;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-select:focus,
+    [data-theme="dark"] .modal-blank-roster .blank-modal-input:focus {
+      border-color: #38bdf8;
+      outline: none;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-preview-box {
+      background: #070e1d;
+      border-color: #273b5b;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-sub-box {
+      background: #0b1426;
+      border-color: #1e2d4a;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-tip-sub {
+      color: #94a3b8;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-rules-grid {
+      background: #070e1d;
+      border-color: #1e2d4a;
+    }
+    [data-theme="dark"] .modal-blank-roster .br-rule-item-card {
+      background: #0b1426;
+      border-color: #1e2d4a;
+      color: #f1f5f9;
+    }
+    [data-theme="dark"] .modal-blank-roster .br-rule-item-card:hover {
+      background: #111d36;
+      border-color: #38bdf8;
+    }
+    [data-theme="dark"] .modal-blank-roster .br-rule-item-card.is-custom {
+      background: #1e1308;
+      border-color: #7c2d12;
+    }
+    [data-theme="dark"] .modal-blank-roster .br-rule-item-card .rule-title {
+      color: #f1f5f9;
+    }
+    [data-theme="dark"] .modal-blank-roster .br-rule-item-card.is-custom .rule-title {
+      color: #fb923c;
+    }
+    [data-theme="dark"] .modal-blank-roster .br-rule-item-card .rule-desc {
+      color: #94a3b8;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-footer {
+      background: #090f1d;
+      border-top-color: rgba(255, 255, 255, 0.08);
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-modal-tip {
+      background: rgba(30, 58, 138, 0.25);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: #93c5fd;
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-squad-summary.is-safe {
+      background: rgba(2, 132, 199, 0.25);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+    [data-theme="dark"] .modal-blank-roster .blank-squad-summary.is-warning {
+      background: rgba(217, 119, 6, 0.25);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    [data-theme="dark"] .modal-blank-roster #blank-roster-rule-budget-meter {
+      background: rgba(15, 26, 48, 0.9) !important;
+      border-color: #1e2d4a !important;
+      color: #f1f5f9 !important;
+    }
+    [data-theme="dark"] .modal-blank-roster .unsplash-preset-card {
+      background: #0b1426 !important;
+      color: #f8fafc !important;
     }
 
     /* Registration Slip Print Scope: Only hides other elements when explicitly printing reg slip */

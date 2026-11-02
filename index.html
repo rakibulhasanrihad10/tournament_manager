@@ -1998,8 +1998,8 @@
 
   <!-- BLANK ROSTER SMART PRINT CONFIGURATION MODAL -->
     <div id="blank-roster-config-modal" class="modal-backdrop" onclick="if(event.target === this) closeBlankRosterConfigModal()">
-      <div class="modal-box modal-blank-roster" style="max-width: 880px; width: 95%; border-radius: 14px; box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.45);">
-        <div class="modal-header" style="background: linear-gradient(90deg, #072a60, #0d47a1); padding: 14px 22px; border-radius: 14px 14px 0 0;">
+      <div class="modal-box modal-blank-roster">
+        <div class="modal-header">
           <h3 id="blank-roster-modal-title" style="display:flex; align-items:center; gap:10px; font-size:16px;">
             <span>📋</span> <span data-i18n="blank_roster.modal_title">খালি প্লেয়ার নিবন্ধন ফর্ম ও প্রিন্ট সেটআপ</span>
           </h3>
@@ -2009,14 +2009,14 @@
         <div class="modal-body" style="padding: 20px 24px; max-height: calc(85vh - 130px); overflow-y: auto;">
           
           <!-- SECTION 1: SQUAD SIZE & SPLIT -->
-          <div style="background: var(--bg-card, #f8fafc); border: 1px solid var(--border-color, #cbd5e1); border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
-            <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #072a60; display:flex; align-items:center; gap:8px;">
+          <div class="blank-modal-card">
+            <h4 class="blank-modal-title">
               <span>👥</span> <span data-i18n="blank_roster.squad_setup_title">স্কোয়াড ও খেলোয়াড় সংখ্যা নির্ধারণ</span>
             </h4>
             <div style="display: flex; gap: 18px; flex-wrap: wrap;">
               <div style="flex: 1; min-width: 200px;">
-                <label style="font-size: 12px; font-weight: 700; color: #334155; display:block; margin-bottom: 5px;" data-i18n="blank_roster.starting_players_lbl">মূল একাদশ / শুরুর খেলোয়াড়:</label>
-                <select id="blank-roster-starting-select" class="form-control" style="width:100%; padding:8px 12px; font-size:13px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterConfigChange()">
+                <label class="blank-modal-label" data-i18n="blank_roster.starting_players_lbl">মূল একাদশ / শুরুর খেলোয়াড়:</label>
+                <select id="blank-roster-starting-select" class="form-control blank-modal-select" onchange="onBlankRosterConfigChange()">
                   <option value="5">৫ জন (Futsal / Minibar)</option>
                   <option value="6">৬ জন (6-a-side)</option>
                   <option value="7">৭ জন (7-a-side)</option>
@@ -2026,8 +2026,8 @@
                 </select>
               </div>
               <div style="flex: 1; min-width: 200px;">
-                <label style="font-size: 12px; font-weight: 700; color: #334155; display:block; margin-bottom: 5px;" data-i18n="blank_roster.bench_players_lbl">অতিরিক্ত / বিকল্প খেলোয়াড়:</label>
-                <select id="blank-roster-bench-select" class="form-control" style="width:100%; padding:8px 12px; font-size:13px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterConfigChange()">
+                <label class="blank-modal-label" data-i18n="blank_roster.bench_players_lbl">অতিরিক্ত / বিকল্প খেলোয়াড়:</label>
+                <select id="blank-roster-bench-select" class="form-control blank-modal-select" onchange="onBlankRosterConfigChange()">
                   <option value="2">২ জন</option>
                   <option value="3">৩ জন</option>
                   <option value="4">৪ জন</option>
@@ -2038,28 +2038,28 @@
                 </select>
               </div>
             </div>
-            <div id="blank-roster-squad-summary" style="margin-top: 12px; font-size: 12.5px; color: #0284c7; font-weight: 700; background:#e0f2fe; padding:6px 14px; border-radius:6px; display:inline-block;">
+            <div id="blank-roster-squad-summary" class="blank-squad-summary is-safe">
               📝 সর্বমোট স্কোয়াড: ১৬ জন (১১ জন মূল + ৫ জন বিকল্প)
             </div>
           </div>
 
           <!-- SECTION 1.5: HEADER LOGOS CUSTOMIZER -->
-          <div style="background: #f0f7ff; border: 1.5px solid #93c5fd; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
-            <h4 style="margin: 0 0 12px 0; font-size: 14px; color: #072a60; display:flex; align-items:center; gap:8px;">
+          <div class="blank-modal-card accent-blue">
+            <h4 class="blank-modal-title">
               <span>🖼️</span> <span data-i18n="blank_roster.logos_title">হেডার লোগো ও ছবি নির্বাচন (বাম ও ডান পাশ)</span>
             </h4>
             <div style="display:flex; gap:18px; flex-wrap:wrap;">
               <!-- LEFT LOGO -->
-              <div style="flex:1; min-width:240px; background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:12px 14px;">
-                <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;" data-i18n="blank_roster.left_logo_lbl">বাম পাশের লোগো / প্রতীক:</label>
+              <div class="blank-modal-subcard" style="flex:1; min-width:240px;">
+                <label class="blank-modal-label" data-i18n="blank_roster.left_logo_lbl">বাম পাশের লোগো / প্রতীক:</label>
                 <div style="display:flex; gap:10px; align-items:center;">
-                  <select id="blank-roster-left-logo-select" class="form-control" style="flex:1; padding:7px 10px; font-size:12.5px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterLogoTypeChange('left')">
+                  <select id="blank-roster-left-logo-select" class="form-control blank-modal-select" style="flex:1;" onchange="onBlankRosterLogoTypeChange('left')">
                     <option value="default_ball" selected data-i18n="blank_roster.opt_default_ball">⚽ স্পিড ফুটবল (ডিফল্ট)</option>
                     <option value="trophy" data-i18n="blank_roster.opt_trophy">🏆 champions ট্রফি</option>
                     <option value="star" data-i18n="blank_roster.opt_star">🌟 স্টার ব্যাজ</option>
                     <option value="custom" data-i18n="blank_roster.opt_custom">📁 নিজস্ব ছবি আপলোড...</option>
                   </select>
-                  <div id="blank-roster-left-logo-preview" style="width:54px; height:46px; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;"></div>
+                  <div id="blank-roster-left-logo-preview" class="blank-preview-box" style="width:54px; height:46px; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;"></div>
                 </div>
                 <div id="blank-roster-left-file-wrap" style="display:none; margin-top:8px;">
                   <input type="file" id="blank-roster-left-file" accept="image/*" style="font-size:11.5px;" onchange="handleBlankRosterImageUpload('left', event)">
@@ -2067,16 +2067,16 @@
               </div>
 
               <!-- RIGHT LOGO -->
-              <div style="flex:1; min-width:240px; background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:12px 14px;">
-                <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;" data-i18n="blank_roster.right_logo_lbl">ডান পাশের ছবি / ভেন্যু / স্পনসর:</label>
+              <div class="blank-modal-subcard" style="flex:1; min-width:240px;">
+                <label class="blank-modal-label" data-i18n="blank_roster.right_logo_lbl">ডান পাশের ছবি / ভেন্যু / স্পনসর:</label>
                 <div style="display:flex; gap:10px; align-items:center;">
-                  <select id="blank-roster-right-logo-select" class="form-control" style="flex:1; padding:7px 10px; font-size:12.5px; font-weight:700; border:1px solid #94a3b8; border-radius:6px;" onchange="onBlankRosterLogoTypeChange('right')">
+                  <select id="blank-roster-right-logo-select" class="form-control blank-modal-select" style="flex:1;" onchange="onBlankRosterLogoTypeChange('right')">
                     <option value="default_stadium" selected data-i18n="blank_roster.opt_default_stadium">🏟️ স্টেডিয়াম আর্ট (ডিফল্ট)</option>
                     <option value="kick" data-i18n="blank_roster.opt_kick">⚽ ফুটবল কিক আর্ট</option>
                     <option value="sponsor" data-i18n="blank_roster.opt_sponsor">🤝 স্পনসর / ফেয়ার প্লে</option>
                     <option value="custom" data-i18n="blank_roster.opt_custom">📁 নিজস্ব ছবি আপলোড...</option>
                   </select>
-                  <div id="blank-roster-right-logo-preview" style="width:54px; height:46px; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;"></div>
+                  <div id="blank-roster-right-logo-preview" class="blank-preview-box" style="width:54px; height:46px; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;"></div>
                 </div>
                 <div id="blank-roster-right-file-wrap" style="display:none; margin-top:8px;">
                   <input type="file" id="blank-roster-right-file" accept="image/*" style="font-size:11.5px;" onchange="handleBlankRosterImageUpload('right', event)">
@@ -2086,12 +2086,12 @@
           </div>
 
           <!-- SECTION 1.6: HEADER COVER BANNER & UNSPASH / DRAG REPOSITIONING -->
-          <div style="background: #f8fafc; border: 1.5px solid #0284c7; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
+          <div class="blank-modal-card accent-blue">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:8px;">
-              <h4 style="margin: 0; font-size: 14px; color: #072a60; display:flex; align-items:center; gap:8px;">
+              <h4 class="blank-modal-title" style="margin:0;">
                 <span>🏟️</span> <span data-i18n="blank_roster.cover_title">হেডার কভার ব্যানার ও স্টেডিয়াম ব্যাকগ্রাউন্ড</span>
               </h4>
-              <span style="font-size:11.5px; background:#dbeafe; color:#1d4ed8; font-weight:700; padding:3px 10px; border-radius:20px;" data-i18n="blank_roster.cover_badge">
+              <span class="blank-modal-badge" data-i18n="blank_roster.cover_badge">
                 A4 পোর্ট্রেট কভার আর্ট
               </span>
             </div>
@@ -2099,8 +2099,8 @@
             <!-- COVER TYPE SELECTOR ROW -->
             <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:12px;">
               <div style="flex:1; min-width:240px;">
-                <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:5px;" data-i18n="blank_roster.cover_type_lbl">কভারের ধরন নির্বাচন করুন:</label>
-                <select id="blank-roster-cover-type-select" class="form-control" style="width:100%; padding:8px 12px; font-size:13px; font-weight:700; border:1px solid #0284c7; border-radius:6px;" onchange="onBlankRosterCoverTypeChange()">
+                <label class="blank-modal-label" data-i18n="blank_roster.cover_type_lbl">কভারের ধরন নির্বাচন করুন:</label>
+                <select id="blank-roster-cover-type-select" class="form-control blank-modal-select" onchange="onBlankRosterCoverTypeChange()">
                   <option value="default_stadium_trophy" selected data-i18n="blank_roster.opt_cover_default">🏟️ ডিফল্ট স্টেডিয়াম ও গোল্ডেন ট্রফি (রেফারেন্স ডিজাইন)</option>
                   <option value="unsplash_preset" data-i18n="blank_roster.opt_cover_unsplash">🌟 আনস্প্ল্যাশ কিউরেটেড কালেকশন (বাছাইকৃত সেরা স্টেডিয়াম)</option>
                   <option value="url" data-i18n="blank_roster.opt_cover_url">🔗 আনস্প্ল্যাশ বা ওয়েব ইমেজ লিঙ্ক পেস্ট...</option>
@@ -2111,33 +2111,33 @@
             </div>
 
             <!-- UNSPASH PRESETS GRID (Visible when unsplash_preset is selected) -->
-            <div id="blank-roster-unsplash-grid" style="display:none; margin-bottom:14px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:8px; padding:12px;">
-              <div style="font-size:12px; font-weight:700; color:#0f172a; margin-bottom:8px;">
+            <div id="blank-roster-unsplash-grid" class="blank-sub-box" style="display:none; margin-bottom:14px; padding:12px;">
+              <div style="font-size:12px; font-weight:700; margin-bottom:8px;" class="blank-modal-label">
                 <span data-i18n="blank_roster.unsplash_pick_lbl">📸 আনস্প্ল্যাশ থেকে পছন্দের স্টেডিয়াম নির্বাচন করুন (১ ক্লিকে সেট):</span>
               </div>
               <div class="unsplash-presets-row" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(115px, 1fr)); gap:8px;"></div>
             </div>
 
             <!-- DIRECT URL INPUT (Visible when url is selected) -->
-            <div id="blank-roster-url-wrap" style="display:none; margin-bottom:14px; background:#f0f9ff; border:1px solid #7dd3fc; border-radius:8px; padding:12px;">
-              <label style="font-size:12px; font-weight:700; color:#0369a1; display:block; margin-bottom:6px;" data-i18n="blank_roster.url_input_lbl">🔗 আনস্প্ল্যাশ বা যেকোনো ছবির লিঙ্ক দিন:</label>
+            <div id="blank-roster-url-wrap" class="blank-sub-box" style="display:none; margin-bottom:14px; padding:12px;">
+              <label class="blank-modal-label" data-i18n="blank_roster.url_input_lbl">🔗 আনস্প্ল্যাশ বা যেকোনো ছবির লিঙ্ক দিন:</label>
               <div style="display:flex; gap:8px;">
-                <input type="text" id="blank-roster-cover-url-input" placeholder="https://images.unsplash.com/..." style="flex:1; padding:8px 12px; font-size:12px; border:1px solid #0284c7; border-radius:6px;">
+                <input type="text" id="blank-roster-cover-url-input" class="form-control blank-modal-input" placeholder="https://images.unsplash.com/..." style="flex:1;">
                 <button type="button" class="btn" style="background:#0284c7; color:#fff; font-size:12px; font-weight:700; padding:8px 14px; border-radius:6px; cursor:pointer;" onclick="applyBlankRosterCoverUrl()" data-i18n="blank_roster.btn_apply_url">⚡ ছবি সেট করুন</button>
               </div>
             </div>
 
             <!-- CUSTOM FILE UPLOAD WRAP (Visible when custom is selected) -->
-            <div id="blank-roster-custom-file-wrap" style="display:none; margin-bottom:14px; background:#f8fafc; border:1.5px dashed #0284c7; border-radius:8px; padding:14px; text-align:center;">
+            <div id="blank-roster-custom-file-wrap" class="blank-sub-box" style="display:none; margin-bottom:14px; border:1.5px dashed #0284c7; border-radius:8px; padding:14px; text-align:center;">
               <input type="file" id="blank-roster-cover-file" accept="image/*" style="display:none;" onchange="handleBlankRosterCoverUpload(event)">
               <button type="button" class="btn" style="background:#0284c7; color:#fff; font-size:12.5px; font-weight:700; padding:7px 16px; border-radius:6px; cursor:pointer;" onclick="document.getElementById('blank-roster-cover-file').click()" data-i18n="blank_roster.btn_browse_cover">📁 কম্পিউটার থেকে কভার ছবি নির্বাচন করুন</button>
-              <p style="font-size:11px; color:#64748b; margin:6px 0 0 0;" data-i18n="blank_roster.upload_tip">যেকোনো হাই-রেজোলিউশন স্টেডিয়াম, মাঠ বা ল্যান্ডস্কেপ ছবি আপলোড করুন</p>
+              <p style="font-size:11px; margin:6px 0 0 0;" class="blank-tip-sub" data-i18n="blank_roster.upload_tip">যেকোনো হাই-রেজোলিউশন স্টেডিয়াম, মাঠ বা ল্যান্ডস্কেপ ছবি আপলোড করুন</p>
             </div>
 
             <!-- LIVE INTERACTIVE DRAG-TO-REPOSITION BOX -->
             <div id="blank-roster-cover-preview-section" style="margin-top:10px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                <span style="font-size:12px; font-weight:700; color:#334155; display:flex; align-items:center; gap:6px;">
+                <span class="blank-modal-label" style="display:flex; align-items:center; gap:6px; margin-bottom:0;">
                   <span>✋</span> <span data-i18n="blank_roster.drag_instruction">মাউস দিয়ে টেনে ওপরে-নিচে পজিশন ঠিক করুন (Drag to Reposition):</span>
                 </span>
                 <button type="button" style="background:none; border:none; color:#0284c7; font-size:11.5px; font-weight:700; cursor:pointer; text-decoration:underline;" onclick="resetBlankRosterCoverPos()" data-i18n="blank_roster.btn_reset_pos">↺ রিসেট (ডিফল্ট ৩৫%)</button>
@@ -2154,7 +2154,7 @@
 
               <!-- Slider fallback & precise fine-tuner -->
               <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
-                <label style="font-size:11.5px; font-weight:700; color:#475569; white-space:nowrap;" data-i18n="blank_roster.slider_lbl">↕️ সূক্ষ্ম অ্যাডজাস্ট:</label>
+                <label class="blank-modal-label" style="margin-bottom:0; white-space:nowrap;" data-i18n="blank_roster.slider_lbl">↕️ সূক্ষ্ম অ্যাডজাস্ট:</label>
                 <input type="range" id="blank-roster-cover-pos-slider" min="0" max="100" value="35" style="flex:1; cursor:pointer;" oninput="onBlankRosterCoverPosSlider(this.value)">
                 <span id="blank-roster-cover-pos-display" style="font-size:11.5px; font-weight:800; color:#0284c7; min-width:36px; text-align:right;">35%</span>
               </div>
@@ -2162,9 +2162,9 @@
           </div>
 
           <!-- SECTION 2: SMART RULE BUDGET & METER -->
-          <div style="background: #fffdf5; border: 1.5px solid #ffe082; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
+          <div class="blank-modal-card accent-amber">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; flex-wrap:wrap; gap:8px;">
-              <h4 style="margin: 0; font-size: 14px; color: #b71c1c; display:flex; align-items:center; gap:8px;">
+              <h4 class="blank-modal-title" style="margin:0;">
                 <span>📜</span> <span data-i18n="blank_roster.rules_budget_title">খেলার নিয়মাবলী বাজেট ও নির্বাচন (A4 ১-পেজ ফিট)</span>
               </h4>
               <div style="display:flex; gap:8px;">
@@ -2178,12 +2178,12 @@
               <!-- Dynamically populated -->
             </div>
 
-            <div style="font-size: 11.5px; color: #64748b; margin-bottom: 10px;">
+            <div style="font-size: 11.5px; margin-bottom: 10px;" class="blank-tip-sub">
               💡 A4 Portrait পেপারে এক পাতার মধ্যে সুন্দরভাবে ধরে রাখার জন্য সর্বোচ্চ <strong>৬ থেকে ৮টি মূল নিয়ম</strong> রাখা আদর্শ।
             </div>
 
             <!-- CHECKABLE RULES LIST (SPACIOUS 2-COLUMN RESPONSIVE GRID) -->
-            <div id="blank-roster-rules-checklist" style="max-height: 280px; overflow-y: auto; border: 1.5px solid #cbd5e1; border-radius: 8px; background: #fff; padding: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 10px;">
+            <div id="blank-roster-rules-checklist" class="blank-rules-grid">
               <!-- Dynamic checklist items -->
             </div>
           </div>
@@ -2191,7 +2191,7 @@
         </div>
 
         <!-- FOOTER -->
-        <div style="padding: 14px 24px; background: #f8fafc; border-top: 1px solid #cbd5e1; border-radius: 0 0 14px 14px; display: flex; flex-direction: column; gap: 10px;">
+        <div class="blank-modal-footer">
           <!-- ACTION BUTTONS ROW -->
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
             <button type="button" class="btn" style="background:#64748b; color:#fff; padding:8px 18px; font-size:13px; border-radius:6px; cursor:pointer;" onclick="closeBlankRosterConfigModal()" data-i18n="modal.btn_close">বাতিল</button>
@@ -2199,13 +2199,12 @@
           </div>
 
           <!-- PDF & PRINT HELPER TIP BANNER -->
-          <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 8px 12px; font-size: 11.5px; color: #1e40af; display: flex; align-items: center; gap: 8px; line-height: 1.4;">
+          <div class="blank-modal-tip">
             <span data-i18n-html="blank_roster.print_pdf_hint">💡 <strong>পিডিএফ ফাইল পেতে:</strong> প্রিন্ট উইন্ডো এলে Destination / Printer অপশন থেকে <strong>"Save as PDF"</strong> নির্বাচন করে <strong>Save</strong> বাটনে ক্লিক করুন।</span>
           </div>
         </div>
       </div>
     </div>
-
 
   <!-- UPCOMING SPORT PREVIEW / ROADMAP MODAL -->
     <div id="sport-preview-modal" class="modal-backdrop" onclick="if(event.target === this) closeSportPreviewModal()">
