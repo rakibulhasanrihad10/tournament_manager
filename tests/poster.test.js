@@ -89,7 +89,11 @@ const context = {
   navigator: { clipboard: { writeText: () => Promise.resolve() } },
   alert: () => {},
   escapeHtml: (str) => String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
-  t: (k) => k,
+  t: (k) => {
+    if (k === 'common.items_unit') return 'টি';
+    if (k === 'poster.rules_title') return 'টুর্নামেন্ট পরিচালনা সংক্রান্ত নিয়মাবলী';
+    return k;
+  },
   currentLang: 'bn',
   tournamentConfig: {
     title: 'চিতড্ডা প্রিমিয়ার ফুটবল টুর্নামেন্ট ২০২৬',
@@ -116,6 +120,10 @@ const context = {
 };
 
 vm.createContext(context);
+
+// Load constants.js
+const constantsCode = fs.readFileSync(path.join(__dirname, '../src/js/constants.js'), 'utf8');
+vm.runInContext(constantsCode, context);
 
 // Load state.js to get generateTournamentStructure & getActiveGroupMatches
 const stateCode = fs.readFileSync(path.join(__dirname, '../src/js/state.js'), 'utf8');
@@ -335,6 +343,35 @@ context.switchPosterTab('promo');
 context.renderPrintablePosterSheet();
 assert(pagePoster.innerHTML.includes('promo-poster-card'), 'Switched tab populates #page-poster with promo poster');
 assert(pagePoster.innerHTML.includes('promo-footer-sign'), 'Promo poster includes .promo-footer-sign');
+
+// ---------------------------------------------------------------------
+// TEST SUITE 6: CUSTOM SELECTED RULES SUBSET IN PROMOTIONAL POSTER
+// ---------------------------------------------------------------------
+console.log('\n📜 Test Suite 6: Custom Selected Rules Subset in Promotional Poster');
+
+context.saveTournamentConfig({
+  selectedRules: ['r_squad_minibar', 'r_match_duration', 'r_direct_shootout', 'r_residency', 'r_referee_final'],
+  customRules: []
+});
+
+const fiveRulesPoster = context.generatePromoPosterCardHtml();
+assert(fiveRulesPoster.includes('(5 টি)'), 'Promotional poster displays exactly (5 টি) count');
+assert(fiveRulesPoster.includes('মিনিবার স্কোয়াড'), 'Contains selected rule 1');
+assert(fiveRulesPoster.includes('ম্যাচের সময়কাল'), 'Contains selected rule 2');
+assert(fiveRulesPoster.includes('সরাসরি টাইব্রেকার'), 'Contains selected rule 3');
+assert(fiveRulesPoster.includes('স্থায়ী বাসিন্দা'), 'Contains selected rule 4');
+assert(fiveRulesPoster.includes('রেফারির সিদ্ধান্তই চূড়ান্ত'), 'Contains selected rule 5');
+assert(!fiveRulesPoster.includes('ওয়াকওভার (Walkover)'), 'Cleanly excludes unselected rules');
+assert(!fiveRulesPoster.includes('আবহাওয়াজনিত বাধা'), 'Cleanly excludes unselected rule 24');
+
+// Test 0 rules empty state
+context.saveTournamentConfig({
+  selectedRules: [],
+  customRules: []
+});
+const zeroRulesPoster = context.generatePromoPosterCardHtml();
+assert(zeroRulesPoster.includes('(0 টি)'), 'Promotional poster displays (0 টি)');
+assert(zeroRulesPoster.includes('কোনো বিশেষ নিয়মাবলী সেট করা হয়নি'), 'Promotional poster renders clean empty state when no rules are selected');
 
 // ---------------------------------------------------------------------
 // SUMMARY

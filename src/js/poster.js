@@ -456,9 +456,15 @@ function generatePromoPosterCardHtml() {
         <div class="promo-rules-preview-title">
           <span>${tFn('poster.rules_title')} (${allActiveRules.length} ${tFn('common.items_unit')}):</span>
         </div>
-        <ol class="promo-rules-ol">
-          ${rulesListHtml}
-        </ol>
+        ${allActiveRules.length === 0 ? `
+          <div style="font-size:10.5px; color:#cbd5e1; font-style:italic; padding:4px 0;">
+            ${isEn ? 'No rules selected. Configure rules in Tournament Setup.' : 'কোনো বিশেষ নিয়মাবলী সেট করা হয়নি। টুর্নামেন্ট সেটআপ থেকে নিয়ম নির্বাচন করুন।'}
+          </div>
+        ` : `
+          <ol class="promo-rules-ol">
+            ${rulesListHtml}
+          </ol>
+        `}
       </div>
 
       <div class="promo-footer-sign">

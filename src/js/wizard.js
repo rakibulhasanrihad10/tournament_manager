@@ -23,9 +23,9 @@ function switchWizardTab(tabKey) {
   if (tabKey === 'info') {
     setTimeout(updateRoadmapSvgPaths, 60);
   } else if (tabKey === 'rules') {
-    if (typeof syncRulesWithSquadSettings === 'function') {
-      syncRulesWithSquadSettings(true);
-    }
+    // Preserve user-selected rules without force-reloading all preset rules
+    updateWizardRulesCounts();
+    renderWizardRulesChecklist();
   }
 }
 
@@ -2843,8 +2843,18 @@ function syncRulesWithSquadSettings(force = false) {
     tempWizardSelectedRules = new Set();
   }
 
+  // If force is true and user currently has 0 rules selected, load base preset
+  if (force && tempWizardSelectedRules.size === 0) {
+    if (starting >= 11 && typeof STANDARD_RULES_PRESET !== 'undefined') {
+      STANDARD_RULES_PRESET.forEach(rid => tempWizardSelectedRules.add(rid));
+    } else if (starting <= 6 && typeof MINIBAR_RULES_PRESET !== 'undefined') {
+      MINIBAR_RULES_PRESET.forEach(rid => tempWizardSelectedRules.add(rid));
+    }
+  }
+
   if (starting >= 11) {
-    // 11-a-side FIFA Standard Football: Adapt to 11-a-side rules
+    // 11-a-side FIFA Standard Football: Adapt incompatible minibar rules without overriding user's rule selection
+    const hadMiniSquad = tempWizardSelectedRules.has('r_onfield_6') || tempWizardSelectedRules.has('r_squad_minibar');
     tempWizardSelectedRules.delete('r_onfield_6');
     tempWizardSelectedRules.delete('r_squad_minibar');
     tempWizardSelectedRules.delete('r_match_duration');
@@ -2856,17 +2866,9 @@ function syncRulesWithSquadSettings(force = false) {
     tempWizardSelectedRules.delete('r_minibar_gk_rules');
     tempWizardSelectedRules.delete('r_minibar_posts');
 
-    tempWizardSelectedRules.add('r_squad_11');
-    tempWizardSelectedRules.add('r_onfield_11');
-    tempWizardSelectedRules.add('r_match_duration_90');
-    tempWizardSelectedRules.add('r_extra_time_fifa');
-    tempWizardSelectedRules.add('r_fifa_points');
-    tempWizardSelectedRules.add('r_pen_count_fifa');
-    tempWizardSelectedRules.add('r_fifa_offside');
-    tempWizardSelectedRules.add('r_fifa_subs');
-
-    if (typeof STANDARD_RULES_PRESET !== 'undefined') {
-      STANDARD_RULES_PRESET.forEach(rid => tempWizardSelectedRules.add(rid));
+    if (hadMiniSquad) {
+      tempWizardSelectedRules.add('r_squad_11');
+      tempWizardSelectedRules.add('r_onfield_11');
     }
 
     const stdBtn = document.getElementById('btn-preset-standard');
@@ -2879,8 +2881,10 @@ function syncRulesWithSquadSettings(force = false) {
       applyTimePreset(45, 45, 15);
     }
   } else if (starting <= 6) {
-    // 5/6-a-side Minibar / Short-Pitch Football: Adapt to Minibar rules
+    // 5/6-a-side Minibar / Short-Pitch Football: Adapt incompatible 11-a-side rules without overriding user's rule selection
+    const hadStdSquad = tempWizardSelectedRules.has('r_onfield_11') || tempWizardSelectedRules.has('r_squad_11');
     tempWizardSelectedRules.delete('r_onfield_11');
+    tempWizardSelectedRules.delete('r_squad_11');
     tempWizardSelectedRules.delete('r_match_duration_90');
     tempWizardSelectedRules.delete('r_extra_time_fifa');
     tempWizardSelectedRules.delete('r_fifa_points');
@@ -2888,19 +2892,12 @@ function syncRulesWithSquadSettings(force = false) {
     tempWizardSelectedRules.delete('r_fifa_offside');
     tempWizardSelectedRules.delete('r_fifa_subs');
 
-    tempWizardSelectedRules.add('r_squad_minibar');
-    tempWizardSelectedRules.add('r_onfield_6');
-    tempWizardSelectedRules.add('r_minibar_posts');
-    tempWizardSelectedRules.add('r_match_duration');
-    tempWizardSelectedRules.add('r_direct_shootout');
-    tempWizardSelectedRules.add('r_pen_count');
-    tempWizardSelectedRules.add('r_shootout_pts');
-    tempWizardSelectedRules.add('r_no_offside');
-    tempWizardSelectedRules.add('r_rolling_subs');
-    tempWizardSelectedRules.add('r_minibar_gk_rules');
-
-    if (typeof MINIBAR_RULES_PRESET !== 'undefined') {
-      MINIBAR_RULES_PRESET.forEach(rid => tempWizardSelectedRules.add(rid));
+    if (hadStdSquad) {
+      tempWizardSelectedRules.add('r_squad_minibar');
+      tempWizardSelectedRules.add('r_onfield_6');
+      tempWizardSelectedRules.add('r_minibar_posts');
+      tempWizardSelectedRules.add('r_rolling_subs');
+      tempWizardSelectedRules.add('r_no_offside');
     }
 
     const stdBtn = document.getElementById('btn-preset-standard');
@@ -2978,7 +2975,7 @@ function applySquadPreset(type) {
   if (formatEl) formatEl.value = formatDesc;
 
   updateSquadCalculations();
-  syncRulesWithSquadSettings(true);
+  syncRulesWithSquadSettings(false);
 }
 
 function applyWizardPreset(presetKey) {
