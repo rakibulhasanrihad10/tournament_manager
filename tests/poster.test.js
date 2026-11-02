@@ -269,6 +269,23 @@ context.copyFacebookFixturePost();
 assert(copyCalled, 'copyFacebookFixturePost successfully copies fixture text to clipboard');
 
 // ---------------------------------------------------------------------
+// TEST SUITE 4: STADIUM COVER HERO BANNER & BRANDING INTEGRATION
+// ---------------------------------------------------------------------
+console.log('\n🏟️ Test Suite 4: Stadium Cover Hero Banner & Branding Integration');
+
+const fixPoster = context.generateFixturePosterCardHtml();
+assert(fixPoster.includes('poster-hero-cover-banner'), 'Fixture poster renders .poster-hero-cover-banner');
+assert(fixPoster.includes('poster-hero-img'), 'Fixture poster renders stadium cover img');
+assert(fixPoster.includes('poster-hero-logo'), 'Fixture poster renders left and right logos');
+assert(fixPoster.includes('poster-hero-swoosh'), 'Fixture poster renders gold & blue curved swoosh ribbon');
+
+const promoPoster = context.generatePromoPosterCardHtml();
+assert(promoPoster.includes('poster-hero-cover-banner'), 'Promo poster renders .poster-hero-cover-banner');
+assert(promoPoster.includes('poster-hero-img'), 'Promo poster renders stadium cover img');
+assert(promoPoster.includes('poster-hero-logo'), 'Promo poster renders left and right logos');
+assert(promoPoster.includes('poster-hero-swoosh'), 'Promo poster renders gold & blue curved swoosh ribbon');
+
+// ---------------------------------------------------------------------
 // SUMMARY
 // ---------------------------------------------------------------------
 console.log(`\n==========================================`);

@@ -93,6 +93,113 @@ function getDynamicKnockoutMatchesForPoster(c, isEn) {
 }
 
 // ----------------------------------------------------
+// 0. POSTER STADIUM COVER & HERO BANNER HELPER
+// Seamlessly inherits stadium cover, left/right logos,
+// and branding from tournament setup & blank roster
+// ----------------------------------------------------
+function getPosterCoverUrl() {
+  if (typeof getBlankRosterActiveCoverUrl === 'function') {
+    return getBlankRosterActiveCoverUrl();
+  }
+  return 'assets/football-cover.jpg';
+}
+
+function getPosterCoverPosition() {
+  if (typeof blankRosterImages !== 'undefined' && blankRosterImages && blankRosterImages.coverPosition !== undefined) {
+    return blankRosterImages.coverPosition;
+  }
+  return 35;
+}
+
+function getPosterCoverType() {
+  if (typeof blankRosterImages !== 'undefined' && blankRosterImages && blankRosterImages.coverType) {
+    return blankRosterImages.coverType;
+  }
+  return 'default_stadium_trophy';
+}
+
+function getPosterLogoHtml(side) {
+  if (typeof getBlankRosterLogoHtml === 'function') {
+    return getBlankRosterLogoHtml(side);
+  }
+  if (side === 'left') {
+    return `<svg viewBox="0 0 80 80" width="55" height="48" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22 18 h36 v22 c0 11 -8 18 -18 18 s-18 -7 -18 -18 Z" fill="#f59e0b" stroke="#072a60" stroke-width="2.5"/>
+      <path d="M22 24 C10 24 10 38 22 40" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+      <path d="M58 24 C70 24 70 38 58 40" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+      <rect x="36" y="58" width="8" height="10" fill="#d97706" stroke="#072a60" stroke-width="2"/>
+      <rect x="26" y="68" width="28" height="8" rx="2" fill="#072a60"/>
+      <polygon points="40,26 43,33 50,33 44,37 46,44 40,40 34,44 36,37 30,33 37,33" fill="#ffffff"/>
+    </svg>`;
+  }
+  return `<svg viewBox="0 0 80 80" width="55" height="48" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="40" cy="40" rx="36" ry="24" fill="#0284c7" stroke="#ffffff" stroke-width="2"/>
+    <ellipse cx="40" cy="40" rx="26" ry="16" fill="#0369a1"/>
+    <polygon points="34,25 40,15 46,25" fill="#f59e0b"/>
+  </svg>`;
+}
+
+function generatePosterHeroBannerHtml(opts) {
+  const { badgeText, badgeStyle, extraMeta, c, defaultTitle, defaultOrg, defaultVenue, tFn, esc } = opts;
+  const coverUrl = getPosterCoverUrl();
+  const coverPos = getPosterCoverPosition();
+  const coverType = getPosterCoverType();
+  const leftLogo = getPosterLogoHtml('left');
+  const rightLogo = getPosterLogoHtml('right');
+
+  const hasCover = coverType !== 'none' && Boolean(coverUrl);
+
+  return `
+    <div class="promo-hero-header poster-hero-cover-banner" style="position:relative; margin:-16px -16px 10px -16px; border-radius:7px 7px 0 0; overflow:hidden; background:#072a60; text-align:center; border-bottom:none !important; padding:0 !important;">
+      ${hasCover ? `
+      <!-- Background Stadium Image with Focal Crop & Ambient Vignette -->
+      <div class="poster-hero-bg-wrap" style="position:absolute; inset:0; overflow:hidden; z-index:1;">
+        <img src="${coverUrl}" alt="Stadium Banner" class="poster-hero-img" style="width:100%; height:100%; object-fit:cover; object-position:center ${coverPos}%; display:block;">
+        <div class="poster-hero-overlay" style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(7, 26, 68, 0.65) 0%, rgba(3, 12, 38, 0.35) 50%, rgba(5, 18, 50, 0.85) 100%);"></div>
+      </div>
+      ` : `
+      <div style="position:absolute; inset:0; background:linear-gradient(135deg, #071f43 0%, #0c3875 100%); z-index:1;"></div>
+      `}
+
+      <!-- Foreground: Left Logo, Center Title & Right Logo -->
+      <div class="poster-hero-content" style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:12px 18px 10px 18px; box-sizing:border-box; gap:10px;">
+        <!-- Left Logo / Trophy -->
+        <div class="poster-hero-logo" style="width:72px; height:62px; display:flex; align-items:center; justify-content:center; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.7));">
+          ${leftLogo}
+        </div>
+
+        <!-- Center Content -->
+        <div class="poster-hero-center" style="text-align:center; flex:1; min-width:0;">
+          <span class="promo-badge-tag" style="${badgeStyle || ''}">${badgeText}</span>
+          <h1 class="promo-hero-title" style="margin:2px 0 4px 0; font-size:22px; font-weight:900; color:#ffca28; text-shadow:0 2px 8px rgba(0,0,0,0.85), 0 0 16px rgba(251,191,36,0.4); line-height:1.25;">
+            ⚽ ${esc(c.title || defaultTitle)} ⚽
+          </h1>
+          <div class="promo-hero-sub" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; font-size:11.5px; color:#e2e8f0; font-weight:600; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.3); border-radius:20px; padding:3px 14px; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); text-shadow:0 1px 3px rgba(0,0,0,0.8);">
+            <span>🚩 ${tFn('poster.footer_org')} <strong>${esc(c.organizer || defaultOrg)}</strong></span>
+            <span style="opacity:0.6;">|</span>
+            <span>📍 ${tFn('page1.meta_venue')} <strong>${esc(c.venue || defaultVenue)}</strong></span>
+            ${extraMeta ? `<span style="opacity:0.6;">|</span><span>${extraMeta}</span>` : ''}
+          </div>
+        </div>
+
+        <!-- Right Logo / Venue / Sponsor -->
+        <div class="poster-hero-logo" style="width:72px; height:62px; display:flex; align-items:center; justify-content:center; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.7));">
+          ${rightLogo}
+        </div>
+      </div>
+
+      <!-- Dynamic Curved Gold & Royal Blue Wavy Ribbon Swoosh -->
+      <div class="poster-hero-swoosh" style="position:relative; z-index:3; width:100%; height:18px; margin-top:-6px; overflow:hidden;">
+        <svg viewBox="0 0 1000 36" preserveAspectRatio="none" style="width:100%; height:100%; display:block;">
+          <path d="M0,0 C200,32 350,36 500,20 C650,4 800,28 1000,0 L1000,36 L0,36 Z" fill="#fbbf24" opacity="0.95"/>
+          <path d="M0,8 C220,36 370,32 500,24 C630,16 780,36 1000,10 L1000,36 L0,36 Z" fill="#072a60"/>
+        </svg>
+      </div>
+    </div>
+  `;
+}
+
+// ----------------------------------------------------
 // 1. OFFICIAL FIXTURE & SCHEDULE POSTER (PHASE 2)
 // Clean layout using management panel styles:
 // Group table without scores/winners; Knockout cards without score/winner blanks
@@ -172,18 +279,22 @@ function generateFixturePosterCardHtml() {
     `;
   }).join('');
 
+  const heroHtml = generatePosterHeroBannerHtml({
+    badgeText: tFn('poster.fixture_badge'),
+    badgeStyle: 'background: linear-gradient(135deg, #0284c7, #0369a1);',
+    extraMeta: `🗓️ <strong>${esc(c.startDate || defaultDate)}</strong>`,
+    c,
+    defaultTitle,
+    defaultOrg,
+    defaultVenue,
+    tFn,
+    esc
+  });
+
   return `
     <div class="fixture-poster-card" id="fixture-poster-content">
-      <!-- HEADER -->
-      <div class="promo-hero-header" style="border-bottom-color: rgba(2, 132, 199, 0.4); margin-bottom: 4px;">
-        <span class="promo-badge-tag" style="background: linear-gradient(135deg, #0284c7, #0369a1);">${tFn('poster.fixture_badge')}</span>
-        <h1 class="promo-hero-title">⚽ ${esc(c.title || defaultTitle)} ⚽</h1>
-        <div class="promo-hero-sub">
-          🚩 ${tFn('poster.footer_org')} <strong>${esc(c.organizer || defaultOrg)}</strong>
-          &nbsp;|&nbsp; 📍 ${tFn('page1.meta_venue')} <strong>${esc(c.venue || defaultVenue)}</strong>
-          &nbsp;|&nbsp; 🗓️ <strong>${esc(c.startDate || defaultDate)}</strong>
-        </div>
-      </div>
+      <!-- HERO BANNER -->
+      ${heroHtml}
 
       <!-- KEY METADATA STRIP -->
       <div class="promo-meta-grid" style="grid-template-columns: repeat(4, 1fr); padding: 6px; margin-bottom: 2px;">
@@ -279,16 +390,22 @@ function generatePromoPosterCardHtml() {
 
   const tFn = typeof t === 'function' ? t : (k) => k;
 
+  const heroHtml = generatePosterHeroBannerHtml({
+    badgeText: tFn('poster.badge'),
+    badgeStyle: 'background: #b91c1c;',
+    extraMeta: `🗓️ <strong>${esc(c.startDate || defaultDate)}</strong>`,
+    c,
+    defaultTitle,
+    defaultOrg,
+    defaultVenue,
+    tFn,
+    esc
+  });
+
   return `
     <div class="promo-poster-card" id="promo-poster-content">
-      <div class="promo-hero-header">
-        <span class="promo-badge-tag">${tFn('poster.badge')}</span>
-        <h1 class="promo-hero-title">⚽ ${esc(c.title || defaultTitle)} ⚽</h1>
-        <div class="promo-hero-sub">
-          🚩 ${tFn('poster.footer_org')} <strong>${esc(c.organizer || defaultOrg)}</strong>
-          &nbsp;|&nbsp; 📍 ${tFn('page1.meta_venue')} <strong>${esc(c.venue || defaultVenue)}</strong>
-        </div>
-      </div>
+      <!-- HERO BANNER -->
+      ${heroHtml}
 
       <div class="promo-meta-grid">
         <div class="promo-meta-item">
@@ -620,8 +737,22 @@ function fallbackCopyText(text) {
   document.body.removeChild(ta);
 }
 
+if (typeof window !== 'undefined') {
+  window.generatePosterHeroBannerHtml = generatePosterHeroBannerHtml;
+  window.generatePromoPosterCardHtml = generatePromoPosterCardHtml;
+  window.generateFixturePosterCardHtml = generateFixturePosterCardHtml;
+  window.openPromoPosterModal = openPromoPosterModal;
+  window.openFixturePosterModal = openFixturePosterModal;
+  window.closePromoPosterModal = closePromoPosterModal;
+  window.switchPosterTab = switchPosterTab;
+  window.copyFacebookPromoPost = copyFacebookPromoPost;
+  window.copyFacebookFixturePost = copyFacebookFixturePost;
+  window.renderPrintablePosterSheet = renderPrintablePosterSheet;
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
+    generatePosterHeroBannerHtml,
     generatePromoPosterCardHtml,
     generateFixturePosterCardHtml,
     getDynamicKnockoutMatchesForPoster,

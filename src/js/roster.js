@@ -1826,6 +1826,16 @@ function updateHeroStadiumCover() {
     const rightEl = document.getElementById(`${prefix}-hero-logo-right`);
     if (rightEl) rightEl.innerHTML = rightHtml;
   });
+
+  const posterTarget = document.getElementById('promo-poster-render-target');
+  if (posterTarget && typeof activePosterTab !== 'undefined') {
+    posterTarget.innerHTML = activePosterTab === 'fixture'
+      ? (typeof generateFixturePosterCardHtml === 'function' ? generateFixturePosterCardHtml() : '')
+      : (typeof generatePromoPosterCardHtml === 'function' ? generatePromoPosterCardHtml() : '');
+  }
+  if (typeof renderPrintablePosterSheet === 'function') {
+    renderPrintablePosterSheet();
+  }
 }
 
 function renderBlankRosterSheet(configOverride) {

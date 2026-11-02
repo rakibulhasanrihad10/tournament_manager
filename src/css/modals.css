@@ -3157,6 +3157,85 @@
       color: #94a3b8;
     }
 
+    /* Poster Stadium Cover Hero Banner & Ambient Vignette */
+    .poster-hero-cover-banner {
+      position: relative;
+      margin: -16px -16px 10px -16px;
+      border-radius: 7px 7px 0 0;
+      overflow: hidden;
+      background: #072a60;
+      text-align: center;
+      border-bottom: none !important;
+      padding: 0 !important;
+    }
+    .poster-hero-cover-banner .poster-hero-bg-wrap {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .poster-hero-cover-banner .poster-hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .poster-hero-cover-banner .poster-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(7, 26, 68, 0.65) 0%, rgba(3, 12, 38, 0.35) 50%, rgba(5, 18, 50, 0.85) 100%);
+    }
+    .poster-hero-cover-banner .poster-hero-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px 10px 18px;
+      box-sizing: border-box;
+      gap: 10px;
+    }
+    .poster-hero-cover-banner .poster-hero-logo {
+      width: 72px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.7));
+    }
+    .poster-hero-cover-banner .poster-hero-center {
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+    }
+    .poster-hero-cover-banner .poster-hero-swoosh {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      height: 18px;
+      margin-top: -6px;
+      overflow: hidden;
+    }
+
+    @media (max-width: 600px) {
+      .poster-hero-cover-banner .poster-hero-content {
+        padding: 10px 10px 8px 10px;
+        gap: 6px;
+      }
+      .poster-hero-cover-banner .poster-hero-logo {
+        width: 48px;
+        height: 44px;
+      }
+      .poster-hero-cover-banner .promo-hero-title {
+        font-size: 17px !important;
+      }
+      .poster-hero-cover-banner .promo-hero-sub {
+        font-size: 10px !important;
+        padding: 2px 8px !important;
+      }
+    }
+
     /* ========================================================
        MODAL DARK THEME ADAPTATION
        ======================================================== */
