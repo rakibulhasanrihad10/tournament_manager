@@ -28,6 +28,20 @@ const domHtml = `
 const context = {
   console: console,
   document: {
+    body: {
+      classList: {
+        classes: new Set(),
+        add: function(c) { this.classes.add(c); },
+        remove: function(...cs) { cs.forEach(c => this.classes.delete(c)); },
+        contains: function(c) { return this.classes.has(c); }
+      }
+    },
+    head: {
+      appendChild: function(el) {
+        if (el && el.id) context._elements[el.id] = el;
+      }
+    },
+    addEventListener: () => {},
     getElementById: (id) => {
       if (!context._elements[id]) {
         context._elements[id] = {
@@ -50,7 +64,16 @@ const context = {
     },
     querySelector: () => null,
     querySelectorAll: () => [],
-    createElement: () => ({ setAttribute: () => {}, appendChild: () => {}, style: {} })
+    createElement: (tag) => {
+      const el = {
+        tagName: tag,
+        id: '',
+        textContent: '',
+        innerHTML: '',
+        style: {}
+      };
+      return el;
+    }
   },
   _elements: {},
   localStorage: {
@@ -61,6 +84,8 @@ const context = {
     clear: function() { this._store = {}; }
   },
   window: { print: () => {} },
+  setTimeout: (fn, ms) => {},
+  clearTimeout: () => {},
   navigator: { clipboard: { writeText: () => Promise.resolve() } },
   alert: () => {},
   escapeHtml: (str) => String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
@@ -99,6 +124,10 @@ vm.runInContext(stateCode, context);
 // Load poster.js
 const posterCode = fs.readFileSync(path.join(__dirname, '../src/js/poster.js'), 'utf8');
 vm.runInContext(posterCode, context);
+
+// Load app.js for printDocument
+const appCode = fs.readFileSync(path.join(__dirname, '../src/js/app.js'), 'utf8');
+vm.runInContext(appCode, context);
 
 let passed = 0;
 let failed = 0;
@@ -284,6 +313,28 @@ assert(promoPoster.includes('poster-hero-cover-banner'), 'Promo poster renders .
 assert(promoPoster.includes('poster-hero-img'), 'Promo poster renders stadium cover img');
 assert(promoPoster.includes('poster-hero-logo'), 'Promo poster renders left and right logos');
 assert(promoPoster.includes('poster-hero-swoosh'), 'Promo poster renders gold & blue curved swoosh ribbon');
+
+// ---------------------------------------------------------------------
+// TEST SUITE 5: PRINT DISPATCHER & SINGLE-PAGE A4 PORTRAIT CONFORMANCE
+// ---------------------------------------------------------------------
+console.log('\n🖨️ Test Suite 5: Print Dispatcher & Single-Page A4 Portrait Fit Verification');
+
+context.switchPosterTab('fixture');
+context.printDocument('poster');
+
+assert(context.document.body.classList.contains('print-only-poster'), 'printDocument("poster") adds print-only-poster class');
+const pageStyle = context.document.getElementById('dynamic-print-page-style');
+assert(pageStyle && pageStyle.textContent.includes('size: A4 portrait'), 'Poster print dynamically configures A4 portrait');
+assert(pageStyle && pageStyle.textContent.includes('margin: 0'), 'Poster print dynamically configures 0 margins for edge-to-edge 1-page fit');
+
+const pagePoster = context.document.getElementById('page-poster');
+assert(pagePoster.innerHTML.includes('fixture-poster-card'), 'renderPrintablePosterSheet populates #page-poster with active fixture poster');
+assert(pagePoster.innerHTML.includes('fixture-poster-footer'), 'Fixture poster includes .fixture-poster-footer for bottom anchoring');
+
+context.switchPosterTab('promo');
+context.renderPrintablePosterSheet();
+assert(pagePoster.innerHTML.includes('promo-poster-card'), 'Switched tab populates #page-poster with promo poster');
+assert(pagePoster.innerHTML.includes('promo-footer-sign'), 'Promo poster includes .promo-footer-sign');
 
 // ---------------------------------------------------------------------
 // SUMMARY

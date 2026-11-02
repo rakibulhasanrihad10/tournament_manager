@@ -56,7 +56,26 @@
       body.print-only-poster .page-1,
       body.print-only-poster .page-2,
       body.print-only-poster .page-blank-roster,
-      body.print-only-poster .page-break {
+      body.print-only-poster .page-break,
+      body.print-only-poster #sports-hub-view,
+      body.print-only-poster .sports-hub-container,
+      body.print-only-poster .sports-hub-view,
+      body.print-only-poster footer,
+      body.print-only-poster .app-footer,
+      body.print-only-poster .modal,
+      body.print-only-poster .modal-backdrop,
+      body.print-only-poster .action-bar,
+      body.print-only-poster .welcome-banner-strip {
+        display: none !important;
+      }
+      body.print-only-poster > *:not(#football-app-view) {
+        display: none !important;
+      }
+      body.print-only-poster #football-app-view > *:not(#page-poster) {
+        display: none !important;
+      }
+      body:not(.print-only-poster) .page-poster,
+      body:not(.print-only-poster) #page-poster {
         display: none !important;
       }
       body.print-only-poster .page-poster {
@@ -326,5 +345,82 @@
       body.print-only-blank-roster .page-blank-roster .header p,
       .page-blank-roster .header p {
         color: #333333 !important;
+      }
+
+      /* ========================================================
+         Social Media Poster (Fixture & Notice) Print Optimization
+         Strictly A4 Portrait 1-Page Perfect Fit & Zero Outer Double Border
+         ======================================================== */
+      @page posterPage {
+        size: A4 portrait;
+        margin: 0mm;
+      }
+      body.print-only-poster {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        background: #081120 !important;
+      }
+      body.print-only-poster .page-poster,
+      body.print-only-poster #page-poster {
+        page: posterPage !important;
+        display: block !important;
+        width: 210mm !important;
+        max-width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        background: transparent !important;
+      }
+      body.print-only-poster .fixture-poster-card,
+      body.print-only-poster .promo-poster-card {
+        page: posterPage !important;
+        width: 100% !important;
+        max-width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        box-sizing: border-box !important;
+        border-radius: 0 !important;
+        border-width: 4px !important;
+        margin: 0 !important;
+        padding: 14px 18px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+        overflow: hidden !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      body.print-only-poster .poster-hero-cover-banner {
+        margin: -14px -18px 8px -18px !important;
+        border-radius: 0 !important;
+      }
+      body.print-only-poster .fixture-poster-footer,
+      body.print-only-poster .promo-footer-sign {
+        margin-top: auto !important;
+        flex-shrink: 0 !important;
+      }
+      body.print-only-poster .fixture-poster-card .p1-card {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        margin-bottom: 0 !important;
+      }
+      body.print-only-poster .fixture-poster-card th,
+      body.print-only-poster .fixture-poster-card td {
+        padding: 4px 6px !important;
       }
     }

@@ -16,8 +16,8 @@
       </div>
 
       <!-- Top Poster Action Bar -->
-      <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#f8fafc; border-bottom:1px solid #e2e8f0; flex-wrap:wrap; gap:6px;">
-        <span style="font-size:11px; font-weight:700; color:#334155;" data-i18n="poster.fixture_sub">নিবন্ধিত সকল দলের অফিশিয়াল খেলার সূচি ও নকআউট রোডম্যাপ</span>
+      <div class="modal-promo-action-bar" style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#f8fafc; border-bottom:1px solid #e2e8f0; flex-wrap:wrap; gap:6px;">
+        <span class="modal-promo-subtitle" style="font-size:11px; font-weight:700; color:#334155;" data-i18n="poster.fixture_sub">নিবন্ধিত সকল দলের অফিশিয়াল খেলার সূচি ও নকআউট রোডম্যাপ</span>
         <div style="display:flex; gap:6px;">
           <button type="button" class="btn" id="btn-poster-branding-setup" style="background:linear-gradient(135deg, #0284c7, #0369a1); color:#fff; font-size:11px; padding:5px 10px; font-weight:700;" onclick="openBlankRosterConfigModal()" data-i18n="poster.btn_branding_setup" title="পোস্টারের স্টেডিয়াম কভার ও লোগো পরিবর্তন করুন">🏟️ কভার ও লোগো</button>
           <button type="button" class="btn" id="btn-poster-copy-action" style="background:linear-gradient(135deg, #1e40af, #2563eb); color:#fff; font-size:11px; padding:5px 10px;" onclick="copyFacebookFixturePost()" data-i18n="modal.btn_copy_fixture">📋 ফিক্সচার পোস্ট কপি করুন</button>
@@ -30,7 +30,8 @@
         <div id="promo-poster-render-target"></div>
       </div>
 
-      <div style="display:flex; justify-content:flex-end; padding:8px 12px; background:#f8fafc; border-top:1px solid #e2e8f0;">
+      <div class="modal-promo-footer-bar" style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#f8fafc; border-top:1px solid #e2e8f0; flex-wrap:wrap; gap:8px;">
+        <div class="modal-promo-tip" style="font-size:11px; color:#475569;" data-i18n="poster.print_tip">💡 পিডিএফ বা প্রিন্ট কপি পেতে: প্রিন্ট উইন্ডো এলে Destination থেকে 'Save as PDF' নির্বাচন করুন (A4 পোর্ট্রেট ১ পেজে পারফেক্ট ফিট)।</div>
         <button type="button" class="btn" style="background:#0f172a; color:#fff;" onclick="closePromoPosterModal()" data-i18n="modal.btn_close_done">বন্ধ করুন ✕</button>
       </div>
     </div>

@@ -305,7 +305,10 @@ function printDocument(mode) {
         if (pageStyle) pageStyle.textContent = '@page { size: A4 landscape; margin: 5mm 6mm; }';
         document.body.classList.add('print-only-2');
       } else if (mode === 'poster') {
-        if (pageStyle) pageStyle.textContent = '@page { size: A4 landscape; margin: 5mm 6mm; }';
+        // A4 Portrait for Social Media Poster (edge-to-edge cover banner with strictly 1-page fit)
+        if (pageStyle) {
+          pageStyle.textContent = '@page { size: A4 portrait; margin: 0; }';
+        }
         renderPrintablePosterSheet();
         document.body.classList.add('print-only-poster');
       } else if (mode === 'blank-roster') {

@@ -354,7 +354,7 @@ function generateFixturePosterCardHtml() {
       </div>
 
       <!-- FOOTER NOTE & SIGNATURE -->
-      <div style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; padding: 6px 10px; font-size: 10.5px; color: #cbd5e1; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+      <div class="fixture-poster-footer" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; padding: 6px 10px; font-size: 10.5px; color: #cbd5e1; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
         <div>${tFn('poster.footer_notice')}</div>
         <div style="font-weight:700; color:#38bdf8;">🚩 ${esc(c.organizer || defaultOrg)}</div>
       </div>
