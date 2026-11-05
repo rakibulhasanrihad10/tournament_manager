@@ -30,7 +30,13 @@ test('Social Share Hub & Image Export Engine Test Suite', async (t) => {
     stroke() {},
     closePath() {},
     fillText() {},
+    bezierCurveTo() {},
+    save() {},
+    restore() {},
     createLinearGradient() {
+      return { addColorStop() {} };
+    },
+    createRadialGradient() {
       return { addColorStop() {} };
     }
   };
@@ -138,6 +144,7 @@ test('Social Share Hub & Image Export Engine Test Suite', async (t) => {
     const fixturesCanvas = renderFixturesCanvas();
     assert(fixturesCanvas, 'Fixtures canvas must be created');
     assert.strictEqual(fixturesCanvas.width, 1200, 'Fixtures canvas width must be 1200');
+    assert(fixturesCanvas.height >= 700, 'Fixtures canvas height must accommodate hero, schedule table & knockouts');
 
     const masterCanvas = renderMasterBoardToCanvas();
     assert(masterCanvas, 'Master canvas must be created');

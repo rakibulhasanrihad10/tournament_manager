@@ -790,6 +790,7 @@ if (typeof window !== 'undefined') {
   window.generatePosterHeroBannerHtml = generatePosterHeroBannerHtml;
   window.generatePromoPosterCardHtml = generatePromoPosterCardHtml;
   window.generateFixturePosterCardHtml = generateFixturePosterCardHtml;
+  window.getDynamicKnockoutMatchesForPoster = getDynamicKnockoutMatchesForPoster;
   window.openPromoPosterModal = openPromoPosterModal;
   window.openSocialHubModal = openSocialHubModal;
   window.openFixturePosterModal = openFixturePosterModal;

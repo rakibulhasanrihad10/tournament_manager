@@ -545,131 +545,487 @@ function renderBracketToCanvas() {
 }
 
 // ----------------------------------------------------
-// 3. MATCH FIXTURES & SCHEDULE CANVAS RENDERER
+// VECTOR DRAWING HELPERS FOR FIXTURES POSTER
+// ----------------------------------------------------
+function drawCanvasTrophy(ctx, cx, cy) {
+  if (ctx.save) ctx.save();
+  // base
+  drawRoundedRect(ctx, cx - 18, cy + 20, 36, 8, 2, '#072a60', '#f59e0b', 1.5);
+  // stem
+  ctx.fillStyle = '#d97706';
+  ctx.fillRect(cx - 5, cy + 10, 10, 10);
+  // cup
+  ctx.beginPath();
+  ctx.arc(cx, cy, 18, 0, Math.PI, false);
+  ctx.lineTo(cx + 18, cy - 8);
+  ctx.lineTo(cx - 18, cy - 8);
+  ctx.closePath();
+  ctx.fillStyle = '#fbbf24';
+  ctx.fill();
+  ctx.strokeStyle = '#072a60';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  // star inside
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('★', cx, cy + 4);
+  // handles
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(cx - 19, cy - 1, 7, Math.PI * 0.5, Math.PI * 1.5);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx + 19, cy - 1, 7, Math.PI * 1.5, Math.PI * 0.5);
+  ctx.stroke();
+  if (ctx.restore) ctx.restore();
+}
+
+function drawCanvasEmblem(ctx, cx, cy) {
+  if (ctx.save) ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(cx - 20, cy - 18);
+  ctx.lineTo(cx + 20, cy - 18);
+  ctx.lineTo(cx + 20, cy + 4);
+  ctx.quadraticCurveTo(cx + 20, cy + 24, cx, cy + 28);
+  ctx.quadraticCurveTo(cx - 20, cy + 24, cx - 20, cy + 4);
+  ctx.closePath();
+  ctx.fillStyle = '#0284c7';
+  ctx.fill();
+  ctx.strokeStyle = '#fbbf24';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+  // Inner soccer ball icon
+  ctx.font = '16px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('⚽', cx, cy + 8);
+  if (ctx.restore) ctx.restore();
+}
+
+function drawHeroSwoosh(ctx, x, y, w, h) {
+  if (ctx.save) ctx.save();
+  // Gold swoosh
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  if (ctx.bezierCurveTo) {
+    ctx.bezierCurveTo(x + w * 0.2, y + h * 0.9, x + w * 0.35, y + h, x + w * 0.5, y + h * 0.55);
+    ctx.bezierCurveTo(x + w * 0.65, y + h * 0.1, x + w * 0.8, y + h * 0.8, x + w, y);
+  } else {
+    ctx.lineTo(x + w, y);
+  }
+  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x, y + h);
+  ctx.closePath();
+  ctx.fillStyle = '#fbbf24';
+  ctx.fill();
+
+  // Dark blue overlay swoosh
+  ctx.beginPath();
+  ctx.moveTo(x, y + h * 0.22);
+  if (ctx.bezierCurveTo) {
+    ctx.bezierCurveTo(x + w * 0.22, y + h, x + w * 0.37, y + h * 0.9, x + w * 0.5, y + h * 0.65);
+    ctx.bezierCurveTo(x + w * 0.63, y + h * 0.45, x + w * 0.78, y + h, x + w, y + h * 0.28);
+  } else {
+    ctx.lineTo(x + w, y + h * 0.28);
+  }
+  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x, y + h);
+  ctx.closePath();
+  ctx.fillStyle = '#072a60';
+  ctx.fill();
+  if (ctx.restore) ctx.restore();
+}
+
+// ----------------------------------------------------
+// 3. MATCH FIXTURES & SCHEDULE CANVAS RENDERER (WYSIWYG)
+// 100% matching the live web fixture poster preview:
+// - Stadium Hero Banner with Tournament Title, Venue, Date & Badges
+// - Match Schedule Table with Match No, Time, Group Pill, and Versus Teams (no scores/winners)
+// - Knockout Stage Bracket with Trophy Showcase and 2x2 Knockout Match Cards
+// - Disciplinary Footer Notice and Organizer Sign-off
 // ----------------------------------------------------
 function renderFixturesCanvas() {
-  const canvas = document.createElement('canvas');
+  const c = typeof tournamentConfig !== 'undefined' ? tournamentConfig : {};
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+
+  const defaultTitle = isEn ? 'Football Tournament 2026' : 'ফুটবল টুর্নামেন্ট ২০২৬';
+  const defaultOrg = isEn ? 'Tournament Organizing Committee' : 'টুর্নামেন্ট পরিচালনা কমিটি';
+  const defaultVenue = isEn ? 'Local Sports Ground' : 'স্থানীয় খেলার মাঠ';
+  const defaultDate = isEn ? '2026' : '২০২৬';
+
+  const title = c.title || (typeof document !== 'undefined' && document.getElementById('app-title-display')?.textContent?.trim()) || defaultTitle;
+  const venue = c.venue || (typeof document !== 'undefined' && document.getElementById('app-venue-display')?.textContent?.trim()) || defaultVenue;
+  const org = c.organizer || (typeof document !== 'undefined' && document.getElementById('app-org-display')?.textContent?.trim()) || defaultOrg;
+  const date = c.startDate || defaultDate;
+
+  const type = c.tournamentType || 'groups';
+  const teamCount = c.teamCount || (c.teams ? c.teams.length : 4);
+
+  // 1. MATCHES DATA
+  let matches = typeof getActiveGroupMatches === 'function' ? getActiveGroupMatches() : [];
+  if (!matches || matches.length === 0) {
+    if (c.generatedStructure && Array.isArray(c.generatedStructure.matches) && c.generatedStructure.matches.length > 0) {
+      matches = c.generatedStructure.matches;
+    } else if (Array.isArray(c.matches) && c.matches.length > 0) {
+      matches = c.matches;
+    } else if (typeof GROUP_MATCH_DEFS !== 'undefined' && Array.isArray(GROUP_MATCH_DEFS) && GROUP_MATCH_DEFS.length > 0) {
+      matches = GROUP_MATCH_DEFS;
+    } else {
+      matches = [
+        { id: '১', time: isEn ? '6:00 PM' : 'সন্ধ্যা ৬:০০', group: 'B', t1: isEn ? 'Mukundapur' : 'মুকুন্দপুর', t2: isEn ? 'Uttar Odda' : 'উত্তর ওড্ডা' },
+        { id: '২', time: isEn ? '6:30 PM' : 'সন্ধ্যা ৬:৩০', group: 'A', t1: isEn ? 'Muriara' : 'মুড়িয়ারা', t2: isEn ? 'Noapara' : 'নোয়াপাড়া' },
+        { id: '৩', time: isEn ? '7:00 PM' : 'রাত ৭:০০', group: 'C', t1: isEn ? 'Batabaria' : 'বাতাবাড়িয়া', t2: isEn ? 'Mohammadpur' : 'মোহাম্মদপুর' },
+        { id: '৪', time: isEn ? '7:30 PM' : 'রাত ৭:৩০', group: 'A', t1: isEn ? 'Noapara' : 'নোয়াপাড়া', t2: isEn ? 'Chitadda' : 'চিতড্ডা' },
+        { id: '৫', time: isEn ? '8:00 PM' : 'রাত ৮:০০', group: 'B', t1: isEn ? 'Uttar Odda' : 'উত্তর ওড্ডা', t2: isEn ? 'Dakshin Odda' : 'দক্ষিণ ওড্ডা' },
+        { id: '৬', time: isEn ? '8:30 PM' : 'রাত ৮:৩০', group: 'C', t1: isEn ? 'Mohammadpur' : 'মোহাম্মদপুর', t2: isEn ? 'Bhangua' : 'ভংগুয়া' }
+      ];
+    }
+  }
+
+  // 2. KNOCKOUT DATA
+  const koData = typeof getDynamicKnockoutMatchesForPoster === 'function'
+    ? getDynamicKnockoutMatchesForPoster(c, isEn)
+    : {
+        subtitle: isEn ? '4 Teams Knockout: 2 Semifinals & Grand Final' : '৪ দলের নকআউট: ২টি সেমিফাইনাল, ৩য় স্থান ও ফাইনাল',
+        cards: [
+          { title: isEn ? 'Semi-Final 1' : '১ম সেমিফাইনাল', time: isEn ? '9:00 PM' : 'রাত ৯:০০', colorClass: 'mc-red', t1: isEn ? 'Team 1' : 'দল ১', t2: isEn ? 'Team 2' : 'দল ২' },
+          { title: isEn ? 'Semi-Final 2' : '২য় সেমিফাইনাল', time: isEn ? '9:30 PM' : 'রাত ৯:৩০', colorClass: 'mc-blue', t1: isEn ? 'Team 3' : 'দল ৩', t2: isEn ? 'Team 4' : 'দল ৪' },
+          { title: isEn ? '🥉 3rd Place Playoff' : '🥉 ৩য় স্থান নির্ধারণী', time: isEn ? '10:00 PM' : 'রাত ১০:০০', colorClass: 'mc-purple', t1: isEn ? 'Semi 1 Runner-Up' : '১ম সেমি পরাজিত', t2: isEn ? 'Semi 2 Runner-Up' : '২য় সেমি পরাজিত' },
+          { title: isEn ? '🏆 Grand Final' : '🏆 গ্র্যান্ড ফাইনাল', time: isEn ? '10:30 PM' : 'রাত ১০:৩০', colorClass: 'mc-dark', t1: isEn ? 'Semi 1 Winner' : '১ম সেমি বিজয়ী', t2: isEn ? 'Semi 2 Winner' : '২য় সেমি বিজয়ী' }
+        ]
+      };
+
+  const koCards = (koData && Array.isArray(koData.cards)) ? koData.cards : [];
+  const numKoRows = Math.ceil(koCards.length / 2);
+  const totalMatches = matches.length + koCards.length;
+
+  let scheduleTitle = isEn ? '📅 Group & Knockout Match Schedule' : '📅 গ্রুপ পর্বের ম্যাচ সূচি ও নকআউট সময়সূচি';
+  if (type === 'knockout') {
+    scheduleTitle = isEn ? '📅 Knockout Fixtures & Match Schedule' : '📅 নকআউট পর্বের ম্যাচ সূচি ও সময়সূচি';
+  } else if (type === 'league') {
+    scheduleTitle = isEn ? '📅 Single League Stage Match Schedule' : '📅 একক লিগ পর্বের ম্যাচ সূচি ও সময়সূচি';
+  }
+
+  const groupColors = {
+    'A': '#b71c1c',
+    'B': '#0d47a1',
+    'C': '#1b5e20',
+    'D': '#7c3aed',
+    'KO': '#d97706'
+  };
+
+  // Dynamic Height Calculation
   const width = 1200;
-  const height = 860;
+  const padX = 24;
+  const padY = 24;
+  const bannerW = width - (padX * 2); // 1152px
+  const bannerH = 175;
+
+  const tableRowH = 38;
+  const tableCardH = 42 + 34 + (matches.length * tableRowH) + 10;
+  const koCardH = numKoRows > 0 ? (48 + (numKoRows * 74) + ((numKoRows - 1) * 10) + 14) : 0;
+  const footH = 40;
+
+  const height = padY + bannerH + 12 + tableCardH + (numKoRows > 0 ? (12 + koCardH) : 0) + 12 + footH + padY;
+
+  const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
 
-  ctx.fillStyle = '#061c24';
-  ctx.fillRect(0, 0, width, height);
+  // 1. OUTER CARD BACKGROUND & BORDER
+  const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+  bgGrad.addColorStop(0, '#091a2e');
+  bgGrad.addColorStop(0.5, '#0c2b4c');
+  bgGrad.addColorStop(1, '#071526');
+  drawRoundedRect(ctx, 0, 0, width, height, 16, bgGrad, '#0284c7', 3);
 
-  const c = typeof tournamentConfig !== 'undefined' ? tournamentConfig : {};
-  const title = c.title || (document.getElementById('app-title-display')?.textContent?.trim() || 'ফুটবল বিশ্বকাপ ২০২৬');
-  const venue = c.venue || (document.getElementById('app-venue-display')?.textContent?.trim() || 'স্টেডিয়াম মাঠ');
-  const org = c.organizer || (document.getElementById('app-org-display')?.textContent?.trim() || 'আয়োজক কমিটি');
+  // 2. HERO COVER BANNER
+  const bannerX = padX;
+  const bannerY = padY;
+  const bannerGrad = ctx.createLinearGradient(bannerX, bannerY, bannerX, bannerY + bannerH);
+  bannerGrad.addColorStop(0, '#071f43');
+  bannerGrad.addColorStop(0.5, '#0c3875');
+  bannerGrad.addColorStop(1, '#071a38');
+  drawRoundedRect(ctx, bannerX, bannerY, bannerW, bannerH, { tl: 10, tr: 10, bl: 0, br: 0 }, bannerGrad);
 
-  drawCardHeader(ctx, width, '🗓️ MATCH SCHEDULE & FIXTURES • খেলার সময়সূচি ও ফলাফল', title, `📍 ভেন্যু: ${venue} | 🚩 আয়োজনে: ${org}`, ['#044e54', '#0d9488']);
+  // Stadium lights effect
+  if (ctx.createRadialGradient) {
+    const lightL = ctx.createRadialGradient(bannerX + 60, bannerY + 20, 5, bannerX + 160, bannerY + 90, 220);
+    lightL.addColorStop(0, 'rgba(255, 255, 255, 0.28)');
+    lightL.addColorStop(1, 'rgba(7, 31, 67, 0)');
+    ctx.fillStyle = lightL;
+    ctx.fillRect(bannerX, bannerY, 320, bannerH);
 
-  const tblX = 30;
-  const tblY = 145;
-  const tblW = width - 60;
-  const tblH = 620;
-  drawRoundedRect(ctx, tblX, tblY, tblW, tblH, 12, '#0c2731', '#134e4a', 1.5);
+    const lightR = ctx.createRadialGradient(bannerX + bannerW - 60, bannerY + 20, 5, bannerX + bannerW - 160, bannerY + 90, 220);
+    lightR.addColorStop(0, 'rgba(255, 255, 255, 0.28)');
+    lightR.addColorStop(1, 'rgba(7, 31, 67, 0)');
+    ctx.fillStyle = lightR;
+    ctx.fillRect(bannerX + bannerW - 320, bannerY, 320, bannerH);
+  }
 
-  drawRoundedRect(ctx, tblX, tblY, tblW, 40, { tl: 12, tr: 12, bl: 0, br: 0 }, '#115e59');
+  // Left Trophy
+  drawCanvasTrophy(ctx, bannerX + 55, bannerY + 68);
+
+  // Right Tournament Crest
+  drawCanvasEmblem(ctx, bannerX + bannerW - 55, bannerY + 68);
+
+  // Center Badge Tag
+  const badgeText = isEn ? '✨ OFFICIAL MATCH FIXTURES & SCHEDULE ✨' : '✨ অফিশিয়াল ম্যাচ ফিক্সচার ও খেলার সময়সূচি ✨';
+  const badgeW = 320;
+  const badgeH = 24;
+  const badgeX = bannerX + (bannerW - badgeW) / 2;
+  const badgeY = bannerY + 16;
+  drawRoundedRect(ctx, badgeX, badgeY, badgeW, badgeH, 12, '#0284c7', '#38bdf8', 1);
+  ctx.font = 'bold 11.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.fillText(badgeText, bannerX + bannerW / 2, badgeY + 16);
+
+  // Main Title
+  ctx.font = '900 28px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffca28';
+  ctx.textAlign = 'center';
+  ctx.fillText(`⚽ ${title} ⚽`, bannerX + bannerW / 2, badgeY + 54);
+
+  // Subtitle Pill
+  const subH = 30;
+  const subW = Math.min(840, bannerW - 200);
+  const subX = bannerX + (bannerW - subW) / 2;
+  const subY = badgeY + 70;
+  drawRoundedRect(ctx, subX, subY, subW, subH, 15, 'rgba(255, 255, 255, 0.14)', 'rgba(255, 255, 255, 0.3)', 1);
   ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#e2e8f0';
+  ctx.textAlign = 'center';
+  const subStr = isEn
+    ? `🚩 Org: ${org}   |   📍 Venue: ${venue}   |   🗓️ ${date}`
+    : `🚩 আয়োজনে: ${org}   |   📍 স্থান: ${venue}   |   🗓️ ${date}`;
+  ctx.fillText(subStr, bannerX + bannerW / 2, subY + 20);
+
+  // Curved swoosh ribbon at bottom of banner
+  drawHeroSwoosh(ctx, bannerX, bannerY + bannerH - 18, bannerW, 18);
+
+  // 3. MATCH SCHEDULE TABLE CARD
+  const tableCardX = bannerX;
+  const tableCardY = bannerY + bannerH + 12;
+  const tableCardW = bannerW;
+  drawRoundedRect(ctx, tableCardX, tableCardY, tableCardW, tableCardH, 8, '#ffffff', '#cbd5e1', 1.2);
+
+  // Schedule Title Bar
+  const stGrad = ctx.createLinearGradient(tableCardX, tableCardY, tableCardX + tableCardW, tableCardY);
+  stGrad.addColorStop(0, '#072a60');
+  stGrad.addColorStop(1, '#0a3d87');
+  drawRoundedRect(ctx, tableCardX, tableCardY, tableCardW, 42, { tl: 8, tr: 8, bl: 0, br: 0 }, stGrad);
+
+  ctx.font = 'bold 15px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#ffffff';
   ctx.textAlign = 'left';
-  ctx.fillText('ম্যাচ নং', tblX + 20, tblY + 25);
-  ctx.fillText('সময়', tblX + 110, tblY + 25);
-  ctx.fillText('গ্রুপ', tblX + 240, tblY + 25);
-  ctx.fillText('মুখোমুখি দুই দল', tblX + 440, tblY + 25);
-  ctx.fillText('স্কোর', tblX + 780, tblY + 25);
-  ctx.fillText('ফলাফল / বিজয়ী', tblX + 920, tblY + 25);
+  ctx.fillText(scheduleTitle, tableCardX + 16, tableCardY + 26);
 
-  const tbody = document.getElementById('dynamic-schedule-tbody');
-  let matchRows = [];
-  if (tbody) {
-    const trs = tbody.querySelectorAll('tr');
-    trs.forEach((tr, idx) => {
-      const cells = tr.querySelectorAll('td');
-      if (cells.length >= 6) {
-        const matchNo = cells[0]?.textContent?.trim() || String(idx + 1);
-        const time = cells[1]?.textContent?.trim() || '';
-        const grp = cells[2]?.textContent?.trim() || '';
-        const team1 = cells[3]?.querySelector('.team-left')?.textContent?.trim() || '';
-        const team2 = cells[3]?.querySelector('.team-right')?.textContent?.trim() || '';
-        const s1 = cells[4]?.querySelector('.score-input:nth-child(1)')?.value || '';
-        const s2 = cells[4]?.querySelector('.score-input:nth-child(3)')?.value || '';
-        const winner = cells[5]?.querySelector('.match-winner-txt')?.textContent?.trim() || '';
-        matchRows.push({ matchNo, time, grp, team1, team2, s1, s2, winner });
-      }
-    });
-  }
+  // Badges on title bar
+  const pill1W = 90;
+  const pill2W = 98;
+  const pill1X = tableCardX + tableCardW - (pill1W + pill2W + 20);
+  const pill2X = tableCardX + tableCardW - (pill2W + 12);
+  drawRoundedRect(ctx, pill1X, tableCardY + 9, pill1W, 24, 12, 'rgba(255, 255, 255, 0.15)', 'rgba(253, 224, 71, 0.4)', 1);
+  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#fde047';
+  ctx.textAlign = 'center';
+  ctx.fillText(`👥 ${teamCount} ${isEn ? 'Teams' : 'টি দল'}`, pill1X + (pill1W / 2), tableCardY + 25);
 
-  if (matchRows.length === 0) {
-    matchRows = [
-      { matchNo: '১', time: 'সন্ধ্যা ৬:০০', grp: 'গ্রুপ বি', team1: 'মুকুন্দপুর', team2: 'উত্তর ওড্ডা', s1: '', s2: '', winner: '' },
-      { matchNo: '২', time: 'সন্ধ্যা ৬:৩০', grp: 'গ্রুপ এ', team1: 'মুড়িয়ারা', team2: 'নোয়াপাড়া', s1: '', s2: '', winner: '' },
-      { matchNo: '৩', time: 'রাত ৭:০০', grp: 'গ্রুপ সি', team1: 'বাতাবাড়িয়া', team2: 'মোহাম্মদপুর', s1: '', s2: '', winner: '' },
-      { matchNo: '৪', time: 'রাত ৭:৩০', grp: 'গ্রুপ এ', team1: 'নোয়াপাড়া', team2: 'চিতড্ডা', s1: '', s2: '', winner: '' },
-      { matchNo: '৫', time: 'রাত ৮:০০', grp: 'গ্রুপ বি', team1: 'উত্তর ওড্ডা', team2: 'দক্ষিণ ওড্ডা', s1: '', s2: '', winner: '' },
-      { matchNo: '৬', time: 'রাত ৮:৩০', grp: 'গ্রুপ সি', team1: 'মোহাম্মদপুর', team2: 'ভংগুয়া', s1: '', s2: '', winner: '' },
-      { matchNo: '৭', time: 'রাত ৯:০০', grp: 'গ্রুপ এ', team1: 'চিতড্ডা', team2: 'মুড়িয়ারা', s1: '', s2: '', winner: '' },
-      { matchNo: '৮', time: 'রাত ৯:৩০', grp: 'গ্রুপ বি', team1: 'দক্ষিণ ওড্ডা', team2: 'মুকুন্দপুর', s1: '', s2: '', winner: '' },
-      { matchNo: '৯', time: 'রাত ১০:০০', grp: 'গ্রুপ সি', team1: 'ভংগুয়া', team2: 'বাতাবাড়িয়া', s1: '', s2: '', winner: '' }
-    ];
-  }
+  drawRoundedRect(ctx, pill2X, tableCardY + 9, pill2W, 24, 12, 'rgba(255, 255, 255, 0.15)', 'rgba(74, 222, 128, 0.4)', 1);
+  ctx.fillStyle = '#4ade80';
+  ctx.fillText(`⚽ ${totalMatches} ${isEn ? 'Matches' : 'টি ম্যাচ'}`, pill2X + (pill2W / 2), tableCardY + 25);
 
-  matchRows.slice(0, 9).forEach((m, idx) => {
-    const rowY = tblY + 45 + (idx * 60);
+  // Table Column Header Bar
+  const thY = tableCardY + 42;
+  drawRoundedRect(ctx, tableCardX + 8, thY, tableCardW - 16, 34, 4, '#0d2b6b');
+  const colMatchCenter = tableCardX + 68;
+  const colTimeCenter = tableCardX + 225;
+  const colGroupCenter = tableCardX + 425;
+  const colVsCenter = tableCardX + 835;
 
-    if (idx % 2 === 0) {
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
-      ctx.fillRect(tblX + 4, rowY, tblW - 8, 54);
+  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.fillText(isEn ? 'Match No' : 'ম্যাচ নং', colMatchCenter, thY + 22);
+  ctx.fillText(isEn ? 'Time' : 'সময়', colTimeCenter, thY + 22);
+  ctx.fillText(isEn ? 'Group / Stage' : 'গ্রুপ / পর্ব', colGroupCenter, thY + 22);
+  ctx.fillText(isEn ? 'Versus Teams' : 'মুখোমুখি দল', colVsCenter, thY + 22);
+
+  // Rows
+  matches.forEach((m, idx) => {
+    const rowY = thY + 34 + (idx * tableRowH);
+    if (idx % 2 === 1) {
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(tableCardX + 8, rowY, tableCardW - 16, tableRowH);
+    }
+    // Bottom border
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(tableCardX + 8, rowY + tableRowH - 1, tableCardW - 16, 1);
+
+    // Match No
+    ctx.font = 'bold 14px "Segoe UI", sans-serif';
+    ctx.fillStyle = '#0284c7';
+    ctx.textAlign = 'center';
+    ctx.fillText(String(m.id), colMatchCenter, rowY + 24);
+
+    // Time
+    ctx.font = '600 13px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = '#334155';
+    ctx.fillText(m.time || '', colTimeCenter, rowY + 24);
+
+    // Group badge
+    const grpColor = groupColors[m.group] || '#475569';
+    let grpText = '';
+    if (m.group === 'KO') {
+      grpText = isEn ? 'Knockout' : 'নকআউট';
+    } else if (type === 'league') {
+      grpText = isEn ? 'League' : 'লিগ পর্ব';
+    } else {
+      grpText = isEn ? `Group ${m.group}` : `গ্রুপ ${m.group}`;
     }
 
-    ctx.font = 'bold 15px "Segoe UI", sans-serif';
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillText(m.matchNo, tblX + 35, rowY + 33);
-
-    ctx.font = '14px "Hind Siliguri", "Segoe UI", sans-serif';
-    ctx.fillStyle = '#cbd5e1';
-    ctx.fillText(m.time, tblX + 100, rowY + 33);
-
-    const grpColor = m.grp.includes('এ') || m.grp.includes('A') ? '#ef4444' : m.grp.includes('বি') || m.grp.includes('B') ? '#38bdf8' : '#10b981';
-    drawRoundedRect(ctx, tblX + 225, rowY + 14, 85, 26, 6, 'rgba(255, 255, 255, 0.08)', grpColor, 1);
+    drawRoundedRect(ctx, colGroupCenter - 45, rowY + 7, 90, 24, 6, 'rgba(0, 0, 0, 0.03)', grpColor, 1);
     ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
     ctx.fillStyle = grpColor;
-    ctx.textAlign = 'center';
-    ctx.fillText(m.grp, tblX + 267, rowY + 32);
-    ctx.textAlign = 'left';
+    ctx.fillText(grpText, colGroupCenter, rowY + 23);
 
-    ctx.font = 'bold 16px "Hind Siliguri", "Segoe UI", sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(m.team1, tblX + 350, rowY + 33);
+    // Teams & VS badge
+    ctx.font = 'bold 14.5px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = '#0f172a';
+    ctx.textAlign = 'right';
+    ctx.fillText(m.t1, colVsCenter - 24, rowY + 24);
 
-    ctx.font = 'bold 12px "Segoe UI", sans-serif';
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillText('VS', tblX + 490, rowY + 33);
-
-    ctx.font = 'bold 16px "Hind Siliguri", "Segoe UI", sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(m.team2, tblX + 530, rowY + 33);
-
-    const hasScore = m.s1 !== '' && m.s2 !== '';
-    const scoreStr = hasScore ? `${m.s1} - ${m.s2}` : '০ - ০';
-    drawRoundedRect(ctx, tblX + 760, rowY + 12, 90, 28, 6, hasScore ? '#065f46' : '#1e293b', hasScore ? '#10b981' : '#475569', 1);
-    ctx.font = 'bold 14px "Segoe UI", sans-serif';
+    drawRoundedRect(ctx, colVsCenter - 11, rowY + 8, 22, 22, 11, '#d32f2f');
+    ctx.font = 'bold 9px "Segoe UI", sans-serif';
     ctx.fillStyle = '#ffffff';
     ctx.textAlign = 'center';
-    ctx.fillText(scoreStr, tblX + 805, rowY + 31);
-    ctx.textAlign = 'left';
+    ctx.fillText('VS', colVsCenter, rowY + 22);
 
-    const cleanWin = m.winner && !m.winner.includes('___') ? m.winner : 'অমীমাংসিত / বাকি';
-    const winColor = m.winner && !m.winner.includes('___') ? '#10b981' : '#64748b';
-    ctx.font = 'bold 14px "Hind Siliguri", "Segoe UI", sans-serif';
-    ctx.fillStyle = winColor;
-    ctx.fillText(cleanWin, tblX + 900, rowY + 33);
+    ctx.font = 'bold 14.5px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = '#0f172a';
+    ctx.textAlign = 'left';
+    ctx.fillText(m.t2, colVsCenter + 24, rowY + 24);
   });
 
-  drawCardFooter(ctx, width, 785);
+  // 4. KNOCKOUT SECTION CARD
+  let lastBottomY = tableCardY + tableCardH;
+  if (numKoRows > 0) {
+    const koCardX = bannerX;
+    const koCardY = lastBottomY + 12;
+    const koCardW = bannerW;
+    drawRoundedRect(ctx, koCardX, koCardY, koCardW, koCardH, 8, '#ffffff', '#cbd5e1', 1.2);
+
+    // Bracket Header
+    const bhY = koCardY + 10;
+    ctx.font = '800 15px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = '#0d2b6b';
+    ctx.textAlign = 'left';
+    ctx.fillText(isEn ? '👑 Knockout Fixtures & Bracket Roadmap' : '👑 নকআউট পর্বের সময়সূচি ও ব্র্যাকেট', koCardX + 16, bhY + 15);
+
+    ctx.font = 'bold 11.5px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = '#475569';
+    ctx.fillText(koData.subtitle || '', koCardX + 16, bhY + 31);
+
+    // Trophies Showcase
+    const tW = 96;
+    const tH = 22;
+    // Gold
+    drawRoundedRect(ctx, koCardX + koCardW - 320, bhY + 8, tW, tH, 11, '#fef3c7', '#f59e0b', 1);
+    ctx.font = 'bold 11px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = '#b45309';
+    ctx.textAlign = 'center';
+    ctx.fillText('🏆 ' + (isEn ? 'Champion' : 'চ্যাম্পিয়ন'), koCardX + koCardW - 320 + tW / 2, bhY + 23);
+
+    // Silver
+    drawRoundedRect(ctx, koCardX + koCardW - 212, bhY + 8, tW, tH, 11, '#f1f5f9', '#94a3b8', 1);
+    ctx.fillStyle = '#475569';
+    ctx.fillText('🏆 ' + (isEn ? 'Runner-Up' : 'রানার্স-আপ'), koCardX + koCardW - 212 + tW / 2, bhY + 23);
+
+    // Bronze
+    drawRoundedRect(ctx, koCardX + koCardW - 104, bhY + 8, tW, tH, 11, '#ffedd5', '#ea580c', 1);
+    ctx.fillStyle = '#c2410c';
+    ctx.fillText('🏆 ' + (isEn ? '3rd Place' : '৩য় স্থান'), koCardX + koCardW - 104 + tW / 2, bhY + 23);
+
+    // 2x2 Knockout Grid Cards
+    const gridY = koCardY + 48;
+    const cardGap = 12;
+    const cardW = (koCardW - 32 - cardGap) / 2;
+    const cardH = 74;
+
+    koCards.forEach((card, cIdx) => {
+      const row = Math.floor(cIdx / 2);
+      const col = cIdx % 2;
+      const cX = koCardX + 16 + (col * (cardW + cardGap));
+      const cY = gridY + (row * (cardH + 10));
+
+      // Outer match card
+      drawRoundedRect(ctx, cX, cY, cardW, cardH, 6, '#ffffff', '#cbd5e1', 1.2);
+
+      // Card Head Gradient
+      const headH = 26;
+      let gradColors = ['#1e293b', '#0f172a'];
+      if (card.colorClass === 'mc-red') gradColors = ['#dc2626', '#b91c1c'];
+      else if (card.colorClass === 'mc-blue') gradColors = ['#2563eb', '#1d4ed8'];
+      else if (card.colorClass === 'mc-purple') gradColors = ['#7c3aed', '#6d28d9'];
+      else if (card.colorClass === 'mc-dark') gradColors = ['#0f172a', '#1e293b'];
+
+      const headGrad = ctx.createLinearGradient(cX, cY, cX + cardW, cY);
+      headGrad.addColorStop(0, gradColors[0]);
+      headGrad.addColorStop(1, gradColors[1]);
+      drawRoundedRect(ctx, cX, cY, cardW, headH, { tl: 6, tr: 6, bl: 0, br: 0 }, headGrad);
+
+      ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${card.title} | ${card.time}`, cX + (cardW / 2), cY + 18);
+
+      // Card Body (Teams + VS)
+      const bodyY = cY + headH;
+      const cCenter = cX + (cardW / 2);
+
+      ctx.font = 'bold 13.5px "Hind Siliguri", "Segoe UI", sans-serif';
+      ctx.fillStyle = '#0f172a';
+      ctx.textAlign = 'right';
+      ctx.fillText(card.t1, cCenter - 22, bodyY + 28);
+
+      drawRoundedRect(ctx, cCenter - 10, bodyY + 14, 20, 20, 10, '#d32f2f');
+      ctx.font = 'bold 8.5px "Segoe UI", sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText('VS', cCenter, bodyY + 27);
+
+      ctx.font = 'bold 13.5px "Hind Siliguri", "Segoe UI", sans-serif';
+      ctx.fillStyle = '#0f172a';
+      ctx.textAlign = 'left';
+      ctx.fillText(card.t2, cCenter + 22, bodyY + 28);
+    });
+
+    lastBottomY = koCardY + koCardH;
+  }
+
+  // 5. FOOTER NOTICE & ORGANIZER CREDITS
+  const footX = bannerX;
+  const footY = lastBottomY + 12;
+  const footW = bannerW;
+  drawRoundedRect(ctx, footX, footY, footW, footH, 6, 'rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.18)', 1);
+
+  ctx.font = '12px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#cbd5e1';
+  ctx.textAlign = 'left';
+  const footNotice = isEn
+    ? '⚠️ All teams must arrive 15 mins prior to kickoff & adhere strictly to tournament rules.'
+    : '⚠️ সকল দলকে ম্যাচ শুরুর ১৫ মিনিট পূর্বে মাঠে উপস্থিত থাকতে হবে এবং টুর্নামেন্ট আচরণবিধি মেনে চলতে হবে।';
+  ctx.fillText(footNotice, footX + 16, footY + 25);
+
+  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#38bdf8';
+  ctx.textAlign = 'right';
+  ctx.fillText(`🚩 ${org}`, footX + footW - 16, footY + 25);
+
   return canvas;
 }
 
