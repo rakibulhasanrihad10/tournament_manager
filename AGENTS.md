@@ -18,7 +18,7 @@ The codebase strictly enforces **Separation of Concerns (SoC)** and **Modularity
    - `src/components/common/`: Shared elements (`head.html`, `navbar.html`, `welcome-banner.html`, `scripts.html`).
    - `src/components/hub/`: Multi-sports landing page and roadmaps (`sports-hub-view.html`).
    - `src/components/football/`: Football views (`page1-sheet.html`, `page2-sheet.html`, `poster-sheet.html`, `blank-roster-sheet.html`).
-   - `src/components/modals/`: Isolated modal views (`tournament-wizard-modal.html`, `team-registration-modal.html`, `match-events-modal.html`, `promo-poster-modal.html`, `entry-choice-modal.html`, `blank-roster-modal.html`, `sport-preview-modal.html`, `tournament-rules-modal.html`).
+   - `src/components/modals/`: Isolated modal views (`tournament-wizard-modal.html`, `team-registration-modal.html`, `match-events-modal.html`, `promo-poster-modal.html`, `entry-choice-modal.html`, `blank-roster-modal.html`, `sport-preview-modal.html`, `tournament-rules-modal.html`, `social-share-modal.html`).
 
 3. **Adding New Sports (Extensibility & SRP):**
    - When introducing new sports (e.g., Cricket, Badminton, Carrom, Chess), **NEVER** append markup to football files.

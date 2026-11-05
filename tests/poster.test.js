@@ -358,12 +358,12 @@ context.saveTournamentConfig({
 
 const fiveRulesPoster = context.generatePromoPosterCardHtml();
 assert(fiveRulesPoster.includes('(5 টি)'), 'Promotional poster displays exactly (5 টি) count');
-assert(fiveRulesPoster.includes('মিনিবার স্কোয়াড'), 'Contains selected rule 1');
+assert(fiveRulesPoster.includes('স্কোয়াড ও মাঠের খেলোয়াড়') || fiveRulesPoster.includes('মিনিবার স্কোয়াড'), 'Contains selected rule 1');
 assert(fiveRulesPoster.includes('ম্যাচের সময়কাল'), 'Contains selected rule 2');
 assert(fiveRulesPoster.includes('সরাসরি টাইব্রেকার'), 'Contains selected rule 3');
 assert(fiveRulesPoster.includes('স্থায়ী বাসিন্দা'), 'Contains selected rule 4');
-assert(fiveRulesPoster.includes('রেফারির সিদ্ধান্তই চূড়ান্ত'), 'Contains selected rule 5');
-assert(!fiveRulesPoster.includes('ওয়াকওভার (Walkover)'), 'Cleanly excludes unselected rules');
+assert(fiveRulesPoster.includes('রেফারির সিদ্ধান্ত'), 'Contains selected rule 5');
+assert(!fiveRulesPoster.includes('ওয়াকওভার'), 'Cleanly excludes unselected rules');
 assert(!fiveRulesPoster.includes('আবহাওয়াজনিত বাধা'), 'Cleanly excludes unselected rule 24');
 
 // Test 0 rules empty state

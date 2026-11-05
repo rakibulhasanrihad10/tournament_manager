@@ -4,43 +4,36 @@
           <!-- Return to Sports Hub Button -->
           <button type="button" class="btn btn-hub" onclick="navigateToView('hub')" data-i18n="nav.btn_hub" title="স্পোর্টস হাব / হোম পেজে ফিরে যান">🏠 স্পোর্টস হাব</button>
           <div class="action-bar-title-wrap">
-            <h2 data-i18n="nav.panel_title">টুর্নামেন্ট প্রিন্ট ও ম্যানেজমেন্ট প্যানেল</h2>
+            <h2 data-i18n="nav.panel_title">টুর্নামেন্ট ম্যানেজমেন্ট প্যানেল</h2>
           </div>
         </div>
         <div class="action-btns">
-          <!-- 1. Primary Highlighted Setup CTA (Eye-catching for new & returning users) -->
-          <button type="button" class="btn btn-primary-wizard" id="btn-nav-wizard" onclick="openTournamentWizard()" data-i18n="nav.btn_wizard" data-i18n-title="nav.btn_wizard_title" title="নতুন টুর্নামেন্টের নাম, ভেন্যু, প্রাইজমানি ও নিয়মাবলী সেট করুন">
-            🚀 টুর্নামেন্ট সেটআপ ও রুলস
+          <!-- 1. Primary Highlighted Setup / Edit CTA -->
+          <button type="button" class="btn btn-primary-wizard" id="btn-nav-wizard" onclick="openTournamentWizard()" data-i18n="nav.btn_wizard" data-i18n-title="nav.btn_wizard_title" title="টুর্নামেন্টের তথ্য, দল, ফরম্যাট ও নিয়মাবলী এডিট করুন">
+            ✏️ এডিট টুর্নামেন্ট
           </button>
 
-          <!-- 2. Consolidated Print Dropdown -->
+          <!-- 2. Consolidated Print & Paper Sheets Dropdown -->
           <div class="dropdown-wrap" id="print-dropdown-wrap">
-            <button type="button" class="btn btn-dropdown" onclick="toggleDropdown('print-dropdown')" id="btn-print-dropdown" data-i18n-title="nav.dropdown_print_title" title="ফিকশ্চার বা নির্দিষ্ট পেজ প্রিন্ট করুন">
+            <button type="button" class="btn btn-dropdown" onclick="toggleDropdown('print-dropdown')" id="btn-print-dropdown" data-i18n-title="nav.dropdown_print_title" title="মাঠের স্কোরশিট, প্লেয়ার ফর্ম ও টুর্নামেন্ট শিট প্রিন্ট করুন">
               <span data-i18n="nav.dropdown_print">🖨️ প্রিন্ট</span> <span class="dropdown-caret">▾</span>
             </button>
             <div class="dropdown-menu" id="print-dropdown">
-              <button type="button" class="dropdown-item" onclick="printDocument('all'); closeAllDropdowns();">
-                <span class="item-icon">🖨️</span>
+              <button type="button" class="dropdown-item" onclick="printDocument('summary'); closeAllDropdowns();" id="btn-print-tournament-summary">
+                <span class="item-icon">🏆</span>
                 <div>
-                  <strong data-i18n="nav.print_all_title">সম্পূর্ণ ফিকশ্চার (২ পেজ)</strong>
-                  <small data-i18n="nav.print_all_sub">গ্রুপ টেবিল, নকআউট ব্র্যাকেট ও রুলস</small>
-                </div>
-              </button>
-              <button type="button" class="dropdown-item" onclick="printDocument('page1'); closeAllDropdowns();">
-                <span class="item-icon">📄</span>
-                <div>
-                  <strong data-i18n="nav.print_p1_title">পেজ ১ (ফিকশ্চার ও টেবিল)</strong>
-                  <small data-i18n="nav.print_p1_sub">পয়েন্ট টেবিল, সেমি ও ফাইনাল</small>
-                </div>
-              </button>
-              <button type="button" class="dropdown-item" onclick="printDocument('page2'); closeAllDropdowns();">
-                <span class="item-icon">📋</span>
-                <div>
-                  <strong data-i18n="nav.print_p2_title">পেজ ২ (রুলস ও প্লেয়ার)</strong>
-                  <small data-i18n="nav.print_p2_sub">অফিশিয়াল রুলস ও দল তালিকা</small>
+                  <strong data-i18n="nav.print_summary_title">টুর্নামেন্ট চূড়ান্ত ফলাফল ও সমাপ্তি শিট</strong>
+                  <small data-i18n="nav.print_summary_sub">পয়েন্ট টেবিল, সব ম্যাচের স্কোর, চ্যাম্পিয়ন দল ও বিশেষ পুরস্কার</small>
                 </div>
               </button>
               <div class="dropdown-divider"></div>
+              <button type="button" class="dropdown-item" onclick="printDocument('blank-scoresheet'); closeAllDropdowns();" id="btn-print-blank-scoresheet">
+                <span class="item-icon">📊</span>
+                <div>
+                  <strong data-i18n="nav.print_blank_scoresheet">মাঠের স্কোরশিট (খাতা-কলমে লেখার ফাঁকা শিট)</strong>
+                  <small data-i18n="nav.print_blank_scoresheet_sub">মাঠে বসে হাতে স্কোর লেখার জন্য ফাঁকা ফিকশ্চার</small>
+                </div>
+              </button>
               <button type="button" class="dropdown-item" onclick="openBlankRosterConfigModal(); closeAllDropdowns();" id="btn-print-blank-roster">
                 <span class="item-icon">📝</span>
                 <div>
@@ -51,45 +44,17 @@
             </div>
           </div>
 
-          <!-- 3. Consolidated Tools & Settings Dropdown -->
+          <!-- 3. Unified Social Media & Promotion Hub (1-Click) -->
+          <button type="button" class="btn btn-dropdown" onclick="openPromoPosterModal('promo')" id="btn-social-dropdown" data-i18n-title="nav.btn_social_hub_title" title="সোশ্যাল মিডিয়া প্রচার ও শেয়ারিং হাব">
+            <span data-i18n="nav.dropdown_social">📢 সোশ্যাল মিডিয়ায় প্রচার</span>
+          </button>
+
+          <!-- 4. Consolidated Settings & Utilities Dropdown -->
           <div class="dropdown-wrap" id="tools-dropdown-wrap">
-            <button type="button" class="btn btn-dropdown" onclick="toggleDropdown('tools-dropdown')" id="btn-tools-dropdown" data-i18n-title="nav.dropdown_tools_title" title="আরও প্রয়োজনীয় টুলস ও অপশন">
-              <span data-i18n="nav.dropdown_tools">⚙️ টুলস</span> <span class="dropdown-caret">▾</span>
+            <button type="button" class="btn btn-dropdown" onclick="toggleDropdown('tools-dropdown')" id="btn-tools-dropdown" data-i18n-title="nav.dropdown_tools_title" title="সিস্টেম সেটিংস ও ডাটা ইউটিলিটি">
+              <span data-i18n="nav.dropdown_tools">⚙️ সেটিংস</span> <span class="dropdown-caret">▾</span>
             </button>
             <div class="dropdown-menu" id="tools-dropdown">
-              <!-- 1. Fixture & Match Schedule Poster (Phase 2 - Social Media) -->
-              <button type="button" class="dropdown-item" onclick="openPromoPosterModal('fixture'); closeAllDropdowns();" id="btn-fixture-poster">
-                <span class="item-icon">🗓️</span>
-                <div>
-                  <strong data-i18n="nav.btn_fixture_poster">ম্যাচ ফিক্সচার ও সময়সূচি পোস্টার</strong>
-                  <small data-i18n="nav.fixture_poster_sub">সোশ্যাল মিডিয়ায় শেয়ারযোগ্য ফিক্সচার ও ব্র্যাকেট</small>
-                </div>
-              </button>
-              <!-- 2. Announcement / Registration Notice Poster (Phase 1) -->
-              <button type="button" class="dropdown-item" onclick="openPromoPosterModal('promo'); closeAllDropdowns();" id="btn-promo-poster">
-                <span class="item-icon">📢</span>
-                <div>
-                  <strong data-i18n="nav.btn_promo_poster">টুর্নামেন্ট নোটিশ ও প্রচারণামূলক পোস্টার</strong>
-                  <small data-i18n="nav.promo_poster_sub">দল আহ্বানের জন্য ফেসবুক নোটিশ ও ব্যানার</small>
-                </div>
-              </button>
-              <!-- 3. Team Registration Form & Slip -->
-              <button type="button" class="dropdown-item" onclick="openTeamRegistrationModal(); closeAllDropdowns();" id="btn-team-reg">
-                <span class="item-icon">📝</span>
-                <div>
-                  <strong data-i18n="nav.btn_team_reg">দল নিবন্ধন ফর্ম ও স্লিপ</strong>
-                  <small data-i18n="nav.btn_team_reg_sub">দলের নাম, খেলোয়াড় তালিকা ও রসিদ প্রিন্ট</small>
-                </div>
-              </button>
-              <div class="dropdown-divider"></div>
-              <!-- Sheet Theme Toggle -->
-              <button type="button" class="dropdown-item btn-sheet-theme" id="btn-sheet-theme" onclick="toggleSheetTheme();" data-i18n-title="nav.sheet_theme_title" title="প্রিন্ট ও শিটের কালার থিম পরিবর্তন করুন">
-                <span class="item-icon" id="sheet-theme-icon">📄</span>
-                <div>
-                  <strong id="sheet-theme-label" data-i18n="nav.sheet_theme_paper">প্রিন্ট থিম: সাদা কাগজ</strong>
-                  <small data-i18n="nav.sheet_theme_sub">সাদা পেপার বা স্টেডিয়াম ব্যাকগ্রাউন্ড</small>
-                </div>
-              </button>
               <!-- Demo Data -->
               <button type="button" class="dropdown-item" onclick="loadSampleTournamentData(); closeAllDropdowns();">
                 <span class="item-icon">⚡</span>
@@ -110,7 +75,7 @@
             </div>
           </div>
 
-          <!-- 4. Language & Theme Utilities -->
+          <!-- 5. Language & Theme Utilities -->
           <div class="nav-utilities">
             <!-- Language Switcher Pill Toggle -->
             <div class="lang-switch-wrap" title="Switch Language / ভাষা পরিবর্তন করুন">

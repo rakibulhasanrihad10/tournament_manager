@@ -333,6 +333,9 @@ function recalculateAll() {
       if (typeof updateSmartMatchCenter === 'function') {
         updateSmartMatchCenter();
       }
+      if (typeof syncAwardsToPage1 === 'function') {
+        syncAwardsToPage1();
+      }
     }
 
     function renderGroupRows(grpId, teams) {
@@ -377,7 +380,7 @@ function recalculateAll() {
 
     function updateGoldenBootLeaderboard(playerGoals) {
       const topListEl = document.getElementById('golden-boot-top-list');
-      const topPlayers = Object.values(playerGoals).sort((a, b) => b.goals - a.goals);
+      const topPlayers = Object.values(playerGoals || {}).sort((a, b) => b.goals - a.goals);
 
       if (topListEl) {
         if (topPlayers.length === 0) {
@@ -393,16 +396,48 @@ function recalculateAll() {
         }
       }
 
-      // Auto-populate Bottom Award for Golden Boot
+      // Auto-populate Ceremony Award for Golden Boot (Page 1)
+      const p1Name = document.getElementById('p1-award-top-scorer-player');
+      const p1Team = document.getElementById('p1-award-top-scorer-team');
+      const p1Goals = document.getElementById('p1-award-top-scorer-goals');
+
       if (topPlayers.length > 0) {
         const topScorer = topPlayers[0];
-        const nameInp = document.getElementById('award-top-scorer-name');
-        const teamInp = document.getElementById('award-top-scorer-team');
-        const goalsInp = document.getElementById('award-top-scorer-goals');
+        const topName = topScorer.name || '';
+        const topTeam = topScorer.team || '';
+        const topGoals = topScorer.goals || 0;
 
-        if (nameInp) nameInp.value = topScorer.name;
-        if (teamInp) teamInp.value = topScorer.team;
-        if (goalsInp) goalsInp.value = topScorer.goals;
+        const isUserEdited = p1Name && p1Name.dataset && p1Name.dataset.userEdited === 'true';
+        if (!isUserEdited) {
+          if (p1Name) {
+            p1Name.value = topName;
+            if (!p1Name.dataset) p1Name.dataset = {};
+            p1Name.dataset.autofilled = 'true';
+          }
+          if (p1Team) {
+            p1Team.value = topTeam;
+            if (!p1Team.dataset) p1Team.dataset = {};
+            p1Team.dataset.autofilled = 'true';
+          }
+          if (p1Goals) {
+            p1Goals.value = topGoals;
+            if (!p1Goals.dataset) p1Goals.dataset = {};
+            p1Goals.dataset.autofilled = 'true';
+          }
+        }
+      } else {
+        if (p1Name && p1Name.dataset && p1Name.dataset.autofilled === 'true') {
+          p1Name.value = '';
+          p1Name.dataset.autofilled = 'false';
+        }
+        if (p1Team && p1Team.dataset && p1Team.dataset.autofilled === 'true') {
+          p1Team.value = '';
+          p1Team.dataset.autofilled = 'false';
+        }
+        if (p1Goals && p1Goals.dataset && p1Goals.dataset.autofilled === 'true') {
+          p1Goals.value = '';
+          p1Goals.dataset.autofilled = 'false';
+        }
       }
     }
 

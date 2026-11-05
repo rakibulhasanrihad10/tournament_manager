@@ -1,0 +1,107 @@
+<div id="social-share-modal" class="modal-backdrop" onclick="if(event.target === this) closeSocialShareModal()">
+  <div class="modal-box modal-social-export">
+    <div class="modal-header" style="background: linear-gradient(90deg, #0f172a, #4338ca);">
+      <h3 data-i18n="social.modal_title">📸 সোশ্যাল মিডিয়া ছবি ও শেয়ার হাব</h3>
+      <button type="button" class="modal-close-btn" onclick="closeSocialShareModal()">✕</button>
+    </div>
+
+    <!-- Intro Banner -->
+    <div class="social-export-intro">
+      <span class="social-intro-icon">📢</span>
+      <div class="social-intro-txt">
+        <strong data-i18n="social.intro_title">ম্যাচ শেষে সোশ্যাল মিডিয়ায় এক ক্লিকে আপডেট শেয়ার করুন!</strong>
+        <p data-i18n="social.intro_desc">আলাদা কোনো ডিজাইনের প্রয়োজন নেই। আপনার টুর্নামেন্ট থেকেই পয়েন্ট টেবিল, রোডম্যাপ বা পুরো বোর্ডের ক্রিস্টাল-ক্লিয়ার ছবি (PNG) সরাসরি নামিয়ে নিন।</p>
+      </div>
+    </div>
+
+    <div class="modal-body social-export-body">
+      <div class="social-export-grid">
+        <!-- 1. Group Standings Card -->
+        <div class="social-card">
+          <div class="social-card-head sc-blue">
+            <span class="sc-badge" data-i18n="social.badge_standings">পয়েন্ট ও দলগত অবস্থান</span>
+            <h4 data-i18n="social.card_standings_title">📊 গ্রুপ পর্বের পয়েন্ট টেবিল</h4>
+          </div>
+          <div class="social-card-body">
+            <p data-i18n="social.card_standings_desc">সবকটি গ্রুপের লাইভ পয়েন্ট, গোল ব্যবধান (GD), সাম্প্রতিক ফর্ম ও সেমিফাইনালে খেলার যোগ্য সেরা রানার্স-আপের পূর্ণাঙ্গ কার্ড।</p>
+            <div class="social-card-actions">
+              <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('standings', this)">
+                <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_standings">পয়েন্ট টেবিল ছবি (PNG)</span>
+              </button>
+              <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
+                <span class="btn-ic">🖨️</span> <span data-i18n="social.btn_print_pdf">পিডিএফ / প্রিন্ট</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Knockout Bracket Card -->
+        <div class="social-card">
+          <div class="social-card-head sc-purple">
+            <span class="sc-badge" data-i18n="social.badge_knockout">ফাইনাল স্টেজ</span>
+            <h4 data-i18n="social.card_bracket_title">⚔️ সেমিফাইনাল ও মেগা ফাইনাল</h4>
+          </div>
+          <div class="social-card-body">
+            <p data-i18n="social.card_bracket_desc">১ম ও ২য় সেমিফাইনাল, ৩য় স্থান নির্ধারণী ম্যাচ এবং গ্র্যান্ড ফাইনালের হেড-টু-হেড রোডম্যাপ ও বিজয়ী ট্রফি প্রদর্শন।</p>
+            <div class="social-card-actions">
+              <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('bracket', this)">
+                <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_bracket">নকআউট ব্র্যাকেট ছবি (PNG)</span>
+              </button>
+              <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
+                <span class="btn-ic">🖨️</span> <span data-i18n="social.btn_print_pdf">পিডিএফ / প্রিন্ট</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Match Fixtures & Schedule Card -->
+        <div class="social-card">
+          <div class="social-card-head sc-emerald">
+            <span class="sc-badge" data-i18n="social.badge_fixtures">খেলার সময়সূচি</span>
+            <h4 data-i18n="social.card_fixtures_title">🗓️ ম্যাচ ফিক্সচার ও সময়সূচি</h4>
+          </div>
+          <div class="social-card-body">
+            <p data-i18n="social.card_fixtures_desc">কার সাথে কার খেলা, ম্যাচের সময়, গ্রুপ পর্বের প্রতিপক্ষের মুখোমুখি লড়াই এবং লাইভ ফলাফল প্রদর্শন কার্ড।</p>
+            <div class="social-card-actions">
+              <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('fixtures', this)">
+                <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_fixtures">ফিক্সচার ছবি (PNG)</span>
+              </button>
+              <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
+                <span class="btn-ic">🖨️</span> <span data-i18n="social.btn_print_pdf">পিডিএফ / প্রিন্ট</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Full Master Board Card -->
+        <div class="social-card">
+          <div class="social-card-head sc-gold">
+            <span class="sc-badge" data-i18n="social.badge_master">পূর্ণাঙ্গ ১-পেজ ভিউ</span>
+            <h4 data-i18n="social.card_master_title">🏆 সম্পূর্ণ টুর্নামেন্ট মাস্টার বোর্ড</h4>
+          </div>
+          <div class="social-card-body">
+            <p data-i18n="social.card_master_desc">ব্যানার, ভেন্যু, পয়েন্ট টেবিল, ফিকশ্চার ও নকআউট ব্র্যাকেটসহ পুরো পেজ ১-এর সম্পূর্ণ ক্রিস্টাল-ক্লিয়ার হাই-রেজোলিউশন বোর্ড।</p>
+            <div class="social-card-actions">
+              <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('full', this)">
+                <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_master">সম্পূর্ণ বোর্ড ছবি (PNG)</span>
+              </button>
+              <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
+                <span class="btn-ic">🖨️</span> <span data-i18n="social.btn_print_pdf">পিডিএফ / প্রিন্ট</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <div class="social-export-footer">
+      <button type="button" class="btn btn-dl-all-social" onclick="downloadAllSocialCards(this)" data-i18n="social.btn_dl_all">
+        📦 সবগুলো ছবি একসাথে ডাউনলোড (Download All PNGs)
+      </button>
+      <button type="button" class="btn btn-close-social" onclick="closeSocialShareModal()" data-i18n="modal.btn_close_done">
+        বন্ধ করুন ✕
+      </button>
+    </div>
+  </div>
+</div>

@@ -69,8 +69,8 @@ global.document = {
   body: {
     classList: {
       _classes: new Set(),
-      add: function(c) { this._classes.add(c); },
-      remove: function(c) { this._classes.delete(c); },
+      add: function(...classes) { classes.forEach(c => this._classes.add(c)); },
+      remove: function(...classes) { classes.forEach(c => this._classes.delete(c)); },
       contains: function(c) { return this._classes.has(c); }
     }
   },
@@ -90,6 +90,27 @@ it('index.html contains .p1-stage-nav tabs and IDs for cards', () => {
   assert.ok(indexHtml.includes('id="btn-p1-stage-all"'), 'Contains btn-p1-stage-all');
   assert.ok(indexHtml.includes('id="p1-card-schedule"'), 'Contains p1-card-schedule');
   assert.ok(indexHtml.includes('id="p1-card-bracket"'), 'Contains p1-card-bracket');
+});
+
+it('index.html excludes cluttered .sheet-nav-bar and includes sleek .sheet-jump-pill elements', () => {
+  assert.ok(!indexHtml.includes('class="sheet-nav-bar"'), 'Excludes .sheet-nav-bar from navbar');
+  assert.ok(indexHtml.includes('id="btn-jump-to-p2"'), 'Contains btn-jump-to-p2');
+  assert.ok(indexHtml.includes('id="btn-jump-to-p1"'), 'Contains btn-jump-to-p1');
+  assert.ok(indexHtml.includes('class="sheet-jump-pill"'), 'Contains .sheet-jump-pill');
+});
+
+it('scrollToSheet function is properly exported and handles target element', () => {
+  assert.strictEqual(typeof appJs.scrollToSheet, 'function', 'scrollToSheet is a function');
+  let scrolledIntoView = false;
+  domStore['page2'] = {
+    ...createMockElement('page2'),
+    scrollIntoView: (opts) => {
+      scrolledIntoView = true;
+      assert.strictEqual(opts.behavior, 'smooth');
+    }
+  };
+  appJs.scrollToSheet('page2');
+  assert.ok(scrolledIntoView, 'Target page2 scrollIntoView was called');
 });
 
 it('index.html cleanly excludes smart-match-center and view-mode-bar', () => {

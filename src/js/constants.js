@@ -7,62 +7,29 @@
 // Master Roster + Auto Golden Boot + Fair Play (Cards)
 // ========================================================
 
-// MASTER RULES CATALOG (Comprehensive FIFA 11-a-side & Bangladeshi Minibar Football Tournament Rules)
+// MASTER RULES CATALOG (Universal Football & Minibar Tournament Rules)
 const MASTER_RULES_CATALOG = [
   // ১. দল গঠন ও খেলোয়াড় যোগ্যতা (Squad & Eligibility)
-  {
-    id: 'r_squad_11',
-    category: 'দল গঠন ও খেলোয়াড় যোগ্যতা',
-    categoryEn: 'Squad & Eligibility',
-    categoryIcon: '👥',
-    title: 'দল গঠন ও সর্বোচ্চ স্কোয়াড',
-    titleEn: 'Squad Size & Player Registration',
-    desc: 'ফিফা স্ট্যান্ডার্ড টুর্নামেন্টে প্রতি দলে সর্বোচ্চ ১৬ থেকে ২৬ জন নিবন্ধিত খেলোয়াড় অন্তর্ভুক্ত করা যাবে। এর মধ্যে ১১ জন মূল একাদশে এবং বাকিরা বিকল্প (বেঞ্চ) হিসেবে থাকবেন।',
-    descEn: 'Squads may register 16 to 26 players (11 starters and registered substitutes). Only officially registered players can participate.',
-    defaultSelected: true
-  },
-  {
-    id: 'r_onfield_11',
-    category: 'দল গঠন ও খেলোয়াড় যোগ্যতা',
-    categoryEn: 'Squad & Eligibility',
-    categoryIcon: '👥',
-    title: 'মাঠের সদস্য সংখ্যা (১১-এ-সাইড ফিফা স্ট্যান্ডার্ড)',
-    titleEn: 'Active On-Field Players (11-a-side)',
-    desc: 'মাঠে একসঙ্গে প্রতি দলের ১১ জন খেলোয়াড় (১ জন গোলরক্ষক ও ১০ জন ফিল্ড খেলোয়াড়) অংশ নেবেন (ফিফা ল ৩)। মাঠের খেলোয়াড় সংখ্যা ৭ জনের নিচে নেমে গেলে ম্যাচ বাতিল হবে।',
-    descEn: 'Each team fields 11 players simultaneously (1 goalkeeper and 10 outfield players) per FIFA Law 3. A match cannot continue if a team has fewer than 7 players.',
-    defaultSelected: true
-  },
   {
     id: 'r_squad_minibar',
     category: 'দল গঠন ও খেলোয়াড় যোগ্যতা',
     categoryEn: 'Squad & Eligibility',
     categoryIcon: '👥',
-    title: 'মিনিবার স্কোয়াড গঠন (১০-১২ জন)',
-    titleEn: 'Minibar Squad Registration',
-    desc: 'মিনিবার ফুটবলে প্রতি দলে সর্বোচ্চ ১০-১২ জন খেলোয়াড় নিবন্ধন করা যাবে (৫/৬ জন মাঠে ও ৫/৬ জন অতিরিক্ত খেলোয়াড়)।',
-    descEn: 'Squads may register 10-12 players for minibar format (5-6 active on-field and 5-6 registered substitutes).',
-    defaultSelected: false
-  },
-  {
-    id: 'r_onfield_6',
-    category: 'দল গঠন ও খেলোয়াড় যোগ্যতা',
-    categoryEn: 'Squad & Eligibility',
-    categoryIcon: '👥',
-    title: 'মাঠের সদস্য সংখ্যা (মিনিবার ৫/৬-এ-সাইড)',
-    titleEn: 'Active On-Field Players (Minibar 5/6-a-side)',
-    desc: 'মাঠে একসঙ্গে প্রতি দলের ৫ বা ৬ জন খেলোয়াড় (গোলরক্ষকসহ) অংশ নেবেন (মিনিবার / শর্ট-পিচ ফরম্যাট)।',
-    descEn: 'Each team fields 5 or 6 active players (including the goalkeeper) simultaneously based on tournament regulations.',
-    defaultSelected: false
+    title: 'স্কোয়াড ও মাঠের খেলোয়াড় সংখ্যা',
+    titleEn: 'Squad Size & Active Players',
+    desc: 'প্রতি দলে সর্বোচ্চ {totalSquad} জন নিবন্ধিত খেলোয়াড় থাকবে (মাঠে {startingPlayers} জন ও বেঞ্চে {benchPlayers} জন)।',
+    descEn: 'Each squad may register up to {totalSquad} players ({startingPlayers} on-field and {benchPlayers} substitutes).',
+    defaultSelected: true
   },
   {
     id: 'r_residency',
     category: 'দল গঠন ও খেলোয়াড় যোগ্যতা',
     categoryEn: 'Squad & Eligibility',
     categoryIcon: '👥',
-    title: 'স্থায়ী বাসিন্দার শর্ত (Ward Residency)',
+    title: 'স্থায়ী বাসিন্দা শর্ত',
     titleEn: 'Permanent Residency Requirement',
-    desc: 'খেলোয়াড়দের অবশ্যই সংশ্লিষ্ট ইউনিয়ন/ওয়ার্ডের স্থায়ী বাসিন্দা হতে হবে। পরিচয়পত্র বা জন্মনিবন্ধন যাচাই বাধ্যতামূলক।',
-    descEn: 'Players must be permanent residents of the respective union or ward. ID verification is mandatory.',
+    desc: 'খেলোয়াড়কে সংশ্লিষ্ট এলাকা/ওয়ার্ডের স্থায়ী বাসিন্দা হতে হবে (প্রয়োজনে আইডি কার্ড যাচাইযোগ্য)।',
+    descEn: 'Players must be permanent residents of the respective area or ward (ID verification required if requested).',
     defaultSelected: true
   },
   {
@@ -70,78 +37,23 @@ const MASTER_RULES_CATALOG = [
     category: 'দল গঠন ও খেলোয়াড় যোগ্যতা',
     categoryEn: 'Squad & Eligibility',
     categoryIcon: '👥',
-    title: 'একাধিক দলে অংশগ্রহণ নিষেধ',
-    titleEn: 'Single-Team Limitation',
-    desc: 'একজন খেলোয়াড় পুরো টুর্নামেন্টে শুধুমাত্র একটি দলের হয়েই খেলতে পারবেন। একাধিক দলে নাম প্রমাণিত হলে সংশ্লিষ্ট দল বাতিল বলে গণ্য হবে।',
-    descEn: 'A player may only represent one team throughout the tournament. Dual representation results in disqualification.',
+    title: 'একক দলে অংশগ্রহণ',
+    titleEn: 'Single-Team Participation',
+    desc: 'একজন খেলোয়াড় কেবল একটি দলের হয়েই খেলতে পারবেন (একাধিক দলে খেললে সংশ্লিষ্ট দল বাতিল)।',
+    descEn: 'A player may only represent a single team (playing for multiple teams results in team disqualification).',
     defaultSelected: true
-  },
-  {
-    id: 'r_hire_players_no',
-    category: 'দল গঠন ও খেলোয়াড় যোগ্যতা',
-    categoryEn: 'Squad & Eligibility',
-    categoryIcon: '👥',
-    title: 'হায়ার/বহিরাগত খেলোয়াড় সম্পূর্ণ নিষিদ্ধ',
-    titleEn: 'Guest / Hired Players Prohibited',
-    desc: 'কোনো বহিরাগত বা ভাড়াটে খেলোয়াড় অংশ নিতে পারবে না। শতভাগ স্থানীয় খেলোয়াড় নিয়ে দল গঠন করতে হবে।',
-    descEn: 'Hired or guest players from outside the ward/area are strictly prohibited. 100% homegrown squads required.',
-    defaultSelected: false
-  },
-  {
-    id: 'r_hire_players_limit',
-    category: 'দল গঠন ও খেলোয়াড় যোগ্যতা',
-    categoryEn: 'Squad & Eligibility',
-    categoryIcon: '👥',
-    title: 'সীমিত হায়ার খেলোয়াড় কোটা',
-    titleEn: 'Limited Guest Player Quota',
-    desc: 'প্রতি ম্যাচে একাদশে সর্বোচ্চ ২ জন বহিরাগত/হায়ার খেলোয়াড় অংশ নেওয়ার অনুমতি থাকবে।',
-    descEn: 'A maximum of 2 external/guest players per team are allowed in the active playing lineup per match.',
-    defaultSelected: false
   },
 
   // ২. ম্যাচের সময় ও রিপোর্টিং (Match Timing & Reporting)
-  {
-    id: 'r_match_duration_90',
-    category: 'ম্যাচের সময় ও রিপোর্টিং',
-    categoryEn: 'Match Timing & Reporting',
-    categoryIcon: '⏱️',
-    title: 'ম্যাচের সময়কাল (৯০ মিনিট ফিফা স্ট্যান্ডার্ড)',
-    titleEn: 'Match Duration (90 Minutes - FIFA Standard)',
-    desc: 'নির্ধারিত ম্যাচ সময় ৯০ মিনিট (প্রথমার্ধ ৪৫ মিনিট, ১৫ মিনিট মধ্যবিরতি, দ্বিতীয়ার্ধ ৪৫ মিনিট)। ইনজুরি ও স্টপেজ টাইম রেফারির বিবেচনায় যোগ হবে (ফিফা ল ৭)।',
-    descEn: 'Regulation match duration is 90 minutes (45 min first half, 15 min half-time interval, 45 min second half) plus referee stoppage time (FIFA Law 7).',
-    defaultSelected: true
-  },
-  {
-    id: 'r_extra_time_fifa',
-    category: 'ম্যাচের সময় ও রিপোর্টিং',
-    categoryEn: 'Match Timing & Reporting',
-    categoryIcon: '⏱️',
-    title: 'নকআউট অতিরিক্ত সময় (৩০ মিনিট)',
-    titleEn: 'Knockout Extra Time (30 Minutes)',
-    desc: 'নকআউট পর্বে নির্ধারিত ৯০ মিনিটে খেলা ড্র হলে ১৫ মিনিট করে দুই অর্ধে মোট ৩০ মিনিট অতিরিক্ত সময় (Extra Time) খেলা হবে। এরপরও অমীমাংসিত থাকলে পেনাল্টি শুটআউট হবে।',
-    descEn: 'In knockout rounds, if tied after 90 minutes, two 15-minute extra time periods (total 30 mins) will be played before proceeding to a penalty shootout.',
-    defaultSelected: true
-  },
   {
     id: 'r_match_duration',
     category: 'ম্যাচের সময় ও রিপোর্টিং',
     categoryEn: 'Match Timing & Reporting',
     categoryIcon: '⏱️',
-    title: 'ম্যাচের সময়কাল (মিনিবার ২০-৩০ মিনিট)',
-    titleEn: 'Minibar Match Duration (20-30 Minutes)',
-    desc: 'মিনিবার টুর্নামেন্টে ম্যাচ সময়কাল ২০ থেকে ৩০ মিনিট (১০-১৫ মিনিট প্রথমার্ধ, ৩-৫ মিনিট বিরতি, ১০-১৫ মিনিট দ্বিতীয়ার্ধ)।',
-    descEn: 'Minibar match duration is 20-30 minutes (10-15 min first half, 3-5 min break, 10-15 min second half).',
-    defaultSelected: false
-  },
-  {
-    id: 'r_early_reporting',
-    category: 'ম্যাচের সময় ও রিপোর্টিং',
-    categoryEn: 'Match Timing & Reporting',
-    categoryIcon: '⏱️',
-    title: 'মাঠে নির্ধারিত সময়ে উপস্থিতি',
-    titleEn: 'Punctual Pitch Reporting',
-    desc: 'নির্ধারিত ম্যাচ শুরুর কমপক্ষে ১৫ মিনিট পূর্বে দলকে মাঠে উপস্থিত হয়ে ম্যাচ কমিশনারের কাছে রিপোর্ট করতে হবে।',
-    descEn: 'Teams must report to the pitch and match commissioner at least 15 minutes before scheduled kickoff.',
+    title: 'ম্যাচের সময়কাল',
+    titleEn: 'Match Duration',
+    desc: 'ম্যাচের নির্ধারিত সময়কাল মোট {matchDurationTotal} মিনিট (প্রথমার্ধ {half1} মিনিট, মধ্যবিরতি {breakTime} মিনিট, দ্বিতীয়ার্ধ {half2} মিনিট)। ইনজুরি সময় রেফারির বিবেচনায় যোগ হবে।',
+    descEn: 'Regulation match duration is {matchDurationTotal} minutes ({half1} min 1st half, {breakTime} min break, {half2} min 2nd half) plus referee stoppage time.',
     defaultSelected: true
   },
   {
@@ -149,21 +61,10 @@ const MASTER_RULES_CATALOG = [
     category: 'ম্যাচের সময় ও রিপোর্টিং',
     categoryEn: 'Match Timing & Reporting',
     categoryIcon: '⏱️',
-    title: 'ওয়াকওভার (Walkover) ও অনুপস্থিতি',
-    titleEn: 'Walkover (3-0 Forfeit)',
-    desc: 'ম্যাচ শুরুর নির্ধারিত সময়ের পর সর্বোচ্চ ১৫ মিনিট অপেক্ষা করা হবে; দল অনুপস্থিত থাকলে বিপক্ষ দলকে ৩-০ গোলে বিজয়ী ঘোষণা করা হবে।',
-    descEn: 'Grace period is 15 minutes after kickoff time. If a team fails to show up, a 3-0 walkover is awarded to the opponent.',
-    defaultSelected: true
-  },
-  {
-    id: 'r_dress_code',
-    category: 'ম্যাচের সময় ও রিপোর্টিং',
-    categoryEn: 'Match Timing & Reporting',
-    categoryIcon: '⏱️',
-    title: 'জার্সি ও পোশাক বিধি',
-    titleEn: 'Team Kit & Dress Code',
-    desc: 'প্রতিটি দলকে একই রঙের জার্সি ও শর্টস পরে খেলতে হবে। উভয় দলের জার্সির রঙ এক হলে টসের মাধ্যমে এক দলকে বিবস (Bibs) পরতে হবে।',
-    descEn: 'Teams must wear uniform jerseys. In case of color clashes, toss determines which team wears bibs.',
+    title: 'ওয়াকওভার ও অনুপস্থিতি',
+    titleEn: 'Walkover & Forfeit',
+    desc: 'নির্ধারিত সময়ের পর সর্বোচ্চ ১৫ মিনিট অপেক্ষা করা হবে; দল অনুপস্থিত থাকলে বিপক্ষ দলকে ৩-০ গোলে বিজয়ী ঘোষণা করা হবে (ফিফা ডিসিপ্লিনারি কোড রুল ২২/৩১ অনুযায়ী)।',
+    descEn: 'Grace period is 15 minutes after kickoff time. If a team fails to report, a 3-0 walkover is awarded to the opponent (per FIFA Disciplinary Code Art. 22/31).',
     defaultSelected: true
   },
 
@@ -173,21 +74,10 @@ const MASTER_RULES_CATALOG = [
     category: 'ড্র নিষ্পত্তি ও টাইব্রেকার',
     categoryEn: 'Draws & Tiebreakers',
     categoryIcon: '🎯',
-    title: 'লিগ ও গ্রুপ পর্বের পয়েন্ট নীতি (ফিফা ৩-১-০)',
-    titleEn: 'League & Group Points Policy (FIFA 3-1-0)',
-    desc: 'গ্রুপ পর্ব ও লিগে নির্ধারিত সময়ে জয়ী দল ৩ পয়েন্ট, ড্র হলে উভয় দল ১টি করে পয়েন্ট পাবে এবং পরাজিত দল ০ পয়েন্ট পাবে। গ্রুপ পর্বে সরাসরি কোনো টাইব্রেকার থাকবে না।',
-    descEn: 'Group/league matches award 3 points for a win, 1 point for a draw, and 0 for a loss (FIFA 3-1-0 standard). Tied matches share points with no shootout.',
-    defaultSelected: true
-  },
-  {
-    id: 'r_pen_count_fifa',
-    category: 'ড্র নিষ্পত্তি ও টাইব্রেকার',
-    categoryEn: 'Draws & Tiebreakers',
-    categoryIcon: '🎯',
-    title: 'ফিফা অফিসিয়াল টাইব্রেকার (৫টি শট ও সাডেন ডেথ)',
-    titleEn: 'FIFA Official Penalty Shootout (5 Kicks & Sudden Death)',
-    desc: 'নকআউট পর্বে অতিরিক্ত সময়ের পরও খেলা ড্র থাকলে টাইব্রেকারে উভয় দল ৫টি করে পেনাল্টি শট নেবে (FIFA Law 10)। ৫ শটে সমতা থাকলে ১টি করে সাডেন ডেথ পদ্ধতিতে নিষ্পত্তি হবে।',
-    descEn: 'Knockout tiebreakers start with a best-of-5 penalty shootout per team (FIFA Law 10). If tied after 5 kicks, sudden-death rounds (1 kick each) decide.',
+    title: 'গ্রুপ পর্বের পয়েন্ট নীতি (৩-১-০)',
+    titleEn: 'Group Stage Points Policy (3-1-0)',
+    desc: 'গ্রুপ পর্ব ও লিগের খেলায় জয়ী দল ৩ পয়েন্ট, ড্র হলে উভয় দল ১ পয়েন্ট এবং পরাজিত দল ০ পয়েন্ট পাবে।',
+    descEn: 'In group and league matches, 3 points are awarded for a win, 1 point for a draw, and 0 for a defeat.',
     defaultSelected: true
   },
   {
@@ -195,33 +85,11 @@ const MASTER_RULES_CATALOG = [
     category: 'ড্র নিষ্পত্তি ও টাইব্রেকার',
     categoryEn: 'Draws & Tiebreakers',
     categoryIcon: '🎯',
-    title: 'মিনিবার সরাসরি টাইব্রেকার (ড্র হলে কোনো অতিরিক্ত সময় নেই)',
-    titleEn: 'Direct Shootout in Minibar (No Extra Time)',
-    desc: 'মিনিবার টুর্নামেন্টে নির্ধারিত সময়ে খেলা ড্র হলে কোনো অতিরিক্ত সময় থাকবে না; সরাসরি পেনাল্টি শুটআউটের মাধ্যমে বিজয়ী নির্ধারিত হবে।',
-    descEn: 'In minibar tournaments, tied matches at full time go straight to a penalty shootout with no extra time played.',
-    defaultSelected: false
-  },
-  {
-    id: 'r_pen_count',
-    category: 'ড্র নিষ্পত্তি ও টাইব্রেকার',
-    categoryEn: 'Draws & Tiebreakers',
-    categoryIcon: '🎯',
-    title: 'মিনিবার পেনাল্টি শটের সংখ্যা (৩টি শট)',
-    titleEn: 'Minibar Shootout (3 Kicks & Sudden Death)',
-    desc: 'মিনিবার টাইব্রেকারে প্রাথমিক পর্যায়ে উভয় দল ৩টি করে শট নেবে। ৩ শটে সমতা থাকলে সাডেন ডেথ (১টি করে শট) পদ্ধতিতে নিষ্পত্তি হবে।',
-    descEn: 'Minibar shootout begins with 3 shots per team. If tied after 3 kicks, sudden death rounds (1 kick each) decide.',
-    defaultSelected: false
-  },
-  {
-    id: 'r_shootout_pts',
-    category: 'ড্র নিষ্পত্তি ও টাইব্রেকার',
-    categoryEn: 'Draws & Tiebreakers',
-    categoryIcon: '🎯',
-    title: 'মিনিবার অল-অর-নাথিং পয়েন্ট নীতি',
-    titleEn: 'Minibar Shootout Points Policy',
-    desc: 'স্থানীয় মিনিবার টুর্নামেন্টে কোনো ম্যাচ ড্র হিসেবে গণ্য না হলে নির্ধারিত সময়ে বা টাইব্রেকারে জয়ী দল পূর্ণ ৩ পয়েন্ট লাভ করবে।',
-    descEn: 'No match ends in a draw. The winning team (either in regulation or via shootout) receives full 3 points.',
-    defaultSelected: false
+    title: 'ম্যাচ ড্র ও সরাসরি টাইব্রেকার',
+    titleEn: 'Match Draw & Direct Shootout',
+    desc: 'নির্ধারিত সময়ে খেলা ড্র হলে কোনো অতিরিক্ত সময় ছাড়া সরাসরি পেনাল্টি শুটআউট হবে। উভয় দল {penaltyKicks}টি করে শট নেবে; সমতা থাকলে সাডেন ডেথ পদ্ধতিতে (১টি করে শটে) নিষ্পত্তি হবে।',
+    descEn: 'If a match is tied at full time, it proceeds directly to a penalty shootout without extra time. Each team takes {penaltyKicks} penalty kicks; if tied, sudden-death kicks decide.',
+    defaultSelected: true
   },
 
   // ৪. পয়েন্ট টেবিল ও অবস্থান নির্ধারণ (Standings & Tiebreaker Order)
@@ -232,43 +100,21 @@ const MASTER_RULES_CATALOG = [
     categoryIcon: '📊',
     title: 'পয়েন্ট সমতার ক্ষেত্রে অবস্থান নির্ধারণ',
     titleEn: 'Standings Tiebreaker Hierarchy',
-    desc: 'গ্রুপে একাধিক দলের পয়েন্ট সমান হলে যথাক্রমে: ১. হেড-টু-হেড ফলাফল, ২. গোল ব্যবধান (GD), ৩. সর্বাধিক গোল সংখ্যা (GF) এবং ৪. ফেয়ার প্লে ডিসিপ্লিনারি পয়েন্ট বিবেচনা করে র‍্যাঙ্কিং নির্ধারিত হবে।',
-    descEn: 'If points are tied in a group, ranking is decided by: 1. Head-to-head, 2. Goal Difference (GD), 3. Goals For (GF), 4. Fair Play record.',
-    defaultSelected: true
-  },
-  {
-    id: 'r_best_runnerup',
-    category: 'পয়েন্ট টেবিল ও অবস্থান নির্ধারণ',
-    categoryEn: 'Standings & Tiebreakers',
-    categoryIcon: '📊',
-    title: 'সেরা রানার্স-আপ বাছাই সমীকরণ',
-    titleEn: 'Best Runner-Up Qualification Formula',
-    desc: '৩টি গ্রুপের রানার্স-আপ দলের মধ্যে সর্বাধিক পয়েন্ট, গোল ব্যবধান ও ডিসিপ্লিনারি রেকর্ড বিবেচনা করে সেমিফাইনালের চতুর্থ দল (সেরা রানার্স-আপ) নির্ধারিত হবে।',
-    descEn: 'The 4th semi-final slot is awarded to the best runner-up across the 3 groups evaluated by Points, GD, GF, and Fair Play.',
+    desc: 'গ্রুপ পর্বে একাধিক দলের পয়েন্ট সমান হলে যথাক্রমে: ১. গোল ব্যবধান (GD), ২. সর্বাধিক গোল দেওয়ার সংখ্যা (GF), ৩. হেড-টু-হেড ফলাফল এবং ৪. ফেয়ার প্লে ডিসিপ্লিনারি রেকর্ড বিবেচনা করে চূড়ান্ত অবস্থান নির্ধারিত হবে (ফিফা অফিশিয়াল নিয়ম অনুযায়ী)।',
+    descEn: 'If points are tied in a group, ranking is decided by: 1. Goal Difference (GD), 2. Goals For (GF), 3. Head-to-head record, 4. Fair Play record (per official FIFA regulations).',
     defaultSelected: true
   },
 
-  // ৫. শৃঙ্খলা, কার্ড ও রেফারির সিদ্ধান্ত (Discipline & Fair Play)
+  // ৫. শৃঙ্খলা ও রেফারির সিদ্ধান্ত (Discipline & Fair Play)
   {
     id: 'r_referee_final',
     category: 'শৃঙ্খলা ও রেফারির সিদ্ধান্ত',
     categoryEn: 'Discipline & Fair Play',
     categoryIcon: '⚖️',
-    title: 'রেফারির সিদ্ধান্তই চূড়ান্ত',
-    titleEn: 'Referee Decision is Absolute',
-    desc: 'মাঠে রেফারির সিদ্ধান্তই চূড়ান্ত ও সর্বসম্মত বলে গণ্য হবে। রেফারির যেকোনো সিদ্ধান্তের প্রতি খেলোয়াড় ও কর্মকর্তাদের পূর্ণ সম্মান প্রদর্শন বাধ্যতামূলক।',
-    descEn: 'The referee decision on the pitch is final and binding. Unsportsmanlike dissent will not be tolerated.',
-    defaultSelected: true
-  },
-  {
-    id: 'r_violence_expulsion',
-    category: 'শৃঙ্খলা ও রেফারির সিদ্ধান্ত',
-    categoryEn: 'Discipline & Fair Play',
-    categoryIcon: '⚖️',
-    title: 'অসদাচরণ ও দল বহিষ্কার',
-    titleEn: 'Zero Tolerance for Violent Conduct',
-    desc: 'মাঠে যেকোনো ধরনের মারামারি, অশালীন গালিগালাজ, খেলা বিঘ্নিত করা বা রেফারির সাথে অসদাচরণের দায়ে সংশ্লিষ্ট দলকে টুর্নামেন্ট থেকে স্থায়ী বহিষ্কার ও এন্ট্রি ফি বাজেয়াপ্ত করা হবে।',
-    descEn: 'Any fighting, abusive language, or deliberate match disruption results in immediate team expulsion and forfeiture of entry fee.',
+    title: 'রেফারির সিদ্ধান্ত ও শৃঙ্খলা নীতি',
+    titleEn: 'Referee Authority & Code of Conduct',
+    desc: 'মাঠে রেফারির সিদ্ধান্তই চূড়ান্ত বলে গণ্য হবে। কোনো ধরনের মারামারি, অশালীন আচরণ, গালিগালাজ বা রেফারির সিদ্ধান্তে অসন্তোষ দেখিয়ে খেলা বিঘ্নিত করলে সংশ্লিষ্ট দলকে টুর্নামেন্ট থেকে স্থায়ী বহিষ্কার ও এন্ট্রি ফি বাজেয়াপ্ত করা হবে।',
+    descEn: 'The referee decision is final. Any violent conduct, dissent, foul language, or match disruption will result in immediate team expulsion and forfeiture of entry fee.',
     defaultSelected: true
   },
   {
@@ -276,130 +122,18 @@ const MASTER_RULES_CATALOG = [
     category: 'শৃঙ্খলা ও রেফারির সিদ্ধান্ত',
     categoryEn: 'Discipline & Fair Play',
     categoryIcon: '⚖️',
-    title: 'হলুদ কার্ড শৃঙ্খলা নীতি (-১ FP)',
-    titleEn: 'Yellow Card Policy (-1 Fair Play)',
-    desc: 'একটি হলুদ কার্ডের জন্য দলের ফেয়ার প্লে স্কোর থেকে ১ পয়েন্ট কর্তন হবে। এক ম্যাচে ২ হলুদ কার্ড পাওয়া খেলোয়াড় স্বয়ংক্রিয়ভাবে লাল কার্ড প্রাপ্ত হবেন।',
-    descEn: 'Each yellow card deducts 1 point from the team Fair Play score. 2 yellows in a single match convert into an automatic red.',
-    defaultSelected: true
-  },
-  {
-    id: 'r_red_card',
-    category: 'শৃঙ্খলা ও রেফারির সিদ্ধান্ত',
-    categoryEn: 'Discipline & Fair Play',
-    categoryIcon: '⚖️',
-    title: 'লাল কার্ড ও ম্যাচ নিষেধাজ্ঞা (-৩ FP)',
-    titleEn: 'Red Card & Suspension (-3 Fair Play)',
-    desc: 'সরাসরি লাল কার্ড পেলে সংশ্লিষ্ট দল থেকে ৩ ফেয়ার প্লে পয়েন্ট কর্তন হবে এবং উক্ত খেলোয়াড় পরবর্তী ম্যাচে মাঠের বাইরে থাকবেন।',
-    descEn: 'A direct red card deducts 3 Fair Play points and imposes a mandatory one-match suspension on the player.',
+    title: 'কার্ড ও ফেয়ার প্লে নীতি',
+    titleEn: 'Cards & Fair Play Policy',
+    desc: 'প্রতিটি হলুদ কার্ডে ১ ও লাল কার্ডে ৩ ফেয়ার প্লে পয়েন্ট কর্তন হবে (এক ম্যাচে ২ হলুদ কার্ড = লাল কার্ড)। লাল কার্ডপ্রাপ্ত খেলোয়াড় পরবর্তী ১ ম্যাচ নিষিদ্ধ থাকবেন।',
+    descEn: 'Each yellow card deducts 1 point and a red card deducts 3 Fair Play points (2 yellows = 1 red). A player receiving a red card is suspended for the next match.',
     defaultSelected: true
   },
 
-  // ৬. খেলার বিশেষ নিয়ম ও বদলি (In-Game Rules & Substitutions)
-  {
-    id: 'r_fifa_offside',
-    category: 'খেলার বিশেষ নিয়ম ও বদলি',
-    categoryEn: 'In-Game Rules & Substitutions',
-    categoryIcon: '🔄',
-    title: 'অফসাইড নিয়ম কার্যকর (ফিফা ল ১১)',
-    titleEn: 'Offside Rule Enforced (FIFA Law 11)',
-    desc: 'ফিফা ল ১১ অনুযায়ী অফসাইড নিয়ম পূর্ণাঙ্গভাবে বলবৎ থাকবে। পাস দেওয়ার মুহূর্তে আক্রমণভাগের খেলোয়াড় বল ও প্রতিপক্ষের শেষ দ্বিতীয় খেলোয়াড়ের চেয়ে এগিয়ে থাকলে অফসাইড গণ্য হবে।',
-    descEn: 'Offside is strictly enforced per FIFA Law 11. An attacking player nearer to the opponent goal line than both the ball and the second-last opponent is penalized.',
-    defaultSelected: true
-  },
-  {
-    id: 'r_fifa_subs',
-    category: 'খেলার বিশেষ নিয়ম ও বদলি',
-    categoryEn: 'In-Game Rules & Substitutions',
-    categoryIcon: '🔄',
-    title: 'সর্বোচ্চ ৫ জন খেলোয়াড় বদলি (ফিফা ৩ উইন্ডো)',
-    titleEn: 'FIFA 5 Substitutions Policy (3 In-Game Windows)',
-    desc: 'ম্যাচে প্রতিটি দল সর্বোচ্চ ৫ জন খেলোয়াড় বদলি করার সুযোগ পাবে (সর্বোচ্চ ৩টি সাবস্টিটিউশন উইন্ডোতে)। একবার মাঠ ছেড়ে উঠে যাওয়া খেলোয়াড় পুনরায় খেলায় নামতে পারবেন না।',
-    descEn: 'Each team is permitted a maximum of 5 substitutions across at most 3 in-game substitution windows. Substituted players cannot return to the pitch.',
-    defaultSelected: true
-  },
-  {
-    id: 'r_no_offside',
-    category: 'খেলার বিশেষ নিয়ম ও বদলি',
-    categoryEn: 'In-Game Rules & Substitutions',
-    categoryIcon: '🔄',
-    title: 'মিনিবার অফসাইড নিয়ম শিথিল (নো অফসাইড)',
-    titleEn: 'No Offside in Minibar (Small-Sided)',
-    desc: 'মিনিবার / ছোট মাঠের গতিশীল খেলার স্বার্থে এই টুর্নামেন্টে কোনো অফসাইড নিয়ম প্রযোজ্য হবে না।',
-    descEn: 'To facilitate fast-paced dynamic gameplay on small-sided pitches, no offside rule applies in minibar football.',
-    defaultSelected: false
-  },
-  {
-    id: 'r_rolling_subs',
-    category: 'খেলার বিশেষ নিয়ম ও বদলি',
-    categoryEn: 'In-Game Rules & Substitutions',
-    categoryIcon: '🔄',
-    title: 'মিনিবার রোলিং সাবস্টিটিউশন (চলমান বদলি)',
-    titleEn: 'Minibar Rolling Substitutions (Fly Substitutions)',
-    desc: 'খেলা চলাকালে রেফারিকে অবগত করে অথবা নির্দিষ্ট সাবস্টিটিউশন জোন দিয়ে যেকোনো সময় একাধিকবার খেলোয়াড় বদলি (Rolling/Fly Substitution) করা যাবে।',
-    descEn: 'Unlimited rolling substitutions are permitted during play breaks upon notifying officials.',
-    defaultSelected: false
-  },
-  {
-    id: 'r_minibar_gk_rules',
-    category: 'খেলার বিশেষ নিয়ম ও বদলি',
-    categoryEn: 'In-Game Rules & Substitutions',
-    categoryIcon: '🔄',
-    title: 'মিনিবার গোলরক্ষক ও ডি-বক্স নিয়ম',
-    titleEn: 'Minibar Goalkeeper & D-Box Restrictions',
-    desc: 'মিনিবারে গোলরক্ষক নিজ ডি-বক্সের বাইরে হাত দিয়ে বল স্পর্শ করতে পারবেন না এবং নিজের পায়ে বল নিয়ে ৪ সেকেন্ডের বেশি সময় ধরে রাখতে পারবেন না।',
-    descEn: 'In minibar football, goalkeepers may not handle the ball outside the penalty D-box and cannot hold the ball at their feet for more than 4 seconds.',
-    defaultSelected: false
-  },
-  {
-    id: 'r_minibar_posts',
-    category: 'খেলার বিশেষ নিয়ম ও বদলি',
-    categoryEn: 'In-Game Rules & Substitutions',
-    categoryIcon: '🔄',
-    title: 'মিনিবার ছোট গোলপোস্ট ও কিক-ইন',
-    titleEn: 'Minibar Small Goalposts & Kick-Ins',
-    desc: 'খেলায় ছোট সাইজের গোলপোস্ট (মিনিবার) ব্যবহৃত হবে। সাইডলাইনের বাইরে বল গেলে টুর্নামেন্ট নীতি অনুযায়ী থ্রো-ইন অথবা গ্রাউন্ড কিক-ইন করা যাবে।',
-    descEn: 'Small-sized minibar goalposts are used. Ground kick-ins or throw-ins apply when the ball crosses touchlines.',
-    defaultSelected: false
-  },
-  {
-    id: 'r_backpass_rule',
-    category: 'খেলার বিশেষ নিয়ম ও বদলি',
-    categoryEn: 'In-Game Rules & Substitutions',
-    categoryIcon: '🔄',
-    title: 'গোলরক্ষকের ব্যাক-পাস নিয়ম',
-    titleEn: 'Goalkeeper Back-Pass Rule',
-    desc: 'সতীর্থ খেলোয়াড়ের পা দিয়ে ইচ্ছাকৃত ব্যাক-পাস গোলরক্ষক সরাসরি হাতে ধরতে পারবেন না; ধরলে বিপক্ষ দল ইনডাইরেক্ট ফ্রি-কিক পাবে।',
-    descEn: 'Goalkeepers cannot handle deliberate foot back-passes from teammates; doing so awards an indirect free kick.',
-    defaultSelected: true
-  },
-
-  // ৭. অভিযোগ, এন্ট্রি ফি ও জরুরি নীতি (Protest, Fees & Weather)
-  {
-    id: 'r_protest_fee',
-    category: 'অভিযোগ, ফি ও জরুরি নীতি',
-    categoryEn: 'Protests, Fees & Contingencies',
-    categoryIcon: '🛡️',
-    title: 'লিখিত অভিযোগ ও প্রতিবাদ ফি',
-    titleEn: 'Official Protest & Dispute Fee',
-    desc: 'কোনো দলের বিরুদ্ধে নিয়মভঙ্গের আপত্তি থাকলে ম্যাচ শেষের ৩০ মিনিটের মধ্যে ১,০০০ টাকা অফিশিয়াল প্রতিবাদ ফিসহ লিখিত অভিযোগ জমা দিতে হবে। অভিযোগ প্রমাণিত হলে ফি ফেরত দেওয়া হবে।',
-    descEn: 'Written protests regarding player eligibility or rule breaches must be filed within 30 mins with a 1,000 BDT fee (refundable if upheld).',
-    defaultSelected: true
-  },
-  {
-    id: 'r_entry_fee_due',
-    category: 'অভিযোগ, ফি ও জরুরি নীতি',
-    categoryEn: 'Protests, Fees & Contingencies',
-    categoryIcon: '🛡️',
-    title: 'এন্ট্রি ফি পরিশোধের শর্ত',
-    titleEn: 'Advance Entry Fee Clearance',
-    desc: 'ফিকশ্চার প্রকাশের বা প্রথম ম্যাচ খেলার পূর্বেই টুর্নামেন্টের সম্পূর্ণ এন্ট্রি ফি পরিশোধ করতে হবে। অনাদায়ে দল বাতিল হবে।',
-    descEn: 'All team entry fees must be fully paid prior to fixture release or kickoff. Unpaid squads forfeit their slot.',
-    defaultSelected: true
-  },
+  // ৬. অভিযোগ ও জরুরি নীতি (Emergency & Contingencies)
   {
     id: 'r_weather_interruption',
-    category: 'অভিযোগ, ফি ও জরুরি নীতি',
-    categoryEn: 'Protests, Fees & Contingencies',
+    category: 'অভিযোগ ও জরুরি নীতি',
+    categoryEn: 'Emergency & Contingencies',
     categoryIcon: '🛡️',
     title: 'প্রাকৃতিক দুর্যোগ ও বৃষ্টি নীতি',
     titleEn: 'Weather & Interruption Policy',
@@ -409,23 +143,147 @@ const MASTER_RULES_CATALOG = [
   }
 ];
 
+function formatDynamicRuleText(text, cfg, isEn) {
+  if (!text || typeof text !== 'string') return text || '';
+  const c = cfg || (typeof tournamentConfig !== 'undefined' ? tournamentConfig : {});
+  const starting = Number(c.startingPlayers) || 11;
+  const bench = Number(c.benchPlayers) || 5;
+  const total = starting + bench;
+  const maxSubs = Number(c.maxSubstitutes) || 5;
+  const toBn = (n) => String(n).replace(/[0-9]/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+  const toEn = (s) => String(s).replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d));
+
+  const sStr = isEn ? String(starting) : toBn(starting);
+  const bStr = isEn ? String(bench) : toBn(bench);
+  const tStr = isEn ? String(total) : toBn(total);
+  const subStr = isEn ? String(maxSubs) : toBn(maxSubs);
+
+  // Parse or extract half1, half2, break, total duration
+  let h1 = 0, h2 = 0, brk = 0, totalMin = 0;
+  if (typeof document !== 'undefined') {
+    const h1El = document.getElementById('w-cfg-half1');
+    const h2El = document.getElementById('w-cfg-half2');
+    const brkEl = document.getElementById('w-cfg-break');
+    if (h1El && h1El.value) h1 = parseInt(h1El.value, 10);
+    if (h2El && h2El.value) h2 = parseInt(h2El.value, 10);
+    if (brkEl && brkEl.value !== '') brk = parseInt(brkEl.value, 10);
+  }
+
+  if (c.half1) h1 = parseInt(c.half1, 10);
+  if (c.half2) h2 = parseInt(c.half2, 10);
+  if (c.break !== undefined && c.break !== '') brk = parseInt(c.break, 10);
+
+  const rawDur = c.matchDuration || '';
+  if (!h1 && rawDur) {
+    const norm = toEn(rawDur);
+    const m = norm.match(/(\d+)\s*\+\s*(?:(\d+)\s*\+\s*)?(\d+)/);
+    if (m) {
+      h1 = parseInt(m[1], 10);
+      if (m[2]) {
+        brk = parseInt(m[2], 10);
+        h2 = parseInt(m[3], 10);
+      } else {
+        h2 = parseInt(m[3], 10);
+      }
+    } else {
+      const singleM = norm.match(/(\d+)/);
+      if (singleM) {
+        totalMin = parseInt(singleM[1], 10);
+        h1 = Math.round(totalMin / 2);
+        h2 = totalMin - h1;
+      }
+    }
+  }
+
+  if (!h1) {
+    if (starting <= 6) {
+      h1 = 10; h2 = 10; brk = 2;
+    } else {
+      h1 = 45; h2 = 45; brk = 15;
+    }
+  }
+  if (!totalMin) totalMin = h1 + h2;
+
+  const totalMinStr = isEn ? String(totalMin) : toBn(totalMin);
+  const h1Str = isEn ? String(h1) : toBn(h1);
+  const h2Str = isEn ? String(h2) : toBn(h2);
+  const brkStr = isEn ? String(brk) : toBn(brk);
+
+  const kicksNum = starting >= 11 ? 5 : 3;
+  const kicksStr = isEn ? String(kicksNum) : toBn(kicksNum);
+
+  let formatted = text
+    .replace(/\{totalSquad\}/g, tStr)
+    .replace(/\{startingPlayers\}/g, sStr)
+    .replace(/\{benchPlayers\}/g, bStr)
+    .replace(/\{maxSubstitutes\}/g, subStr)
+    .replace(/\{matchDurationTotal\}/g, totalMinStr)
+    .replace(/\{half1\}/g, h1Str)
+    .replace(/\{half2\}/g, h2Str)
+    .replace(/\{breakTime\}/g, brkStr)
+    .replace(/\{penaltyKicks\}/g, kicksStr);
+
+  if (brk === 0) {
+    if (isEn) {
+      formatted = formatted.replace(/,\s*\d+\s*min\s*break/gi, '');
+    } else {
+      formatted = formatted.replace(/,\s*মধ্যবিরতি\s*[০-৯\d]+\s*মিনিট/gi, '');
+    }
+  }
+
+  return formatted;
+}
+
+function resolveRuleDesc(rule, cfg, isEn) {
+  if (!rule) return '';
+  const rawDesc = (isEn && rule.descEn) ? rule.descEn : (rule.desc || '');
+  return formatDynamicRuleText(rawDesc, cfg, isEn);
+}
+
+function resolveRuleTitle(rule, cfg, isEn) {
+  if (!rule) return '';
+  const rawTitle = (isEn && rule.titleEn) ? rule.titleEn : (rule.title || '');
+  return formatDynamicRuleText(rawTitle, cfg, isEn);
+}
+
+function isRuleApplicableToFormat(ruleId, cfg) {
+  const c = cfg || (typeof tournamentConfig !== 'undefined' ? tournamentConfig : {});
+  if (c.tournamentType === 'knockout') {
+    // In knockout tournament format, points table & standings tiebreaker rules do not apply
+    if (ruleId === 'r_fifa_points' || ruleId === 'r_standings_tiebreaker' || ruleId === 'r_best_runnerup' || ruleId === 'r_shootout_pts') {
+      return false;
+    }
+  }
+  return true;
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.formatDynamicRuleText = formatDynamicRuleText;
+  globalThis.resolveRuleDesc = resolveRuleDesc;
+  globalThis.resolveRuleTitle = resolveRuleTitle;
+  globalThis.isRuleApplicableToFormat = isRuleApplicableToFormat;
+}
+if (typeof window !== 'undefined') {
+  window.formatDynamicRuleText = formatDynamicRuleText;
+  window.resolveRuleDesc = resolveRuleDesc;
+  window.resolveRuleTitle = resolveRuleTitle;
+  window.isRuleApplicableToFormat = isRuleApplicableToFormat;
+}
+
 const STANDARD_RULES_PRESET = [
-  'r_squad_11', 'r_onfield_11', 'r_residency', 'r_single_team',
-  'r_match_duration_90', 'r_extra_time_fifa', 'r_early_reporting',
-  'r_walkover', 'r_dress_code', 'r_fifa_points', 'r_pen_count_fifa',
-  'r_standings_tiebreaker', 'r_referee_final', 'r_violence_expulsion',
-  'r_yellow_card', 'r_red_card', 'r_fifa_offside', 'r_fifa_subs',
-  'r_backpass_rule', 'r_protest_fee', 'r_entry_fee_due', 'r_weather_interruption'
+  'r_squad_minibar', 'r_residency', 'r_single_team',
+  'r_match_duration', 'r_walkover',
+  'r_fifa_points', 'r_direct_shootout',
+  'r_standings_tiebreaker', 'r_referee_final',
+  'r_yellow_card', 'r_weather_interruption'
 ];
 
 const MINIBAR_RULES_PRESET = [
-  'r_squad_minibar', 'r_onfield_6', 'r_minibar_posts', 'r_residency',
-  'r_single_team', 'r_match_duration', 'r_early_reporting', 'r_walkover',
-  'r_dress_code', 'r_direct_shootout', 'r_pen_count', 'r_shootout_pts',
-  'r_standings_tiebreaker', 'r_referee_final', 'r_violence_expulsion',
-  'r_yellow_card', 'r_red_card', 'r_no_offside', 'r_rolling_subs',
-  'r_minibar_gk_rules', 'r_backpass_rule', 'r_protest_fee',
-  'r_entry_fee_due', 'r_weather_interruption'
+  'r_squad_minibar', 'r_residency', 'r_single_team',
+  'r_match_duration', 'r_walkover',
+  'r_fifa_points', 'r_direct_shootout',
+  'r_standings_tiebreaker', 'r_referee_final',
+  'r_yellow_card', 'r_weather_interruption'
 ];
 
 const DEFAULT_TEAMS = [
@@ -444,6 +302,7 @@ const DEFAULT_CONFIG = {
   title: 'ফুটবল বিশ্বকাপ ২০২৬',
   titleAccent: 'ফুটবল বিশ্বকাপ',
   titleRest: '২০২৬',
+  titleIcon: '⚽',
   organizer: 'ফিফা ও বাংলাদেশ ফুটবল ফেডারেশন',
   venue: 'বঙ্গবন্ধু জাতীয় স্টেডিয়াম মাঠ, ঢাকা',
   startDate: '২০২৬',
@@ -471,6 +330,7 @@ const DEFAULT_CONFIG_EN = {
   title: 'Football World Cup 2026',
   titleAccent: 'Football World Cup',
   titleRest: '2026',
+  titleIcon: '⚽',
   organizer: 'FIFA & Football Federation',
   venue: 'National Stadium Ground, Dhaka',
   startDate: '2026',

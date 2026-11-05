@@ -36,7 +36,8 @@ test('Modular Architecture & Component Separation Suite', async (t) => {
       'modals/team-registration-modal.html',
       'modals/blank-roster-modal.html',
       'modals/sport-preview-modal.html',
-      'modals/tournament-rules-modal.html'
+      'modals/tournament-rules-modal.html',
+      'modals/social-share-modal.html'
     ];
 
     expectedComponents.forEach(relPath => {
@@ -93,7 +94,8 @@ test('Modular Architecture & Component Separation Suite', async (t) => {
       'team-registration-modal',
       'blank-roster-config-modal',
       'sport-preview-modal',
-      'tournament-rules-modal'
+      'tournament-rules-modal',
+      'social-share-modal'
     ];
 
     requiredIds.forEach(id => {

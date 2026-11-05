@@ -170,10 +170,14 @@ function switchRosterTeam(teamName) {
         ? `<button type="button" class="btn-remove-p2-player" onclick="removeP2PlayerRow(${i})" title="${isEn ? 'Remove Player' : 'খেলোয়াড় বাদ দিন'}">✕</button>`
         : '';
 
+      const jerseyTitle = isEn ? 'Edit Jersey Number' : 'জার্সি নম্বর পরিবর্তন করুন';
+      const nameTitle = isEn ? 'Click to edit player name' : 'খেলোয়াড়ের নাম পরিবর্তন করতে ক্লিক করুন';
+      const editHintTitle = isEn ? 'Click to edit name' : 'নাম এডিট করুন';
+
       rowsHtml += `<tr class="p2-player-row ${isSub ? 'p2-sub-row' : 'p2-starting-row'}" data-player-no="${i}">` +
         `<td style="text-align:center; font-weight:700; color:${isSub ? '#64748b' : '#072a60'};">${i}</td>` +
-        `<td style="text-align:center;"><input type="number" class="player-input-jersey" id="p-jersey-${i}" value="${p.jersey || i}" min="1" max="99" oninput="saveCurrentRoster()"></td>` +
-        `<td><div style="display:flex; align-items:center; gap:6px;"><input type="text" class="player-input-text" id="p-name-${i}" value="${escName}" placeholder="${namePlaceholder}" oninput="saveCurrentRoster()" style="flex:1;">${removeBtnHtml}</div></td>` +
+        `<td style="text-align:center;"><input type="number" class="player-input-jersey" id="p-jersey-${i}" value="${p.jersey || i}" min="1" max="99" oninput="saveCurrentRoster()" title="${jerseyTitle}"></td>` +
+        `<td><div class="player-input-wrap" style="display:flex; align-items:center; gap:6px;"><input type="text" class="player-input-text" id="p-name-${i}" value="${escName}" placeholder="${namePlaceholder}" oninput="saveCurrentRoster()" title="${nameTitle}" style="flex:1;"><span class="player-edit-icon" onclick="const el=document.getElementById('p-name-${i}'); if(el){el.focus(); el.select();}" title="${editHintTitle}">✏️</span>${removeBtnHtml}</div></td>` +
         `<td style="text-align:center;">${perfHtml}</td>` +
       `</tr>`;
     }
@@ -294,9 +298,10 @@ function renderPage2OperationsHub(playerGoalsInput, teamStatsInput) {
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
   const esc = typeof escapeHtml === 'function' ? escapeHtml : (s) => s;
 
-  // 1. TOP SCORERS LEADERBOARD
-  const topScorersEl = document.getElementById('p2-top-scorers-container');
-  if (topScorersEl) {
+  // 1. TOP SCORERS LEADERBOARD (Page 1 Summary Sheet & Page 2 Operations Hub)
+  const p1TopScorersEl = document.getElementById('p1-top-scorers-container');
+  const p2TopScorersEl = document.getElementById('p2-top-scorers-container');
+  if (p1TopScorersEl || p2TopScorersEl) {
     let topScorersList = [];
     if (playerGoalsInput && Object.keys(playerGoalsInput).length > 0) {
       topScorersList = Object.values(playerGoalsInput).sort((a, b) => b.goals - a.goals);
@@ -315,14 +320,33 @@ function renderPage2OperationsHub(playerGoalsInput, teamStatsInput) {
     }
 
     if (topScorersList.length === 0) {
-      topScorersEl.innerHTML = `
-        <div style="padding:12px 10px; text-align:center; color:#64748b; font-size:11px;">
+      const noGoalsHtml = `
+        <div class="screen-only-no-goals" style="padding:10px 8px; text-align:center; color:#64748b; font-size:11px;">
           <span>⚽ ${isEn ? 'No goals logged yet. Goals entered in match scoreboard will automatically appear here.' : 'কোনো গোল এখনো নথিভুক্ত হয়নি। ম্যাচে গোল এন্ট্রি করলে শীর্ষ গোলদাতাদের তালিকা এখানে রিয়েল-টাইমে দেখাবে।'}</span>
         </div>
+        <div class="print-only-blank-goals" style="display:none;">
+          <table style="width:100%; border-collapse:collapse; font-size:11px;">
+            <thead>
+              <tr style="background:#f1f5f9; color:#475569; border-bottom:1px solid #cbd5e1; text-align:left;">
+                <th style="padding:3px 6px; width:12%; text-align:center;">#</th>
+                <th style="padding:3px 6px; width:48%;">${isEn ? 'Player' : 'খেলোয়াড়'}</th>
+                <th style="padding:3px 6px; width:25%;">${isEn ? 'Team' : 'দল'}</th>
+                <th style="padding:3px 6px; width:15%; text-align:center;">${isEn ? 'Goals' : 'গোল'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:3px 6px; text-align:center;">🥇</td><td style="padding:3px 6px; border-bottom:1px dotted #94a3b8;"></td><td style="padding:3px 6px; border-bottom:1px dotted #94a3b8;"></td><td style="padding:3px 6px; border-bottom:1px dotted #94a3b8; text-align:center;"></td></tr>
+              <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:3px 6px; text-align:center;">🥈</td><td style="padding:3px 6px; border-bottom:1px dotted #94a3b8;"></td><td style="padding:3px 6px; border-bottom:1px dotted #94a3b8;"></td><td style="padding:3px 6px; border-bottom:1px dotted #94a3b8; text-align:center;"></td></tr>
+              <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:3px 6px; text-align:center;">🥉</td><td style="padding:3px 6px; border-bottom:1px dotted #94a3b8;"></td><td style="padding:3px 6px; border-bottom:1px dotted #94a3b8;"></td><td style="padding:3px 6px; border-bottom:1px dotted #94a3b8; text-align:center;"></td></tr>
+            </tbody>
+          </table>
+        </div>
       `;
+      if (p2TopScorersEl) p2TopScorersEl.innerHTML = noGoalsHtml;
+      if (p1TopScorersEl) p1TopScorersEl.innerHTML = noGoalsHtml;
     } else {
       const medals = ['🥇', '🥈', '🥉'];
-      let html = '<table style="width:100%; border-collapse:collapse; font-size:11px;">';
+      let html = '<table class="top-scorers-table" style="width:100%; border-collapse:collapse; font-size:11px;">';
       html += `
         <thead>
           <tr style="background:#f1f5f9; color:#475569; border-bottom:1px solid #cbd5e1; text-align:left;">
@@ -342,12 +366,13 @@ function renderPage2OperationsHub(playerGoalsInput, teamStatsInput) {
             <td style="padding:4px 6px; text-align:center; font-weight:700;">${medal}</td>
             <td style="padding:4px 6px; font-weight:700; color:#072a60;">${esc(p.name)}</td>
             <td style="padding:4px 6px; color:#475569;">${esc(p.team)}</td>
-            <td style="padding:4px 6px; text-align:center; font-weight:800; color:#15803d;"><span class="perf-badge perf-badge-goal">⚽ ${p.goals}</span></td>
+            <td style="padding:4px 6px; text-align:center; font-weight:800; color:#15803d;"><span class="perf-badge perf-badge-goal" style="display:inline-block; padding:1px 6px; border-radius:10px; background:#dcfce7; color:#15803d; font-size:10.5px;">⚽ ${p.goals}</span></td>
           </tr>
         `;
       });
       html += '</tbody></table>';
-      topScorersEl.innerHTML = html;
+      if (p2TopScorersEl) p2TopScorersEl.innerHTML = html;
+      if (p1TopScorersEl) p1TopScorersEl.innerHTML = html;
     }
   }
 
@@ -489,7 +514,7 @@ function renderPage2RulesList() {
       if (!listEl) return;
 
       const selectedSet = new Set(tournamentConfig.selectedRules || []);
-      const activeMasterRules = MASTER_RULES_CATALOG.filter(r => selectedSet.has(r.id));
+      const activeMasterRules = MASTER_RULES_CATALOG.filter(r => selectedSet.has(r.id) && (typeof isRuleApplicableToFormat !== 'function' || isRuleApplicableToFormat(r.id, tournamentConfig)));
       const activeCustomRules = tournamentConfig.customRules || [];
 
       if (activeMasterRules.length === 0 && activeCustomRules.length === 0) {
@@ -501,8 +526,8 @@ function renderPage2RulesList() {
       let html = '';
       activeMasterRules.forEach(r => {
         const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
-        const title = (isEn && r.titleEn) ? r.titleEn : r.title;
-        const desc = (isEn && r.descEn) ? r.descEn : r.desc;
+        const title = typeof resolveRuleTitle === 'function' ? resolveRuleTitle(r, tournamentConfig, isEn) : ((isEn && r.titleEn) ? r.titleEn : r.title);
+        const desc = typeof resolveRuleDesc === 'function' ? resolveRuleDesc(r, tournamentConfig, isEn) : ((isEn && r.descEn) ? r.descEn : r.desc);
         html += `<li><span class="rules-highlight">${escapeHtml(title)}:</span> ${escapeHtml(desc)}</li>`;
       });
 
@@ -662,7 +687,7 @@ function getBlankRosterLogoHtml(side) {
   const custom = side === 'left' ? blankRosterImages.customLeft : blankRosterImages.customRight;
 
   if (type === 'custom' && custom) {
-    return `<img src="${custom}" alt="${side} logo" style="width:100%; height:100%; object-fit:cover; border-radius:6px; display:block;">`;
+    return `<img src="${custom}" alt="${side} logo" class="hero-custom-logo-img" style="max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; border-radius:6px; display:block;">`;
   }
 
   if (side === 'left') {
@@ -1166,14 +1191,15 @@ function renderBlankRosterRulesChecklist() {
   let html = '';
   masterRules.forEach(r => {
     const isChecked = checkedSet.has(r.id) ? 'checked' : '';
-    const title = (isEn && r.titleEn) ? r.titleEn : r.title;
+    const title = typeof resolveRuleTitle === 'function' ? resolveRuleTitle(r, c, isEn) : ((isEn && r.titleEn) ? r.titleEn : r.title);
+    const desc = typeof resolveRuleDesc === 'function' ? resolveRuleDesc(r, c, isEn) : ((isEn && r.descEn) ? r.descEn : r.desc);
     const catIcon = r.categoryIcon || '📋';
     html += `
       <label class="br-rule-item-card">
         <input type="checkbox" class="br-rule-chk" value="${r.id}" ${isChecked} onchange="updateRuleBudgetMeter()" style="margin-top:2px; width:16px; height:16px; accent-color:#16a34a; cursor:pointer;">
         <div style="flex:1;">
           <span class="rule-title">${catIcon} ${esc(title)}</span>
-          <span class="rule-desc">${esc((isEn && r.descEn) ? r.descEn : r.desc)}</span>
+          <span class="rule-desc">${esc(desc)}</span>
         </div>
       </label>
     `;
@@ -1249,6 +1275,9 @@ function calculateBlankRosterRulesBudget(selectedRuleIds, maxPixelBudget = 615) 
   const noticeHeight = 22; // reserved space for omitted notice banner if any rule is dropped
 
   (selectedRuleIds || []).forEach(ruleId => {
+    if (typeof isRuleApplicableToFormat === 'function' && !isRuleApplicableToFormat(ruleId, c)) {
+      return;
+    }
     let r = masterCatalog.find(mr => mr.id === ruleId);
     if (!r) {
       r = customRules.find((cr, idx) => (cr.id || `custom_${idx}`) === ruleId || cr.title === ruleId);
@@ -1257,8 +1286,8 @@ function calculateBlankRosterRulesBudget(selectedRuleIds, maxPixelBudget = 615) 
       r = { id: ruleId, title: ruleId, desc: ruleId };
     }
 
-    const title = (isEn && r.titleEn) ? r.titleEn : r.title;
-    const desc = (isEn && r.descEn) ? r.descEn : r.desc;
+    const title = typeof resolveRuleTitle === 'function' ? resolveRuleTitle(r, c, isEn) : ((isEn && r.titleEn) ? r.titleEn : r.title);
+    const desc = typeof resolveRuleDesc === 'function' ? resolveRuleDesc(r, c, isEn) : ((isEn && r.descEn) ? r.descEn : r.desc);
 
     // Approximate character capacity per line:
     // Rules card text container is ~270px width at font-size 8.5px (~48 chars/line)
@@ -1571,7 +1600,7 @@ function generateBlankRosterSheetHtml(configOverride) {
         <div class="blank-cover-content" style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:12px 24px 14px 24px; min-height:130px; box-sizing:border-box;">
           
           <!-- Left Logo / Photo (Clean, Borderless Natural Fit) -->
-          <div class="header-logo-left blank-framed-photo-left" style="width:96px; height:80px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; padding:0; border-radius:6px; overflow:hidden; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.6));">
+          <div class="header-logo-left blank-framed-photo-left" style="min-width:75px; max-width:130px; height:85px; width:auto; display:flex; align-items:center; justify-content:center; background:transparent; border:none; padding:0; border-radius:6px; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.6));">
             ${getBlankRosterLogoHtml('left')}
           </div>
 
@@ -1592,7 +1621,7 @@ function generateBlankRosterSheetHtml(configOverride) {
           </div>
 
           <!-- Right Logo / Photo (Clean, Borderless Natural Fit) -->
-          <div class="header-logo-right blank-framed-photo-right" style="width:96px; height:80px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; padding:0; border-radius:6px; overflow:hidden; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.6));">
+          <div class="header-logo-right blank-framed-photo-right" style="min-width:75px; max-width:130px; height:85px; width:auto; display:flex; align-items:center; justify-content:center; background:transparent; border:none; padding:0; border-radius:6px; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.6));">
             ${getBlankRosterLogoHtml('right')}
           </div>
         </div>

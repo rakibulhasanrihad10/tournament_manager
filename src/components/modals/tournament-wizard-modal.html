@@ -42,6 +42,24 @@
                 <input type="text" id="w-cfg-title" class="w-input" placeholder="যেমন: ফুটবল বিশ্বকাপ ২০২৬ / চ্যাম্পিয়নশিপ ফুটবল কাপ" data-i18n-placeholder="wizard.ph_title">
               </div>
               <div class="w-field">
+                <label class="w-label" data-i18n="wizard.lbl_title_icon">টুর্নামেন্ট আইকন / প্রতীক:</label>
+                <div style="display: flex; gap: 8px;">
+                  <select id="w-cfg-titleIcon" class="w-input" style="flex: 1;" onchange="onWizardTitleIconChange(this.value)">
+                    <option value="⚽" selected data-i18n="wizard.opt_icon_football">⚽ ফুটবল (Football - Default)</option>
+                    <option value="🏆" data-i18n="wizard.opt_icon_trophy">🏆 ট্রফি (Trophy)</option>
+                    <option value="⭐" data-i18n="wizard.opt_icon_star">⭐ স্টার (Star)</option>
+                    <option value="🌟" data-i18n="wizard.opt_icon_glow_star">🌟 গোল্ডেন স্টার (Glowing Star)</option>
+                    <option value="🎯" data-i18n="wizard.opt_icon_target">🎯 টার্গেট / গোল (Target / Goal)</option>
+                    <option value="🔥" data-i18n="wizard.opt_icon_fire">🔥 ফায়ার (Fire)</option>
+                    <option value="⚡" data-i18n="wizard.opt_icon_lightning">⚡ স্পিড / থান্ডার (Lightning)</option>
+                    <option value="🏅" data-i18n="wizard.opt_icon_medal">🏅 গোল্ড মেডেল (Medal)</option>
+                    <option value="none" data-i18n="wizard.opt_icon_none">❌ কোনো আইকন নয় / শুধু নাম (None / Pure Text)</option>
+                    <option value="custom" data-i18n="wizard.opt_icon_custom">✏️ নিজস্ব কাস্টম প্রতীক বা ইমোজি...</option>
+                  </select>
+                  <input type="text" id="w-cfg-titleIcon-custom" class="w-input" style="width: 80px; display: none; text-align: center; font-size: 16px;" placeholder="যেমন: ⚽" maxlength="5">
+                </div>
+              </div>
+              <div class="w-field">
                 <label class="w-label" data-i18n="wizard.lbl_org">আয়োজক কমিটি / ক্লাবের নাম:</label>
                 <input type="text" id="w-cfg-organizer" class="w-input" placeholder="যেমন: ফিফা / বাংলাদেশ ফুটবল ফেডারেশন (বাফুফে)" data-i18n-placeholder="wizard.ph_org">
               </div>

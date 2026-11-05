@@ -17,6 +17,7 @@ function createMockElement(tag, attrs = {}) {
   const el = {
     tagName: tag.toUpperCase(),
     attributes: { ...attrs },
+    style: {},
     classList: {
       _classes: new Set(),
       add(c) { this._classes.add(c); },
@@ -160,7 +161,7 @@ it('Placeholder element with data-i18n-placeholder translates on setLanguage', (
 
 console.log('\n📜 Test Suite 4: Master Rules Catalog Bilingual Support');
 it('All rules in MASTER_RULES_CATALOG have English category, title and description', () => {
-  assert(MASTER_RULES_CATALOG.length >= 25, 'At least 25 master rules exist');
+  assert(MASTER_RULES_CATALOG.length === 11, 'Exactly 11 master rules exist');
   for (const rule of MASTER_RULES_CATALOG) {
     assert(rule.titleEn && rule.titleEn.trim().length > 0, `Rule ${rule.id} missing titleEn`);
     assert(rule.categoryEn && rule.categoryEn.trim().length > 0, `Rule ${rule.id} missing categoryEn`);
@@ -183,20 +184,20 @@ it('renderPage2RulesList renders empty message when no rules are configured', ()
 
 it('renderPage2RulesList renders in English when currentLang is en', () => {
   loadTournamentConfig();
-  tournamentConfig.selectedRules = ['r_squad_11'];
+  tournamentConfig.selectedRules = ['r_squad_minibar'];
   setLanguage('en', false);
   renderPage2RulesList();
   const listEl = document.getElementById('tournament-rules-list');
-  assert(listEl.innerHTML.includes('Squad Size &amp; Player Registration'), 'English rule title rendered');
+  assert(listEl.innerHTML.includes('Squad Size &amp; Active Players'), 'English rule title rendered');
 });
 
 it('renderPage2RulesList renders in Bengali when currentLang is bn', () => {
   loadTournamentConfig();
-  tournamentConfig.selectedRules = ['r_squad_11'];
+  tournamentConfig.selectedRules = ['r_squad_minibar'];
   setLanguage('bn', false);
   renderPage2RulesList();
   const listEl = document.getElementById('tournament-rules-list');
-  assert(listEl.innerHTML.includes('দল গঠন ও সর্বোচ্চ স্কোয়াড'), 'Bengali rule title rendered');
+  assert(listEl.innerHTML.includes('স্কোয়াড ও মাঠের খেলোয়াড় সংখ্যা'), 'Bengali rule title rendered');
 });
 
 console.log('\n==========================================');

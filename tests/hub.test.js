@@ -169,7 +169,7 @@ const launchBtn = document.getElementById('btn-football-launch');
 const navBtn = document.getElementById('btn-nav-wizard');
 assert(launchBtn.textContent.includes('ফুটবল টুর্নামেন্টে প্রবেশ করুন'), 'Clean slate button text is default prompt');
 assert(!launchBtn.classList.contains('btn-has-active-tournament'), 'Clean slate does not have active tournament class');
-assert(navBtn.textContent.includes('টুর্নামেন্ট সেটআপ ও রুলস'), 'Clean slate nav button shows Setup & Rules');
+assert(navBtn.textContent.includes('এডিট টুর্নামেন্ট'), 'Clean slate nav button shows Edit Tournament');
 assert(!navBtn.classList.contains('btn-mode-edit'), 'Clean slate does not have btn-mode-edit');
 
 openFootballEntryChoiceModal();
@@ -187,7 +187,7 @@ updateNavWizardButton();
 assert(launchBtn.textContent.includes('পরিচালনা করুন: কোটচাঁদপুর প্রিমিয়ার লিগ ২০২৬'), 'Button dynamically updates to resume active tournament title');
 assert(launchBtn.getAttribute('title') === 'কোটচাঁদপুর প্রিমিয়ার লিগ ২০২৬', 'Button tooltip stores full tournament title');
 assert(launchBtn.classList.contains('btn-has-active-tournament'), 'Button gets "btn-has-active-tournament" class');
-assert(navBtn.textContent.includes('এডিট টুর্নামেন্ট ও রুলস'), 'Active custom tournament updates nav button to "এডিট টুর্নামেন্ট ও রুলস"');
+assert(navBtn.textContent.includes('এডিট টুর্নামেন্ট'), 'Active custom tournament updates nav button to "এডিট টুর্নামেন্ট"');
 assert(navBtn.classList.contains('btn-mode-edit'), 'Active custom tournament adds btn-mode-edit class');
 
 openFootballEntryChoiceModal();

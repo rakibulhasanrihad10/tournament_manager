@@ -132,7 +132,9 @@ const p2Html = indexHtml.substring(p2Start, p2End);
 assert(!p2Html.includes('mini-fixture-table'), 'Page 2 screen cleanly removes redundant mini-fixture table');
 assert(!p2Html.includes('sign-row'), 'Page 2 screen cleanly removes useless on-screen signature blocks');
 assert(!p2Html.includes('sched_note_hd'), 'Page 2 screen cleanly removes redundant schedule note box');
-assert(p2Html.includes('p2-top-scorers-container'), 'Page 2 renders #p2-top-scorers-container for live goal leaderboard');
+assert(!p2Html.includes('p2-top-scorers-container'), 'Page 2 screen cleanly removes duplicate top scorers table (dedicated to Page 1)');
+assert(!p2Html.includes('award-top-scorer-name'), 'Page 2 screen cleanly removes duplicate ceremony awards card');
+assert(indexHtml.includes('p1-top-scorers-container'), 'Page 1 renders #p1-top-scorers-container for live goal leaderboard');
 assert(p2Html.includes('p2-discipline-container'), 'Page 2 renders #p2-discipline-container for card & suspension watch');
 assert(p2Html.includes('p2-overview-container'), 'Page 2 renders #p2-overview-container for tournament overview');
 assert(p2Html.includes('p2-team-stats-strip'), 'Page 2 renders active team performance summary strip');
@@ -170,10 +172,10 @@ console.log('\n🏆 Test Suite 3: Operations Hub (Top Scorers & Suspension Alert
 
 context.renderPage2OperationsHub();
 
-const topScorersEl = context.document.getElementById('p2-top-scorers-container');
-assert(topScorersEl && topScorersEl.innerHTML.includes('তামিম ইকবাল'), 'Top Scorers lists top scorer Tamim Iqbal');
-assert(topScorersEl.innerHTML.includes('মুড়িয়ারা'), 'Top Scorers lists scorer team');
-assert(topScorersEl.innerHTML.includes('⚽ 2'), 'Top Scorers shows 2 goals');
+const p1TopScorersEl = context.document.getElementById('p1-top-scorers-container');
+assert(p1TopScorersEl && p1TopScorersEl.innerHTML.includes('তামিম ইকবাল'), 'Top Scorers lists top scorer Tamim Iqbal on Page 1 summary');
+assert(p1TopScorersEl.innerHTML.includes('মুড়িয়ারা'), 'Top Scorers lists scorer team on Page 1 summary');
+assert(p1TopScorersEl.innerHTML.includes('⚽ 2'), 'Top Scorers shows 2 goals on Page 1 summary');
 
 const disciplineEl = context.document.getElementById('p2-discipline-container');
 assert(disciplineEl && disciplineEl.innerHTML.includes('রফিক আহমেদ'), 'Discipline tracker lists red card holder Rafik Ahmed');

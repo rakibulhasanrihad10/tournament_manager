@@ -146,7 +146,7 @@ it('initTheme() restores saved theme from localStorage', () => {
   assert.strictEqual(document.documentElement.getAttribute('data-theme'), 'dark');
 });
 
-console.log('\n📄 Test Suite 2: Document / Sheet Print Theme (White Paper vs Stadium Color)');
+console.log('\n📄 Test Suite 2: Document / Sheet Print Theme (Permanently White Paper)');
 
 it('setSheetTheme("paper") activates sheet-theme-paper and light-mode on body', () => {
   setSheetTheme('paper', true);
@@ -156,36 +156,31 @@ it('setSheetTheme("paper") activates sheet-theme-paper and light-mode on body', 
   assert.strictEqual(currentSheetTheme, 'paper');
 });
 
-it('setSheetTheme("stadium") removes paper theme and restores stadium floodlight', () => {
+it('setSheetTheme enforces paper theme permanently', () => {
   setSheetTheme('stadium', true);
-  assert.strictEqual(document.body.classList.contains('sheet-theme-paper'), false);
-  assert.strictEqual(document.body.classList.contains('light-mode'), false);
-  assert.strictEqual(localStorage.getItem('tournament_sheet_theme'), 'stadium');
-  assert.strictEqual(currentSheetTheme, 'stadium');
+  assert.strictEqual(document.body.classList.contains('sheet-theme-paper'), true);
+  assert.strictEqual(document.body.classList.contains('light-mode'), true);
+  assert.strictEqual(localStorage.getItem('tournament_sheet_theme'), 'paper');
+  assert.strictEqual(currentSheetTheme, 'paper');
 });
 
-it('toggleSheetTheme() toggles between paper and stadium theme', () => {
-  setSheetTheme('stadium', false);
+it('toggleSheetTheme() safely retains paper mode permanently', () => {
   toggleSheetTheme();
   assert.strictEqual(currentSheetTheme, 'paper');
   assert.strictEqual(document.body.classList.contains('sheet-theme-paper'), true);
-
-  toggleSheetTheme();
-  assert.strictEqual(currentSheetTheme, 'stadium');
-  assert.strictEqual(document.body.classList.contains('sheet-theme-paper'), false);
 });
 
-it('toggleColorMode() alias triggers toggleSheetTheme() for backward compatibility', () => {
-  setSheetTheme('stadium', false);
+it('toggleColorMode() alias safely retains paper mode for backward compatibility', () => {
   toggleColorMode();
   assert.strictEqual(currentSheetTheme, 'paper');
+  assert.strictEqual(document.body.classList.contains('sheet-theme-paper'), true);
 });
 
-it('initSheetTheme() restores sheet theme from localStorage', () => {
-  localStorage.setItem('tournament_sheet_theme', 'paper');
+it('initSheetTheme() permanently enforces paper theme on page load', () => {
   initSheetTheme();
   assert.strictEqual(currentSheetTheme, 'paper');
   assert.strictEqual(document.body.classList.contains('sheet-theme-paper'), true);
+  assert.strictEqual(document.documentElement.classList.contains('sheet-theme-paper'), true);
 });
 
 // ==========================================

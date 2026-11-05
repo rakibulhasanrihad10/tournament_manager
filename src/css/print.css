@@ -2,6 +2,11 @@
    PRINT STYLES (A4 LANDSCAPE & SINGLE PAGE EXPORT)
    ======================================================== */
 
+@page {
+  size: A4 landscape;
+  margin: 5mm 6mm;
+}
+
 @media print {
       html, body {
         background: #ffffff !important;
@@ -12,7 +17,17 @@
         width: 100% !important;
       }
 
+      .football-app-container,
+      #football-app-view {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
+
       .action-bar,
+      .sheet-nav-bar,
+      .sheet-jump-pill,
+      .p2-team-tabs-bar,
       .football-welcome-banner,
       .p1-stage-nav,
       #sports-hub-view,
@@ -22,25 +37,58 @@
       footer,
       .modal,
       .modal-backdrop,
+      .th-edit-pill,
+      .player-edit-icon,
+      .btn-remove-p2-player,
+      .btn-add-p2-player,
       .app-footer {
         display: none !important;
+      }
+
+      .player-input-text,
+      .meta-input-text {
+        border: none !important;
+        border-bottom: 1px dotted #888 !important;
+        background: transparent !important;
+        padding: 0 !important;
       }
 
       .page-sheet {
         width: 100% !important;
         max-width: 100% !important;
-        padding: 8px 12px !important;
-        border-radius: 4px !important;
+        padding: 4px 6px !important;
+        border: none !important;
+        outline: none !important;
+        border-radius: 0 !important;
         box-shadow: none !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
         margin-bottom: 0 !important;
-        border-width: 2.5px !important;
       }
 
       /* Control single page printing */
+      body.print-only-summary #page1,
+      body.print-only-1 #page1,
+      body.print-blank-scoresheet #page1 {
+        display: block !important;
+      }
+      body.print-only-2 #page2 {
+        display: block !important;
+      }
+      body:not(.print-only-1):not(.print-only-2):not(.print-only-summary):not(.print-only-poster):not(.print-only-blank-roster):not(.print-blank-scoresheet) #page1,
+      body:not(.print-only-1):not(.print-only-2):not(.print-only-summary):not(.print-only-poster):not(.print-only-blank-roster):not(.print-blank-scoresheet) #page2,
+      body:not(.print-only-1):not(.print-only-2):not(.print-only-summary):not(.print-only-poster):not(.print-only-blank-roster):not(.print-blank-scoresheet) .page-break {
+        display: block !important;
+      }
+
+      body.print-only-summary .page-2,
+      body.print-only-summary .page-poster,
+      body.print-only-summary #page-blank-roster,
+      body.print-only-summary .page-blank-roster,
+      body.print-only-summary .page-break,
       body.print-only-1 .page-2,
       body.print-only-1 .page-poster,
+      body.print-only-1 #page-blank-roster,
       body.print-only-1 .page-blank-roster,
       body.print-only-1 .page-break {
         display: none !important;
@@ -48,6 +96,7 @@
 
       body.print-only-2 .page-1,
       body.print-only-2 .page-poster,
+      body.print-only-2 #page-blank-roster,
       body.print-only-2 .page-blank-roster,
       body.print-only-2 .page-break {
         display: none !important;
@@ -55,6 +104,7 @@
 
       body.print-only-poster .page-1,
       body.print-only-poster .page-2,
+      body.print-only-poster #page-blank-roster,
       body.print-only-poster .page-blank-roster,
       body.print-only-poster .page-break,
       body.print-only-poster #sports-hub-view,
@@ -93,7 +143,10 @@
       body.print-only-blank-roster footer,
       body.print-only-blank-roster .app-footer,
       body.print-only-blank-roster .modal,
-      body.print-only-blank-roster .modal-backdrop {
+      body.print-only-blank-roster .modal-backdrop,
+      body.print-only-blank-roster .action-bar,
+      body.print-only-blank-roster .football-welcome-banner,
+      body.print-only-blank-roster .p1-stage-nav {
         display: none !important;
       }
       body.print-only-blank-roster > *:not(#football-app-view) {
@@ -101,6 +154,16 @@
       }
       body.print-only-blank-roster #football-app-view > *:not(#page-blank-roster) {
         display: none !important;
+      }
+      body.print-only-blank-roster #page-blank-roster {
+        display: block !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow: hidden !important;
+        border: none !important;
       }
       body.print-only-blank-roster .page-blank-roster {
         display: flex !important;
@@ -136,105 +199,271 @@
       }
 
       /* Guarantee Full Classic Sheet Layout on Print regardless of screen stage */
-      #page1 .p1-left-col {
+      #page1 .p1-left-col,
+      #page1.p1-stage-group .p1-left-col,
+      #page1.p1-stage-knockout .p1-left-col,
+      #page1.p1-stage-all .p1-left-col {
         display: flex !important;
         width: 41% !important;
       }
-      #page1 .p1-right-col {
+      #page1 .p1-right-col,
+      #page1.p1-stage-group .p1-right-col,
+      #page1.p1-stage-knockout .p1-right-col,
+      #page1.p1-stage-all .p1-right-col {
         display: flex !important;
+        flex-direction: column !important;
         width: 59% !important;
       }
-      #page1 #p1-card-standings,
+      #page1 #p1-card-standings {
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      #page1 #dynamic-standings-container {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      #page1 .best-ru-strip {
+        margin-top: auto !important;
+      }
       #page1 #p1-card-schedule,
-      #page1 #p1-card-bracket {
+      #page1 #p1-card-bracket,
+      #page1.p1-stage-group #p1-card-schedule,
+      #page1.p1-stage-group #p1-card-bracket,
+      #page1.p1-stage-knockout #p1-card-schedule,
+      #page1.p1-stage-knockout #p1-card-bracket,
+      #page1.p1-stage-all #p1-card-schedule,
+      #page1.p1-stage-all #p1-card-bracket {
         display: block !important;
         width: auto !important;
         height: auto !important;
       }
 
+      #page1 .p1-bottom-awards-row {
+        display: flex !important;
+        width: 100% !important;
+        gap: 8px !important;
+        margin-top: 5px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      #page1 .p1-bottom-awards-row > .p1-card {
+        flex: 1 1 50% !important;
+        min-width: 0 !important;
+        margin-top: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
       /* White Paper / Ink-Saving Sheet Theme during Print */
       body.sheet-theme-paper .page-sheet,
-      body.light-mode .page-sheet {
+      body.light-mode .page-sheet,
+      body.print-only-summary .page-sheet {
         background: #ffffff !important;
         color: #111111 !important;
-        border: 2px solid #072a60 !important;
+        border: none !important;
+        outline: none !important;
         box-shadow: none !important;
       }
       body.sheet-theme-paper .header h1,
-      body.light-mode .header h1 {
+      body.light-mode .header h1,
+      body.print-only-summary .header h1 {
         color: #072a60 !important;
         text-shadow: none !important;
       }
       body.sheet-theme-paper .header h1 span,
-      body.light-mode .header h1 span {
+      body.light-mode .header h1 span,
+      body.print-only-summary .header h1 span {
         color: #c62828 !important;
       }
       body.sheet-theme-paper .header p,
-      body.light-mode .header p {
+      body.light-mode .header p,
+      body.print-only-summary .header p {
         color: #333333 !important;
       }
 
       /* Management Panel Cover Hero Banner print optimization */
       .cover-hero-banner {
+        position: relative !important;
         width: 100% !important;
-        margin: 0 0 4px 0 !important;
-        border-radius: 0 !important;
-        min-height: auto !important;
-        background: transparent !important;
+        margin: 0 0 6px 0 !important;
+        border-radius: 4px 4px 0 0 !important;
+        background: #072a60 !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
       .cover-hero-bg-wrap {
-        display: none !important;
+        display: block !important;
+        position: absolute !important;
+        inset: 0 !important;
+        overflow: hidden !important;
+        z-index: 1 !important;
+      }
+      .cover-hero-img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .cover-hero-overlay {
+        position: absolute !important;
+        inset: 0 !important;
+        background: linear-gradient(180deg, rgba(7, 26, 68, 0.45) 0%, rgba(3, 12, 38, 0.25) 50%, rgba(5, 18, 50, 0.72) 100%) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
       .cover-hero-content {
-        min-height: auto !important;
-        padding: 2px 4px !important;
+        position: relative !important;
+        z-index: 2 !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 8px 18px 10px 18px !important;
+        min-height: 94px !important;
+        box-sizing: border-box !important;
+        gap: 12px !important;
       }
       .hero-logo-left,
       .hero-logo-right {
-        width: 48px !important;
-        height: 36px !important;
+        min-width: 60px !important;
+        max-width: 110px !important;
+        height: 66px !important;
+        width: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: transparent !important;
+        flex-shrink: 0 !important;
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.65)) !important;
       }
+      .hero-logo-left img,
+      .hero-logo-right img,
+      .hero-custom-logo-img {
+        max-width: 100% !important;
+        max-height: 100% !important;
+        width: auto !important;
+        height: auto !important;
+        object-fit: contain !important;
+        border-radius: 4px !important;
+      }
+      body.sheet-theme-paper .cover-hero-banner .hero-center-content h1,
+      body.light-mode .cover-hero-banner .hero-center-content h1,
       .cover-hero-banner .hero-center-content h1 {
-        font-size: 18px !important;
-        margin-bottom: 2px !important;
-        text-shadow: none !important;
+        font-size: 21px !important;
+        font-weight: 900 !important;
+        color: #ffffff !important;
+        margin: 0 0 4px 0 !important;
+        letter-spacing: 0.8px !important;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9) !important;
+        line-height: 1.2 !important;
+      }
+      body.sheet-theme-paper .cover-hero-banner .hero-center-content h1 span,
+      body.light-mode .cover-hero-banner .hero-center-content h1 span,
+      .cover-hero-banner .hero-center-content h1 span {
+        color: #fbbf24 !important;
       }
       .hero-meta-pill {
-        background: transparent !important;
-        border: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        background: rgba(255, 255, 255, 0.22) !important;
+        border: 1px solid rgba(255, 255, 255, 0.42) !important;
+        border-radius: 16px !important;
+        padding: 3px 18px !important;
         box-shadow: none !important;
-        padding: 0 !important;
-        text-shadow: none !important;
+        font-size: 10.5px !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .hero-meta-divider {
+        color: rgba(255, 255, 255, 0.65) !important;
+        font-size: 10px !important;
+      }
+      .hero-meta-pill .hero-meta-divider:last-of-type {
+        display: none !important;
+      }
+      .hero-meta-item strong {
+        color: #ffffff !important;
       }
       .cover-hero-swoosh-wrap {
-        display: none !important;
+        display: block !important;
+        position: relative !important;
+        z-index: 3 !important;
+        width: 100% !important;
+        height: 14px !important;
+        margin-top: -5px !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .cover-hero-swoosh-wrap svg {
+        width: 100% !important;
+        height: 100% !important;
+        display: block !important;
       }
       body.sheet-theme-paper .p1-card,
       body.sheet-theme-paper .awards-box,
       body.light-mode .p1-card,
-      body.light-mode .awards-box {
+      body.light-mode .awards-box,
+      body.print-only-summary .p1-card,
+      body.print-only-summary .awards-box {
         background: #ffffff !important;
-        border-color: #072a60 !important;
+        border-color: #cbd5e1 !important;
         color: #111111 !important;
+        box-shadow: none !important;
       }
       body.sheet-theme-paper .rule-strip,
-      body.light-mode .rule-strip {
+      body.light-mode .rule-strip,
+      body.print-only-summary .rule-strip {
         background: #e8f5e9 !important;
         color: #1b5e20 !important;
         border-left-color: #2e7d32 !important;
       }
 
-      /* Full Stadium Color Sheet Theme during Print (Excludes printable blank roster form) */
-      body:not(.sheet-theme-paper):not(.light-mode) .page-sheet:not(.page-blank-roster) {
+      /* Full Stadium Color Sheet Theme during Print (Excludes blank scoresheet, summary sheet & blank roster) */
+      body:not(.sheet-theme-paper):not(.light-mode):not(.print-only-summary):not(.print-blank-scoresheet) .page-sheet:not(.page-blank-roster) {
         background: linear-gradient(135deg, #061c36 0%, #0d3b1e 40%, #16592d 100%) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border: none !important;
+        outline: none !important;
         color: #ffffff !important;
       }
-      body:not(.sheet-theme-paper):not(.light-mode) .page-sheet:not(.page-blank-roster) .header h1 {
+      body:not(.sheet-theme-paper):not(.light-mode):not(.print-only-summary):not(.print-blank-scoresheet) .page-sheet:not(.page-blank-roster) .header h1 {
         color: #ffca28 !important;
       }
-      body:not(.sheet-theme-paper):not(.light-mode) .page-sheet:not(.page-blank-roster) .header h1 span {
+      body:not(.sheet-theme-paper):not(.light-mode):not(.print-only-summary):not(.print-blank-scoresheet) .page-sheet:not(.page-blank-roster) .header h1 span {
         color: #ff5252 !important;
+      }
+
+      /* Tournament Results & Ceremony Summary Sheet Print: Pure Clean White Page Override */
+      body.print-only-summary .page-sheet,
+      body.print-only-summary,
+      body.print-only-summary html {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+        color: #0f172a !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+      }
+      body.print-only-summary .p1-card,
+      body.print-only-summary .p1-standings-card,
+      body.print-only-summary .p1-schedule-card,
+      body.print-only-summary .p1-bracket-card,
+      body.print-only-summary .p1-top-scorers-card,
+      body.print-only-summary .p1-awards-card {
+        background: #ffffff !important;
+        border-color: #cbd5e1 !important;
+        box-shadow: none !important;
       }
 
       /* Blank Squad Sheet: Edge-to-edge 0 margin & NO outside border (matching reference image) */
@@ -242,11 +471,26 @@
         size: A4 portrait;
         margin: 0mm;
       }
+      html:has(body.print-only-blank-roster),
+      html.print-only-blank-roster,
       body.print-only-blank-roster {
         margin: 0 !important;
         padding: 0 !important;
         width: 100% !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow: hidden !important;
         background: #ffffff !important;
+      }
+      body.print-only-blank-roster .football-app-container,
+      body.print-only-blank-roster #football-app-view {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow: hidden !important;
+        border: none !important;
       }
       body.print-only-blank-roster .page-sheet.page-blank-roster,
       body.print-only-blank-roster .page-blank-roster,
@@ -274,9 +518,11 @@
         break-inside: avoid !important;
         page-break-after: avoid !important;
         break-after: avoid !important;
+        page-break-before: avoid !important;
+        break-before: avoid !important;
         box-sizing: border-box !important;
-        height: 297mm !important;
-        max-height: 297mm !important;
+        height: 295.5mm !important;
+        max-height: 296mm !important;
         overflow: hidden !important;
       }
       body.print-only-blank-roster .page-blank-roster .blank-roster-body {
@@ -422,5 +668,232 @@
       body.print-only-poster .fixture-poster-card th,
       body.print-only-poster .fixture-poster-card td {
         padding: 4px 6px !important;
+      }
+
+      /* ----------------------------------------------------
+         BLANK SCORESHEET FOR HANDWRITTEN ON-PITCH MANAGEMENT
+         ---------------------------------------------------- */
+      body.print-blank-scoresheet,
+      body.print-blank-scoresheet html,
+      body.print-only-summary,
+      body.print-only-summary html {
+        background: #ffffff !important;
+      }
+      body.print-blank-scoresheet .page-sheet {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+      }
+      body.print-blank-scoresheet .p1-card {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #0f172a !important;
+        box-shadow: none !important;
+      }
+      body.print-blank-scoresheet .rule-strip {
+        background: #f8fafc !important;
+        color: #334155 !important;
+        border-left: 3px solid #072a60 !important;
+      }
+      body.print-blank-scoresheet .score-input {
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+        background: #ffffff !important;
+        border: 1px dashed #94a3b8 !important;
+        border-radius: 4px !important;
+        min-width: 28px !important;
+        min-height: 22px !important;
+      }
+      body.print-blank-scoresheet .score-input::placeholder {
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+      }
+      body.print-blank-scoresheet .btn-match-event,
+      body.print-blank-scoresheet .pen-picker-wrap,
+      body.print-blank-scoresheet .match-edit-actions,
+      body.print-blank-scoresheet .team-edit-icon {
+        display: none !important;
+      }
+      body.print-blank-scoresheet .match-winner-txt {
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+        border-bottom: 1.5px dotted #64748b !important;
+        min-width: 90px !important;
+        display: inline-block !important;
+      }
+      body.print-blank-scoresheet .standings-table td {
+        height: 23px !important;
+        min-height: 23px !important;
+        vertical-align: middle !important;
+      }
+      body.print-blank-scoresheet .standings-table td:not(:first-child):not(.team-name-cell) {
+        border-right: 1px solid #e2e8f0 !important;
+        border-bottom: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+      }
+      body.print-blank-scoresheet .pts-badge {
+        display: none !important;
+      }
+      body.print-blank-scoresheet .gd-record,
+      body.print-blank-scoresheet .goal-record,
+      body.print-blank-scoresheet .fp-record {
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+      }
+      body.print-blank-scoresheet .form-pill,
+      body.print-blank-scoresheet .form-badge,
+      body.print-blank-scoresheet .form-empty {
+        display: none !important;
+      }
+      body.print-blank-scoresheet .champ-blank-content,
+      body.print-blank-scoresheet .ru-blank-content,
+      body.print-blank-scoresheet .winner-blank-content {
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+        border-bottom: 1.5px dotted #94a3b8 !important;
+        min-height: 18px !important;
+        min-width: 90px !important;
+        display: inline-block !important;
+      }
+      body.print-blank-scoresheet .winner-blank {
+        border-bottom: 1.5px dotted #94a3b8 !important;
+        min-width: 90px !important;
+        display: inline-block !important;
+      }
+
+      body.print-blank-scoresheet .ko-versus-row {
+        display: flex !important;
+        align-items: flex-end !important;
+        justify-content: space-between !important;
+        gap: 6px !important;
+        margin-bottom: 3px !important;
+      }
+      body.print-blank-scoresheet .ko-team-slot {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+      }
+      body.print-blank-scoresheet .ko-team-name {
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+        border-bottom: 1.5px dotted #64748b !important;
+        width: 100% !important;
+        min-height: 16px !important;
+        display: block !important;
+      }
+      body.print-blank-scoresheet .ko-team-guide {
+        display: block !important;
+        font-size: 7.5px !important;
+        color: #475569 !important;
+        font-style: italic !important;
+        margin-top: 1px !important;
+        line-height: 1.1 !important;
+        text-align: center !important;
+      }
+      /* Print: Blank Scorekeeper Sheet - Awards & Top Scorers */
+      body.print-blank-scoresheet #p1-card-top-scorers,
+      body.print-blank-scoresheet .p1-top-scorers-card {
+        display: none !important;
+      }
+      body.print-blank-scoresheet .p1-awards-card {
+        border: 1px solid #94a3b8 !important;
+        background: #ffffff !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      body.print-blank-scoresheet .screen-only-no-goals,
+      body.print-blank-scoresheet .print-only-blank-goals {
+        display: none !important;
+      }
+      body.print-blank-scoresheet .award-item,
+      body.print-blank-scoresheet .p1-award-item {
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+      }
+      body.print-blank-scoresheet .award-input-text,
+      body.print-blank-scoresheet .p1-award-line {
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+        border: none !important;
+        border-bottom: 1.5px dotted #64748b !important;
+        min-height: 18px !important;
+        display: inline-block !important;
+      }
+      body.print-blank-scoresheet .award-input-stat,
+      body.print-blank-scoresheet .p1-award-box {
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+        border: 1px solid #64748b !important;
+        background: transparent !important;
+        min-height: 18px !important;
+        min-width: 28px !important;
+        display: inline-block !important;
+      }
+      body.print-blank-scoresheet .award-input-text::placeholder,
+      body.print-blank-scoresheet .award-input-stat::placeholder,
+      body.print-blank-scoresheet .p1-award-line::placeholder {
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+      }
+
+      /* Summary Print Mode: Clean High-Fidelity Ceremony Awards & Top Scorers Rendering */
+      body:not(.print-blank-scoresheet) .p1-top-scorers-card,
+      body:not(.print-blank-scoresheet) .p1-awards-card {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      body:not(.print-blank-scoresheet) .award-item,
+      body:not(.print-blank-scoresheet) .p1-award-item {
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      body:not(.print-blank-scoresheet) .award-header {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      body:not(.print-blank-scoresheet) .award-header.gold {
+        background: linear-gradient(90deg, #b45309, #d97706) !important;
+        color: #ffffff !important;
+      }
+      body:not(.print-blank-scoresheet) .award-header.red {
+        background: linear-gradient(90deg, #b91c1c, #dc2626) !important;
+        color: #ffffff !important;
+      }
+      body:not(.print-blank-scoresheet) .award-header.green {
+        background: linear-gradient(90deg, #15803d, #16a34a) !important;
+        color: #ffffff !important;
+      }
+      body:not(.print-blank-scoresheet) .award-input-text,
+      body:not(.print-blank-scoresheet) .p1-award-line {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 1px dotted #475569 !important;
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+        font-weight: 700 !important;
+      }
+      body:not(.print-blank-scoresheet) .award-input-stat,
+      body:not(.print-blank-scoresheet) .p1-award-box {
+        background: transparent !important;
+        border: 1px solid #475569 !important;
+        color: #b45309 !important;
+        -webkit-text-fill-color: #b45309 !important;
+        font-weight: 800 !important;
+      }
+      body:not(.print-blank-scoresheet) .award-input-text::placeholder,
+      body:not(.print-blank-scoresheet) .award-input-stat::placeholder,
+      body:not(.print-blank-scoresheet) .p1-award-line::placeholder {
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
       }
     }

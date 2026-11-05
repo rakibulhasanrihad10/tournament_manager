@@ -8,7 +8,7 @@
       <div class="cover-hero-content">
         <div class="hero-logo-left" id="p2-hero-logo-left"></div>
         <div class="hero-center-content">
-          <h1 id="app-title-display-p2">⚽ <span id="app-title-accent-p2">ফুটবল বিশ্বকাপ</span> <span id="app-title-rest-p2">২০২৬</span></h1>
+          <h1 id="app-title-display-p2"><span id="app-title-icon-p2" class="title-sport-icon">⚽</span><span id="app-title-accent-p2">ফুটবল বিশ্বকাপ</span> <span id="app-title-rest-p2">২০২৬</span></h1>
           <div class="hero-meta-pill">
             <span class="hero-meta-item">
               <span data-i18n="page1.meta_organizer">আয়োজনে:</span> <strong id="app-org-display-p2">ফিফা ও বাংলাদেশ ফুটবল ফেডারেশন</strong>
@@ -51,6 +51,11 @@
       <button type="button" class="p2-team-tab" id="tab-btn-বাতাবাড়িয়া" onclick="switchRosterTeam('বাতাবাড়িয়া')">বাতাবাড়িয়া</button>
       <button type="button" class="p2-team-tab" id="tab-btn-মোহাম্মদপুর" onclick="switchRosterTeam('মোহাম্মদপুর')">মোহাম্মদপুর</button>
       <button type="button" class="p2-team-tab" id="tab-btn-ভংগুয়া" onclick="switchRosterTeam('ভংগুয়া')">ভংগুয়া</button>
+
+      <button type="button" class="sheet-jump-pill sheet-jump-pill-up" id="btn-jump-to-p1" onclick="scrollToSheet('page1')" title="সরাসরি পেজ ১-এর ম্যাচ ও পয়েন্ট টেবিলে ফিরে যান" data-i18n-title="page2.jump_to_p1_title">
+        <span class="jump-icon">⬆️</span>
+        <span class="jump-text" data-i18n="page2.jump_to_p1">ম্যাচ ও পয়েন্ট টেবিল (পেজ ১)</span>
+      </button>
     </div>
 
     <!-- Team Information Header Grid -->
@@ -87,7 +92,10 @@
                 <tr>
                   <th style="width: 10%;" data-i18n="page2.th_sl">ক্র. নং</th>
                   <th style="width: 15%;" data-i18n="page2.th_jersey">জার্সি নং</th>
-                  <th style="width: 50%;" data-i18n="page2.th_player_name">খেলোয়াড়ের পূর্ণ নাম</th>
+                  <th style="width: 50%;">
+                    <span data-i18n="page2.th_player_name">খেলোয়াড়ের পূর্ণ নাম</span>
+                    <span class="th-edit-pill" data-i18n="page2.th_edit_hint">✏️ ক্লিক করে এডিট</span>
+                  </th>
                   <th style="width: 25%; text-align:center;" data-i18n="page2.th_perf">পারফরম্যান্স (ইভেন্ট)</th>
                 </tr>
               </thead>
@@ -112,97 +120,28 @@
         </div>
       </div>
 
-      <!-- Right Column: Tournament Operations, Top Scorers & Discipline Hub -->
+      <!-- Right Column: Tournament Operations, Discipline Hub & Overview -->
       <div class="p2-right">
         
-        <!-- CARD 1: TOP SCORERS / GOLDEN BOOT -->
-        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden; margin-bottom:8px;">
-          <div class="section-title" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
-            <span data-i18n="page2.top_scorers_title">🏆 শীর্ষ গোলদাতা (Top Scorers - Golden Boot)</span>
-            <span style="font-size:10px; opacity:0.9;">⚽ লাইভ র‍্যাংকিং</span>
-          </div>
-          <div id="p2-top-scorers-container" style="padding:6px 8px; min-height:85px; font-size:11.5px;">
-            <!-- Dynamically populated top scorers list -->
-          </div>
-        </div>
-
-        <!-- CARD 2: DISCIPLINE, CARDS & SUSPENSION WATCH -->
-        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden; margin-bottom:8px;">
+        <!-- CARD 1: DISCIPLINE, CARDS & SUSPENSION WATCH -->
+        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden; margin-bottom:10px;">
           <div class="section-title" style="background:linear-gradient(90deg, #991b1b, #b91c1c); display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
             <span data-i18n="page2.discipline_title">🟨 🟥 কার্ড, শৃঙ্খলা ও সাসপেনশন ট্র্যাকিং</span>
             <span style="font-size:10px; opacity:0.9;">ফেয়ার প্লে ওয়াচ</span>
           </div>
-          <div id="p2-discipline-container" style="padding:6px 8px; min-height:85px; font-size:11px;">
+          <div id="p2-discipline-container" style="padding:10px 12px; min-height:120px; font-size:11.5px;">
             <!-- Dynamically populated card holders and suspension alerts -->
           </div>
         </div>
 
-        <!-- CARD 3: TOURNAMENT OVERVIEW & RULES ACTION -->
-        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden; margin-bottom:8px;">
+        <!-- CARD 2: TOURNAMENT OVERVIEW & RULES ACTION -->
+        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden;">
           <div class="section-title" style="background:linear-gradient(90deg, #0f766e, #0d9488); display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
             <span data-i18n="page2.overview_title">📊 টুর্নামেন্ট ওভারভিউ ও নিয়মাবলী</span>
             <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,0.25); border:1px solid rgba(255,255,255,0.5); color:#fff; font-size:10px; padding:2px 8px; border-radius:4px; cursor:pointer;" onclick="openTournamentRulesModal()" data-i18n="page2.btn_view_rules">📋 নিয়মাবলী দেখুন</button>
           </div>
-          <div id="p2-overview-container" style="padding:8px 10px; font-size:11.5px; background:#f8fafc;">
+          <div id="p2-overview-container" style="padding:12px 14px; font-size:12px; background:#f8fafc; min-height:110px;">
             <!-- Dynamically populated matches count, goals count, cards count -->
-          </div>
-        </div>
-
-        <!-- CARD 4: OFFICIAL CEREMONY AWARDS & HONOURS -->
-        <div class="p2-op-card" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden;">
-          <div class="section-title" style="background:linear-gradient(90deg, #b45309, #d97706); display:flex; justify-content:space-between; align-items:center; margin-bottom:0;">
-            <span data-i18n="page1.awards_title">🎖️ টুর্নামেন্ট সমাপ্তি ও ব্যক্তিগত বিশেষ সম্মাননা</span>
-            <span style="font-size:10px; opacity:0.9;">🏆 অফিসিয়াল ট্রফি ও খেতাব</span>
-          </div>
-          <div style="padding:8px 10px; background:#f8fafc; display:flex; flex-direction:column; gap:6px;">
-            <!-- Golden Boot Award -->
-            <div class="award-item award-item-gold">
-              <div class="award-header gold" data-i18n="page1.award_top_scorer">⚽ টুর্নামেন্টের সেরা গোলদাতা (গোল্ডেন বুট)</div>
-              <div class="award-details">
-                <div class="award-field award-field-player">
-                  <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
-                  <input type="text" class="award-input-text award-line-lg" id="award-top-scorer-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
-                </div>
-                <div class="award-field award-field-team">
-                  <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
-                  <input type="text" class="award-input-text award-line-md" id="award-top-scorer-team" placeholder="দলের নাম...">
-                </div>
-                <div class="award-field award-field-stat">
-                  <span class="award-field-lbl" data-i18n="page1.goals_lbl">গোল:</span>
-                  <input type="number" min="0" max="99" class="award-box-sm award-input-stat" id="award-top-scorer-goals" placeholder="০">
-                </div>
-              </div>
-            </div>
-
-            <!-- Man of the Match / MVP Award -->
-            <div class="award-item award-item-red">
-              <div class="award-header red" data-i18n="page1.award_mot">🏅 ফাইনালের ম্যান অব দ্য ম্যাচ</div>
-              <div class="award-details">
-                <div class="award-field award-field-player">
-                  <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
-                  <input type="text" class="award-input-text award-line-lg" id="award-mom-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
-                </div>
-                <div class="award-field award-field-team">
-                  <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
-                  <input type="text" class="award-input-text award-line-md" id="award-mom-team" placeholder="দলের নাম...">
-                </div>
-              </div>
-            </div>
-
-            <!-- Golden Glove Award -->
-            <div class="award-item award-item-green">
-              <div class="award-header green" data-i18n="page1.award_gk">🧤 টুর্নামেন্টের সেরা গোলরক্ষক (গোল্ডেন গ্লাভস)</div>
-              <div class="award-details">
-                <div class="award-field award-field-player">
-                  <span class="award-field-lbl" data-i18n="page1.name_lbl">খেলোয়াড়:</span>
-                  <input type="text" class="award-input-text award-line-lg" id="award-gk-name" placeholder="খেলোয়াড়ের নাম লিখুন...">
-                </div>
-                <div class="award-field award-field-team">
-                  <span class="award-field-lbl" data-i18n="page1.team_lbl">দল:</span>
-                  <input type="text" class="award-input-text award-line-md" id="award-gk-team" placeholder="দলের নাম...">
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 

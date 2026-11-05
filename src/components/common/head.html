@@ -15,10 +15,8 @@
         const theme = savedTheme || (systemLight ? 'light' : 'dark');
         document.documentElement.setAttribute('data-theme', theme);
 
-        const savedSheet = localStorage.getItem('tournament_sheet_theme');
-        if (savedSheet === 'paper') {
-          document.documentElement.classList.add('sheet-theme-paper');
-        }
+        // Always enforce White Paper sheet theme permanently
+        document.documentElement.classList.add('sheet-theme-paper');
       } catch (e) {}
     })();
   </script>

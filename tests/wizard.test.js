@@ -112,21 +112,21 @@ assert(!alertTriggered, 'Standard preset loads silently without alert');
 assert(domElements['btn-preset-standard'].classList.contains('active'), 'Standard preset button is highlighted active');
 assert(!domElements['btn-preset-minibar'].classList.contains('active'), 'Minibar button is not active');
 assert(Number(domElements['w-cfg-startingPlayers'].value) === 11, 'Standard 11-a-side format loaded');
-assert(tempWizardSelectedRules.has('r_onfield_11') && !tempWizardSelectedRules.has('r_onfield_6'), 'Standard rules load 11 players on pitch, not 6');
-assert(tempWizardSelectedRules.has('r_match_duration_90') && !tempWizardSelectedRules.has('r_match_duration'), 'Standard rules load 90 mins match, not 20 mins');
-assert(tempWizardSelectedRules.has('r_pen_count_fifa') && !tempWizardSelectedRules.has('r_pen_count'), 'Standard rules load 5 penalties, not 3');
-assert(tempWizardSelectedRules.has('r_fifa_offside') && !tempWizardSelectedRules.has('r_no_offside'), 'Standard rules enforce FIFA Law 11 offside');
+assert(tempWizardSelectedRules.has('r_squad_minibar'), 'Standard rules load universal squad rule');
+assert(tempWizardSelectedRules.has('r_match_duration'), 'Standard rules load universal match duration rule');
+assert(tempWizardSelectedRules.has('r_direct_shootout'), 'Standard rules load universal direct shootout rule');
+assert(tempWizardSelectedRules.has('r_weather_interruption'), 'Standard rules load universal weather contingency');
 
 applyWizardPreset('minibar');
 assert(!alertTriggered, 'Minibar preset loads silently without alert');
 assert(domElements['btn-preset-minibar'].classList.contains('active'), 'Minibar preset button is highlighted active');
 assert(!domElements['btn-preset-standard'].classList.contains('active'), 'Standard button is no longer active');
 assert(Number(domElements['w-cfg-startingPlayers'].value) === 5, 'Minibar 5-a-side format loaded');
-assert(tempWizardSelectedRules.has('r_onfield_6') && !tempWizardSelectedRules.has('r_onfield_11'), 'Minibar rules load 5/6 players on pitch');
-assert(tempWizardSelectedRules.has('r_match_duration') && !tempWizardSelectedRules.has('r_match_duration_90'), 'Minibar rules load 20-30 mins match');
-assert(tempWizardSelectedRules.has('r_pen_count') && !tempWizardSelectedRules.has('r_pen_count_fifa'), 'Minibar rules load 3 penalties');
-assert(tempWizardSelectedRules.has('r_no_offside') && !tempWizardSelectedRules.has('r_fifa_offside'), 'Minibar rules relax offside');
-assert(tempWizardSelectedRules.has('r_rolling_subs'), 'Minibar rules enable rolling substitutions');
+assert(tempWizardSelectedRules.has('r_squad_minibar'), 'Minibar rules load universal squad rule');
+assert(tempWizardSelectedRules.has('r_match_duration'), 'Minibar rules load universal match duration rule');
+assert(tempWizardSelectedRules.has('r_direct_shootout'), 'Minibar rules load universal direct shootout rule');
+assert(tempWizardSelectedRules.has('r_weather_interruption'), 'Minibar rules load universal weather contingency');
+assert(tempWizardSelectedRules.size === 11, 'Minibar loads all 11 universal rules');
 
 console.log('\n🔄 Test Suite 3: Rules Tab Card Toggle');
 applyWizardPreset('standard');
@@ -501,6 +501,35 @@ assert(pathZoomed.attributes['d'] && pathZoomed.attributes['d'].startsWith('M ')
 currentBracketZoom = 1.0;
 assert(typeof attachRoadmapResizeObserver === 'function', 'attachRoadmapResizeObserver is a defined function');
 attachRoadmapResizeObserver(); // executes safely
+
+console.log('\n👑 Test Suite 13: Tournament Title Icon Customization');
+assert(typeof onWizardTitleIconChange === 'function', 'onWizardTitleIconChange is a defined function');
+
+const customIconInp = document.getElementById('w-cfg-titleIcon-custom');
+customIconInp.style = {};
+onWizardTitleIconChange('custom');
+assert(customIconInp.style.display === 'block', 'onWizardTitleIconChange("custom") displays custom input');
+
+onWizardTitleIconChange('⚽');
+assert(customIconInp.style.display === 'none', 'onWizardTitleIconChange("⚽") hides custom input');
+
+onWizardTitleIconChange('none');
+assert(customIconInp.style.display === 'none', 'onWizardTitleIconChange("none") hides custom input');
+
+// Test titleIcon propagation in applyTournamentConfig
+const iconEl1 = document.getElementById('app-title-icon');
+iconEl1.style = {};
+tournamentConfig.titleIcon = 'none';
+applyTournamentConfig();
+assert(iconEl1.textContent === '' && iconEl1.style.display === 'none', 'applyTournamentConfig hides icon when titleIcon is "none"');
+
+tournamentConfig.titleIcon = '🏆';
+applyTournamentConfig();
+assert(iconEl1.textContent === '🏆' && iconEl1.style.display === 'inline-block', 'applyTournamentConfig displays trophy icon when titleIcon is "🏆"');
+
+tournamentConfig.titleIcon = '⚽';
+applyTournamentConfig();
+assert(iconEl1.textContent === '⚽' && iconEl1.style.display === 'inline-block', 'applyTournamentConfig displays football icon by default');
 
 console.log('\n==========================================');
 console.log(`Results: ${passedCount} passed, ${failedCount} failed`);

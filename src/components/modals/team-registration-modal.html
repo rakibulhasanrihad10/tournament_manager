@@ -1,3 +1,6 @@
+  <!-- ========================================================
+       TEAM & SQUAD REGISTRATION MODAL PORTAL
+       ======================================================== -->
   <div id="team-registration-modal" class="modal-backdrop" onclick="if(event.target === this) closeTeamRegistrationModal()">
     <div class="modal-box modal-wizard modal-registration">
       <div class="modal-header modal-wizard-header" style="background:linear-gradient(135deg, #064e3b 0%, #0f172a 100%);">
@@ -11,43 +14,44 @@
       <div class="modal-body">
         <!-- 1. REGISTRATION FORM SECTION -->
         <div id="reg-form-section">
-          <!-- Tournament Highlights Banner -->
+          <!-- Tournament Highlights Banner (Modern Metric Cards) -->
           <div class="reg-highlight-banner">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
-              <div style="font-size:13px; font-weight:800; color:#38bdf8;">
-                ⚽ <span id="reg-highlight-title">ফুটবল টুর্নামেন্ট ২০২৬</span>
+            <div class="reg-highlight-top">
+              <div class="reg-highlight-title-wrap">
+                <span class="reg-title-icon">⚽</span>
+                <span id="reg-highlight-title">ফুটবল টুর্নামেন্ট ২০২৬</span>
               </div>
-              <div style="display:flex; align-items:center; gap:6px;">
-                <button type="button" class="btn" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:10px; padding:2px 8px; border-radius:4px; cursor:pointer;" onclick="openBlankRosterConfigModal()" title="অফলাইন দল তালিকা জমার জন্য খালি প্লেয়ার ফর্ম প্রিন্ট করুন">🖨️ খালি ফর্ম প্রিন্ট</button>
+              <div class="reg-highlight-actions">
+                <button type="button" class="btn btn-sm btn-reg-blank-print" onclick="openBlankRosterConfigModal()" title="অফলাইন দল তালিকা জমার জন্য খালি প্লেয়ার ফর্ম প্রিন্ট করুন">🖨️ খালি ফর্ম প্রিন্ট</button>
                 <span class="reg-highlight-badge" data-i18n="reg.tourney_summary_badge">টুর্নামেন্ট হাইলাইটস</span>
               </div>
             </div>
             <div class="reg-highlight-grid">
-              <div class="reg-pill">
-                <span data-i18n="reg.lbl_prize">চ্যাম্পিয়ন প্রাইজ:</span>
+              <div class="reg-pill reg-pill-prize">
+                <span class="reg-pill-lbl"><span class="reg-pill-icon">🏆</span> <span data-i18n="reg.lbl_prize">চ্যাম্পিয়ন প্রাইজ:</span></span>
                 <strong id="reg-highlight-prize">৩০,০০০ টাকা + ট্রফি</strong>
               </div>
-              <div class="reg-pill">
-                <span data-i18n="reg.lbl_fee">এন্ট্রি ফি:</span>
+              <div class="reg-pill reg-pill-fee">
+                <span class="reg-pill-lbl"><span class="reg-pill-icon">💳</span> <span data-i18n="reg.lbl_fee">এন্ট্রি ফি:</span></span>
                 <strong id="reg-highlight-fee">২,০০০ টাকা</strong>
               </div>
-              <div class="reg-pill">
-                <span data-i18n="reg.lbl_deadline">নিবন্ধনের শেষ সময়:</span>
+              <div class="reg-pill reg-pill-deadline">
+                <span class="reg-pill-lbl"><span class="reg-pill-icon">⏰</span> <span data-i18n="reg.lbl_deadline">নিবন্ধনের শেষ সময়:</span></span>
                 <strong id="reg-highlight-deadline">ম্যাচ শুরুর পূর্বে</strong>
               </div>
-              <div class="reg-pill">
-                <span data-i18n="reg.lbl_venue">খেলার মাঠ:</span>
+              <div class="reg-pill reg-pill-venue">
+                <span class="reg-pill-lbl"><span class="reg-pill-icon">🏟️</span> <span data-i18n="reg.lbl_venue">খেলার মাঠ:</span></span>
                 <strong id="reg-highlight-venue">স্টেডিয়াম মাঠ</strong>
               </div>
-              <div class="reg-pill">
-                <span data-i18n="reg.lbl_squad_rule">স্কোয়াড আকার:</span>
+              <div class="reg-pill reg-pill-squad">
+                <span class="reg-pill-lbl"><span class="reg-pill-icon">👥</span> <span data-i18n="reg.lbl_squad_rule">স্কোয়াড আকার:</span></span>
                 <strong id="reg-highlight-squad">১১ মাঠে + ৫ বেঞ্চ</strong>
               </div>
             </div>
           </div>
 
           <!-- Official Rules & Agreement Accordion / Card -->
-          <div class="w-card-section" style="margin-top:12px;">
+          <div class="w-card-section" style="margin-top:14px;">
             <div class="w-card-title" data-i18n="reg.rules_card_title">📜 টুর্নামেন্ট পরিচালনা ও শৃঙ্খলা নিয়মাবলী</div>
             <div id="reg-rules-summary-box" class="reg-rules-summary-box"></div>
             <label class="reg-terms-label">
@@ -57,7 +61,7 @@
           </div>
 
           <!-- Team Information Section -->
-          <div class="w-card-section" style="margin-top:12px;">
+          <div class="w-card-section" style="margin-top:14px;">
             <div class="w-card-title" data-i18n="reg.sec_team_info">⚽ দল ও ম্যানেজমেন্ট বিবরণ</div>
             <div class="w-grid-2">
               <div class="w-field">
@@ -82,26 +86,26 @@
               </div>
               <div class="w-field">
                 <label class="w-label" data-i18n="reg.lbl_payment_note">ফি পরিশোধের তথ্য / ট্রানজেকশন আইডি (ঐচ্ছিক):</label>
-                <input type="text" id="reg-payment-note" class="w-input" placeholder="যেমন: বিকাশ ট্রানজেকশন আইডি বা মাঠে জমা দেওয়া হবে" data-i18n-placeholder="reg.ph_payment_note">
+                <input type="text" id="reg-payment-note" class="w-input" placeholder="যেমন: বিকাশ ট্রানজেকশন আইডি বা নগদ দেওয়া হবে" data-i18n-placeholder="reg.ph_payment_note">
               </div>
             </div>
           </div>
 
           <!-- Squad Players List Table -->
-          <div class="w-card-section" style="margin-top:12px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div class="w-card-section" style="margin-top:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
               <div class="w-card-title" style="margin:0;" data-i18n="reg.sec_squad">👥 স্কোয়াড খেলোয়াড়দের তালিকা (১১ থেকে ১৫ জন)</div>
               <button type="button" class="btn-reg-add-player" onclick="addRegistrationPlayerRow()" data-i18n="reg.btn_add_player">+ আরও খেলোয়াড় যোগ করুন</button>
             </div>
-            <div style="overflow-x:auto;">
+            <div style="overflow-x:auto; border-radius:8px;">
               <table class="reg-players-table">
                 <thead>
                   <tr>
-                    <th style="width:40px; text-align:center;" data-i18n="reg.th_sl">ক্রমিক</th>
+                    <th style="width:45px; text-align:center;" data-i18n="reg.th_sl">ক্র. নং</th>
                     <th style="width:75px; text-align:center;" data-i18n="reg.th_jersey">জার্সি নং</th>
                     <th data-i18n="reg.th_name">খেলোয়াড়ের পূর্ণ নাম</th>
-                    <th style="width:115px;" data-i18n="reg.th_role">ভূমিকা / পজিশন</th>
-                    <th style="width:36px; text-align:center;">✕</th>
+                    <th style="width:130px;" data-i18n="reg.th_role">ভূমিকা / পজিশন</th>
+                    <th style="width:40px; text-align:center;">✕</th>
                   </tr>
                 </thead>
                 <tbody id="reg-players-tbody"></tbody>
@@ -110,7 +114,7 @@
           </div>
 
           <!-- Form Actions Footer -->
-          <div class="modal-wizard-footer" style="margin-top:14px; border-radius:12px; padding:12px 16px;">
+          <div class="modal-wizard-footer" style="margin-top:16px; border-radius:12px; padding:12px 16px;">
             <button type="button" class="btn btn-wizard-cancel" onclick="closeTeamRegistrationModal()" data-i18n="reg.btn_cancel">✕ বাতিল</button>
             <div style="display:flex; gap:8px;">
               <button type="button" class="btn btn-sm btn-reg-share-link" onclick="copyRegistrationLink(this)" data-i18n="reg.btn_copy_link">🔗 রেজিস্ট্রেশন লিংক কপি</button>

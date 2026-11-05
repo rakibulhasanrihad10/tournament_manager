@@ -35,6 +35,23 @@ function setWizardTournamentType(type) {
     const card = document.getElementById(`btn-tourney-type-${t}`);
     if (card) card.classList.toggle('active', Boolean(type && t === tempWizardTourneyType));
   });
+
+  if (tempWizardSelectedRules && tempWizardSelectedRules.size > 0) {
+    if (type === 'knockout') {
+      tempWizardSelectedRules.delete('r_fifa_points');
+      tempWizardSelectedRules.delete('r_standings_tiebreaker');
+      tempWizardSelectedRules.delete('r_best_runnerup');
+      tempWizardSelectedRules.delete('r_shootout_pts');
+    } else if (type === 'groups' || type === 'league') {
+      tempWizardSelectedRules.add('r_fifa_points');
+      tempWizardSelectedRules.add('r_standings_tiebreaker');
+    }
+    updateWizardRulesCounts();
+    if (typeof renderWizardRulesChecklist === 'function') {
+      renderWizardRulesChecklist();
+    }
+  }
+
   updateWizardStructureSummary();
   renderWizardTeamsDashboard();
 }
@@ -2275,6 +2292,33 @@ function openTournamentWizard(initialTab = 'info') {
 
   setVal('w-cfg-title', isDefault ? '' : tournamentConfig.title);
   setVal('w-cfg-titleAccent', isDefault ? '' : (tournamentConfig.titleAccent || ''));
+
+  const currentIcon = tournamentConfig.titleIcon !== undefined ? tournamentConfig.titleIcon : '⚽';
+  const iconSelect = document.getElementById('w-cfg-titleIcon');
+  const customIconInput = document.getElementById('w-cfg-titleIcon-custom');
+  if (iconSelect) {
+    const standardIcons = ['⚽', '🏆', '⭐', '🌟', '🎯', '🔥', '⚡', '🏅', 'none'];
+    if (standardIcons.includes(currentIcon)) {
+      iconSelect.value = currentIcon;
+      if (customIconInput) {
+        customIconInput.style.display = 'none';
+        customIconInput.value = '';
+      }
+    } else if (currentIcon) {
+      iconSelect.value = 'custom';
+      if (customIconInput) {
+        customIconInput.style.display = 'block';
+        customIconInput.value = currentIcon;
+      }
+    } else {
+      iconSelect.value = 'none';
+      if (customIconInput) {
+        customIconInput.style.display = 'none';
+        customIconInput.value = '';
+      }
+    }
+  }
+
   setVal('w-cfg-organizer', isDefault ? '' : (tournamentConfig.organizer || ''));
   setVal('w-cfg-venue', isDefault ? '' : (tournamentConfig.venue || ''));
   setVal('w-cfg-formatType', isDefault ? '' : (tournamentConfig.formatType || ''));
@@ -2455,8 +2499,16 @@ function renderWizardRulesChecklist(query = '') {
 
     matchedRules.forEach(r => {
       const isChecked = tempWizardSelectedRules.has(r.id);
-      const rTitle = isEn && r.titleEn ? r.titleEn : r.title;
-      const rDesc = isEn && r.descEn ? r.descEn : r.desc;
+      const startInput = document.getElementById('w-cfg-startingPlayers');
+      const benchInput = document.getElementById('w-cfg-benchPlayers');
+      const subsInput = document.getElementById('w-cfg-maxSubstitutes');
+      const currentWizardConfig = {
+        startingPlayers: (startInput && startInput.value !== '') ? Number(startInput.value) : (tournamentConfig.startingPlayers || 11),
+        benchPlayers: (benchInput && benchInput.value !== '') ? Number(benchInput.value) : (tournamentConfig.benchPlayers || 5),
+        maxSubstitutes: (subsInput && subsInput.value !== '') ? Number(subsInput.value) : (tournamentConfig.maxSubstitutes || 5)
+      };
+      const rTitle = typeof resolveRuleTitle === 'function' ? resolveRuleTitle(r, currentWizardConfig, isEn) : (isEn && r.titleEn ? r.titleEn : r.title);
+      const rDesc = typeof resolveRuleDesc === 'function' ? resolveRuleDesc(r, currentWizardConfig, isEn) : (isEn && r.descEn ? r.descEn : r.desc);
       html += `
         <label class="w-rule-item ${isChecked ? 'selected' : ''}">
           <input type="checkbox" class="w-rule-chk" data-rule-id="${r.id}" ${isChecked ? 'checked' : ''} onchange="onRuleCheckChange('${r.id}', this.checked)">
@@ -2852,25 +2904,24 @@ function syncRulesWithSquadSettings(force = false) {
     }
   }
 
-  if (starting >= 11) {
-    // 11-a-side FIFA Standard Football: Adapt incompatible minibar rules without overriding user's rule selection
-    const hadMiniSquad = tempWizardSelectedRules.has('r_onfield_6') || tempWizardSelectedRules.has('r_squad_minibar');
+  // Ensure legacy IDs map smoothly to the 11 universal rules
+  if (tempWizardSelectedRules.has('r_squad_11') || tempWizardSelectedRules.has('r_onfield_11') || tempWizardSelectedRules.has('r_onfield_6')) {
+    tempWizardSelectedRules.delete('r_squad_11');
+    tempWizardSelectedRules.delete('r_onfield_11');
     tempWizardSelectedRules.delete('r_onfield_6');
-    tempWizardSelectedRules.delete('r_squad_minibar');
-    tempWizardSelectedRules.delete('r_match_duration');
-    tempWizardSelectedRules.delete('r_direct_shootout');
+    tempWizardSelectedRules.add('r_squad_minibar');
+  }
+  if (tempWizardSelectedRules.has('r_match_duration_90')) {
+    tempWizardSelectedRules.delete('r_match_duration_90');
+    tempWizardSelectedRules.add('r_match_duration');
+  }
+  if (tempWizardSelectedRules.has('r_pen_count_fifa') || tempWizardSelectedRules.has('r_pen_count')) {
+    tempWizardSelectedRules.delete('r_pen_count_fifa');
     tempWizardSelectedRules.delete('r_pen_count');
-    tempWizardSelectedRules.delete('r_shootout_pts');
-    tempWizardSelectedRules.delete('r_no_offside');
-    tempWizardSelectedRules.delete('r_rolling_subs');
-    tempWizardSelectedRules.delete('r_minibar_gk_rules');
-    tempWizardSelectedRules.delete('r_minibar_posts');
+    tempWizardSelectedRules.add('r_direct_shootout');
+  }
 
-    if (hadMiniSquad) {
-      tempWizardSelectedRules.add('r_squad_11');
-      tempWizardSelectedRules.add('r_onfield_11');
-    }
-
+  if (starting >= 11) {
     const stdBtn = document.getElementById('btn-preset-standard');
     const miniBtn = document.getElementById('btn-preset-minibar');
     if (stdBtn) stdBtn.classList.add('active');
@@ -2881,25 +2932,6 @@ function syncRulesWithSquadSettings(force = false) {
       applyTimePreset(45, 45, 15);
     }
   } else if (starting <= 6) {
-    // 5/6-a-side Minibar / Short-Pitch Football: Adapt incompatible 11-a-side rules without overriding user's rule selection
-    const hadStdSquad = tempWizardSelectedRules.has('r_onfield_11') || tempWizardSelectedRules.has('r_squad_11');
-    tempWizardSelectedRules.delete('r_onfield_11');
-    tempWizardSelectedRules.delete('r_squad_11');
-    tempWizardSelectedRules.delete('r_match_duration_90');
-    tempWizardSelectedRules.delete('r_extra_time_fifa');
-    tempWizardSelectedRules.delete('r_fifa_points');
-    tempWizardSelectedRules.delete('r_pen_count_fifa');
-    tempWizardSelectedRules.delete('r_fifa_offside');
-    tempWizardSelectedRules.delete('r_fifa_subs');
-
-    if (hadStdSquad) {
-      tempWizardSelectedRules.add('r_squad_minibar');
-      tempWizardSelectedRules.add('r_onfield_6');
-      tempWizardSelectedRules.add('r_minibar_posts');
-      tempWizardSelectedRules.add('r_rolling_subs');
-      tempWizardSelectedRules.add('r_no_offside');
-    }
-
     const stdBtn = document.getElementById('btn-preset-standard');
     const miniBtn = document.getElementById('btn-preset-minibar');
     if (stdBtn) stdBtn.classList.remove('active');
@@ -2910,9 +2942,6 @@ function syncRulesWithSquadSettings(force = false) {
       applyTimePreset(10, 10, 2);
     }
   } else if (starting === 7) {
-    tempWizardSelectedRules.delete('r_onfield_11');
-    tempWizardSelectedRules.add('r_onfield_6');
-    tempWizardSelectedRules.add('r_rolling_subs');
     applyTimePreset(25, 25, 5);
   }
 
@@ -3031,13 +3060,11 @@ function applyWizardPreset(presetKey) {
     }
 
     tempWizardSelectedRules = new Set(typeof MINIBAR_RULES_PRESET !== 'undefined' ? MINIBAR_RULES_PRESET : [
-      'r_squad_minibar', 'r_onfield_6', 'r_minibar_posts', 'r_residency',
-      'r_single_team', 'r_match_duration', 'r_early_reporting', 'r_walkover',
-      'r_dress_code', 'r_direct_shootout', 'r_pen_count', 'r_shootout_pts',
-      'r_standings_tiebreaker', 'r_referee_final', 'r_violence_expulsion',
-      'r_yellow_card', 'r_red_card', 'r_no_offside', 'r_rolling_subs',
-      'r_minibar_gk_rules', 'r_backpass_rule', 'r_protest_fee',
-      'r_entry_fee_due', 'r_weather_interruption'
+      'r_squad_minibar', 'r_residency',
+      'r_single_team', 'r_match_duration', 'r_walkover',
+      'r_fifa_points', 'r_direct_shootout',
+      'r_standings_tiebreaker', 'r_referee_final',
+      'r_yellow_card', 'r_weather_interruption'
     ]);
     setVal('w-cfg-startingPlayers', 5);
     setVal('w-cfg-benchPlayers', 5);
@@ -3086,10 +3113,17 @@ function saveTournamentConfigFromWizard() {
     ? `${startingCount}-a-side (${startingCount} on pitch, ${benchCount} bench)`
     : `${startingCount}-এ-সাইড (${startingCount} জন মাঠে, ${benchCount} জন বদলি)`;
 
+  let selectedIcon = getVal('w-cfg-titleIcon', '⚽');
+  if (selectedIcon === 'custom') {
+    selectedIcon = getVal('w-cfg-titleIcon-custom', '').trim();
+    if (!selectedIcon) selectedIcon = 'none';
+  }
+
   const newConfig = {
     title: title,
     titleAccent: titleAccent,
     titleRest: titleRest,
+    titleIcon: selectedIcon,
     organizer: getVal('w-cfg-organizer', DEFAULT_CONFIG.organizer),
     venue: getVal('w-cfg-venue', DEFAULT_CONFIG.venue),
     formatType: autoFormatType,
@@ -3226,7 +3260,19 @@ function handleWizardRightLogoUpload(event) {
   reader.readAsDataURL(file);
 }
 
+function onWizardTitleIconChange(val) {
+  const customInp = document.getElementById('w-cfg-titleIcon-custom');
+  if (!customInp) return;
+  if (val === 'custom') {
+    if (customInp.style) customInp.style.display = 'block';
+    if (typeof customInp.focus === 'function') customInp.focus();
+  } else {
+    if (customInp.style) customInp.style.display = 'none';
+  }
+}
+
 if (typeof window !== 'undefined') {
+  window.onWizardTitleIconChange = onWizardTitleIconChange;
   window.onWizardCoverTypeChange = onWizardCoverTypeChange;
   window.handleWizardCoverUpload = handleWizardCoverUpload;
   window.onWizardLeftLogoChange = onWizardLeftLogoChange;

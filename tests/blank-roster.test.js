@@ -247,8 +247,8 @@ assert(multiRulesHtml.includes('>8<'), 'Renders 8th selected rule (no 6-rule tru
 
 // Test dynamic rules line & height budget calculation
 assert(typeof context.calculateBlankRosterRulesBudget === 'function', 'calculateBlankRosterRulesBudget is exported');
-const all11RuleIds = ['r_squad_11', 'r_onfield_11', 'r_squad_minibar', 'r_single_team', 'r_hire_players_no', 'r_hire_quota', 'r_walkover_15m', 'r_pen_direct', 'r_ref_final', 'r_card_yellow_fp', 'r_rain_abandon'];
-const budgetResult = context.calculateBlankRosterRulesBudget(all11RuleIds, 380);
+const all11RuleIds = ['r_squad_minibar', 'r_residency', 'r_single_team', 'r_match_duration', 'r_walkover', 'r_fifa_points', 'r_direct_shootout', 'r_standings_tiebreaker', 'r_referee_final', 'r_yellow_card', 'r_weather_interruption'];
+const budgetResult = context.calculateBlankRosterRulesBudget(all11RuleIds, 340);
 assert(budgetResult.acceptedCount >= 7, 'Budget accepts maximum safe rules within line budget');
 assert(budgetResult.omittedCount > 0, 'Excess rules beyond line budget are omitted to protect 1-page fit');
 

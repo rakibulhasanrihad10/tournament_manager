@@ -194,6 +194,29 @@ body {
   box-shadow: 0 6px 20px rgba(13, 148, 136, 0.55);
 }
 
+/* Social Export Hub CTA Button */
+.btn-social-export {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff !important;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-social-export:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5);
+  filter: brightness(1.1);
+}
+
 /* Dropdown Container */
 .dropdown-wrap {
   position: relative;
@@ -477,20 +500,6 @@ body {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 
-/* Print Sheet Theme Option Button */
-.btn-sheet-theme {
-  background: linear-gradient(135deg, #0284c7, #0369a1);
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-.btn-sheet-theme:hover {
-  background: linear-gradient(135deg, #0369a1, #075985);
-}
-.btn-sheet-theme.active-paper {
-  background: linear-gradient(135deg, #0f766e, #0d9488);
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.35);
-}
 
     .btn {
       padding: 7px 13px;
@@ -529,18 +538,18 @@ body {
     }
     .btn-toggle:hover { background: #546e7a; }
 
-    /* Page container */
+    /* Page container — Pure Clean White Paper by default */
     .page-sheet {
       width: 1200px;
       max-width: 96%;
       margin-left: auto;
       margin-right: auto;
-      background: var(--bg-app);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
       border-radius: 12px;
       padding: 14px 20px;
-      color: #fff;
-      box-shadow: none;
+      color: #111111;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
       margin-bottom: 30px;
     }
 
@@ -649,14 +658,28 @@ body {
 
     .hero-logo-left,
     .hero-logo-right {
-      width: 88px;
-      height: 75px;
+      min-width: 75px;
+      max-width: 130px;
+      height: 85px;
+      width: auto;
       display: flex;
       align-items: center;
       justify-content: center;
       background: transparent;
       flex-shrink: 0;
       filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.65));
+    }
+
+    .hero-logo-left img,
+    .hero-logo-right img,
+    .hero-custom-logo-img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 6px;
+      display: block;
     }
 
     .hero-center-content {
@@ -677,6 +700,18 @@ body {
 
     .cover-hero-banner .hero-center-content h1 span {
       color: #fbbf24;
+    }
+
+    .title-sport-icon {
+      display: inline-block;
+      margin-right: 5px;
+      line-height: 1;
+      vertical-align: middle;
+    }
+
+    .title-sport-icon:empty {
+      display: none !important;
+      margin-right: 0 !important;
     }
 
     .hero-meta-pill {
@@ -733,8 +768,10 @@ body {
       }
       .hero-logo-left,
       .hero-logo-right {
-        width: 50px;
-        height: 48px;
+        min-width: 48px;
+        max-width: 85px;
+        height: 56px;
+        width: auto;
       }
       .cover-hero-banner .hero-center-content h1 {
         font-size: 18px;
@@ -774,11 +811,38 @@ body {
       gap: 7px;
     }
 
+    /* Symmetrical Standings Container (Matches Combined Height of Right Column) */
+    .p1-standings-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    #dynamic-standings-container {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
     .p1-right-col {
       width: 59%;
       display: flex;
       flex-direction: column;
       gap: 7px;
+    }
+
+    /* Page 1 Bottom Awards & Honours Full-Width Row */
+    .p1-bottom-awards-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+      width: 100%;
+    }
+    .p1-bottom-awards-row > .p1-card {
+      flex: 1 1 50%;
+      min-width: 0;
+      margin-top: 0 !important;
     }
 
     .p1-card {
@@ -897,8 +961,75 @@ body {
       margin-left: 2px;
     }
 
+    /* ========================================================
+       QUICK SMOOTH SCROLL JUMP PILLS (Option 2 - Clean UI)
+       Slim pills inside Page 1 & Page 2 subheaders
+       ======================================================== */
+    .sheet-jump-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      border: 1px solid rgba(124, 58, 237, 0.4);
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.18), rgba(99, 102, 241, 0.22));
+      color: #c4b5fd;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    }
+    .sheet-jump-pill:hover {
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      color: #ffffff;
+      border-color: #a78bfa;
+      box-shadow: 0 3px 10px rgba(124, 58, 237, 0.35);
+      transform: translateY(-1px);
+    }
+    .sheet-jump-pill-up {
+      border: 1px solid rgba(37, 99, 235, 0.35);
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(14, 165, 233, 0.2));
+      color: #1e40af;
+    }
+    .sheet-jump-pill-up:hover {
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
+      transform: translateY(-1px);
+    }
+
+    body.sheet-theme-paper .sheet-jump-pill,
+    body.light-mode .sheet-jump-pill {
+      border: 1px solid #c4b5fd;
+      background: #f5f3ff;
+      color: #6d28d9;
+    }
+    body.sheet-theme-paper .sheet-jump-pill:hover,
+    body.light-mode .sheet-jump-pill:hover {
+      background: #7c3aed;
+      color: #ffffff;
+    }
+    body.sheet-theme-paper .sheet-jump-pill-up,
+    body.light-mode .sheet-jump-pill-up {
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    body.sheet-theme-paper .sheet-jump-pill-up:hover,
+    body.light-mode .sheet-jump-pill-up:hover {
+      background: #2563eb;
+      color: #ffffff;
+    }
+
     /* Stage 1: Group Stage (Perfect Baseline Alignment) */
-    #page1.p1-stage-group #p1-card-bracket {
+    #page1.p1-stage-group #p1-card-bracket,
+    #page1.p1-stage-group .p1-bottom-awards-row {
       display: none !important;
     }
     #page1.p1-stage-group .p1-standings-card {
@@ -1066,21 +1197,80 @@ body {
       border-color: #0369a1;
       box-shadow: 0 1px 2px rgba(0,0,0,0.15);
     }
+    .player-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      position: relative;
+    }
     .player-input-text {
       width: 100%;
-      border: none;
-      border-bottom: 1.2px dotted #94a3b8;
-      background: transparent;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background: #f8fafc;
       font-family: inherit;
       font-size: 10.5px;
       font-weight: 700;
       color: #0f172a;
       outline: none;
-      padding: 1px 2px;
+      padding: 2px 6px;
+      transition: all 0.2s ease;
+      cursor: text;
+    }
+    .player-input-text:hover {
+      border-color: #38bdf8;
+      background: #f0f9ff;
     }
     .player-input-text:focus {
-      border-bottom-color: #0284c7;
-      background: #f0f9ff;
+      border-color: #0284c7;
+      background: #ffffff;
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.18);
+    }
+    .player-edit-icon {
+      font-size: 11px;
+      cursor: pointer;
+      opacity: 0.4;
+      transition: opacity 0.2s, transform 0.15s;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      line-height: 1;
+    }
+    .p2-player-row:hover .player-edit-icon,
+    .player-input-wrap:hover .player-edit-icon {
+      opacity: 0.95;
+      transform: scale(1.15);
+    }
+    .th-edit-pill {
+      font-size: 9px;
+      font-weight: 700;
+      background: rgba(2, 132, 199, 0.12);
+      color: #0284c7;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-left: 4px;
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+      letter-spacing: 0;
+    }
+    [data-theme="dark"] .player-input-text {
+      background: #0f172a;
+      border-color: #334155;
+      color: #f1f5f9;
+    }
+    [data-theme="dark"] .player-input-text:hover {
+      border-color: #38bdf8;
+      background: #1e293b;
+    }
+    [data-theme="dark"] .player-input-text:focus {
+      border-color: #38bdf8;
+      background: #0f172a;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+    }
+    [data-theme="dark"] .th-edit-pill {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
     }
     .player-input-jersey {
       width: 28px;
@@ -1113,11 +1303,16 @@ body {
       .btn-match-event,
       .p2-team-tabs-bar,
       .modal-backdrop,
-      .lead-chip {
+      .lead-chip,
+      .th-edit-pill,
+      .player-edit-icon {
         display: none !important;
       }
       .player-input-text, .meta-input-text {
+        border: none !important;
         border-bottom: 1px dotted #888 !important;
+        background: transparent !important;
+        padding: 0 !important;
       }
     }
 
@@ -1277,7 +1472,7 @@ body {
       border: 1.2px dashed #f59e0b;
       border-radius: 6px;
       padding: 4px 8px;
-      margin-top: 5px;
+      margin-top: auto;
       font-size: 10px;
       font-weight: 700;
       color: #b45309;
@@ -1301,6 +1496,113 @@ body {
       line-height: 1.35;
       padding: 1px 2px;
       box-sizing: border-box;
+    }
+
+    /* Page 1 Top Scorers Leaderboard & Official Ceremony Awards */
+    .p1-top-scorers-card,
+    .p1-awards-card {
+      margin-top: 6px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    body.sheet-theme-paper .p1-top-scorers-card,
+    body.sheet-theme-paper .p1-awards-card,
+    body.light-mode .p1-top-scorers-card,
+    body.light-mode .p1-awards-card {
+      background: #ffffff;
+      border-color: #cbd5e1;
+    }
+
+    .p1-awards-card .award-item {
+      margin-bottom: 5px;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .p1-awards-card .award-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .p1-awards-card .award-header {
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #ffffff;
+    }
+
+    .p1-awards-card .award-details {
+      padding: 4px 8px;
+      font-size: 10.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .p1-awards-card .award-field {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .p1-awards-card .award-field-player {
+      flex: 1.4;
+      min-width: 105px;
+    }
+
+    .p1-awards-card .award-field-team {
+      flex: 1.1;
+      min-width: 80px;
+    }
+
+    .p1-awards-card .award-field-stat {
+      flex: 0 0 auto;
+      gap: 4px;
+    }
+
+    .p1-awards-card .award-field-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    .p1-awards-card .award-input-text {
+      width: 100%;
+      flex: 1;
+      border: none;
+      border-bottom: 1px dotted #64748b;
+      background: transparent;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #0f172a;
+      padding: 1px 3px;
+      min-height: 20px;
+      outline: none;
+    }
+
+    .p1-awards-card .award-input-stat {
+      width: 32px;
+      height: 20px;
+      border: 1px solid #cbd5e1;
+      border-radius: 3px;
+      background: #ffffff;
+      text-align: center;
+      font-weight: 800;
+      font-size: 11px;
+      color: #b45309;
+      outline: none;
     }
 
     @media print {
@@ -1610,6 +1912,37 @@ body {
       text-align: center;
       font-weight: 700;
       font-size: 11.5px;
+    }
+
+    .ko-versus-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 2px;
+    }
+
+    .ko-team-slot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ko-team-slot .ko-team-name {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ko-team-guide {
+      display: none;
+    }
+
+    .ko-vs-divider {
+      flex-shrink: 0;
     }
 
     .mc-score-row {
@@ -1950,8 +2283,8 @@ body {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 297mm;
-      max-height: 297mm;
+      min-height: 295mm;
+      max-height: 296mm;
       box-sizing: border-box;
     }
     .page-blank-roster .blank-roster-body {
@@ -2673,6 +3006,13 @@ body {
         padding: 3px 8px !important;
       }
 
+      /* Page 1 Stage Navigation & Jump Pills on Mobile */
+      .sheet-jump-pill {
+        margin-left: 0 !important;
+        width: 100% !important;
+        justify-content: center !important;
+      }
+
       /* Page 1 Stage Navigation on Mobile */
       .p1-stage-nav {
         flex-wrap: wrap !important;
@@ -2696,6 +3036,21 @@ body {
       }
       #page1 .p1-left-col,
       #page1 .p1-right-col {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      #page1 .p1-standings-card {
+        height: auto !important;
+      }
+      #page1 #dynamic-standings-container {
+        flex: none !important;
+      }
+      #page1 .p1-bottom-awards-row {
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+      }
+      #page1 .p1-bottom-awards-row > .p1-card {
         width: 100% !important;
         max-width: 100% !important;
       }

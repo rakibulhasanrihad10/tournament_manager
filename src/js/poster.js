@@ -164,7 +164,7 @@ function generatePosterHeroBannerHtml(opts) {
       <!-- Foreground: Left Logo, Center Title & Right Logo -->
       <div class="poster-hero-content" style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:12px 18px 10px 18px; box-sizing:border-box; gap:10px;">
         <!-- Left Logo / Trophy -->
-        <div class="poster-hero-logo" style="width:72px; height:62px; display:flex; align-items:center; justify-content:center; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.7));">
+        <div class="poster-hero-logo" style="min-width:60px; max-width:105px; height:65px; width:auto; display:flex; align-items:center; justify-content:center; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.7));">
           ${leftLogo}
         </div>
 
@@ -183,7 +183,7 @@ function generatePosterHeroBannerHtml(opts) {
         </div>
 
         <!-- Right Logo / Venue / Sponsor -->
-        <div class="poster-hero-logo" style="width:72px; height:62px; display:flex; align-items:center; justify-content:center; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.7));">
+        <div class="poster-hero-logo" style="min-width:60px; max-width:105px; height:65px; width:auto; display:flex; align-items:center; justify-content:center; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.7));">
           ${rightLogo}
         </div>
       </div>
@@ -369,15 +369,15 @@ function generatePromoPosterCardHtml() {
   const c = typeof tournamentConfig !== 'undefined' ? tournamentConfig : {};
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
   const selectedSet = new Set(c.selectedRules || []);
-  const activeMasterRules = (typeof MASTER_RULES_CATALOG !== 'undefined' ? MASTER_RULES_CATALOG : []).filter(r => selectedSet.has(r.id));
+  const activeMasterRules = (typeof MASTER_RULES_CATALOG !== 'undefined' ? MASTER_RULES_CATALOG : []).filter(r => selectedSet.has(r.id) && (typeof isRuleApplicableToFormat !== 'function' || isRuleApplicableToFormat(r.id, c)));
   const activeCustomRules = c.customRules || [];
   const allActiveRules = [...activeMasterRules, ...activeCustomRules];
 
   const esc = typeof escapeHtml === 'function' ? escapeHtml : (s) => s;
   let rulesListHtml = '';
   allActiveRules.forEach(r => {
-    const rTitle = isEn && r.titleEn ? r.titleEn : r.title;
-    const rDesc = isEn && r.descEn ? r.descEn : r.desc;
+    const rTitle = typeof resolveRuleTitle === 'function' ? resolveRuleTitle(r, c, isEn) : (isEn && r.titleEn ? r.titleEn : r.title);
+    const rDesc = typeof resolveRuleDesc === 'function' ? resolveRuleDesc(r, c, isEn) : (isEn && r.descEn ? r.descEn : r.desc);
     rulesListHtml += `<li><strong>${esc(rTitle)}:</strong> ${esc(rDesc)}</li>`;
   });
 
@@ -479,52 +479,109 @@ function generatePromoPosterCardHtml() {
 // TAB NAVIGATION & MODAL CONTROLS
 // ----------------------------------------------------
 function switchPosterTab(tab) {
-  activePosterTab = tab === 'promo' ? 'promo' : 'fixture';
+  activePosterTab = tab === 'promo' ? 'promo' : (tab === 'results' ? 'results' : 'fixture');
   const container = document.getElementById('promo-poster-render-target');
   const btnFixture = document.getElementById('tab-btn-poster-fixture');
   const btnPromo = document.getElementById('tab-btn-poster-promo');
+  const btnResults = document.getElementById('tab-btn-poster-results');
   const copyBtn = document.getElementById('btn-poster-copy-action');
   const printBtn = document.getElementById('btn-poster-print-action');
+  const brandingBtn = document.getElementById('btn-poster-branding-setup');
+  const subtitleEl = document.querySelector('.modal-promo-subtitle');
+  const tipEl = document.querySelector('.modal-promo-tip');
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
 
   if (btnFixture) btnFixture.classList.toggle('active', activePosterTab === 'fixture');
   if (btnPromo) btnPromo.classList.toggle('active', activePosterTab === 'promo');
+  if (btnResults) btnResults.classList.toggle('active', activePosterTab === 'results');
 
-  if (copyBtn) {
-    if (activePosterTab === 'fixture') {
-      copyBtn.textContent = isEn ? '📋 Copy Fixture Post' : '📋 ফিক্সচার পোস্ট কপি করুন';
-      copyBtn.setAttribute('onclick', 'copyFacebookFixturePost()');
-    } else {
-      copyBtn.textContent = isEn ? '📋 Copy Promo Post' : '📋 ফেসবুক পোস্ট কপি করুন';
-      copyBtn.setAttribute('onclick', 'copyFacebookPromoPost()');
+  if (activePosterTab === 'results') {
+    if (brandingBtn) brandingBtn.style.display = 'none';
+    if (copyBtn) {
+      copyBtn.style.display = 'inline-flex';
+      copyBtn.textContent = isEn ? '📦 Download All (PNG)' : '📦 সবগুলো ছবি ডাউনলোড (PNG)';
+      copyBtn.setAttribute('onclick', 'downloadAllSocialCards(this)');
     }
-  }
-
-  if (printBtn) {
-    if (activePosterTab === 'fixture') {
-      printBtn.textContent = isEn ? '🖨️ Print Fixture Poster / PDF' : '🖨️ ফিক্সচার পোস্টার প্রিন্ট / PDF';
-    } else {
-      printBtn.textContent = isEn ? '🖨️ Print Promo Poster / PDF' : '🖨️ পোস্টার প্রিন্ট / PDF';
+    if (printBtn) {
+      printBtn.style.display = 'inline-flex';
+      printBtn.textContent = isEn ? '🖨️ Print Full Board / PDF' : '🖨️ মাস্টার বোর্ড প্রিন্ট / PDF';
+      printBtn.setAttribute('onclick', "printDocument('page1')");
     }
-  }
+    if (subtitleEl) {
+      subtitleEl.textContent = isEn
+        ? 'Share live standings, knockout bracket & master board cards on Facebook & WhatsApp'
+        : 'ম্যাচ শেষে সোশ্যাল মিডিয়ায় এক ক্লিকে লাইভ ফলাফল ও পয়েন্ট টেবিল শেয়ার করুন';
+    }
+    if (tipEl) {
+      tipEl.textContent = isEn
+        ? '💡 Tip: Click any "📸 PNG" button to directly download crisp images ready for Facebook & WhatsApp.'
+        : '💡 টিপস: যেকোনো "📸 ছবি (PNG)" বাটনে ক্লিক করে সরাসরি সোশ্যাল মিডিয়ায় পোস্ট করার উপযোগী ক্রিস্টাল-ক্লিয়ার ছবি নামিয়ে নিন।';
+    }
+    if (container) {
+      if (typeof generateSocialExportCardsHtml === 'function') {
+        container.innerHTML = generateSocialExportCardsHtml();
+      } else {
+        container.innerHTML = '<div style="padding:20px; text-align:center;">Loading Social Cards...</div>';
+      }
+    }
+  } else {
+    if (brandingBtn) brandingBtn.style.display = 'inline-flex';
+    if (copyBtn) {
+      copyBtn.style.display = 'inline-flex';
+      if (activePosterTab === 'fixture') {
+        copyBtn.textContent = isEn ? '📋 Copy Fixture Post' : '📋 ফিক্সচার পোস্ট কপি করুন';
+        copyBtn.setAttribute('onclick', 'copyFacebookFixturePost()');
+      } else {
+        copyBtn.textContent = isEn ? '📋 Copy Promo Post' : '📋 ফেসবুক পোস্ট কপি করুন';
+        copyBtn.setAttribute('onclick', 'copyFacebookPromoPost()');
+      }
+    }
 
-  if (container) {
-    container.innerHTML = activePosterTab === 'fixture' 
-      ? generateFixturePosterCardHtml() 
-      : generatePromoPosterCardHtml();
-  }
+    if (printBtn) {
+      printBtn.style.display = 'inline-flex';
+      if (activePosterTab === 'fixture') {
+        printBtn.textContent = isEn ? '🖨️ Print Fixture Poster / PDF' : '🖨️ ফিক্সচার পোস্টার প্রিন্ট / PDF';
+        printBtn.setAttribute('onclick', "printDocument('poster')");
+      } else {
+        printBtn.textContent = isEn ? '🖨️ Print Promo Poster / PDF' : '🖨️ পোস্টার প্রিন্ট / PDF';
+        printBtn.setAttribute('onclick', "printDocument('poster')");
+      }
+    }
 
-  renderPrintablePosterSheet();
+    if (subtitleEl) {
+      subtitleEl.textContent = activePosterTab === 'fixture'
+        ? (isEn ? 'Official match schedule and knockout roadmap for all registered teams' : 'নিবন্ধিত সকল দলের অফিশিয়াল খেলার সূচি ও নকআউট রোডম্যাপ')
+        : (isEn ? 'Tournament notice, rules & registration invitation banner for social media' : 'টুর্নামেন্ট শুরুর পূর্বে দল আহ্বান, প্রাইজমানি ও অফিসিয়াল নোটিশ');
+    }
+
+    if (tipEl) {
+      tipEl.textContent = isEn
+        ? '💡 To get PDF or print: Select "Save as PDF" from Destination in print dialog (A4 Portrait 1-Page Perfect Fit).'
+        : '💡 পিডিএফ বা প্রিন্ট কপি পেতে: প্রিন্ট উইন্ডো এলে Destination থেকে \'Save as PDF\' নির্বাচন করুন (A4 পোর্ট্রেট ১ পেজে পারফেক্ট ফিট)।';
+    }
+
+    if (container) {
+      container.innerHTML = activePosterTab === 'fixture' 
+        ? generateFixturePosterCardHtml() 
+        : generatePromoPosterCardHtml();
+    }
+
+    renderPrintablePosterSheet();
+  }
 }
 
 function openPromoPosterModal(tab = 'fixture') {
-  activePosterTab = tab === 'promo' ? 'promo' : 'fixture';
+  activePosterTab = tab === 'promo' ? 'promo' : (tab === 'results' ? 'results' : 'fixture');
   const modal = document.getElementById('promo-poster-modal');
   if (modal) {
     modal.classList.add('active');
     modal.style.display = 'flex';
   }
   switchPosterTab(activePosterTab);
+}
+
+function openSocialHubModal(tab = 'promo') {
+  openPromoPosterModal(tab);
 }
 
 function openFixturePosterModal() {
@@ -631,14 +688,14 @@ function copyFacebookPromoPost() {
   const c = typeof tournamentConfig !== 'undefined' ? tournamentConfig : {};
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
   const selectedSet = new Set(c.selectedRules || []);
-  const activeMasterRules = (typeof MASTER_RULES_CATALOG !== 'undefined' ? MASTER_RULES_CATALOG : []).filter(r => selectedSet.has(r.id));
+  const activeMasterRules = (typeof MASTER_RULES_CATALOG !== 'undefined' ? MASTER_RULES_CATALOG : []).filter(r => selectedSet.has(r.id) && (typeof isRuleApplicableToFormat !== 'function' || isRuleApplicableToFormat(r.id, c)));
   const activeCustomRules = c.customRules || [];
   const allActiveRules = [...activeMasterRules, ...activeCustomRules];
 
   let rulesText = '';
   allActiveRules.slice(0, 10).forEach((r, idx) => {
-    const rTitle = isEn && r.titleEn ? r.titleEn : r.title;
-    const rDesc = isEn && r.descEn ? r.descEn : r.desc;
+    const rTitle = typeof resolveRuleTitle === 'function' ? resolveRuleTitle(r, c, isEn) : (isEn && r.titleEn ? r.titleEn : r.title);
+    const rDesc = typeof resolveRuleDesc === 'function' ? resolveRuleDesc(r, c, isEn) : (isEn && r.descEn ? r.descEn : r.desc);
     rulesText += `${idx + 1}. ${rTitle}: ${rDesc}\n`;
   });
   if (allActiveRules.length > 10) {
@@ -748,6 +805,7 @@ if (typeof window !== 'undefined') {
   window.generatePromoPosterCardHtml = generatePromoPosterCardHtml;
   window.generateFixturePosterCardHtml = generateFixturePosterCardHtml;
   window.openPromoPosterModal = openPromoPosterModal;
+  window.openSocialHubModal = openSocialHubModal;
   window.openFixturePosterModal = openFixturePosterModal;
   window.closePromoPosterModal = closePromoPosterModal;
   window.switchPosterTab = switchPosterTab;
@@ -765,6 +823,7 @@ if (typeof module !== 'undefined' && module.exports) {
     copyFacebookPromoPost,
     copyFacebookFixturePost,
     openPromoPosterModal,
+    openSocialHubModal,
     openFixturePosterModal,
     closePromoPosterModal,
     switchPosterTab,

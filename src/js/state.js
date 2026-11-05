@@ -249,7 +249,7 @@ function escapeHtml(str) {
 
       if (hasCustom) {
         if (navBtn) {
-          navBtn.textContent = isEn ? '⚙️ Edit Tournament & Rules' : '⚙️ এডিট টুর্নামেন্ট ও রুলস';
+          navBtn.textContent = isEn ? '✏️ Edit Tournament' : '✏️ এডিট টুর্নামেন্ট';
           if (navBtn.setAttribute) {
             navBtn.setAttribute('title', isEn ? 'Edit current tournament name, teams, match timings and rules' : 'বর্তমান টুর্নামেন্টের নাম, দল, খেলার সময় ও নিয়মাবলী পরিবর্তন করুন');
           }
@@ -258,11 +258,11 @@ function escapeHtml(str) {
           }
         }
         if (welcomeBtn) {
-          welcomeBtn.textContent = isEn ? '⚙️ Edit Tournament' : '⚙️ টুর্নামেন্ট এডিট করুন';
+          welcomeBtn.textContent = isEn ? '✏️ Edit Tournament' : '✏️ টুর্নামেন্ট এডিট করুন';
         }
       } else {
         if (navBtn) {
-          navBtn.textContent = isEn ? '🚀 Tournament Setup & Rules' : '🚀 টুর্নামেন্ট সেটআপ ও রুলস';
+          navBtn.textContent = isEn ? '✏️ Edit Tournament' : '✏️ এডিট টুর্নামেন্ট';
           if (navBtn.setAttribute) {
             navBtn.setAttribute('title', isEn ? 'Configure tournament name, venue, prize pool & official rules' : 'নতুন টুর্নামেন্টের নাম, ভেন্যু, প্রাইজমানি ও নিয়মাবলী সেট করুন');
           }
@@ -369,6 +369,21 @@ function escapeHtml(str) {
 
       const titleAccent = activeCfg.titleAccent || activeCfg.title;
       const titleRest = activeCfg.titleRest || '';
+      const titleIcon = activeCfg.titleIcon !== undefined ? activeCfg.titleIcon : '⚽';
+
+      const updateTitleIcon = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (titleIcon && titleIcon !== 'none') {
+          el.textContent = titleIcon;
+          if (el.style) el.style.display = 'inline-block';
+        } else {
+          el.textContent = '';
+          if (el.style) el.style.display = 'none';
+        }
+      };
+      updateTitleIcon('app-title-icon');
+      updateTitleIcon('app-title-icon-p2');
 
       const elAcc1 = document.getElementById('app-title-accent');
       if (elAcc1) elAcc1.textContent = titleAccent;

@@ -1,17 +1,32 @@
   <div id="promo-poster-modal" class="modal-backdrop" onclick="if(event.target === this) closePromoPosterModal()">
     <div class="modal-box modal-promo">
       <div class="modal-header" style="background: linear-gradient(90deg, #0f172a, #0284c7);">
-        <h3 data-i18n="poster.tab_fixture">🗓️ ম্যাচ ফিক্সচার ও সময়সূচি (সোশ্যাল মিডিয়া)</h3>
+        <h3 data-i18n="poster.modal_unified_title">📢 সোশ্যাল মিডিয়া প্রচার ও শেয়ারিং হাব</h3>
         <button type="button" class="modal-close-btn" onclick="closePromoPosterModal()">✕</button>
       </div>
 
-      <!-- Dual Mode Poster Navigation Tabs -->
-      <div class="poster-modal-tabs">
-        <button type="button" class="poster-tab-btn active" id="tab-btn-poster-fixture" onclick="switchPosterTab('fixture')">
-          <span data-i18n="poster.tab_fixture">🗓️ ম্যাচ ফিক্সচার ও সময়সূচি (সোশ্যাল মিডিয়া)</span>
+      <!-- 3-Stage Lifecycle Stepper Navigation Tabs -->
+      <div class="poster-modal-tabs social-lifecycle-tabs">
+        <button type="button" class="poster-tab-btn active" id="tab-btn-poster-promo" onclick="switchPosterTab('promo')">
+          <span class="stage-step-badge">১</span>
+          <div class="tab-txt-col">
+            <strong class="tab-main-txt" data-i18n="poster.tab_promo">📢 টুর্নামেন্ট নোটিশ ও প্রচার</strong>
+            <small class="tab-sub-txt" data-i18n="poster.tab_stage1_sub">টুর্নামেন্টের শুরুতে (দল আহ্বান)</small>
+          </div>
         </button>
-        <button type="button" class="poster-tab-btn" id="tab-btn-poster-promo" onclick="switchPosterTab('promo')">
-          <span data-i18n="poster.tab_promo">📢 টুর্নামেন্ট নোটিশ ও রেজিস্ট্রেশন</span>
+        <button type="button" class="poster-tab-btn" id="tab-btn-poster-fixture" onclick="switchPosterTab('fixture')">
+          <span class="stage-step-badge">২</span>
+          <div class="tab-txt-col">
+            <strong class="tab-main-txt" data-i18n="poster.tab_fixture">🗓️ ম্যাচ ফিক্সচার ও সময়সূচি</strong>
+            <small class="tab-sub-txt" data-i18n="poster.tab_stage2_sub">দল নিবন্ধন শেষে (খেলার সূচি)</small>
+          </div>
+        </button>
+        <button type="button" class="poster-tab-btn" id="tab-btn-poster-results" onclick="switchPosterTab('results')">
+          <span class="stage-step-badge">৩</span>
+          <div class="tab-txt-col">
+            <strong class="tab-main-txt" data-i18n="poster.tab_stage3_title">🏆 পয়েন্ট টেবিল ও ফলাফল (PNG)</strong>
+            <small class="tab-sub-txt" data-i18n="poster.tab_stage3_sub">খেলা চলাকালীন বা শেষে (ছবি ডাউনলোড)</small>
+          </div>
         </button>
       </div>
 

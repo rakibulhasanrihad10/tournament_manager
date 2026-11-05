@@ -87,10 +87,51 @@ function assert(condition, testDescription) {
 // TEST SUITE 1: Master Constants & Presets
 // ==========================================
 console.log('📦 Test Suite 1: Master Constants & Presets');
-assert(Array.isArray(MASTER_RULES_CATALOG) && MASTER_RULES_CATALOG.length >= 25, 'MASTER_RULES_CATALOG has 25+ rules');
+assert(Array.isArray(MASTER_RULES_CATALOG) && MASTER_RULES_CATALOG.length === 11, 'MASTER_RULES_CATALOG has exactly 11 streamlined rules');
 assert(typeof DEFAULT_CONFIG === 'object' && DEFAULT_CONFIG.formatType, 'DEFAULT_CONFIG is properly structured');
 assert(Object.keys(GROUPS).length === 3, 'GROUPS defines exactly 3 groups (A, B, C)');
 assert(GROUP_MATCH_DEFS.length === 9, 'GROUP_MATCH_DEFS defines 9 group matches');
+
+// Test Dynamic Rule Text Formatting
+const testRule = MASTER_RULES_CATALOG.find(r => r.id === 'r_squad_minibar');
+const formattedDescBn = resolveRuleDesc(testRule, { startingPlayers: 6, benchPlayers: 5, maxSubstitutes: 5 }, false);
+assert(formattedDescBn.includes('১১ জন') && formattedDescBn.includes('৬ জন') && formattedDescBn.includes('৫ জন'), 'Dynamic Bengali squad rule interpolation computes correctly (6+5=11)');
+const formattedDescEn = resolveRuleDesc(testRule, { startingPlayers: 6, benchPlayers: 5, maxSubstitutes: 5 }, true);
+assert(formattedDescEn.includes('11 players') && formattedDescEn.includes('6 on-field') && formattedDescEn.includes('5 substitutes'), 'Dynamic English squad rule interpolation computes correctly');
+
+const durationRule = MASTER_RULES_CATALOG.find(r => r.id === 'r_match_duration');
+const durBn = resolveRuleDesc(durationRule, { half1: 15, half2: 15, break: 5 }, false);
+assert(durBn.includes('৩০ মিনিট') && durBn.includes('১৫ মিনিট') && durBn.includes('৫ মিনিট'), 'Dynamic Bengali match duration interpolation computes correctly (15+5+15=30)');
+const durEn = resolveRuleDesc(durationRule, { half1: 15, half2: 15, break: 5 }, true);
+assert(durEn.includes('30 minutes') && durEn.includes('15 min 1st half') && durEn.includes('5 min break'), 'Dynamic English match duration interpolation computes correctly');
+
+// Test Merged Shootout Rule & Format Specific Filtering
+const shootoutRule = MASTER_RULES_CATALOG.find(r => r.id === 'r_direct_shootout');
+assert(shootoutRule.title.includes('সরাসরি টাইব্রেকার'), 'Merged shootout rule title includes সরাসরি টাইব্রেকার');
+const shootoutDescBn = resolveRuleDesc(shootoutRule, { startingPlayers: 5 }, false);
+assert(shootoutDescBn.includes('৩টি করে শট') && shootoutDescBn.includes('সাডেন ডেথ'), 'Minibar shootout interpolates 3 kicks');
+const shootoutDescStd = resolveRuleDesc(shootoutRule, { startingPlayers: 11 }, false);
+assert(shootoutDescStd.includes('৫টি করে শট'), 'Full 11-a-side shootout interpolates 5 kicks');
+
+// Test Merged Discipline & Cards Rules
+const refRule = MASTER_RULES_CATALOG.find(r => r.id === 'r_referee_final');
+assert(refRule.title.includes('রেফারির সিদ্ধান্ত ও শৃঙ্খলা নীতি'), 'Merged referee rule has updated title');
+assert(refRule.desc.includes('রেফারির সিদ্ধান্তই চূড়ান্ত') && refRule.desc.includes('স্থায়ী বহিষ্কার'), 'Merged referee rule combines authority and violent expulsion');
+
+const cardRule = MASTER_RULES_CATALOG.find(r => r.id === 'r_yellow_card');
+assert(cardRule.title.includes('কার্ড ও ফেয়ার প্লে নীতি'), 'Merged card rule has updated title');
+assert(cardRule.desc.includes('১ ও লাল কার্ডে ৩') && cardRule.desc.includes('১ ম্যাচ নিষিদ্ধ'), 'Merged card rule combines yellow & red card policies');
+
+assert(MINIBAR_RULES_PRESET.includes('r_referee_final') && !MINIBAR_RULES_PRESET.includes('r_violence_expulsion'), 'Minibar preset keeps merged referee rule and excludes separate expulsion rule');
+assert(MINIBAR_RULES_PRESET.includes('r_yellow_card') && !MINIBAR_RULES_PRESET.includes('r_red_card'), 'Minibar preset keeps merged cards rule and excludes separate red card rule');
+assert(MINIBAR_RULES_PRESET.length === 11, 'Minibar preset has exactly 11 streamlined essential rules');
+assert(MINIBAR_RULES_PRESET.includes('r_weather_interruption') && !MINIBAR_RULES_PRESET.includes('r_protest_fee'), 'Minibar preset keeps weather rule and excludes protest fee rule');
+assert(!MINIBAR_RULES_PRESET.includes('r_no_offside') && !MINIBAR_RULES_PRESET.includes('r_rolling_subs'), 'Minibar preset cleanly excludes redundant in-game rules');
+
+assert(!isRuleApplicableToFormat('r_fifa_points', { tournamentType: 'knockout' }), 'r_fifa_points excluded in knockout tournaments');
+assert(!isRuleApplicableToFormat('r_standings_tiebreaker', { tournamentType: 'knockout' }), 'r_standings_tiebreaker excluded in knockout tournaments');
+assert(isRuleApplicableToFormat('r_fifa_points', { tournamentType: 'groups' }), 'r_fifa_points included in groups tournaments');
+assert(isRuleApplicableToFormat('r_direct_shootout', { tournamentType: 'knockout' }), 'r_direct_shootout included in knockout tournaments');
 
 // ==========================================
 // TEST SUITE 2: Group Match Scoring & Points Logic
