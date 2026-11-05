@@ -3265,17 +3265,59 @@
 
     /* Promotional Poster Modal & Sheet Styles */
     .promo-poster-card {
-      background: linear-gradient(135deg, #05192d 0%, #082d18 50%, #03140b 100%);
+      position: relative;
+      background: linear-gradient(180deg, #071c3d 0%, #05142b 60%, #030b18 100%);
       color: #fff;
-      border: 3px solid #f5b915;
-      border-radius: 10px;
+      border: 3px solid #facc15;
+      border-radius: 14px;
       padding: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       font-size: 11px;
+      font-family: 'Hind Siliguri', 'Segoe UI', sans-serif;
+      overflow: hidden;
     }
+
+    /* Superstar Player Cutouts in Hero Banner */
+    .poster-hero-cover-banner .promo-player-cutout {
+      max-height: 125px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.8));
+    }
+
+    /* 3D Metallic Gold Center Title */
+    .promo-gold-3d-title {
+      font-size: 26px !important;
+      font-weight: 900 !important;
+      font-style: italic;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 15%, #fde047 50%, #ca8a04 90%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.9));
+      margin: 2px 0 4px 0 !important;
+      line-height: 1.2;
+    }
+
+    /* Dark Blue Glass Capsule */
+    .promo-glass-capsule {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(5, 16, 38, 0.85) !important;
+      border: 1.5px solid rgba(250, 204, 21, 0.5) !important;
+      border-radius: 20px;
+      padding: 3px 16px !important;
+      color: #f8fafc;
+      font-size: 11px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
     .promo-hero-header {
       text-align: center;
       border-bottom: 2px solid rgba(245, 185, 21, 0.4);
@@ -3305,6 +3347,36 @@
       color: #e2e8f0;
       font-weight: 600;
     }
+
+    /* Row 1: 3 Specification Blue Glass Cards */
+    .promo-ref-specs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      z-index: 2;
+    }
+    .promo-ref-spec-card {
+      background: linear-gradient(135deg, rgba(8, 47, 107, 0.85), rgba(2, 132, 199, 0.65));
+      border: 1.5px solid rgba(56, 189, 248, 0.55);
+      border-radius: 10px;
+      padding: 7px 10px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(4px);
+    }
+    .promo-ref-spec-card .spec-card-top {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #bae6fd;
+      margin-bottom: 2px;
+    }
+    .promo-ref-spec-card .spec-card-val {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    }
+
     .promo-meta-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -3327,6 +3399,63 @@
       color: #38bdf8;
       margin-top: 1px;
     }
+
+    /* Row 2: 2 Golden Laurel Wreath Prize Cards */
+    .promo-ref-prizes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      z-index: 2;
+    }
+    .promo-ref-prize-card {
+      border-radius: 14px;
+      padding: 10px 14px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    }
+    .promo-ref-prize-card.promo-champ-card {
+      background: radial-gradient(circle at 50% 25%, rgba(202, 138, 4, 0.35) 0%, rgba(120, 53, 15, 0.9) 70%, rgba(69, 26, 3, 0.95) 100%);
+      border: 2.5px solid #facc15;
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.35), inset 0 0 12px rgba(250, 204, 21, 0.2);
+    }
+    .promo-ref-prize-card.promo-ru-card {
+      background: radial-gradient(circle at 50% 25%, rgba(148, 163, 184, 0.3) 0%, rgba(51, 65, 85, 0.9) 70%, rgba(15, 23, 42, 0.95) 100%);
+      border: 2.5px solid #e2e8f0;
+      box-shadow: 0 0 18px rgba(226, 232, 240, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.15);
+    }
+    .promo-ref-prize-card .prize-card-badge {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #fef08a;
+      letter-spacing: 0.3px;
+      margin-bottom: 2px;
+    }
+    .promo-ref-prize-card.promo-ru-card .prize-card-badge {
+      color: #e2e8f0;
+    }
+    .promo-ref-prize-card .prize-card-amount {
+      font-size: 19px;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+      margin: 2px 0;
+      letter-spacing: 0.3px;
+    }
+    .promo-ref-prize-card.promo-champ-card .prize-card-amount {
+      color: #fffbeb;
+      text-shadow: 0 2px 6px rgba(180, 83, 9, 0.8), 0 0 10px rgba(250, 204, 21, 0.4);
+    }
+    .promo-ref-prize-card .prize-card-sub {
+      font-size: 10px;
+      font-weight: 700;
+      color: #fde68a;
+    }
+    .promo-ref-prize-card.promo-ru-card .prize-card-sub {
+      color: #cbd5e1;
+    }
+
     .promo-prizes-wrap {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -3356,6 +3485,56 @@
       color: #fff;
       margin: 2px 0;
     }
+
+    /* Row 3: Secondary Prizes Strip */
+    .promo-ref-subprizes-strip {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: rgba(8, 47, 107, 0.75);
+      border: 1.5px solid rgba(56, 189, 248, 0.45);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 11px;
+      color: #f8fafc;
+      flex-wrap: wrap;
+      gap: 6px;
+      z-index: 2;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+    .promo-ref-subprizes-strip .subprize-sep {
+      opacity: 0.5;
+      color: #38bdf8;
+    }
+
+    /* Row 4: 2-Column Info & Contact Strip */
+    .promo-ref-info-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: rgba(5, 16, 38, 0.9);
+      border: 1.5px solid rgba(250, 204, 21, 0.4);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 11.5px;
+      z-index: 2;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+    .promo-ref-info-strip .info-strip-col {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .promo-ref-info-strip .info-strip-col strong {
+      color: #fde047;
+    }
+    .promo-ref-info-strip .info-strip-col-right {
+      text-align: right;
+    }
+    .promo-ref-info-strip .info-strip-col-right strong {
+      color: #38bdf8;
+    }
+
     .promo-entry-contact-box {
       background: rgba(2, 132, 199, 0.18);
       border: 1.5px solid #0284c7;
@@ -3367,6 +3546,66 @@
       flex-wrap: wrap;
       gap: 8px;
     }
+
+    /* Row 5: Master Rules Board (White Rounded Card with 10 Numbered Rules) */
+    .promo-ref-rules-card {
+      background: #ffffff !important;
+      border: 2.5px solid #f59e0b !important;
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: #0f172a !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+      z-index: 2;
+    }
+    .promo-ref-rules-card .rules-card-header-wrap {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .promo-ref-rules-card .rules-card-header-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+      color: #ffffff !important;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 3px 18px;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    .promo-rules-grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 14px;
+    }
+    .promo-rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 10.5px;
+      line-height: 1.35;
+      color: #1e293b;
+    }
+    .promo-rule-item .rule-num-badge {
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      background: #059669;
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .promo-rule-item .rule-text strong {
+      color: #0f172a;
+      font-weight: 800;
+    }
+
     .promo-rules-preview-box {
       background: rgba(0, 0, 0, 0.3);
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -3394,6 +3633,19 @@
     .promo-rules-ol li strong {
       color: #fef08a;
     }
+
+    /* Footer Ribbon */
+    .promo-ref-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.2);
+      font-size: 10.5px;
+      color: #cbd5e1;
+      font-weight: 600;
+      z-index: 2;
+    }
     .promo-footer-sign {
       display: flex;
       justify-content: space-between;
@@ -3402,6 +3654,24 @@
       border-top: 1px dashed rgba(255, 255, 255, 0.2);
       font-size: 10.5px;
       color: #94a3b8;
+    }
+
+    @media (max-width: 600px) {
+      .promo-ref-specs-grid {
+        grid-template-columns: 1fr;
+      }
+      .promo-ref-prizes-grid {
+        grid-template-columns: 1fr;
+      }
+      .promo-rules-grid-2col {
+        grid-template-columns: 1fr;
+      }
+      .promo-ref-info-strip {
+        grid-template-columns: 1fr;
+      }
+      .promo-ref-info-strip .info-strip-col-right {
+        text-align: left;
+      }
     }
 
     /* Poster Stadium Cover Hero Banner & Ambient Vignette */

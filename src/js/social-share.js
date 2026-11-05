@@ -94,162 +94,527 @@ function drawCardFooter(ctx, width, y) {
   ctx.textAlign = 'left';
 }
 
-// ----------------------------------------------------
+// ========================================================
 // 0. PROMO TOURNAMENT NOTICE BANNER CANVAS RENDERER
-// ----------------------------------------------------
+// (High-Resolution 1200x920 Canvas matching Reference Layout)
+// ========================================================
+
+var cachedPromoStadiumImg = null;
+var cachedPromoMessiImg = null;
+var cachedPromoMbappeImg = null;
+
+if (typeof PROMO_STADIUM_BG_B64 !== 'undefined' && PROMO_STADIUM_BG_B64) {
+  cachedPromoStadiumImg = new Image();
+  cachedPromoStadiumImg.src = PROMO_STADIUM_BG_B64;
+}
+if (typeof PROMO_MESSI_B64 !== 'undefined' && PROMO_MESSI_B64) {
+  cachedPromoMessiImg = new Image();
+  cachedPromoMessiImg.src = PROMO_MESSI_B64;
+}
+if (typeof PROMO_MBAPPE_B64 !== 'undefined' && PROMO_MBAPPE_B64) {
+  cachedPromoMbappeImg = new Image();
+  cachedPromoMbappeImg.src = PROMO_MBAPPE_B64;
+}
+
+function drawCanvasLaurelWreath(ctx, cx, cy, r, startA, endA, leaves, col) {
+  if (!ctx || !ctx.beginPath) return;
+  ctx.save();
+  ctx.strokeStyle = col || '#facc15';
+  ctx.fillStyle = col || '#facc15';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  if (typeof ctx.arc === 'function') ctx.arc(cx, cy, r, startA, endA);
+  ctx.stroke();
+
+  for (let i = 0; i <= leaves; i++) {
+    const t = i / leaves;
+    const a = startA + t * (endA - startA);
+    const lx = cx + r * Math.cos(a);
+    const ly = cy + r * Math.sin(a);
+
+    if (typeof ctx.translate === 'function' && typeof ctx.rotate === 'function' && typeof ctx.ellipse === 'function') {
+      ctx.save();
+      ctx.translate(lx, ly);
+      ctx.rotate(a + Math.PI / 4);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 6.5, 3.2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(lx, ly);
+      ctx.rotate(a - Math.PI / 4);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 6.5, 3.2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    } else if (typeof ctx.arc === 'function') {
+      ctx.beginPath();
+      ctx.arc(lx, ly, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function getPromoCanvasDefaultRules(isEn) {
+  return isEn ? [
+    { title: 'Squad & Lineup Size', desc: 'Starting lineup and substitute players must be registered before the kickoff.' },
+    { title: 'Multi-team Ban', desc: 'A player can represent only one team throughout the entire tournament.' },
+    { title: 'Guest Player Limit', desc: 'Maximum 1 or 2 guest players allowed per team as per committee rules.' },
+    { title: 'Walkover & Punctuality', desc: 'Teams arriving more than 15 minutes late will concede a walkover loss.' },
+    { title: 'Substitutions & Injuries', desc: 'Rolling substitutions permitted with prior notification to the referee.' },
+    { title: 'Referee Authority', desc: 'The referee\'s decision on the field of play is supreme and final.' },
+    { title: 'Official Kit & Shoes', desc: 'All players must wear matching jerseys and proper football turf shoes.' },
+    { title: 'Cards & Disciplinary Code', desc: '2 Yellow cards or 1 Red card leads to an automatic 1-match suspension.' },
+    { title: 'Match Forfeit & Misconduct', desc: 'Severe misconduct will lead to team disqualification and a 3-0 forfeit.' },
+    { title: 'Adverse Weather Policy', desc: 'In case of heavy storm or unplayable pitch, match will be rescheduled.' }
+  ] : [
+    { title: 'দলে স্কোয়াড ও খেলোয়াড় সংখ্যা', desc: 'ম্যাচ শুরুর পূর্বে মূল একাদশ এবং বদলি খেলোয়াড়দের অফিশিয়াল তালিকায় নাম দিতে হবে।' },
+    { title: 'একাধিক দলে অংশগ্রহণ সম্পূর্ণ নিষেধ', desc: 'একজন খেলোয়াড় পুরো টুর্নামেন্টে শুধুমাত্র একটি দলের হয়েই অংশ নিতে পারবেন।' },
+    { title: 'বহিরাগত/ভাড়ায় খেলোয়াড় কোটা', desc: 'কমিটির নিয়ম অনুযায়ী প্রতি ম্যাচে একদলে সর্বোচ্চ ২ জন বহিরাগত খেলোয়াড় খেলতে পারবে।' },
+    { title: 'ওয়াকওভার (Walkover) ও সময়সীমা', desc: 'ম্যাচ শুরু নির্ধারিত সময়ের সর্বোচ্চ ১৫ মিনিট অপেক্ষা করা হবে; অনুপস্থিত থাকলে প্রতিপক্ষ বিজয়ী।' },
+    { title: 'আঘাতপ্রাপ্ত খেলোয়াড় ও বদলি নিয়ম', desc: 'প্রয়োজনীয় ক্ষেত্রে রেফারির অনুমতি সাপেক্ষে রোলিং বা নির্দিষ্ট বদলি কার্যকর হবে।' },
+    { title: 'রেফারির সিদ্ধান্তই মাঠে চূড়ান্ত', desc: 'খেলার মাঠে রেফারির সিদ্ধান্ত চূড়ান্ত; রেফারির সিদ্ধান্ত নিয়ে অযৌক্তিক তর্ক শাস্তিযোগ্য অপরাধ।' },
+    { title: 'অফিশিয়াল জার্সি ও সেফটি বুট', desc: 'দলের সকল খেলোয়াড়কে নির্দিষ্ট জার্সি এবং সেফটি বুট পরিধান করে মাঠে নামতে হবে।' },
+    { title: 'হলুদ ও লাল কার্ড শৃঙ্খলা নীতি', desc: 'একটি টুর্নামেন্টে ২ হলুদ কার্ড বা ১ সরাসরি লাল কার্ড পেলে পরবর্তী ১ ম্যাচ বহিষ্কার।' },
+    { title: 'শৃঙ্খলাভঙ্গ ও ম্যাচ বাজেয়াপ্ত', desc: 'মারামারি বা কমিটির সাথে অসৌজন্যমূলক আচরণে সংশ্লিষ্ট দল বাতিল ও বিপক্ষ দল ৩-০ গোলে বিজয়ী।' },
+    { title: 'প্রাকৃতিক দুর্যোগ ও বৃষ্টি নীতি', desc: 'ভারী বৃষ্টি বা দুর্যোগে খেলা বাতিল হলে কমিটি পরবর্তী সুবিধাজনক তারিখ ঘোষণা করবে।' }
+  ];
+}
+
 function renderPromoPosterToCanvas() {
   const canvas = document.createElement('canvas');
   const width = 1200;
-  const height = 820;
+  const height = 920;
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
 
-  ctx.fillStyle = '#0b1329';
+  // 1. BASE BACKGROUND FILL
+  ctx.fillStyle = '#07152b';
   ctx.fillRect(0, 0, width, height);
 
   const c = typeof tournamentConfig !== 'undefined' ? tournamentConfig : {};
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
-  const title = c.title || (document.getElementById('app-title-display')?.textContent?.trim() || 'ফুটবল বিশ্বকাপ ২০২৬');
-  const venue = c.venue || (document.getElementById('app-venue-display')?.textContent?.trim() || 'স্টেডিয়াম মাঠ');
-  const org = c.organizer || (document.getElementById('app-org-display')?.textContent?.trim() || 'আয়োজক কমিটি');
 
-  drawCardHeader(ctx, width, isEn ? '📢 OFFICIAL TOURNAMENT NOTICE • ANNOUNCEMENT' : '📢 অফিশিয়াল টুর্নামেন্ট নোটিশ ও প্রচার ব্যানার', title, `📍 ভেন্যু: ${venue} | 🚩 আয়োজনে: ${org}`, ['#0f172a', '#1e40af']);
+  const defaultTitle = isEn ? 'Football Tournament 2026' : 'ফুটবল টুর্নামেন্ট ২০২৬';
+  const defaultOrg = isEn ? 'Tournament Organizing Committee' : 'টুর্নামেন্ট পরিচালনা কমিটি';
+  const defaultVenue = isEn ? 'Local Sports Ground' : 'স্থানীয় খেলার মাঠ';
+  const defaultFormat = isEn ? '6-a-side' : '৬-এ-সাইড';
+  const defaultDuration = isEn ? '20 mins (10+2+10 mins)' : '২০ মিনিট (১০+২+১০ মিনিট)';
+  const defaultDate = isEn ? '2026' : '২০২৬';
 
-  // 3 Columns: Prize Pool, Tournament Details, Rules & Registration
-  const colY = 145;
-  const colH = 510;
-  const colW = 360;
+  const title = c.title || (typeof document !== 'undefined' && document.getElementById('app-title-display')?.textContent?.trim()) || defaultTitle;
+  const venue = c.venue || (typeof document !== 'undefined' && document.getElementById('app-venue-display')?.textContent?.trim()) || defaultVenue;
+  const org = c.organizer || (typeof document !== 'undefined' && document.getElementById('app-org-display')?.textContent?.trim()) || defaultOrg;
+  const date = c.startDate || defaultDate;
+  const matchDuration = c.matchDuration || defaultDuration;
+  const edition = c.edition || date;
+  const startingPlayers = c.startingPlayers || 7;
+  const benchPlayers = c.benchPlayers || 4;
 
-  // 1. Prize Pool Card
-  const c1X = 30;
-  drawRoundedRect(ctx, c1X, colY, colW, colH, 12, '#131f37', '#233554', 1.5);
-  const pGrad = ctx.createLinearGradient(c1X, colY, c1X + colW, colY);
-  pGrad.addColorStop(0, '#854d0e');
-  pGrad.addColorStop(1, '#ca8a04');
-  drawRoundedRect(ctx, c1X, colY, colW, 44, { tl: 12, tr: 12, bl: 0, br: 0 }, pGrad);
-  ctx.font = 'bold 16px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.textAlign = 'left';
-  ctx.fillText('🏆 ' + (isEn ? 'Tournament Prize Pool' : 'পুরস্কার ও প্রাইজপুল'), c1X + 16, colY + 28);
+  const champPrize = c.championPrize || c.champPrize || (isEn ? '20,000 BDT & Trophy' : '২০,০০০ টাকা ও আকর্ষণীয় ট্রফি');
+  const runnerPrize = c.runnerUpPrize || c.runnerPrize || (isEn ? '10,000 BDT & Trophy' : '১০,০০০ টাকা ও ট্রফি');
+  const thirdPrize = c.thirdPrize || (isEn ? 'Trophy & Medals' : 'ট্রফি ও মেডেল');
+  const otherPrizes = c.otherPrizes || (isEn ? 'Best Player, Top Scorer, Best Goalkeeper' : 'সেরা খেলোয়াড়, সেরা গোলদাতা, সেরা গোলকিপার');
 
-  const champPrize = c.champPrize || '৩০,০০০ টাকা + আকর্ষণীয় ট্রফি';
-  const runnerPrize = c.runnerPrize || '১৫,০০০ টাকা + রানার্স-আপ ট্রফি';
-  const thirdPrize = c.thirdPrize || 'ট্রফি ও মেডেল';
+  const entryFee = c.entryFee || (isEn ? '1,200 BDT' : '১,২০০ টাকা');
+  const regDeadline = c.regDeadline || c.deadline || (isEn ? 'Before Kickoff' : 'ম্যাচ শুরুর ৩০ মিনিট পূর্বে');
+  const contactPhone = c.contactPhone || (isEn ? '017XXXXXXXX' : '০১৭১১-xxxxxx');
+  const paymentMethod = c.paymentMethod || c.paymentInfo || (isEn ? 'bKash / Nagad (Personal)' : 'বিকাশ / নগদ (পার্সোনাল)');
 
-  drawRoundedRect(ctx, c1X + 14, colY + 60, colW - 28, 90, 8, '#0f172a', '#eab308', 1);
-  ctx.font = 'bold 12px "Segoe UI", sans-serif';
-  ctx.fillStyle = '#eab308';
-  ctx.fillText('🥇 CHAMPION PRIZE / চ্যাম্পিয়ন প্রাইজ', c1X + 26, colY + 84);
-  ctx.font = 'bold 17px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText(champPrize, c1X + 26, colY + 115);
+  // 2. STADIUM & TROPHY BACKGROUND IMAGE (with zero security taint)
+  let stadiumImg = null;
+  if (typeof blankRosterImages !== 'undefined' && blankRosterImages && blankRosterImages.coverType === 'custom' && blankRosterImages.customCover && blankRosterImages.customCover.startsWith('data:')) {
+    const customImg = new Image();
+    customImg.src = blankRosterImages.customCover;
+    if (customImg.complete && customImg.naturalWidth > 0) stadiumImg = customImg;
+  }
+  if (!stadiumImg && cachedPromoStadiumImg && cachedPromoStadiumImg.complete && cachedPromoStadiumImg.naturalWidth > 0) {
+    stadiumImg = cachedPromoStadiumImg;
+  }
 
-  drawRoundedRect(ctx, c1X + 14, colY + 165, colW - 28, 90, 8, '#0f172a', '#94a3b8', 1);
-  ctx.font = 'bold 12px "Segoe UI", sans-serif';
-  ctx.fillStyle = '#94a3b8';
-  ctx.fillText('🥈 RUNNER-UP PRIZE / রানার্স-আপ প্রাইজ', c1X + 26, colY + 189);
-  ctx.font = 'bold 17px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText(runnerPrize, c1X + 26, colY + 220);
+  if (stadiumImg && stadiumImg.naturalWidth > 0) {
+    try {
+      ctx.drawImage(stadiumImg, 0, 0, width, 520);
+    } catch (e) {
+      // fallback
+    }
+  }
 
-  drawRoundedRect(ctx, c1X + 14, colY + 270, colW - 28, 220, 8, '#0f172a', '#334155', 1);
+  // Dark atmospheric gradient overlay
+  const bgOverlay = ctx.createLinearGradient(0, 0, 0, height);
+  bgOverlay.addColorStop(0, 'rgba(7, 21, 43, 0.2)');
+  bgOverlay.addColorStop(0.35, 'rgba(7, 21, 43, 0.45)');
+  bgOverlay.addColorStop(0.6, 'rgba(5, 14, 29, 0.88)');
+  bgOverlay.addColorStop(0.85, 'rgba(3, 10, 22, 0.98)');
+  bgOverlay.addColorStop(1, '#07152b');
+  ctx.fillStyle = bgOverlay;
+  ctx.fillRect(0, 0, width, height);
+
+  // Golden border around entire poster
+  ctx.strokeStyle = '#facc15';
+  ctx.lineWidth = 3;
+  if (typeof ctx.strokeRect === 'function') {
+    ctx.strokeRect(1.5, 1.5, width - 3, height - 3);
+  } else if (typeof ctx.stroke === 'function') {
+    ctx.beginPath();
+    if (typeof ctx.rect === 'function') ctx.rect(1.5, 1.5, width - 3, height - 3);
+    ctx.stroke();
+  }
+
+  // 3. SUPERSTAR PLAYER CUTOUTS (OR CUSTOM LOGOS)
+  // Left: Messi or User Custom Photo
+  let leftPlayerImg = null;
+  if (typeof blankRosterImages !== 'undefined' && blankRosterImages && blankRosterImages.leftType === 'custom' && blankRosterImages.customLeft && blankRosterImages.customLeft.startsWith('data:')) {
+    const cLeft = new Image();
+    cLeft.src = blankRosterImages.customLeft;
+    if (cLeft.complete && cLeft.naturalWidth > 0) leftPlayerImg = cLeft;
+  }
+  if (!leftPlayerImg && cachedPromoMessiImg && cachedPromoMessiImg.complete && cachedPromoMessiImg.naturalWidth > 0) {
+    leftPlayerImg = cachedPromoMessiImg;
+  }
+
+  if (leftPlayerImg && leftPlayerImg.naturalWidth > 0) {
+    try {
+      ctx.save();
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+      ctx.shadowBlur = 20;
+      ctx.shadowOffsetY = 10;
+      // Aspect ratio fit in left hero area
+      const maxW = 270;
+      const maxH = 340;
+      const pRatio = leftPlayerImg.naturalWidth / leftPlayerImg.naturalHeight;
+      let drawW = maxW;
+      let drawH = drawW / pRatio;
+      if (drawH > maxH) {
+        drawH = maxH;
+        drawW = drawH * pRatio;
+      }
+      ctx.drawImage(leftPlayerImg, 15, 20, drawW, drawH);
+      ctx.restore();
+    } catch (e) {
+      // fallback
+    }
+  }
+
+  // Right: Mbappé or User Custom Photo
+  let rightPlayerImg = null;
+  if (typeof blankRosterImages !== 'undefined' && blankRosterImages && blankRosterImages.rightType === 'custom' && blankRosterImages.customRight && blankRosterImages.customRight.startsWith('data:')) {
+    const cRight = new Image();
+    cRight.src = blankRosterImages.customRight;
+    if (cRight.complete && cRight.naturalWidth > 0) rightPlayerImg = cRight;
+  }
+  if (!rightPlayerImg && cachedPromoMbappeImg && cachedPromoMbappeImg.complete && cachedPromoMbappeImg.naturalWidth > 0) {
+    rightPlayerImg = cachedPromoMbappeImg;
+  }
+
+  if (rightPlayerImg && rightPlayerImg.naturalWidth > 0) {
+    try {
+      ctx.save();
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+      ctx.shadowBlur = 20;
+      ctx.shadowOffsetY = 10;
+      const maxW = 270;
+      const maxH = 340;
+      const pRatio = rightPlayerImg.naturalWidth / rightPlayerImg.naturalHeight;
+      let drawW = maxW;
+      let drawH = drawW / pRatio;
+      if (drawH > maxH) {
+        drawH = maxH;
+        drawW = drawH * pRatio;
+      }
+      ctx.drawImage(rightPlayerImg, width - drawW - 15, 20, drawW, drawH);
+      ctx.restore();
+    } catch (e) {
+      // fallback
+    }
+  }
+
+  // 4. CENTER HERO TITLE & CAPSULE
+  const centerTitleX = 600;
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // 3D Golden Metallic Title Effect
+  ctx.font = '900 italic 40px "Hind Siliguri", "Segoe UI", sans-serif';
+  // Shadow layers
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+  ctx.fillText(title, centerTitleX + 1, 86);
+  ctx.fillText(title, centerTitleX, 87);
+  ctx.fillText(title, centerTitleX - 1, 86);
+
+  const titleGrad = ctx.createLinearGradient(centerTitleX, 60, centerTitleX, 105);
+  titleGrad.addColorStop(0, '#ffffff');
+  titleGrad.addColorStop(0.35, '#fef08a');
+  titleGrad.addColorStop(0.7, '#facc15');
+  titleGrad.addColorStop(1, '#ca8a04');
+  ctx.fillStyle = titleGrad;
+  ctx.fillText(title, centerTitleX, 84);
+  ctx.restore();
+
+  // Glass Capsule Pill: Organizer & Venue
+  const pillW = 580;
+  const pillH = 36;
+  const pillX = 600 - (pillW / 2);
+  const pillY = 112;
+  drawRoundedRect(ctx, pillX, pillY, pillW, pillH, 18, 'rgba(5, 16, 38, 0.88)', 'rgba(250, 204, 21, 0.55)', 1.5);
+  ctx.save();
   ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#38bdf8';
-  ctx.fillText('🎖️ ' + (isEn ? 'Individual Awards & Medals' : 'ব্যক্তিগত আকর্ষণীয় পুরস্কার'), c1X + 26, colY + 298);
-  ctx.font = '13px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#cbd5e1';
-  ctx.fillText('• ম্যান অব দ্য ম্যাচ (প্রতিটি খেলায় ট্রফি)', c1X + 26, colY + 330);
-  ctx.fillText('• টুর্নামেন্ট সেরা খেলোয়াড় (Golden Ball)', c1X + 26, colY + 360);
-  ctx.fillText('• সর্বোচ্চ গোলদাতা (Golden Boot)', c1X + 26, colY + 390);
-  ctx.fillText('• টুর্নামেন্ট সেরা গোলকিপার (Golden Glove)', c1X + 26, colY + 420);
-  ctx.fillText('• ৩য় স্থান নির্ধারণী পুরস্কার: ' + thirdPrize, c1X + 26, colY + 450);
-
-  // 2. Tournament Details & Format Card
-  const c2X = 420;
-  drawRoundedRect(ctx, c2X, colY, colW, colH, 12, '#131f37', '#233554', 1.5);
-  const fGrad = ctx.createLinearGradient(c2X, colY, c2X + colW, colY);
-  fGrad.addColorStop(0, '#1e3a8a');
-  fGrad.addColorStop(1, '#0284c7');
-  drawRoundedRect(ctx, c2X, colY, colW, 44, { tl: 12, tr: 12, bl: 0, br: 0 }, fGrad);
-  ctx.font = 'bold 16px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#ffffff';
-  ctx.fillText('📋 ' + (isEn ? 'Format & Schedule Details' : 'টুর্নামেন্ট বিবরণ ও ফরম্যাট'), c2X + 16, colY + 28);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(`🚩 ${isEn ? 'Organized by:' : 'আয়োজনে:'} ${org}   |   📍 ${isEn ? 'Venue:' : 'স্থান:'} ${venue}`, 600, pillY + (pillH / 2));
+  ctx.restore();
 
-  const entryFee = c.entryFee || '৫,০০০ টাকা';
-  const regDeadline = c.deadline || 'ম্যাচ শুরুর ৩০ মিনিট পূর্বে';
-  const matchDuration = c.matchDuration || '২০ মিনিট';
-  const ballSize = c.ballSize || '৫ নং সাইজ';
-  const squadSize = c.squadRule || '১১ মাঠে + ৫ বেঞ্চ';
+  // 5. ROW 1: 3 BLUE GLASS SPECIFICATION CARDS
+  const r1Y = 168;
+  const r1H = 66;
+  const cardW = 345;
+  const cardsGap = 22;
+  const cardsStartX = (width - (cardW * 3 + cardsGap * 2)) / 2; // 60px
 
-  const details = [
-    { label: '💰 এন্ট্রি ফি (Entry Fee):', val: entryFee, color: '#38bdf8' },
-    { label: '⏰ নিবন্ধনের শেষ সময়:', val: regDeadline, color: '#f59e0b' },
-    { label: '⏱️ ম্যাচের স্থায়ীত্ব (Duration):', val: matchDuration, color: '#ffffff' },
-    { label: '⚽ বল সাইজ (Ball Size):', val: ballSize, color: '#ffffff' },
-    { label: '👥 স্কোয়াড সংখ্যা (Squad):', val: squadSize, color: '#ffffff' },
-    { label: '🏟️ খেলার মাঠ (Venue):', val: venue, color: '#a7f3d0' }
+  const specCards = [
+    { label: isEn ? '🗓️ MATCH DATE' : '🗓️ ম্যাচের তারিখ', val: `${date} (${startingPlayers} ${isEn ? 'on pitch' : 'জন মাঠে'}, ${benchPlayers} ${isEn ? 'subs' : 'জন বদলি'})` },
+    { label: isEn ? '⏱️ MATCH DURATION' : '⏱️ ম্যাচের সময়', val: matchDuration },
+    { label: isEn ? '🏆 TOURNAMENT EDITION' : '🏆 টুর্নামেন্ট সংস্করণ', val: edition }
   ];
 
-  details.forEach((d, idx) => {
-    const rowY = colY + 60 + idx * 72;
-    drawRoundedRect(ctx, c2X + 14, rowY, colW - 28, 62, 8, '#0f172a', '#334155', 1);
-    ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillText(d.label, c2X + 26, rowY + 24);
-    ctx.font = 'bold 15px "Hind Siliguri", "Segoe UI", sans-serif';
-    ctx.fillStyle = d.color;
-    ctx.fillText(d.val, c2X + 26, rowY + 48);
+  specCards.forEach((sc, i) => {
+    const cX = cardsStartX + i * (cardW + cardsGap);
+    const scGrad = ctx.createLinearGradient(cX, r1Y, cX, r1Y + r1H);
+    scGrad.addColorStop(0, 'rgba(8, 47, 107, 0.9)');
+    scGrad.addColorStop(1, 'rgba(2, 132, 199, 0.7)');
+    drawRoundedRect(ctx, cX, r1Y, cardW, r1H, 10, scGrad, 'rgba(56, 189, 248, 0.6)', 1.5);
+
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 11px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = '#bae6fd';
+    ctx.fillText(sc.label, cX + cardW / 2, r1Y + 20);
+
+    ctx.font = 'bold 14px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(sc.val, cX + cardW / 2, r1Y + 44);
+    ctx.restore();
   });
 
-  // 3. Rules & Registration Hotline Card
-  const c3X = 810;
-  drawRoundedRect(ctx, c3X, colY, colW, colH, 12, '#131f37', '#233554', 1.5);
-  const rGrad = ctx.createLinearGradient(c3X, colY, c3X + colW, colY);
-  rGrad.addColorStop(0, '#064e3b');
-  rGrad.addColorStop(1, '#059669');
-  drawRoundedRect(ctx, c3X, colY, colW, 44, { tl: 12, tr: 12, bl: 0, br: 0 }, rGrad);
-  ctx.font = 'bold 16px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText('📞 ' + (isEn ? 'Rules & Team Registration' : 'দল নিবন্ধন ও জরুরি যোগাযোগ'), c3X + 16, colY + 28);
+  // 6. ROW 2: 2 GOLDEN LAUREL WREATH PRIZE CARDS
+  const r2Y = 248;
+  const r2H = 135;
+  const prizeCardW = 528;
+  const prizeGap = 24;
+  const p1X = cardsStartX; // 60px
+  const p2X = p1X + prizeCardW + prizeGap; // 612px
 
-  const contactPhone = c.contactPhone || '০১৭১XXXXXXX, ০১৯১XXXXXXX';
-  const paymentInfo = c.paymentInfo || 'বিকাশ / নগদ (Personal): ০১৭১XXXXXXX';
+  // Champion Prize Card (Golden Laurel)
+  const champGrad = ctx.createLinearGradient(p1X, r2Y, p1X + prizeCardW, r2Y + r2H);
+  champGrad.addColorStop(0, '#582405');
+  champGrad.addColorStop(0.35, '#a16207');
+  champGrad.addColorStop(0.7, '#ca8a04');
+  champGrad.addColorStop(1, '#451a03');
+  drawRoundedRect(ctx, p1X, r2Y, prizeCardW, r2H, 14, champGrad, '#facc15', 2.5);
 
-  drawRoundedRect(ctx, c3X + 14, colY + 60, colW - 28, 110, 8, '#064e3b', '#10b981', 1);
-  ctx.font = 'bold 12px "Segoe UI", sans-serif';
-  ctx.fillStyle = '#a7f3d0';
-  ctx.fillText('📱 REGISTRATION HOTLINE / হটলাইন:', c3X + 26, colY + 85);
-  ctx.font = 'bold 16px "Segoe UI", sans-serif';
+  // Laurel wreath branches flanking champion prize
+  drawCanvasLaurelWreath(ctx, p1X + 42, r2Y + 68, 36, -Math.PI * 0.7, Math.PI * 0.7, 7, '#fde047');
+  drawCanvasLaurelWreath(ctx, p1X + prizeCardW - 42, r2Y + 68, 36, Math.PI * 0.3, Math.PI * 1.7, 7, '#fde047');
+
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = 'bold 12.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#fef08a';
+  ctx.fillText(isEn ? '🥇 CHAMPION TEAM PRIZE MONEY' : '🥇 চ্যাম্পিয়ন দলের প্রাইজমানি', p1X + prizeCardW / 2, r2Y + 30);
+
+  ctx.font = '900 24px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#ffffff';
-  ctx.fillText(contactPhone, c3X + 26, colY + 115);
-  ctx.font = '12px "Hind Siliguri", sans-serif';
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
+  ctx.shadowBlur = 8;
+  ctx.fillText(champPrize, p1X + prizeCardW / 2, r2Y + 68);
+
+  ctx.font = 'bold 11.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#fde68a';
+  ctx.shadowBlur = 0;
+  ctx.fillText(isEn ? '+ Champion Winners Trophy & Gold Medals' : '+ সেরা খেলোয়াড় ট্রফি ও মেডেল', p1X + prizeCardW / 2, r2Y + 104);
+  ctx.restore();
+
+  // Runner-Up Prize Card (Silver/Gold Laurel)
+  const ruGrad = ctx.createLinearGradient(p2X, r2Y, p2X + prizeCardW, r2Y + r2H);
+  ruGrad.addColorStop(0, '#1e293b');
+  ruGrad.addColorStop(0.4, '#475569');
+  ruGrad.addColorStop(0.7, '#64748b');
+  ruGrad.addColorStop(1, '#0f172a');
+  drawRoundedRect(ctx, p2X, r2Y, prizeCardW, r2H, 14, ruGrad, '#e2e8f0', 2.5);
+
+  drawCanvasLaurelWreath(ctx, p2X + 42, r2Y + 68, 36, -Math.PI * 0.7, Math.PI * 0.7, 7, '#e2e8f0');
+  drawCanvasLaurelWreath(ctx, p2X + prizeCardW - 42, r2Y + 68, 36, Math.PI * 0.3, Math.PI * 1.7, 7, '#e2e8f0');
+
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = 'bold 12.5px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#e2e8f0';
-  ctx.fillText('দল নিবন্ধনের জন্য দ্রুত যোগাযোগ করুন', c3X + 26, colY + 145);
+  ctx.fillText(isEn ? '🥈 RUNNER-UP TEAM PRIZE MONEY' : '🥈 রানার্স-আপ দলের প্রাইজমানি', p2X + prizeCardW / 2, r2Y + 30);
 
-  drawRoundedRect(ctx, c3X + 14, colY + 185, colW - 28, 90, 8, '#0f172a', '#334155', 1);
-  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#f43f5e';
-  ctx.fillText('💳 এন্ট্রি ফি পরিশোধের মাধ্যম (Payment):', c3X + 26, colY + 210);
-  ctx.font = 'bold 14px "Segoe UI", sans-serif';
+  ctx.font = '900 24px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#ffffff';
-  ctx.fillText(paymentInfo, c3X + 26, colY + 242);
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
+  ctx.shadowBlur = 8;
+  ctx.fillText(runnerPrize, p2X + prizeCardW / 2, r2Y + 68);
 
-  // Key Rules Notice
-  drawRoundedRect(ctx, c3X + 14, colY + 290, colW - 28, 200, 8, '#0f172a', '#334155', 1);
-  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#fbbf24';
-  ctx.fillText('📜 গুরুত্বপূর্ণ টুর্নামেন্ট নির্দেশনা:', c3X + 26, colY + 318);
-  ctx.font = '12.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = 'bold 11.5px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#cbd5e1';
-  ctx.fillText('• নির্ধারিত সময়ের ১৫ মিনিট পূর্বে মাঠে উপস্থিত থাকতে হবে', c3X + 26, colY + 348);
-  ctx.fillText('• শৃঙ্খলা ও রেফারির সিদ্ধান্তই চূড়ান্ত বলে গণ্য হবে', c3X + 26, colY + 378);
-  ctx.fillText('• সকল খেলোয়াড়কে উপযুক্ত বুট ও জার্সি পরিধান করতে হবে', c3X + 26, colY + 408);
-  ctx.fillText('• টুর্নামেন্ট পরিচালনা কমিটির সিদ্ধান্ত সর্বজনীন', c3X + 26, colY + 438);
-  ctx.fillText('• ফেয়ার প্লে ও সৌহার্দ্যপূর্ণ ক্রীড়াসুলভ মনোভাব বজায় রাখুন', c3X + 26, colY + 468);
+  ctx.shadowBlur = 0;
+  ctx.fillText(isEn ? '+ Runner-Up Trophy & Silver Medals' : '+ রানার্স-আপ ট্রফি ও মেডেল', p2X + prizeCardW / 2, r2Y + 104);
+  ctx.restore();
 
-  drawCardFooter(ctx, width, 700);
+  // 7. ROW 3: SECONDARY PRIZES STRIP
+  const r3Y = 396;
+  const r3H = 36;
+  const fullRowW = prizeCardW * 2 + prizeGap; // 1080px
+  drawRoundedRect(ctx, p1X, r3Y, fullRowW, r3H, 18, 'rgba(8, 47, 107, 0.8)', 'rgba(56, 189, 248, 0.5)', 1.5);
+
+  ctx.save();
+  ctx.font = 'bold 12.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.textBaseline = 'middle';
+
+  ctx.textAlign = 'left';
+  ctx.fillText(`🏆 ${isEn ? '3rd Place:' : '৩য় স্থান:'} ${thirdPrize}`, p1X + 24, r3Y + r3H / 2);
+
+  ctx.textAlign = 'right';
+  ctx.fillText(`🏅 ${isEn ? 'Individual Awards:' : 'ব্যক্তিগত পুরস্কার:'} ${otherPrizes}`, p1X + fullRowW - 24, r3Y + r3H / 2);
+  ctx.restore();
+
+  // 8. ROW 4: 2-COLUMN INFO & CONTACT STRIP
+  const r4Y = 442;
+  const r4H = 64;
+  drawRoundedRect(ctx, p1X, r4Y, fullRowW, r4H, 10, 'rgba(5, 16, 38, 0.92)', 'rgba(250, 204, 21, 0.45)', 1.5);
+
+  ctx.save();
+  ctx.textBaseline = 'middle';
+
+  // Left Col
+  ctx.textAlign = 'left';
+  ctx.font = '12.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#fde047';
+  ctx.fillText(`👥 ${isEn ? 'Team Entry Fee:' : 'প্রতি দলের এন্ট্রি ফি:'} `, p1X + 20, r4Y + 20);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(entryFee, p1X + (isEn ? 140 : 160), r4Y + 20);
+
+  ctx.fillStyle = '#fde047';
+  ctx.fillText(`🗓️ ${isEn ? 'Reg. Deadline:' : 'নিবন্ধনের শেষ সময়সীমা:'} `, p1X + 20, r4Y + 44);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(regDeadline, p1X + (isEn ? 140 : 185), r4Y + 44);
+
+  // Right Col
+  ctx.fillStyle = '#38bdf8';
+  ctx.fillText(`📞 ${isEn ? 'Contact / Hotline:' : 'জরুরি যোগাযোগ:'} `, p1X + fullRowW / 2 + 30, r4Y + 20);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(contactPhone, p1X + fullRowW / 2 + (isEn ? 160 : 145), r4Y + 20);
+
+  ctx.fillStyle = '#38bdf8';
+  ctx.fillText(`📱 ${isEn ? 'Payment Via:' : 'ফি প্রদানের মাধ্যম:'} `, p1X + fullRowW / 2 + 30, r4Y + 44);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(paymentMethod, p1X + fullRowW / 2 + (isEn ? 160 : 145), r4Y + 44);
+  ctx.restore();
+
+  // 9. ROW 5: MASTER RULES BOARD (WHITE ROUNDED CARD WITH 10 RULES)
+  const r5Y = 518;
+  const r5H = 340;
+  drawRoundedRect(ctx, p1X, r5Y, fullRowW, r5H, 12, '#ffffff', '#f59e0b', 2.5);
+
+  // Retrieve user rules or default reference rules
+  const selectedSet = new Set(c.selectedRules || []);
+  const activeMasterRules = (typeof MASTER_RULES_CATALOG !== 'undefined' ? MASTER_RULES_CATALOG : [])
+    .filter(r => selectedSet.has(r.id) && (typeof isRuleApplicableToFormat !== 'function' || isRuleApplicableToFormat(r.id, c)));
+  const activeCustomRules = c.customRules || [];
+  let userRules = [...activeMasterRules, ...activeCustomRules].map(r => ({
+    title: typeof resolveRuleTitle === 'function' ? resolveRuleTitle(r, c, isEn) : (isEn && r.titleEn ? r.titleEn : r.title),
+    desc: typeof resolveRuleDesc === 'function' ? resolveRuleDesc(r, c, isEn) : (isEn && r.descEn ? r.descEn : r.desc)
+  }));
+
+  const defaultCoreRules = getPromoCanvasDefaultRules(isEn);
+  const rulesToDraw = [...userRules];
+  for (const defR of defaultCoreRules) {
+    if (rulesToDraw.length >= 10) break;
+    if (!rulesToDraw.some(r => r.title === defR.title)) {
+      rulesToDraw.push(defR);
+    }
+  }
+
+  // Header Golden Pill
+  const pillHeaderW = 540;
+  const pillHeaderH = 32;
+  const pillHeaderX = 600 - (pillHeaderW / 2);
+  const pillHeaderY = r5Y + 12;
+  const headerPillGrad = ctx.createLinearGradient(pillHeaderX, pillHeaderY, pillHeaderX + pillHeaderW, pillHeaderY);
+  headerPillGrad.addColorStop(0, '#f59e0b');
+  headerPillGrad.addColorStop(1, '#d97706');
+  drawRoundedRect(ctx, pillHeaderX, pillHeaderY, pillHeaderW, pillHeaderH, 16, headerPillGrad);
+
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = 'bold 12.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(`📋 ${isEn ? 'Tournament Rules & Regulations (10 Key Rules):' : 'টুর্নামেন্ট পরিচালনা ও অংশগ্রহণের প্রধান নিয়মাবলী (১০ টি):'}`, 600, pillHeaderY + pillHeaderH / 2);
+  ctx.restore();
+
+  // 10 Rules in 2 Columns of 5 Rows
+  const colRuleW = (fullRowW - 60) / 2; // ~510px
+  const ruleStartY = r5Y + 58;
+  const ruleRowGap = 54;
+
+  rulesToDraw.slice(0, 10).forEach((rule, idx) => {
+    const isCol2 = idx >= 5;
+    const rowIdx = idx % 5;
+    const rx = isCol2 ? (p1X + 30 + colRuleW + 20) : (p1X + 20);
+    const ry = ruleStartY + rowIdx * ruleRowGap;
+
+    // Green circular number badge
+    ctx.save();
+    ctx.fillStyle = '#059669';
+    ctx.beginPath();
+    ctx.arc(rx + 11, ry + 11, 10.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.font = 'bold 11px "Segoe UI", sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(idx + 1), rx + 11, ry + 11);
+
+    // Rule Title & Description
+    const textStartX = rx + 28;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = '#0f172a';
+    ctx.fillText(rule.title + ':', textStartX, ry);
+
+    ctx.font = '11.5px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = '#334155';
+    // Truncate long descriptions cleanly to fit in one line
+    const maxChars = isEn ? 62 : 55;
+    const descText = rule.desc.length > maxChars ? rule.desc.substring(0, maxChars - 1) + '…' : rule.desc;
+    ctx.fillText(descText, textStartX, ry + 18);
+    ctx.restore();
+  });
+
+  // 10. FOOTER RIBBON
+  const footerY = 874;
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#cbd5e1';
+  ctx.fillText(`⚽ ${isEn ? 'In the spirit of sports, united in bond' : 'খেলাধুলার চেতনায়, ঐক্যের বন্ধনে'} — ${title}`, 600, footerY);
+  ctx.restore();
 
   return canvas;
 }

@@ -98,6 +98,17 @@ function getDynamicKnockoutMatchesForPoster(c, isEn) {
 // and branding from tournament setup & blank roster
 // ----------------------------------------------------
 function getPosterCoverUrl() {
+  if (typeof activePosterTab !== 'undefined' && activePosterTab === 'promo') {
+    if (typeof blankRosterImages !== 'undefined' && blankRosterImages) {
+      if (blankRosterImages.coverType === 'custom' && blankRosterImages.customCover) {
+        return blankRosterImages.customCover;
+      }
+      if (blankRosterImages.coverType === 'url' && blankRosterImages.activeCoverUrl) {
+        return blankRosterImages.activeCoverUrl;
+      }
+    }
+    return (typeof PROMO_STADIUM_BG_B64 !== 'undefined' && PROMO_STADIUM_BG_B64) ? PROMO_STADIUM_BG_B64 : 'assets/promo-stadium-trophy.jpg';
+  }
   if (typeof getBlankRosterActiveCoverUrl === 'function') {
     return getBlankRosterActiveCoverUrl();
   }
@@ -119,6 +130,20 @@ function getPosterCoverType() {
 }
 
 function getPosterLogoHtml(side) {
+  if (typeof activePosterTab !== 'undefined' && activePosterTab === 'promo') {
+    if (typeof blankRosterImages !== 'undefined' && blankRosterImages) {
+      if (side === 'left' && blankRosterImages.leftType === 'custom' && blankRosterImages.customLeft) {
+        return `<img src="${blankRosterImages.customLeft}" alt="Left Photo" class="hero-custom-logo-img promo-player-cutout" style="max-height:125px; width:auto; object-fit:contain; filter:drop-shadow(0 6px 14px rgba(0,0,0,0.8)); display:block;">`;
+      }
+      if (side === 'right' && blankRosterImages.rightType === 'custom' && blankRosterImages.customRight) {
+        return `<img src="${blankRosterImages.customRight}" alt="Right Photo" class="hero-custom-logo-img promo-player-cutout" style="max-height:125px; width:auto; object-fit:contain; filter:drop-shadow(0 6px 14px rgba(0,0,0,0.8)); display:block;">`;
+      }
+    }
+    const defaultPlayerSrc = side === 'left'
+      ? ((typeof PROMO_MESSI_B64 !== 'undefined' && PROMO_MESSI_B64) ? PROMO_MESSI_B64 : 'assets/player-messi.png')
+      : ((typeof PROMO_MBAPPE_B64 !== 'undefined' && PROMO_MBAPPE_B64) ? PROMO_MBAPPE_B64 : 'assets/player-mbappe.png');
+    return `<img src="${defaultPlayerSrc}" alt="${side === 'left' ? 'Messi' : 'Mbappé'}" class="promo-player-cutout" style="max-height:125px; width:auto; object-fit:contain; filter:drop-shadow(0 6px 14px rgba(0,0,0,0.8)); display:block;">`;
+  }
   if (typeof getBlankRosterLogoHtml === 'function') {
     return getBlankRosterLogoHtml(side);
   }
@@ -163,18 +188,18 @@ function generatePosterHeroBannerHtml(opts) {
 
       <!-- Foreground: Left Logo, Center Title & Right Logo -->
       <div class="poster-hero-content" style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:12px 18px 10px 18px; box-sizing:border-box; gap:10px;">
-        <!-- Left Logo / Trophy -->
-        <div class="poster-hero-logo" style="min-width:60px; max-width:105px; height:65px; width:auto; display:flex; align-items:center; justify-content:center; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.7));">
+        <!-- Left Logo / Trophy / Superstar Player -->
+        <div class="poster-hero-logo" style="min-width:60px; max-width:130px; height:${activePosterTab === 'promo' ? '110px' : '65px'}; width:auto; display:flex; align-items:flex-end; justify-content:center; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.7));">
           ${leftLogo}
         </div>
 
         <!-- Center Content -->
         <div class="poster-hero-center" style="text-align:center; flex:1; min-width:0;">
           ${badgeText ? `<span class="promo-badge-tag" style="${badgeStyle || ''}">${badgeText}</span>` : ''}
-          <h1 class="promo-hero-title" style="margin:2px 0 4px 0; font-size:22px; font-weight:900; color:#ffca28; text-shadow:0 2px 8px rgba(0,0,0,0.85), 0 0 16px rgba(251,191,36,0.4); line-height:1.25;">
+          <h1 class="promo-hero-title ${activePosterTab === 'promo' ? 'promo-gold-3d-title' : ''}" style="margin:2px 0 4px 0; font-size:${activePosterTab === 'promo' ? '25px' : '22px'}; font-weight:900; color:#ffca28; text-shadow:0 2px 8px rgba(0,0,0,0.85), 0 0 16px rgba(251,191,36,0.4); line-height:1.25;">
             ⚽ ${esc(c.title || defaultTitle)} ⚽
           </h1>
-          <div class="promo-hero-sub" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; font-size:11.5px; color:#e2e8f0; font-weight:600; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.3); border-radius:20px; padding:3px 14px; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); text-shadow:0 1px 3px rgba(0,0,0,0.8);">
+          <div class="promo-hero-sub ${activePosterTab === 'promo' ? 'promo-glass-capsule' : ''}" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; font-size:11.5px; color:#e2e8f0; font-weight:600; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.3); border-radius:20px; padding:3px 14px; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); text-shadow:0 1px 3px rgba(0,0,0,0.8);">
             <span>🚩 ${tFn('poster.footer_org')} <strong>${esc(c.organizer || defaultOrg)}</strong></span>
             <span style="opacity:0.6;">|</span>
             <span>📍 ${tFn('page1.meta_venue')} <strong>${esc(c.venue || defaultVenue)}</strong></span>
@@ -182,8 +207,8 @@ function generatePosterHeroBannerHtml(opts) {
           </div>
         </div>
 
-        <!-- Right Logo / Venue / Sponsor -->
-        <div class="poster-hero-logo" style="min-width:60px; max-width:105px; height:65px; width:auto; display:flex; align-items:center; justify-content:center; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.7));">
+        <!-- Right Logo / Venue / Sponsor / Superstar Player -->
+        <div class="poster-hero-logo" style="min-width:60px; max-width:130px; height:${activePosterTab === 'promo' ? '110px' : '65px'}; width:auto; display:flex; align-items:flex-end; justify-content:center; flex-shrink:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.7));">
           ${rightLogo}
         </div>
       </div>
@@ -361,10 +386,17 @@ function generatePromoPosterCardHtml() {
 
   const esc = typeof escapeHtml === 'function' ? escapeHtml : (s) => s;
   let rulesListHtml = '';
-  allActiveRules.forEach(r => {
+  let rulesGridHtml = '';
+  allActiveRules.forEach((r, idx) => {
     const rTitle = typeof resolveRuleTitle === 'function' ? resolveRuleTitle(r, c, isEn) : (isEn && r.titleEn ? r.titleEn : r.title);
     const rDesc = typeof resolveRuleDesc === 'function' ? resolveRuleDesc(r, c, isEn) : (isEn && r.descEn ? r.descEn : r.desc);
     rulesListHtml += `<li><strong>${esc(rTitle)}:</strong> ${esc(rDesc)}</li>`;
+    rulesGridHtml += `
+      <div class="promo-rule-item">
+        <span class="rule-num-badge">${idx + 1}</span>
+        <div class="rule-text"><strong>${esc(rTitle)}:</strong> ${esc(rDesc)}</div>
+      </div>
+    `;
   });
 
   const defaultTitle = isEn ? 'Football Tournament 2026' : 'ফুটবল টুর্নামেন্ট ২০২৬';
@@ -393,69 +425,80 @@ function generatePromoPosterCardHtml() {
       <!-- HERO BANNER -->
       ${heroHtml}
 
-      <div class="promo-meta-grid">
-        <div class="promo-meta-item">
-          <div class="p-label">${tFn('poster.format')}</div>
-          <div class="p-val">${esc(c.formatType || defaultFormat)}</div>
+      <!-- ROW 1: 3 BLUE GLASS SPECIFICATION CARDS -->
+      <div class="promo-ref-specs-grid promo-meta-grid">
+        <div class="promo-ref-spec-card promo-meta-item">
+          <div class="spec-card-top p-label">⚽ ${tFn('poster.format')}</div>
+          <div class="spec-card-val p-val">${esc(c.formatType || defaultFormat)}</div>
         </div>
-        <div class="promo-meta-item">
-          <div class="p-label">${tFn('poster.duration')}</div>
-          <div class="p-val">${esc(c.matchDuration || defaultDuration)}</div>
+        <div class="promo-ref-spec-card promo-meta-item">
+          <div class="spec-card-top p-label">⏱️ ${tFn('poster.duration')}</div>
+          <div class="spec-card-val p-val">${esc(c.matchDuration || defaultDuration)}</div>
         </div>
-        <div class="promo-meta-item">
-          <div class="p-label">${tFn('poster.date')}</div>
-          <div class="p-val">${esc(c.startDate || defaultDate)}</div>
-        </div>
-      </div>
-
-      <div class="promo-prizes-wrap">
-        <div class="promo-prize-card champ">
-          <div class="promo-prize-title">${tFn('poster.champ_prize')}</div>
-          <div class="promo-prize-amount">${esc(c.championPrize || (isEn ? 'Champions Trophy & Prize Money' : 'আকর্ষণীয় ট্রফি ও প্রাইজমানি'))}</div>
-          <div style="font-size:9.5px; color:#fde68a;">${tFn('poster.champ_sub')}</div>
-        </div>
-        <div class="promo-prize-card ru">
-          <div class="promo-prize-title">${tFn('poster.runner_prize')}</div>
-          <div class="promo-prize-amount">${esc(c.runnerUpPrize || (isEn ? 'Runner-Up Trophy & Cash Prize' : 'রানার্স-আপ ট্রফি ও অর্থ'))}</div>
-          <div style="font-size:9.5px; color:#cbd5e1;">${tFn('poster.runner_sub')}</div>
+        <div class="promo-ref-spec-card promo-meta-item">
+          <div class="spec-card-top p-label">🗓️ ${tFn('poster.date')}</div>
+          <div class="spec-card-val p-val">${esc(c.startDate || defaultDate)}</div>
         </div>
       </div>
 
-      ${c.thirdPrize || c.otherPrizes ? `
-      <div style="display:flex; justify-content:space-around; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:6px 10px; font-size:10px; flex-wrap:wrap; gap:6px;">
-        ${c.thirdPrize ? `<div>🥉 <strong>${tFn('poster.third_place')}</strong> ${esc(c.thirdPrize)}</div>` : ''}
-        ${c.otherPrizes ? `<div>🎖️ <strong>${tFn('poster.special_awards')}</strong> ${esc(c.otherPrizes)}</div>` : ''}
-      </div>` : ''}
-
-      <div class="promo-entry-contact-box">
-        <div style="display:flex; flex-direction:column; gap:2px;">
-          <div><strong style="color:#fde047;">${tFn('poster.entry_fee')}</strong> ${esc(c.entryFee || (isEn ? 'Contact Committee' : '২,০০০ টাকা'))}</div>
-          <div><strong style="color:#fde047;">${tFn('poster.reg_deadline')}</strong> ${esc(c.regDeadline || (isEn ? 'Before Kickoff' : 'ম্যাচ শুরুর ৩০ মিনিট পূর্বে'))}</div>
+      <!-- ROW 2: 2 GOLDEN LAUREL WREATH PRIZE CARDS -->
+      <div class="promo-ref-prizes-grid promo-prizes-wrap">
+        <div class="promo-ref-prize-card promo-champ-card promo-prize-card champ">
+          <div class="prize-card-badge promo-prize-title">🥇 ${tFn('poster.champ_prize')}</div>
+          <div class="prize-card-amount promo-prize-amount">${esc(c.championPrize || (isEn ? '20,000 BDT & Trophy' : '২০,০০০ টাকা ও আকর্ষণীয় ট্রফি'))}</div>
+          <div class="prize-card-sub" style="font-size:10px; color:#fde68a;">${tFn('poster.champ_sub')}</div>
         </div>
-        <div style="display:flex; flex-direction:column; gap:2px; text-align:right;">
-          <div><strong style="color:#38bdf8;">${tFn('poster.contact')}</strong> ${esc(c.contactPhone || (isEn ? 'Inbox / Hotline' : '০১৭১১-xxxxxx'))}</div>
-          <div><strong style="color:#38bdf8;">${tFn('poster.payment')}</strong> ${esc(c.paymentMethod || (isEn ? 'Direct / Mobile Banking' : 'বিকাশ / নগদ (পার্সোনাল)'))}</div>
+        <div class="promo-ref-prize-card promo-ru-card promo-prize-card ru">
+          <div class="prize-card-badge promo-prize-title">🥈 ${tFn('poster.runner_prize')}</div>
+          <div class="prize-card-amount promo-prize-amount">${esc(c.runnerUpPrize || (isEn ? '10,000 BDT & Trophy' : '১০,০০০ টাকা ও ট্রফি'))}</div>
+          <div class="prize-card-sub" style="font-size:10px; color:#cbd5e1;">${tFn('poster.runner_sub')}</div>
         </div>
       </div>
 
-      <div class="promo-rules-preview-box">
-        <div class="promo-rules-preview-title">
-          <span>${tFn('poster.rules_title')} (${allActiveRules.length} ${tFn('common.items_unit')}):</span>
+      <!-- ROW 3: SECONDARY PRIZES STRIP -->
+      <div class="promo-ref-subprizes-strip">
+        <div class="subprize-item">🏆 <strong>${tFn('poster.third_place')}</strong> ${esc(c.thirdPrize || (isEn ? 'Trophy & Medals' : '৩য় স্থান: ট্রফি ও মেডেল'))}</div>
+        <div class="subprize-sep">|</div>
+        <div class="subprize-item">🏅 <strong>${tFn('poster.special_awards')}</strong> ${esc(c.otherPrizes || (isEn ? 'Best Player, Top Scorer, Best GK' : 'সেরা খেলোয়াড়, সেরা গোলদাতা, সেরা গোলকিপার'))}</div>
+      </div>
+
+      <!-- ROW 4: 2-COLUMN INFO & CONTACT STRIP -->
+      <div class="promo-ref-info-strip promo-entry-contact-box">
+        <div class="info-strip-col">
+          <div>👥 <strong style="color:#fde047;">${tFn('poster.entry_fee')}</strong> ${esc(c.entryFee || (isEn ? '1,200 BDT' : '১,২০০ টাকা'))}</div>
+          <div>🗓️ <strong style="color:#fde047;">${tFn('poster.reg_deadline')}</strong> ${esc(c.regDeadline || (isEn ? 'Before Kickoff' : 'ম্যাচ শুরুর ৩০ মিনিট পূর্বে'))}</div>
+        </div>
+        <div class="info-strip-col info-strip-col-right">
+          <div>📞 <strong style="color:#38bdf8;">${tFn('poster.contact')}</strong> ${esc(c.contactPhone || (isEn ? 'Inbox / Hotline' : '০১৭১১-xxxxxx'))}</div>
+          <div>📱 <strong style="color:#38bdf8;">${tFn('poster.payment')}</strong> ${esc(c.paymentMethod || (isEn ? 'bKash / Nagad' : 'বিকাশ / নগদ (পার্সোনাল)'))}</div>
+        </div>
+      </div>
+
+      <!-- ROW 5: MASTER RULES BOARD (WHITE ROUNDED CARD) -->
+      <div class="promo-ref-rules-card promo-rules-preview-box">
+        <div class="rules-card-header-wrap promo-rules-preview-title">
+          <div class="rules-card-header-pill">
+            <span>📋 ${tFn('poster.rules_title')} (${allActiveRules.length} ${tFn('common.items_unit')}):</span>
+          </div>
         </div>
         ${allActiveRules.length === 0 ? `
-          <div style="font-size:10.5px; color:#cbd5e1; font-style:italic; padding:4px 0;">
+          <div style="font-size:10.5px; color:#64748b; font-style:italic; padding:6px 0; text-align:center;">
             ${isEn ? 'No rules selected. Configure rules in Tournament Setup.' : 'কোনো বিশেষ নিয়মাবলী সেট করা হয়নি। টুর্নামেন্ট সেটআপ থেকে নিয়ম নির্বাচন করুন।'}
           </div>
         ` : `
-          <ol class="promo-rules-ol">
+          <div class="promo-rules-grid-2col">
+            ${rulesGridHtml}
+          </div>
+          <ol class="promo-rules-ol" style="display:none;">
             ${rulesListHtml}
           </ol>
         `}
       </div>
 
-      <div class="promo-footer-sign">
+      <!-- FOOTER RIBBON -->
+      <div class="promo-footer-sign promo-ref-footer">
+        <div>⚽ <strong>${isEn ? 'In the spirit of sports, united in bond' : 'খেলাধুলার চেতনায়, ঐক্যের বন্ধনে'} — ${esc(c.title || defaultTitle)}</strong></div>
         <div>🚩 <strong>${tFn('poster.footer_org')}</strong> ${esc(c.organizer || defaultOrg)}</div>
-        <div>${tFn('poster.footer_rules')}</div>
       </div>
     </div>
   `;
