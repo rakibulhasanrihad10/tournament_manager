@@ -229,9 +229,9 @@ function generateFixturePosterCardHtml() {
     'KO': '#d97706'
   };
 
-  let scheduleTitle = isEn ? '📅 Group Stage Match Schedule (Pairings & Timings)' : '📅 গ্রুপ পর্বের ম্যাচ সূচি (কার সাথে কার খেলা ও সময়সূচি)';
+  let scheduleTitle = isEn ? '📅 Group & Knockout Match Schedule' : '📅 গ্রুপ পর্বের ম্যাচ সূচি ও নকআউট সময়সূচি';
   if (type === 'knockout') {
-    scheduleTitle = isEn ? '📅 Opening Knockout Fixtures & Timings' : '📅 প্রাথমিক নকআউট পর্বের ম্যাচ সূচি ও সময়';
+    scheduleTitle = isEn ? '📅 Knockout Fixtures & Match Schedule' : '📅 নকআউট পর্বের ম্যাচ সূচি ও সময়সূচি';
   } else if (type === 'league') {
     scheduleTitle = isEn ? '📅 Single League Stage Match Schedule' : '📅 একক লিগ পর্বের ম্যাচ সূচি ও সময়সূচি';
   }
@@ -296,29 +296,15 @@ function generateFixturePosterCardHtml() {
       <!-- HERO BANNER -->
       ${heroHtml}
 
-      <!-- KEY METADATA STRIP -->
-      <div class="promo-meta-grid" style="grid-template-columns: repeat(4, 1fr); padding: 6px; margin-bottom: 2px;">
-        <div class="promo-meta-item">
-          <div class="p-label">${tFn('poster.format')}</div>
-          <div class="p-val" style="font-size:11px;">${esc(c.formatType || defaultFormat)}</div>
-        </div>
-        <div class="promo-meta-item">
-          <div class="p-label">${tFn('poster.duration')}</div>
-          <div class="p-val" style="font-size:11px;">${esc(c.matchDuration || defaultDuration)}</div>
-        </div>
-        <div class="promo-meta-item">
-          <div class="p-label">${isEn ? 'Teams' : 'অংশগ্রহণকারী দল'}</div>
-          <div class="p-val" style="font-size:11px; color:#fde047;">${count} ${isEn ? 'Teams' : 'টি দল'}</div>
-        </div>
-        <div class="promo-meta-item">
-          <div class="p-label">${isEn ? 'Total Matches' : 'সর্বমোট ম্যাচ'}</div>
-          <div class="p-val" style="font-size:11px; color:#4ade80;">${matches.length + koData.cards.length} ${isEn ? 'Matches' : 'টি ম্যাচ'}</div>
-        </div>
-      </div>
-
       <!-- 1. MATCH SCHEDULE TABLE (Reuses p1-card styling without scores/winners) -->
       <div class="p1-card" style="padding: 6px 8px;">
-        <div class="section-title" style="margin-bottom: 3px; font-size:12px; font-weight:800; color:#0d2b6b;">${scheduleTitle}</div>
+        <div class="section-title fixture-schedule-title-bar" style="margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #072a60, #0a3d87); color: #ffffff; padding: 6px 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.15);">
+          <span style="font-size: 12px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 6px; letter-spacing: 0.2px;">${scheduleTitle}</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="fixture-meta-pill" style="font-size: 10.5px; font-weight: 700; background: rgba(255, 255, 255, 0.15); color: #fde047; padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(253, 224, 71, 0.35); white-space: nowrap;">👥 ${count} ${isEn ? 'Teams' : 'টি দল'}</span>
+            <span class="fixture-meta-pill" style="font-size: 10.5px; font-weight: 700; background: rgba(255, 255, 255, 0.15); color: #4ade80; padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(74, 222, 128, 0.35); white-space: nowrap;">⚽ ${matches.length + koData.cards.length} ${isEn ? 'Matches' : 'টি ম্যাচ'}</span>
+          </div>
+        </div>
         <table style="width:100%; border-collapse:collapse;">
           <thead>
             <tr>
