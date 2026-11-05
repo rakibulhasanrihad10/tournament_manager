@@ -28,6 +28,8 @@ test('Social Share Hub & Image Export Engine Test Suite', async (t) => {
     arc() {},
     fill() {},
     stroke() {},
+    clip() {},
+    drawImage() {},
     closePath() {},
     fillText() {},
     bezierCurveTo() {},

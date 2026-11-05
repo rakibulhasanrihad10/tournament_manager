@@ -751,8 +751,67 @@ function renderFixturesCanvas() {
   bannerGrad.addColorStop(1, '#071a38');
   drawRoundedRect(ctx, bannerX, bannerY, bannerW, bannerH, { tl: 10, tr: 10, bl: 0, br: 0 }, bannerGrad);
 
-  // Stadium lights effect
-  if (ctx.createRadialGradient) {
+  // Smart Safe Cover Image Rendering (with zero security taint)
+  let drewCover = false;
+  const coverImgEl = (typeof document !== 'undefined')
+    ? (document.querySelector('#fixture-poster-content .poster-hero-img') || document.querySelector('.poster-hero-img'))
+    : null;
+
+  if (coverImgEl && coverImgEl.complete && coverImgEl.naturalWidth > 0) {
+    try {
+      const testC = document.createElement('canvas');
+      testC.width = 1;
+      testC.height = 1;
+      const testCtx = testC.getContext('2d');
+      if (testCtx && testCtx.drawImage) {
+        testCtx.drawImage(coverImgEl, 0, 0, 1, 1);
+        testC.toDataURL('image/png'); // Throws SecurityError if tainted
+
+        if (ctx.save && ctx.clip) {
+          ctx.save();
+          drawRoundedRect(ctx, bannerX, bannerY, bannerW, bannerH, { tl: 10, tr: 10, bl: 0, br: 0 });
+          ctx.clip();
+
+          const coverPos = (typeof blankRosterImages !== 'undefined' && blankRosterImages && blankRosterImages.coverPosition !== undefined)
+            ? blankRosterImages.coverPosition
+            : 35;
+
+          const imgAspect = coverImgEl.naturalWidth / coverImgEl.naturalHeight;
+          const bannerAspect = bannerW / bannerH;
+          let sW, sH, sX, sY;
+          if (imgAspect > bannerAspect) {
+            sH = coverImgEl.naturalHeight;
+            sW = sH * bannerAspect;
+            sX = (coverImgEl.naturalWidth - sW) / 2;
+            sY = 0;
+          } else {
+            sW = coverImgEl.naturalWidth;
+            sH = sW / bannerAspect;
+            sX = 0;
+            sY = (coverImgEl.naturalHeight - sH) * (coverPos / 100);
+          }
+
+          ctx.drawImage(coverImgEl, sX, sY, sW, sH, bannerX, bannerY, bannerW, bannerH);
+
+          // Stadium Atmosphere & Vignette Overlay
+          const overlayGrad = ctx.createLinearGradient(bannerX, bannerY, bannerX, bannerY + bannerH);
+          overlayGrad.addColorStop(0, 'rgba(7, 26, 68, 0.65)');
+          overlayGrad.addColorStop(0.5, 'rgba(3, 12, 38, 0.35)');
+          overlayGrad.addColorStop(1, 'rgba(5, 18, 50, 0.85)');
+          ctx.fillStyle = overlayGrad;
+          ctx.fillRect(bannerX, bannerY, bannerW, bannerH);
+
+          ctx.restore();
+          drewCover = true;
+        }
+      }
+    } catch (e) {
+      drewCover = false;
+    }
+  }
+
+  // Fallback if cover was not drawn: Stadium floodlights effect
+  if (!drewCover && ctx.createRadialGradient) {
     const lightL = ctx.createRadialGradient(bannerX + 60, bannerY + 20, 5, bannerX + 160, bannerY + 90, 220);
     lightL.addColorStop(0, 'rgba(255, 255, 255, 0.28)');
     lightL.addColorStop(1, 'rgba(7, 31, 67, 0)');
@@ -766,11 +825,56 @@ function renderFixturesCanvas() {
     ctx.fillRect(bannerX + bannerW - 320, bannerY, 320, bannerH);
   }
 
-  // Left Trophy
-  drawCanvasTrophy(ctx, bannerX + 55, bannerY + 68);
+  // Smart Logo Drawing (Custom Photos or Fallback Vector Badges)
+  function drawLogoItem(side, cx, cy) {
+    let drewLogo = false;
+    const logoImgEl = (typeof document !== 'undefined')
+      ? document.querySelector(`#fixture-poster-content .poster-hero-logo:${side === 'left' ? 'first-child' : 'last-child'} img`)
+      : null;
 
-  // Right Tournament Crest
-  drawCanvasEmblem(ctx, bannerX + bannerW - 55, bannerY + 68);
+    if (logoImgEl && logoImgEl.complete && logoImgEl.naturalWidth > 0) {
+      try {
+        const testC = document.createElement('canvas');
+        testC.width = 1;
+        testC.height = 1;
+        const testCtx = testC.getContext('2d');
+        if (testCtx && testCtx.drawImage) {
+          testCtx.drawImage(logoImgEl, 0, 0, 1, 1);
+          testC.toDataURL('image/png'); // Test security taint
+
+          if (ctx.save && ctx.clip) {
+            ctx.save();
+            const lw = 68;
+            const lh = 60;
+            const lx = cx - lw / 2;
+            const ly = cy - lh / 2 + 2;
+
+            drawRoundedRect(ctx, lx, ly, lw, lh, 8, '#ffffff', '#fbbf24', 2);
+            ctx.beginPath();
+            drawRoundedRect(ctx, lx + 2, ly + 2, lw - 4, lh - 4, 6);
+            ctx.clip();
+            ctx.drawImage(logoImgEl, lx + 2, ly + 2, lw - 4, lh - 4);
+            ctx.restore();
+            drewLogo = true;
+          }
+        }
+      } catch (e) {
+        drewLogo = false;
+      }
+    }
+
+    if (!drewLogo) {
+      if (side === 'left') {
+        drawCanvasTrophy(ctx, cx, cy);
+      } else {
+        drawCanvasEmblem(ctx, cx, cy);
+      }
+    }
+  }
+
+  // Draw Left & Right logos
+  drawLogoItem('left', bannerX + 55, bannerY + 68);
+  drawLogoItem('right', bannerX + bannerW - 55, bannerY + 68);
 
   // Center Badge Tag
   const badgeText = isEn ? '✨ OFFICIAL MATCH FIXTURES & SCHEDULE ✨' : '✨ অফিশিয়াল ম্যাচ ফিক্সচার ও খেলার সময়সূচি ✨';
