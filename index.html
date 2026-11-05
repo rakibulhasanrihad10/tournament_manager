@@ -1842,7 +1842,7 @@
             <div style="display:flex; gap:6px;">
               <button type="button" class="btn" id="btn-poster-branding-setup" style="background:linear-gradient(135deg, #0284c7, #0369a1); color:#fff; font-size:11px; padding:5px 10px; font-weight:700;" onclick="openBlankRosterConfigModal()" data-i18n="poster.btn_branding_setup" title="পোস্টারের স্টেডিয়াম কভার ও লোগো পরিবর্তন করুন">🏟️ কভার ও লোগো</button>
               <button type="button" class="btn" id="btn-poster-copy-action" style="background:linear-gradient(135deg, #1e40af, #2563eb); color:#fff; font-size:11px; padding:5px 10px;" onclick="copyFacebookFixturePost()" data-i18n="modal.btn_copy_fixture">📋 ফিক্সচার পোস্ট কপি করুন</button>
-              <button type="button" class="btn" id="btn-poster-print-action" style="background:linear-gradient(135deg, #15803d, #16a34a); color:#fff; font-size:11px; padding:5px 10px;" onclick="printDocument('poster')" data-i18n="modal.btn_print_fixture">🖨️ ফিক্সচার পোস্টার প্রিন্ট / PDF</button>
+              <button type="button" class="btn" id="btn-poster-print-action" style="background:linear-gradient(135deg, #15803d, #16a34a); color:#fff; font-size:11px; padding:5px 10px;" onclick="downloadSocialCard('fixtures', this)" data-i18n="poster.btn_download_png">📸 ফিক্সচার ছবি ডাউনলোড (PNG)</button>
             </div>
           </div>
 
@@ -1852,7 +1852,7 @@
           </div>
 
           <div class="modal-promo-footer-bar" style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#f8fafc; border-top:1px solid #e2e8f0; flex-wrap:wrap; gap:8px;">
-            <div class="modal-promo-tip" style="font-size:11px; color:#475569;" data-i18n="poster.print_tip">💡 পিডিএফ বা প্রিন্ট কপি পেতে: প্রিন্ট উইন্ডো এলে Destination থেকে 'Save as PDF' নির্বাচন করুন (A4 পোর্ট্রেট ১ পেজে পারফেক্ট ফিট)।</div>
+            <div class="modal-promo-tip" style="font-size:11px; color:#475569;" data-i18n="poster.social_img_tip">💡 টিপস: "📸 ছবি ডাউনলোড (PNG)" বাটনে ক্লিক করে সরাসরি ফেসবুক ও হোয়াটসঅ্যাপে পোস্ট করার উপযোগী হাই-রেজোলিউশন ছবি নামিয়ে নিন।</div>
             <button type="button" class="btn" style="background:#0f172a; color:#fff;" onclick="closePromoPosterModal()" data-i18n="modal.btn_close_done">বন্ধ করুন ✕</button>
           </div>
         </div>
@@ -2331,11 +2331,8 @@
             <div class="social-card-body">
               <p data-i18n="social.card_standings_desc">সবকটি গ্রুপের লাইভ পয়েন্ট, গোল ব্যবধান (GD), সাম্প্রতিক ফর্ম ও সেমিফাইনালে খেলার যোগ্য সেরা রানার্স-আপের পূর্ণাঙ্গ কার্ড।</p>
               <div class="social-card-actions">
-                <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('standings', this)">
+                <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('standings', this)" style="width:100%;">
                   <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_standings">পয়েন্ট টেবিল ছবি (PNG)</span>
-                </button>
-                <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
-                  <span class="btn-ic">🖨️</span> <span data-i18n="social.btn_print_pdf">পিডিএফ / প্রিন্ট</span>
                 </button>
               </div>
             </div>
@@ -2350,11 +2347,8 @@
             <div class="social-card-body">
               <p data-i18n="social.card_bracket_desc">১ম ও ২য় সেমিফাইনাল, ৩য় স্থান নির্ধারণী ম্যাচ এবং গ্র্যান্ড ফাইনালের হেড-টু-হেড রোডম্যাপ ও বিজয়ী ট্রফি প্রদর্শন।</p>
               <div class="social-card-actions">
-                <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('bracket', this)">
+                <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('bracket', this)" style="width:100%;">
                   <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_bracket">নকআউট ব্র্যাকেট ছবি (PNG)</span>
-                </button>
-                <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
-                  <span class="btn-ic">🖨️</span> <span data-i18n="social.btn_print_pdf">পিডিএফ / প্রিন্ট</span>
                 </button>
               </div>
             </div>
@@ -2369,11 +2363,8 @@
             <div class="social-card-body">
               <p data-i18n="social.card_fixtures_desc">কার সাথে কার খেলা, ম্যাচের সময়, গ্রুপ পর্বের প্রতিপক্ষের মুখোমুখি লড়াই এবং লাইভ ফলাফল প্রদর্শন কার্ড।</p>
               <div class="social-card-actions">
-                <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('fixtures', this)">
+                <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('fixtures', this)" style="width:100%;">
                   <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_fixtures">ফিক্সচার ছবি (PNG)</span>
-                </button>
-                <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
-                  <span class="btn-ic">🖨️</span> <span data-i18n="social.btn_print_pdf">পিডিএফ / প্রিন্ট</span>
                 </button>
               </div>
             </div>
@@ -2388,11 +2379,8 @@
             <div class="social-card-body">
               <p data-i18n="social.card_master_desc">ব্যানার, ভেন্যু, পয়েন্ট টেবিল, ফিকশ্চার ও নকআউট ব্র্যাকেটসহ পুরো পেজ ১-এর সম্পূর্ণ ক্রিস্টাল-ক্লিয়ার হাই-রেজোলিউশন বোর্ড।</p>
               <div class="social-card-actions">
-                <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('full', this)">
+                <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('full', this)" style="width:100%;">
                   <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_master">সম্পূর্ণ বোর্ড ছবি (PNG)</span>
-                </button>
-                <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
-                  <span class="btn-ic">🖨️</span> <span data-i18n="social.btn_print_pdf">পিডিএফ / প্রিন্ট</span>
                 </button>
               </div>
             </div>

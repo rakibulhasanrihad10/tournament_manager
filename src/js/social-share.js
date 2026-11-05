@@ -95,6 +95,166 @@ function drawCardFooter(ctx, width, y) {
 }
 
 // ----------------------------------------------------
+// 0. PROMO TOURNAMENT NOTICE BANNER CANVAS RENDERER
+// ----------------------------------------------------
+function renderPromoPosterToCanvas() {
+  const canvas = document.createElement('canvas');
+  const width = 1200;
+  const height = 820;
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return canvas;
+
+  ctx.fillStyle = '#0b1329';
+  ctx.fillRect(0, 0, width, height);
+
+  const c = typeof tournamentConfig !== 'undefined' ? tournamentConfig : {};
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const title = c.title || (document.getElementById('app-title-display')?.textContent?.trim() || 'ফুটবল বিশ্বকাপ ২০২৬');
+  const venue = c.venue || (document.getElementById('app-venue-display')?.textContent?.trim() || 'স্টেডিয়াম মাঠ');
+  const org = c.organizer || (document.getElementById('app-org-display')?.textContent?.trim() || 'আয়োজক কমিটি');
+
+  drawCardHeader(ctx, width, isEn ? '📢 OFFICIAL TOURNAMENT NOTICE • ANNOUNCEMENT' : '📢 অফিশিয়াল টুর্নামেন্ট নোটিশ ও প্রচার ব্যানার', title, `📍 ভেন্যু: ${venue} | 🚩 আয়োজনে: ${org}`, ['#0f172a', '#1e40af']);
+
+  // 3 Columns: Prize Pool, Tournament Details, Rules & Registration
+  const colY = 145;
+  const colH = 510;
+  const colW = 360;
+
+  // 1. Prize Pool Card
+  const c1X = 30;
+  drawRoundedRect(ctx, c1X, colY, colW, colH, 12, '#131f37', '#233554', 1.5);
+  const pGrad = ctx.createLinearGradient(c1X, colY, c1X + colW, colY);
+  pGrad.addColorStop(0, '#854d0e');
+  pGrad.addColorStop(1, '#ca8a04');
+  drawRoundedRect(ctx, c1X, colY, colW, 44, { tl: 12, tr: 12, bl: 0, br: 0 }, pGrad);
+  ctx.font = 'bold 16px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'left';
+  ctx.fillText('🏆 ' + (isEn ? 'Tournament Prize Pool' : 'পুরস্কার ও প্রাইজপুল'), c1X + 16, colY + 28);
+
+  const champPrize = c.champPrize || '৩০,০০০ টাকা + আকর্ষণীয় ট্রফি';
+  const runnerPrize = c.runnerPrize || '১৫,০০০ টাকা + রানার্স-আপ ট্রফি';
+  const thirdPrize = c.thirdPrize || 'ট্রফি ও মেডেল';
+
+  drawRoundedRect(ctx, c1X + 14, colY + 60, colW - 28, 90, 8, '#0f172a', '#eab308', 1);
+  ctx.font = 'bold 12px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#eab308';
+  ctx.fillText('🥇 CHAMPION PRIZE / চ্যাম্পিয়ন প্রাইজ', c1X + 26, colY + 84);
+  ctx.font = 'bold 17px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(champPrize, c1X + 26, colY + 115);
+
+  drawRoundedRect(ctx, c1X + 14, colY + 165, colW - 28, 90, 8, '#0f172a', '#94a3b8', 1);
+  ctx.font = 'bold 12px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#94a3b8';
+  ctx.fillText('🥈 RUNNER-UP PRIZE / রানার্স-আপ প্রাইজ', c1X + 26, colY + 189);
+  ctx.font = 'bold 17px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(runnerPrize, c1X + 26, colY + 220);
+
+  drawRoundedRect(ctx, c1X + 14, colY + 270, colW - 28, 220, 8, '#0f172a', '#334155', 1);
+  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#38bdf8';
+  ctx.fillText('🎖️ ' + (isEn ? 'Individual Awards & Medals' : 'ব্যক্তিগত আকর্ষণীয় পুরস্কার'), c1X + 26, colY + 298);
+  ctx.font = '13px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#cbd5e1';
+  ctx.fillText('• ম্যান অব দ্য ম্যাচ (প্রতিটি খেলায় ট্রফি)', c1X + 26, colY + 330);
+  ctx.fillText('• টুর্নামেন্ট সেরা খেলোয়াড় (Golden Ball)', c1X + 26, colY + 360);
+  ctx.fillText('• সর্বোচ্চ গোলদাতা (Golden Boot)', c1X + 26, colY + 390);
+  ctx.fillText('• টুর্নামেন্ট সেরা গোলকিপার (Golden Glove)', c1X + 26, colY + 420);
+  ctx.fillText('• ৩য় স্থান নির্ধারণী পুরস্কার: ' + thirdPrize, c1X + 26, colY + 450);
+
+  // 2. Tournament Details & Format Card
+  const c2X = 420;
+  drawRoundedRect(ctx, c2X, colY, colW, colH, 12, '#131f37', '#233554', 1.5);
+  const fGrad = ctx.createLinearGradient(c2X, colY, c2X + colW, colY);
+  fGrad.addColorStop(0, '#1e3a8a');
+  fGrad.addColorStop(1, '#0284c7');
+  drawRoundedRect(ctx, c2X, colY, colW, 44, { tl: 12, tr: 12, bl: 0, br: 0 }, fGrad);
+  ctx.font = 'bold 16px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText('📋 ' + (isEn ? 'Format & Schedule Details' : 'টুর্নামেন্ট বিবরণ ও ফরম্যাট'), c2X + 16, colY + 28);
+
+  const entryFee = c.entryFee || '৫,০০০ টাকা';
+  const regDeadline = c.deadline || 'ম্যাচ শুরুর ৩০ মিনিট পূর্বে';
+  const matchDuration = c.matchDuration || '২০ মিনিট';
+  const ballSize = c.ballSize || '৫ নং সাইজ';
+  const squadSize = c.squadRule || '১১ মাঠে + ৫ বেঞ্চ';
+
+  const details = [
+    { label: '💰 এন্ট্রি ফি (Entry Fee):', val: entryFee, color: '#38bdf8' },
+    { label: '⏰ নিবন্ধনের শেষ সময়:', val: regDeadline, color: '#f59e0b' },
+    { label: '⏱️ ম্যাচের স্থায়ীত্ব (Duration):', val: matchDuration, color: '#ffffff' },
+    { label: '⚽ বল সাইজ (Ball Size):', val: ballSize, color: '#ffffff' },
+    { label: '👥 স্কোয়াড সংখ্যা (Squad):', val: squadSize, color: '#ffffff' },
+    { label: '🏟️ খেলার মাঠ (Venue):', val: venue, color: '#a7f3d0' }
+  ];
+
+  details.forEach((d, idx) => {
+    const rowY = colY + 60 + idx * 72;
+    drawRoundedRect(ctx, c2X + 14, rowY, colW - 28, 62, 8, '#0f172a', '#334155', 1);
+    ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText(d.label, c2X + 26, rowY + 24);
+    ctx.font = 'bold 15px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.fillStyle = d.color;
+    ctx.fillText(d.val, c2X + 26, rowY + 48);
+  });
+
+  // 3. Rules & Registration Hotline Card
+  const c3X = 810;
+  drawRoundedRect(ctx, c3X, colY, colW, colH, 12, '#131f37', '#233554', 1.5);
+  const rGrad = ctx.createLinearGradient(c3X, colY, c3X + colW, colY);
+  rGrad.addColorStop(0, '#064e3b');
+  rGrad.addColorStop(1, '#059669');
+  drawRoundedRect(ctx, c3X, colY, colW, 44, { tl: 12, tr: 12, bl: 0, br: 0 }, rGrad);
+  ctx.font = 'bold 16px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText('📞 ' + (isEn ? 'Rules & Team Registration' : 'দল নিবন্ধন ও জরুরি যোগাযোগ'), c3X + 16, colY + 28);
+
+  const contactPhone = c.contactPhone || '০১৭১XXXXXXX, ০১৯১XXXXXXX';
+  const paymentInfo = c.paymentInfo || 'বিকাশ / নগদ (Personal): ০১৭১XXXXXXX';
+
+  drawRoundedRect(ctx, c3X + 14, colY + 60, colW - 28, 110, 8, '#064e3b', '#10b981', 1);
+  ctx.font = 'bold 12px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#a7f3d0';
+  ctx.fillText('📱 REGISTRATION HOTLINE / হটলাইন:', c3X + 26, colY + 85);
+  ctx.font = 'bold 16px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(contactPhone, c3X + 26, colY + 115);
+  ctx.font = '12px "Hind Siliguri", sans-serif';
+  ctx.fillStyle = '#e2e8f0';
+  ctx.fillText('দল নিবন্ধনের জন্য দ্রুত যোগাযোগ করুন', c3X + 26, colY + 145);
+
+  drawRoundedRect(ctx, c3X + 14, colY + 185, colW - 28, 90, 8, '#0f172a', '#334155', 1);
+  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#f43f5e';
+  ctx.fillText('💳 এন্ট্রি ফি পরিশোধের মাধ্যম (Payment):', c3X + 26, colY + 210);
+  ctx.font = 'bold 14px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(paymentInfo, c3X + 26, colY + 242);
+
+  // Key Rules Notice
+  drawRoundedRect(ctx, c3X + 14, colY + 290, colW - 28, 200, 8, '#0f172a', '#334155', 1);
+  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#fbbf24';
+  ctx.fillText('📜 গুরুত্বপূর্ণ টুর্নামেন্ট নির্দেশনা:', c3X + 26, colY + 318);
+  ctx.font = '12.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#cbd5e1';
+  ctx.fillText('• নির্ধারিত সময়ের ১৫ মিনিট পূর্বে মাঠে উপস্থিত থাকতে হবে', c3X + 26, colY + 348);
+  ctx.fillText('• শৃঙ্খলা ও রেফারির সিদ্ধান্তই চূড়ান্ত বলে গণ্য হবে', c3X + 26, colY + 378);
+  ctx.fillText('• সকল খেলোয়াড়কে উপযুক্ত বুট ও জার্সি পরিধান করতে হবে', c3X + 26, colY + 408);
+  ctx.fillText('• টুর্নামেন্ট পরিচালনা কমিটির সিদ্ধান্ত সর্বজনীন', c3X + 26, colY + 438);
+  ctx.fillText('• ফেয়ার প্লে ও সৌহার্দ্যপূর্ণ ক্রীড়াসুলভ মনোভাব বজায় রাখুন', c3X + 26, colY + 468);
+
+  drawCardFooter(ctx, width, 700);
+
+  return canvas;
+}
+
+// ----------------------------------------------------
 // 1. GROUP STANDINGS CARD CANVAS RENDERER
 // ----------------------------------------------------
 function renderStandingsToCanvas() {
@@ -795,7 +955,10 @@ async function downloadSocialCard(type, btnElement) {
   let canvas = null;
   let filename = `${cleanTitle}-card.png`;
 
-  if (type === 'standings') {
+  if (type === 'promo') {
+    canvas = renderPromoPosterToCanvas();
+    filename = `${cleanTitle}-tournament-notice.png`;
+  } else if (type === 'standings') {
     canvas = renderStandingsToCanvas();
     filename = `${cleanTitle}-group-standings.png`;
   } else if (type === 'bracket') {
@@ -836,8 +999,7 @@ async function downloadSocialCard(type, btnElement) {
       btnElement.innerHTML = originalHtml;
       btnElement.disabled = false;
     }
-    alert(isEn ? 'Opening Print / PDF window.' : 'ছবি ডাউনলোড করতে না পারায় প্রিন্ট / পিডিএফ উইন্ডো খোলা হচ্ছে।');
-    printDocument('page1');
+    alert(isEn ? 'Could not download card image.' : 'ছবি ডাউনলোড করতে সমস্যা হয়েছে।');
   }
 }
 
@@ -850,7 +1012,7 @@ async function downloadAllSocialCards(btnElement) {
     btnElement.disabled = true;
   }
 
-  const sections = ['standings', 'bracket', 'fixtures', 'full'];
+  const sections = ['promo', 'standings', 'bracket', 'fixtures', 'full'];
   for (let i = 0; i < sections.length; i++) {
     await downloadSocialCard(sections[i], null);
     await new Promise(r => setTimeout(r, 600));
@@ -888,11 +1050,8 @@ function generateSocialExportCardsHtml() {
         <div class="social-card-body">
           <p>${isEn ? 'Live points, goal difference (GD), form, and top runners-up qualification card.' : 'সবকটি গ্রুপের লাইভ পয়েন্ট, গোল ব্যবধান (GD), সাম্প্রতিক ফর্ম ও সেমিফাইনালের কার্ড।'}</p>
           <div class="social-card-actions">
-            <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('standings', this)">
-              <span class="btn-ic">📸</span> <span>${isEn ? 'Standings PNG' : 'পয়েন্ট টেবিল ছবি (PNG)'}</span>
-            </button>
-            <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
-              <span class="btn-ic">🖨️</span> <span>${isEn ? 'Print / PDF' : 'পিডিএফ / প্রিন্ট'}</span>
+            <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('standings', this)" style="width: 100%;">
+              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Standings PNG' : 'পয়েন্ট টেবিল ছবি (PNG)'}</span>
             </button>
           </div>
         </div>
@@ -907,11 +1066,8 @@ function generateSocialExportCardsHtml() {
         <div class="social-card-body">
           <p>${isEn ? 'Head-to-head roadmap, semifinals, and Grand Final championship trophy bracket.' : '১ম ও ২য় সেমিফাইনাল, ৩য় স্থান নির্ধারণী ম্যাচ এবং গ্র্যান্ড ফাইনালের হেড-টু-হেড রোডম্যাপ।'}</p>
           <div class="social-card-actions">
-            <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('bracket', this)">
-              <span class="btn-ic">📸</span> <span>${isEn ? 'Knockout PNG' : 'নকআউট ব্র্যাকেট ছবি (PNG)'}</span>
-            </button>
-            <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
-              <span class="btn-ic">🖨️</span> <span>${isEn ? 'Print / PDF' : 'পিডিএফ / প্রিন্ট'}</span>
+            <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('bracket', this)" style="width: 100%;">
+              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Knockout PNG' : 'নকআউট ব্র্যাকেট ছবি (PNG)'}</span>
             </button>
           </div>
         </div>
@@ -926,11 +1082,8 @@ function generateSocialExportCardsHtml() {
         <div class="social-card-body">
           <p>${isEn ? 'Match timings, group opponents, head-to-head clash schedule, and live score results.' : 'কার সাথে কার খেলা, ম্যাচের সময়, গ্রুপ পর্বের প্রতিপক্ষের মুখোমুখি লড়াই ও ফলাফল।'}</p>
           <div class="social-card-actions">
-            <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('fixtures', this)">
-              <span class="btn-ic">📸</span> <span>${isEn ? 'Fixtures PNG' : 'ফিক্সচার ছবি (PNG)'}</span>
-            </button>
-            <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
-              <span class="btn-ic">🖨️</span> <span>${isEn ? 'Print / PDF' : 'পিডিএফ / প্রিন্ট'}</span>
+            <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('fixtures', this)" style="width: 100%;">
+              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Fixtures PNG' : 'ফিক্সচার ছবি (PNG)'}</span>
             </button>
           </div>
         </div>
@@ -945,11 +1098,8 @@ function generateSocialExportCardsHtml() {
         <div class="social-card-body">
           <p>${isEn ? 'High-resolution complete Page 1 including banner, standings, fixtures & roadmap.' : 'ব্যানার, ভেন্যু, পয়েন্ট টেবিল, ফিকশ্চার ও নকআউট ব্র্যাকেটসহ সম্পূর্ণ ক্রিস্টাল-ক্লিয়ার বোর্ড।'}</p>
           <div class="social-card-actions">
-            <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('full', this)">
-              <span class="btn-ic">📸</span> <span>${isEn ? 'Master Board PNG' : 'সম্পূর্ণ বোর্ড ছবি (PNG)'}</span>
-            </button>
-            <button type="button" class="btn btn-sc-outline" onclick="printDocument('page1')">
-              <span class="btn-ic">🖨️</span> <span>${isEn ? 'Print / PDF' : 'পিডিএফ / প্রিন্ট'}</span>
+            <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('full', this)" style="width: 100%;">
+              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Master Board PNG' : 'সম্পূর্ণ বোর্ড ছবি (PNG)'}</span>
             </button>
           </div>
         </div>
@@ -957,7 +1107,7 @@ function generateSocialExportCardsHtml() {
     </div>
     <div style="margin-top: 14px; text-align: center;">
       <button type="button" class="btn btn-dl-all-social" onclick="downloadAllSocialCards(this)" style="padding: 10px 20px; font-weight: 700; font-size: 13px; background: linear-gradient(135deg, #1e40af, #4338ca); color: #fff; border-radius: 8px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);">
-        📦 ${isEn ? 'Download All Social Images (Batch PNG)' : 'সবগুলো ছবি একসাথে ডাউনলোড (Download All PNGs)'}
+        📦 ${isEn ? 'Download All 5 Social Images (Batch PNG)' : 'সবগুলো ৫টি ছবি একসাথে ডাউনলোড (Download All PNGs)'}
       </button>
     </div>
   `;
@@ -969,6 +1119,7 @@ if (typeof globalThis !== 'undefined') {
   globalThis.closeSocialShareModal = closeSocialShareModal;
   globalThis.generateSocialExportCardsHtml = generateSocialExportCardsHtml;
   globalThis.drawRoundedRect = drawRoundedRect;
+  globalThis.renderPromoPosterToCanvas = renderPromoPosterToCanvas;
   globalThis.renderStandingsToCanvas = renderStandingsToCanvas;
   globalThis.renderBracketToCanvas = renderBracketToCanvas;
   globalThis.renderFixturesCanvas = renderFixturesCanvas;
@@ -982,6 +1133,7 @@ if (typeof window !== 'undefined') {
   window.closeSocialShareModal = closeSocialShareModal;
   window.generateSocialExportCardsHtml = generateSocialExportCardsHtml;
   window.drawRoundedRect = drawRoundedRect;
+  window.renderPromoPosterToCanvas = renderPromoPosterToCanvas;
   window.renderStandingsToCanvas = renderStandingsToCanvas;
   window.renderBracketToCanvas = renderBracketToCanvas;
   window.renderFixturesCanvas = renderFixturesCanvas;

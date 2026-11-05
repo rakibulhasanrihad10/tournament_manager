@@ -114,6 +114,7 @@ test('Social Share Hub & Image Export Engine Test Suite', async (t) => {
   });
 
   await t.test('Test Suite 2: Export Functions & Canvas Card Renderers', () => {
+    assert.strictEqual(typeof renderPromoPosterToCanvas, 'function');
     assert.strictEqual(typeof renderStandingsToCanvas, 'function');
     assert.strictEqual(typeof renderBracketToCanvas, 'function');
     assert.strictEqual(typeof renderFixturesCanvas, 'function');
@@ -121,6 +122,10 @@ test('Social Share Hub & Image Export Engine Test Suite', async (t) => {
     assert.strictEqual(typeof downloadCanvasAsPng, 'function');
     assert.strictEqual(typeof downloadSocialCard, 'function');
     assert.strictEqual(typeof downloadAllSocialCards, 'function');
+
+    const promoCanvas = renderPromoPosterToCanvas();
+    assert(promoCanvas, 'Promo poster canvas must be created');
+    assert.strictEqual(promoCanvas.width, 1200, 'Promo poster canvas width must be 1200');
 
     const standingsCanvas = renderStandingsToCanvas();
     assert(standingsCanvas, 'Standings canvas must be created');

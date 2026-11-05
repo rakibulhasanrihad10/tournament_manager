@@ -504,8 +504,8 @@ function switchPosterTab(tab) {
     }
     if (printBtn) {
       printBtn.style.display = 'inline-flex';
-      printBtn.textContent = isEn ? '🖨️ Print Full Board / PDF' : '🖨️ মাস্টার বোর্ড প্রিন্ট / PDF';
-      printBtn.setAttribute('onclick', "printDocument('page1')");
+      printBtn.textContent = isEn ? '📸 Download Master Board (PNG)' : '📸 সম্পূর্ণ বোর্ড ছবি (PNG)';
+      printBtn.setAttribute('onclick', "downloadSocialCard('full', this)");
     }
     if (subtitleEl) {
       subtitleEl.textContent = isEn
@@ -514,8 +514,8 @@ function switchPosterTab(tab) {
     }
     if (tipEl) {
       tipEl.textContent = isEn
-        ? '💡 Tip: Click any "📸 PNG" button to directly download crisp images ready for Facebook & WhatsApp.'
-        : '💡 টিপস: যেকোনো "📸 ছবি (PNG)" বাটনে ক্লিক করে সরাসরি সোশ্যাল মিডিয়ায় পোস্ট করার উপযোগী ক্রিস্টাল-ক্লিয়ার ছবি নামিয়ে নিন।';
+        ? '💡 Tip: Click any "📸 Download (PNG)" button to directly download crisp images ready for Facebook & WhatsApp.'
+        : '💡 টিপস: যেকোনো "📸 ছবি ডাউনলোড (PNG)" বাটনে ক্লিক করে সরাসরি সোশ্যাল মিডিয়ায় পোস্ট করার উপযোগী ক্রিস্টাল-ক্লিয়ার ছবি নামিয়ে নিন।';
     }
     if (container) {
       if (typeof generateSocialExportCardsHtml === 'function') {
@@ -540,11 +540,11 @@ function switchPosterTab(tab) {
     if (printBtn) {
       printBtn.style.display = 'inline-flex';
       if (activePosterTab === 'fixture') {
-        printBtn.textContent = isEn ? '🖨️ Print Fixture Poster / PDF' : '🖨️ ফিক্সচার পোস্টার প্রিন্ট / PDF';
-        printBtn.setAttribute('onclick', "printDocument('poster')");
+        printBtn.textContent = isEn ? '📸 Download Fixture (PNG)' : '📸 ফিক্সচার ছবি ডাউনলোড (PNG)';
+        printBtn.setAttribute('onclick', "downloadSocialCard('fixtures', this)");
       } else {
-        printBtn.textContent = isEn ? '🖨️ Print Promo Poster / PDF' : '🖨️ পোস্টার প্রিন্ট / PDF';
-        printBtn.setAttribute('onclick', "printDocument('poster')");
+        printBtn.textContent = isEn ? '📸 Download Notice (PNG)' : '📸 নোটিশ ছবি ডাউনলোড (PNG)';
+        printBtn.setAttribute('onclick', "downloadSocialCard('promo', this)");
       }
     }
 
@@ -556,8 +556,8 @@ function switchPosterTab(tab) {
 
     if (tipEl) {
       tipEl.textContent = isEn
-        ? '💡 To get PDF or print: Select "Save as PDF" from Destination in print dialog (A4 Portrait 1-Page Perfect Fit).'
-        : '💡 পিডিএফ বা প্রিন্ট কপি পেতে: প্রিন্ট উইন্ডো এলে Destination থেকে \'Save as PDF\' নির্বাচন করুন (A4 পোর্ট্রেট ১ পেজে পারফেক্ট ফিট)।';
+        ? '💡 Tip: Click "📸 Download Image (PNG)" to save crisp pictures ready for direct sharing on Facebook & WhatsApp.'
+        : '💡 টিপস: "📸 ছবি ডাউনলোড (PNG)" বাটনে ক্লিক করে সরাসরি ফেসবুক ও হোয়াটসঅ্যাপে পোস্ট করার উপযোগী হাই-রেজোলিউশন ছবি নামিয়ে নিন।';
     }
 
     if (container) {
