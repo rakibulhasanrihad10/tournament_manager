@@ -427,6 +427,72 @@ function formatDualTonePrizeHtml(rawText, esc) {
 }
 
 function getWheatSheafSvg(isLeft) {
+  const P0 = { x: 52, y: 110 }, P1 = { x: 10, y: 112 }, P2 = { x: 10, y: 8 }, P3 = { x: 52, y: 10 };
+  let leavesHtml = '';
+
+  const numPairs = 10;
+  for (let i = 1; i <= numPairs; i++) {
+    const t = 0.05 + (i / (numPairs + 1)) * 0.88;
+    const u = 1 - t;
+    const px = u * u * u * P0.x + 3 * u * u * t * P1.x + 3 * u * t * t * P2.x + t * t * t * P3.x;
+    const py = u * u * u * P0.y + 3 * u * u * t * P1.y + 3 * u * t * t * P2.y + t * t * t * P3.y;
+
+    const tx = 3 * u * u * (P1.x - P0.x) + 6 * u * t * (P2.x - P1.x) + 3 * t * t * (P3.x - P2.x);
+    const ty = 3 * u * u * (P1.y - P0.y) + 6 * u * t * (P2.y - P1.y) + 3 * t * t * (P3.y - P2.y);
+    const tlen = Math.hypot(tx, ty) || 1;
+    const utx = tx / tlen;
+    const uty = ty / tlen;
+    const unx = -uty;
+    const uny = utx;
+
+    const leafLen = 17 + Math.sin(t * Math.PI) * 4;
+    const leafWidth = 6.8 + Math.sin(t * Math.PI) * 1.6;
+
+    // Helper to generate a sleek 3D pointed-oval laurel leaf
+    function makeLeaf(vx, vy, len, width) {
+      const vlen = Math.hypot(vx, vy) || 1;
+      const tipX = px + (vx / vlen) * len;
+      const tipY = py + (vy / vlen) * len;
+      const dx = tipX - px;
+      const dy = tipY - py;
+      const dlen = Math.hypot(dx, dy) || 1;
+      const nx = -dy / dlen;
+      const ny = dx / dlen;
+      const mx = px + dx * 0.45;
+      const my = py + dy * 0.45;
+      const cOutX = (mx + nx * (width * 0.55)).toFixed(1);
+      const cOutY = (my + ny * (width * 0.55)).toFixed(1);
+      const cInX = (mx - nx * (width * 0.55)).toFixed(1);
+      const cInY = (my - ny * (width * 0.55)).toFixed(1);
+      const bX = px.toFixed(1), bY = py.toFixed(1);
+      const tX = tipX.toFixed(1), tY = tipY.toFixed(1);
+
+      return `
+        <path d="M ${bX} ${bY} Q ${cOutX} ${cOutY} ${tX} ${tY} L ${bX} ${bY} Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="0.8"/>
+        <path d="M ${bX} ${bY} Q ${cInX} ${cInY} ${tX} ${tY} L ${bX} ${bY} Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="0.8"/>
+        <line x1="${bX}" y1="${bY}" x2="${tX}" y2="${tY}" stroke="#fff7aa" stroke-width="0.6"/>
+      `;
+    }
+
+    // Outer leaf (forward acute angle ~23° leaning gently outward)
+    leavesHtml += makeLeaf(utx * 0.90 - unx * 0.38, uty * 0.90 - uny * 0.38, leafLen, leafWidth);
+
+    // Inner leaf (forward acute angle ~23° leaning gently inward)
+    leavesHtml += makeLeaf(utx * 0.90 + unx * 0.38, uty * 0.90 + uny * 0.38, leafLen * 0.95, leafWidth * 0.92);
+  }
+
+  // Crowning top leaf
+  const topTx = 3 * (P3.x - P2.x);
+  const topTy = 3 * (P3.y - P2.y);
+  const topTlen = Math.hypot(topTx, topTy) || 1;
+  const crownTipX = (P3.x + (topTx / topTlen) * 16).toFixed(1);
+  const crownTipY = (P3.y + (topTy / topTlen) * 16).toFixed(1);
+  const crownLeaf = `
+    <path d="M ${P3.x} ${P3.y} Q ${P3.x + 3} ${P3.y - 4} ${crownTipX} ${crownTipY} L ${P3.x} ${P3.y} Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="0.8"/>
+    <path d="M ${P3.x} ${P3.y} Q ${P3.x + 7} ${P3.y + 4} ${crownTipX} ${crownTipY} L ${P3.x} ${P3.y} Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="0.8"/>
+    <line x1="${P3.x}" y1="${P3.y}" x2="${crownTipX}" y2="${crownTipY}" stroke="#fff7aa" stroke-width="0.6"/>
+  `;
+
   return `
     <svg class="wheat-sheaf-svg ${isLeft ? 'wheat-sheaf-left' : 'wheat-sheaf-right'}" viewBox="0 0 68 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -449,80 +515,12 @@ function getWheatSheafSvg(isLeft) {
         </linearGradient>
       </defs>
       <!-- Symmetrical 3D Laurel "C" Arc Golden Stem -->
-      <path d="M 50 110 C 14 110, 14 10, 50 10" stroke="url(#sheafStemGrad)" stroke-width="3.2" stroke-linecap="round"/>
-
-      <!-- 8 Pairs of Plump 3D Wheat Grains Curving in a True "C" Horseshoe -->
-      <!-- Pair 1 (Bottom, curving inward-down) -->
-      <path d="M40 101 C 32 114, 21 118, 19 113 L40 101 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M40 101 C 28 104, 21 110, 19 113 L40 101 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="40" y1="101" x2="19" y2="113" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <path d="M41 101 C 49 104, 61 99, 62 93 L41 101 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M41 101 C 52 95, 59 90, 62 93 L41 101 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="41" y1="101" x2="62" y2="93" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <!-- Pair 2 -->
-      <path d="M31 88 C 21 98, 12 99, 10 94 L31 88 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M31 88 C 22 90, 14 91, 10 94 L31 88 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="31" y1="88" x2="10" y2="94" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <path d="M32 88 C 42 90, 53 84, 55 78 L32 88 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M32 88 C 44 80, 52 75, 55 78 L32 88 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="32" y1="88" x2="55" y2="78" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <!-- Pair 3 -->
-      <path d="M25 74 C 15 80, 7 81, 5 75 L25 74 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M25 74 C 16 73, 8 72, 5 75 L25 74 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="25" y1="74" x2="5" y2="75" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <path d="M26 74 C 36 75, 48 69, 50 64 L26 74 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M26 74 C 38 65, 47 61, 50 64 L26 74 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="26" y1="74" x2="50" y2="64" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <!-- Pair 4 (Apex, bulges outermost) -->
-      <path d="M23 60 C 13 65, 5 65, 3 58 L23 60 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M23 60 C 14 55, 6 54, 3 58 L23 60 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="23" y1="60" x2="3" y2="58" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <path d="M24 60 C 34 62, 47 57, 49 52 L24 60 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M24 60 C 37 53, 46 49, 49 52 L24 60 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="24" y1="60" x2="49" y2="52" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <!-- Pair 5 -->
-      <path d="M25 46 C 15 50, 7 47, 5 41 L25 46 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M25 46 C 16 39, 8 38, 5 41 L25 46 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="25" y1="46" x2="5" y2="41" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <path d="M26 46 C 36 49, 48 46, 50 42 L26 46 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M26 46 C 38 41, 47 38, 50 42 L26 46 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="26" y1="46" x2="50" y2="42" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <!-- Pair 6 -->
-      <path d="M31 32 C 20 34, 11 28, 10 22 L31 32 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M31 32 C 22 25, 14 20, 10 22 L31 32 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="31" y1="32" x2="10" y2="22" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <path d="M32 32 C 41 34, 52 33, 55 30 L32 32 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M32 32 C 43 27, 52 26, 55 30 L32 32 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="32" y1="32" x2="55" y2="30" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <!-- Pair 7 -->
-      <path d="M40 19 C 29 19, 20 12, 19 7 L40 19 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M40 19 C 32 12, 23 8, 19 7 L40 19 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="40" y1="19" x2="19" y2="7" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <path d="M41 19 C 49 21, 59 20, 62 18 L41 19 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M41 19 C 51 16, 59 15, 62 18 L41 19 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="41" y1="19" x2="62" y2="18" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <!-- Crowning Top Grain (Curving inward to top-right) -->
-      <path d="M50 10 C 53 4, 60 2, 64 4 L50 10 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
-      <path d="M50 10 C 57 9, 62 7, 64 4 L50 10 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
-      <line x1="50" y1="10" x2="64" y2="4" stroke="#fff7aa" stroke-width="0.8"/>
-
-      <!-- Symmetrical 3D Base Tie Node -->
-      <circle cx="50" cy="110" r="4.5" fill="url(#sheafStemGrad)" stroke="#78350f" stroke-width="1.2"/>
-      <circle cx="50" cy="110" r="2" fill="#fff59d"/>
+      <path d="M 52 110 C 10 112, 10 8, 52 10" stroke="url(#sheafStemGrad)" stroke-width="3.2" stroke-linecap="round"/>
+      ${leavesHtml}
+      ${crownLeaf}
+      <!-- 3D Base Tie Node -->
+      <circle cx="52" cy="110" r="4.2" fill="url(#sheafStemGrad)" stroke="#78350f" stroke-width="1.2"/>
+      <circle cx="52" cy="110" r="1.8" fill="#fff59d"/>
     </svg>
   `;
 }
