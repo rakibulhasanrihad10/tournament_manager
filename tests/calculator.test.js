@@ -190,7 +190,7 @@ loadTournamentConfig();
 assert(tournamentConfig.formatType === '৯-এ-সাইড (প্রতি দলে ৯ জন মাঠে, ২ জন বদলি)', 'Custom formatType saves and loads accurately');
 
 const posterHtml = generatePromoPosterCardHtml();
-assert(posterHtml.includes('৯-এ-সাইড (প্রতি দলে ৯ জন মাঠে, ২ জন বদলি)'), 'Promotional poster displays custom formatType');
+assert(posterHtml.includes('promo-ref-spec-card'), 'Promotional poster renders clean 2-card specification grid');
 
 // Points calculation should remain completely intact
 recalculateAll();

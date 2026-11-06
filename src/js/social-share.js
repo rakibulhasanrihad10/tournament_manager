@@ -803,20 +803,20 @@ function renderPromoPosterToCanvas() {
   ctx.fillText(`🚩 ${isEn ? 'Organized by:' : 'আয়োজনে:'} ${org}   |   📍 ${isEn ? 'Venue:' : 'স্থান:'} ${venue}`, 600, pillY + (pillH / 2));
   ctx.restore();
 
-  // 5. ROW 1: 3 BLUE GLASS SPECIFICATION CARDS
+  // 5. ROW 1: 2 BLUE GLASS SPECIFICATION CARDS (PERFECTLY ALIGNED WITH PRIZE CARDS BELOW)
   const r1H = 66;
-  const cardW = 345;
-  const cardsGap = 22;
-  const cardsStartX = (width - (cardW * 3 + cardsGap * 2)) / 2; // 60px
+  const prizeCardW = 528;
+  const prizeGap = 24;
+  const p1X = 60;
+  const p2X = p1X + prizeCardW + prizeGap; // 612px
 
   const specCards = [
-    { label: isEn ? '🗓️ MATCH DATE' : '🗓️ ম্যাচের তারিখ', val: `${date} (${startingPlayers} ${isEn ? 'on pitch' : 'জন মাঠে'}, ${benchPlayers} ${isEn ? 'subs' : 'জন বদলি'})` },
-    { label: isEn ? '⏱️ MATCH DURATION' : '⏱️ ম্যাচের সময়', val: matchDuration },
-    { label: isEn ? '🏆 TOURNAMENT EDITION' : '🏆 টুর্নামেন্ট সংস্করণ', val: c.formatType || edition }
+    { label: isEn ? '🗓️ MATCH DATE' : '🗓️ ম্যাচের তারিখ', val: String(date), x: p1X },
+    { label: isEn ? '⏱️ MATCH DURATION' : '⏱️ ম্যাচের সময়', val: String(matchDuration), x: p2X }
   ];
 
-  specCards.forEach((sc, i) => {
-    const cX = cardsStartX + i * (cardW + cardsGap);
+  specCards.forEach((sc) => {
+    const cX = sc.x;
     const scGrad = ctx.createLinearGradient(cX, r1Y, cX, r1Y + r1H);
     scGrad.addColorStop(0, 'rgba(3, 70, 140, 0.95)');
     scGrad.addColorStop(1, 'rgba(2, 132, 199, 0.85)');
@@ -825,7 +825,7 @@ function renderPromoPosterToCanvas() {
       ctx.shadowColor = 'rgba(56, 189, 248, 0.6)';
       ctx.shadowBlur = 14;
     }
-    drawRoundedRect(ctx, cX, r1Y, cardW, r1H, 12, scGrad, '#38bdf8', 2);
+    drawRoundedRect(ctx, cX, r1Y, prizeCardW, r1H, 12, scGrad, '#38bdf8', 2);
     ctx.restore();
 
     ctx.save();
@@ -833,26 +833,22 @@ function renderPromoPosterToCanvas() {
     ctx.textBaseline = 'middle';
     ctx.font = '800 12px "Hind Siliguri", "Segoe UI", sans-serif';
     ctx.fillStyle = '#bae6fd';
-    ctx.fillText(sc.label, cX + cardW / 2, r1Y + 20);
+    ctx.fillText(sc.label, cX + prizeCardW / 2, r1Y + 20);
 
-    ctx.font = '900 15px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.font = '900 16px "Hind Siliguri", "Segoe UI", sans-serif';
     ctx.fillStyle = '#ffffff';
     if (ctx.shadowColor !== undefined) {
       ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
       ctx.shadowBlur = 4;
       ctx.shadowOffsetY = 2;
     }
-    ctx.fillText(sc.val, cX + cardW / 2, r1Y + 44);
+    ctx.fillText(sc.val, cX + prizeCardW / 2, r1Y + 44);
     ctx.restore();
   });
 
   // 6. ROW 2: 2 GOLDEN RICE SHEAF PRIZE CARDS (RICH 3D LUXURY FINISH)
   const r2Y = 248;
   const r2H = 135;
-  const prizeCardW = 528;
-  const prizeGap = 24;
-  const p1X = cardsStartX; // 60px
-  const p2X = p1X + prizeCardW + prizeGap; // 612px
   const maxPrizeTextW = prizeCardW - 170; // 358px safe space between left & right wheat sheaves
 
   // Champion Prize Card (Deep Espresso / Black Luxury Radial Background)

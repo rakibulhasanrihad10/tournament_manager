@@ -289,6 +289,12 @@ function escapeHtml(str) {
             tournamentConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
             localStorage.setItem('chitadda_tournament_config_2026', JSON.stringify(tournamentConfig));
           } else {
+            if (parsed.championPrize && typeof parsed.championPrize === 'string') {
+              parsed.championPrize = parsed.championPrize.replace(/\s*ও\s*আকর্ষণীয়\s*বিশ্বকাপ\s*ট্রফি/g, '').replace(/\s*&\s*World\s*Cup\s*Trophy/gi, '').trim();
+            }
+            if (parsed.runnerUpPrize && typeof parsed.runnerUpPrize === 'string') {
+              parsed.runnerUpPrize = parsed.runnerUpPrize.replace(/\s*ও\s*রানার্স-আপ\s*ট্রফি/g, '').replace(/\s*&\s*Runner-Up\s*Trophy/gi, '').trim();
+            }
             tournamentConfig = Object.assign({}, DEFAULT_CONFIG, parsed);
           }
           if (!Array.isArray(tournamentConfig.selectedRules)) {

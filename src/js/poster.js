@@ -626,19 +626,15 @@ function generatePromoPosterCardHtml() {
       <!-- HERO BANNER -->
       ${heroHtml}
 
-      <!-- ROW 1: 3 BLUE GLASS SPECIFICATION CARDS -->
+      <!-- ROW 1: 2 BLUE GLASS SPECIFICATION CARDS -->
       <div class="promo-ref-specs-grid promo-meta-grid" style="position:relative; z-index:2;">
         <div class="promo-ref-spec-card promo-meta-item">
           <div class="spec-card-top p-label">🗓️ ${tFn('poster.date')}</div>
-          <div class="spec-card-val p-val">${esc(c.startDate || defaultDate)} (${c.startingPlayers || 7} ${isEn ? 'on pitch' : 'জন মাঠে'}, ${c.benchPlayers || 4} ${isEn ? 'subs' : 'জন বদলি'})</div>
+          <div class="spec-card-val p-val">${esc(c.startDate || defaultDate)}</div>
         </div>
         <div class="promo-ref-spec-card promo-meta-item">
           <div class="spec-card-top p-label">⏱️ ${tFn('poster.duration')}</div>
           <div class="spec-card-val p-val">${esc(c.matchDuration || defaultDuration)}</div>
-        </div>
-        <div class="promo-ref-spec-card promo-meta-item">
-          <div class="spec-card-top p-label">🏆 ${tFn('poster.edition')}</div>
-          <div class="spec-card-val p-val">${esc(c.formatType || c.edition || defaultFormat)}</div>
         </div>
       </div>
 
