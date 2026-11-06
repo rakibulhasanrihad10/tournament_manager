@@ -277,14 +277,21 @@ function drawCanvasLaurelLeaf(ctx, bx, by, tx, ty, width, fillColor, strokeColor
 function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
   ctx.save();
   const dir = isLeft ? 1 : -1;
-  const baseX = isLeft ? (cardX + 22) : (cardX + cardW - 22);
-  const baseY = cardY + cardH - 12;
-  const tipX = isLeft ? (cardX + 66) : (cardX + cardW - 66);
-  const tipY = cardY + 12;
-  const ctrlX = isLeft ? (cardX + 8) : (cardX + cardW - 8);
-  const ctrlY = cardY + cardH * 0.52;
+  const innerX = isLeft ? (cardX + 54) : (cardX + cardW - 54);
+  const outerX = isLeft ? (cardX + 16) : (cardX + cardW - 16);
+  const cpOutX = isLeft ? (outerX - 2) : (outerX + 2);
 
-  // Draw thick 3D curved golden stem
+  const baseX = innerX;
+  const baseY = cardY + cardH - 14;
+  const tipX = innerX;
+  const tipY = cardY + 14;
+
+  const cp1X = cpOutX;
+  const cp1Y = cardY + cardH - 14;
+  const cp2X = cpOutX;
+  const cp2Y = cardY + 14;
+
+  // Draw thick 3D curved golden stem (symmetrical C arc)
   const stemGrad = ctx.createLinearGradient ? ctx.createLinearGradient(baseX, baseY, tipX, tipY) : null;
   if (stemGrad) {
     stemGrad.addColorStop(0, '#ca8a04');
@@ -296,53 +303,59 @@ function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
   ctx.lineCap = 'round';
   ctx.beginPath();
   if (typeof ctx.moveTo === 'function') ctx.moveTo(baseX, baseY);
-  if (typeof ctx.quadraticCurveTo === 'function') {
-    ctx.quadraticCurveTo(ctrlX, ctrlY, tipX, tipY);
+  if (typeof ctx.bezierCurveTo === 'function') {
+    ctx.bezierCurveTo(cp1X, cp1Y, cp2X, cp2Y, tipX, tipY);
   } else if (typeof ctx.lineTo === 'function') {
     ctx.lineTo(tipX, tipY);
   }
   if (typeof ctx.stroke === 'function') ctx.stroke();
 
-  // Draw 8 dense pairs of plump, thick 3D golden wheat grains
+  // Draw 8 dense pairs of plump, thick 3D golden wheat grains along the C-arc
   const numPairs = 8;
   for (let i = 1; i <= numPairs; i++) {
-    const t = 0.08 + (i / (numPairs + 1)) * 0.86;
-    const px = (1 - t) * (1 - t) * baseX + 2 * (1 - t) * t * ctrlX + t * t * tipX;
-    const py = (1 - t) * (1 - t) * baseY + 2 * (1 - t) * t * ctrlY + t * t * tipY;
+    const t = 0.08 + (i / (numPairs + 1)) * 0.84;
+    // Cubic Bezier position
+    const u = 1 - t;
+    const px = u * u * u * baseX + 3 * u * u * t * cp1X + 3 * u * t * t * cp2X + t * t * t * tipX;
+    const py = u * u * u * baseY + 3 * u * u * t * cp1Y + 3 * u * t * t * cp2Y + t * t * t * tipY;
 
-    // Stem tangent derivative
-    const tx = 2 * (1 - t) * (ctrlX - baseX) + 2 * t * (tipX - ctrlX);
-    const ty = 2 * (1 - t) * (ctrlY - baseY) + 2 * t * (tipY - ctrlY);
+    // Cubic Bezier tangent derivative
+    const tx = 3 * u * u * (cp1X - baseX) + 6 * u * t * (cp2X - cp1X) + 3 * t * t * (tipX - cp2X);
+    const ty = 3 * u * u * (cp1Y - baseY) + 6 * u * t * (cp2Y - cp1Y) + 3 * t * t * (tipY - cp2Y);
     const tlen = Math.hypot(tx, ty) || 1;
     const utx = tx / tlen;
     const uty = ty / tlen;
-    const unx = -uty;
-    const uny = utx;
 
-    const grainLen = 20 + Math.sin(t * Math.PI) * 6;
+    // Normal pointing inward towards the center of the C / card text
+    const unx = -uty * dir;
+    const uny = utx * dir;
+
+    const grainLen = 21 + Math.sin(t * Math.PI) * 5;
     const grainWidth = 9 + Math.sin(t * Math.PI) * 2.2;
 
-    // Outer plump grain (curves outward towards card edge)
-    const outAngleX = utx * 0.58 - (unx * dir * 0.82);
-    const outAngleY = uty * 0.58 - (uny * dir * 0.82);
-    const outTipX = px + outAngleX * grainLen;
-    const outTipY = py + outAngleY * grainLen;
+    // Outer plump grain (points outward, fanning around the C-arc perimeter)
+    const outVx = utx * 0.45 - unx * 0.88;
+    const outVy = uty * 0.45 - uny * 0.88;
+    const outLen = Math.hypot(outVx, outVy) || 1;
+    const outTipX = px + (outVx / outLen) * grainLen;
+    const outTipY = py + (outVy / outLen) * grainLen;
     drawCanvas3DWheatGrain(ctx, px, py, outTipX, outTipY, grainWidth, true);
 
-    // Inner plump grain (curves upward-inward)
-    const inAngleX = utx * 0.70 + (unx * dir * 0.70);
-    const inAngleY = uty * 0.70 + (uny * dir * 0.70);
-    const inTipX = px + inAngleX * (grainLen * 0.95);
-    const inTipY = py + inAngleY * (grainLen * 0.95);
+    // Inner plump grain (points inward, fanning inside the C towards text)
+    const inVx = utx * 0.65 + unx * 0.75;
+    const inVy = uty * 0.65 + uny * 0.75;
+    const inLen = Math.hypot(inVx, inVy) || 1;
+    const inTipX = px + (inVx / inLen) * (grainLen * 0.95);
+    const inTipY = py + (inVy / inLen) * (grainLen * 0.95);
     drawCanvas3DWheatGrain(ctx, px, py, inTipX, inTipY, grainWidth * 0.92, false);
   }
 
-  // Crowning top grain
-  const topDx = (tipX - ctrlX);
-  const topDy = (tipY - ctrlY);
-  const topLen = Math.hypot(topDx, topDy) || 1;
-  const topTipX = tipX + (topDx / topLen) * 20;
-  const topTipY = tipY + (topDy / topLen) * 20;
+  // Crowning top grain (curls inward along top tangent)
+  const topTx = 3 * (tipX - cp2X);
+  const topTy = 3 * (tipY - cp2Y);
+  const topTlen = Math.hypot(topTx, topTy) || 1;
+  const topTipX = tipX + (topTx / topTlen) * 20;
+  const topTipY = tipY + (topTy / topTlen) * 20;
   drawCanvas3DWheatGrain(ctx, tipX, tipY, topTipX, topTipY, 8.5, true);
 
   // 3D Base Tie Node
