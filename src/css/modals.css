@@ -3928,20 +3928,20 @@
       line-height: 1.3;
     }
 
-    /* Smart QR Code & 3 Steps Registration Card */
+    /* Smart QR Code & Streamlined Registration Card */
     .promo-reg-grid-2col {
       display: flex;
       align-items: stretch;
-      gap: 16px;
-      padding: 10px 4px 4px 4px;
+      gap: 18px;
+      padding: 10px 6px 6px 6px;
     }
     .promo-reg-qr-plaque {
-      width: 230px;
+      width: 210px;
       flex-shrink: 0;
       background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
       border: 1.5px solid rgba(202, 138, 4, 0.4);
       border-radius: 16px;
-      padding: 12px 10px;
+      padding: 14px 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -3952,13 +3952,14 @@
       position: relative;
       background: #ffffff;
       padding: 6px;
-      border-radius: 10px;
-      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 156px;
-      height: 156px;
+      width: 164px;
+      height: 164px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
     .promo-reg-qr-wrapper svg {
       width: 100%;
@@ -3970,43 +3971,19 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       background: #ffffff;
       border: 2px solid #ca8a04;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: 15px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
     .promo-reg-qr-caption {
-      margin-top: 10px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-    }
-    .promo-reg-qr-scan {
-      font-size: 11.5px;
-      font-weight: 800;
-      color: #065f46;
-    }
-    .promo-reg-qr-hint {
-      font-size: 10px;
-      color: #64748b;
-    }
-    .promo-reg-qr-tag {
-      font-size: 9.5px;
-      font-weight: 800;
-      color: #92400e;
-      background: rgba(254, 240, 138, 0.6);
-      border: 1px solid #ca8a04;
-      border-radius: 12px;
-      padding: 2px 8px;
-      margin-top: 4px;
+      display: none;
     }
     .promo-reg-divider {
       width: 2px;
@@ -4014,116 +3991,79 @@
       border-radius: 1px;
       flex-shrink: 0;
     }
-    .promo-reg-steps-col {
+    .promo-reg-steps-col,
+    .promo-reg-content-col {
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
+      justify-content: center;
+      gap: 14px;
       min-width: 0;
+      padding: 4px 2px;
     }
     .promo-reg-steps-header {
-      margin-bottom: 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
-    .promo-reg-steps-title {
-      font-size: 14.5px;
+    .promo-reg-steps-title,
+    .promo-reg-headline {
+      font-size: 15px;
       font-weight: 800;
       color: #0f172a;
     }
-    .promo-reg-steps-sub {
-      font-size: 11px;
-      color: #64748b;
-      margin-top: 2px;
-    }
-    .promo-reg-steps-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .promo-reg-step-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 9px;
-      padding: 6px 10px;
-    }
-    .promo-reg-step-badge {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #ffffff;
-      font-size: 11px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .promo-reg-step-text {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      min-width: 0;
-    }
-    .promo-reg-step-text strong {
+    .promo-reg-steps-sub,
+    .promo-reg-subtext {
       font-size: 11.5px;
-      color: #0f172a;
-      font-weight: 700;
-    }
-    .promo-reg-step-text span {
-      font-size: 10px;
-      color: #475569;
-      line-height: 1.25;
+      color: #64748b;
+      line-height: 1.4;
     }
     .promo-reg-url-pill {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       background: linear-gradient(90deg, #0f172a, #1e293b);
       border: 1.5px solid #ca8a04;
-      border-radius: 9px;
-      padding: 6px 12px;
+      border-radius: 10px;
+      padding: 10px 14px;
       color: #ffffff;
       text-decoration: none;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+      transition: all 0.2s ease;
+    }
+    .promo-reg-url-pill:hover {
+      border-color: #fde047;
+      box-shadow: 0 6px 16px rgba(202, 138, 4, 0.25);
     }
     .promo-reg-url-lbl {
       color: #fde047;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
       flex-shrink: 0;
+      white-space: nowrap;
     }
     .promo-reg-url-text {
       color: #38bdf8;
       font-family: Consolas, monospace;
-      font-size: 11px;
+      font-size: 12px;
+      font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       flex: 1;
     }
-    .promo-reg-url-chip {
-      background: rgba(56, 189, 248, 0.2);
-      border: 1px solid #38bdf8;
-      color: #a7f3d0;
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 6px;
-      flex-shrink: 0;
-    }
-    .promo-reg-urgency-banner {
+    .promo-reg-urgency-banner,
+    .promo-reg-special-note {
       background: #fffbeb;
-      border: 1px solid #fde68a;
-      border-radius: 8px;
-      padding: 5px 10px;
-      font-size: 10.5px;
+      border: 1.5px solid #fde68a;
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-size: 11px;
       font-weight: 700;
       color: #92400e;
       display: flex;
       align-items: center;
+      line-height: 1.4;
     }
 
     .promo-rules-preview-box {

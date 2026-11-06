@@ -1064,7 +1064,7 @@ function renderPromoPosterToCanvas() {
   ctx.textBaseline = 'middle';
   ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#ffffff';
-  ctx.fillText(`📲 ${isEn ? 'Online Team Registration & Slot Booking' : 'অনলাইনে দল রেজিস্ট্রেশন ও স্লট বুকিং'}`, 600, pillHeaderY + pillHeaderH / 2);
+  ctx.fillText(`📲 ${isEn ? 'Online Team Registration' : 'অনলাইনে দল রেজিস্ট্রেশন করুন'}`, 600, pillHeaderY + pillHeaderH / 2);
   ctx.restore();
 
   // Vertical divider between Left (QR plaque) and Right (Steps & Link)
@@ -1078,7 +1078,7 @@ function renderPromoPosterToCanvas() {
   if (typeof ctx.stroke === 'function') ctx.stroke();
   ctx.restore();
 
-  // LEFT COLUMN: SMART QR CODE PLAQUE
+  // LEFT COLUMN: SMART QR CODE PLAQUE (CLEAN & CENTERED)
   const qrBoxX = p1X + 22; // 82
   const qrBoxY = r5Y + 26; // 544
   const qrBoxW = 280;
@@ -1086,14 +1086,14 @@ function renderPromoPosterToCanvas() {
   // Subtle rounded plaque card
   drawRoundedRect(ctx, qrBoxX, qrBoxY, qrBoxW, qrBoxH, 16, '#fcfcfd', 'rgba(202, 138, 4, 0.35)', 1.5);
 
-  // Inner QR Drawing
-  const qrSize = 176;
+  // Inner QR Drawing (Vertically & horizontally centered inside plaque)
+  const qrSize = 214;
   const qrX = qrBoxX + (qrBoxW - qrSize) / 2;
-  const qrY = qrBoxY + 14;
+  const qrY = qrBoxY + (qrBoxH - qrSize) / 2;
 
   // White background for QR code
   ctx.fillStyle = '#ffffff';
-  ctx.fillRect(qrX - 4, qrY - 4, qrSize + 8, qrSize + 8);
+  ctx.fillRect(qrX - 6, qrY - 6, qrSize + 12, qrSize + 12);
 
   const qrGen = (typeof qrcode === 'function') ? qrcode : ((typeof window !== 'undefined' && typeof window.qrcode === 'function') ? window.qrcode : null);
   if (qrGen) {
@@ -1115,16 +1115,16 @@ function renderPromoPosterToCanvas() {
       // Center football circle badge
       const centerX = qrX + qrSize / 2;
       const centerY = qrY + qrSize / 2;
-      const centerR = 17;
+      const centerR = 19;
       ctx.save();
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
       if (typeof ctx.arc === 'function') ctx.arc(centerX, centerY, centerR, 0, Math.PI * 2);
       if (typeof ctx.fill === 'function') ctx.fill();
       ctx.strokeStyle = '#ca8a04';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2.2;
       if (typeof ctx.stroke === 'function') ctx.stroke();
-      ctx.font = '16px "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+      ctx.font = '18px "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillStyle = '#0f172a';
@@ -1135,32 +1135,7 @@ function renderPromoPosterToCanvas() {
     }
   }
 
-  // Captions below QR code
-  const qrCenterX = qrBoxX + qrBoxW / 2;
-  ctx.save();
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-
-  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#065f46';
-  ctx.fillText(`📷 ${isEn ? 'Scan with Mobile Camera' : 'মোবাইল ক্যামেরা দিয়ে স্ক্যান করুন'}`, qrCenterX, qrY + qrSize + 22);
-
-  ctx.font = '10.5px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#64748b';
-  ctx.fillText(isEn ? '(Direct Online Registration Form)' : '(সরাসরি অনলাইন এন্ট্রি ফর্ম)', qrCenterX, qrY + qrSize + 40);
-
-  // Mini gold badge tag
-  const tagW = 150;
-  const tagH = 22;
-  const tagX = qrCenterX - tagW / 2;
-  const tagY = qrY + qrSize + 53;
-  drawRoundedRect(ctx, tagX, tagY, tagW, tagH, 11, 'rgba(254, 240, 138, 0.5)', '#ca8a04', 1);
-  ctx.font = 'bold 10px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#92400e';
-  ctx.fillText(`✨ ${isEn ? 'Official Entry Gateway' : 'অফিসিয়াল এন্ট্রি গেটওয়ে'}`, qrCenterX, tagY + tagH / 2);
-  ctx.restore();
-
-  // RIGHT COLUMN: 3 EASY STEPS, DIRECT LINK PILL & URGENCY NOTICE
+  // RIGHT COLUMN: STREAMLINED REGISTRATION LINK & SPECIAL NOTE
   const rx = divX + 24; // 409
   const rightW = p1X + fullRowW - rx - 18; // ~695px
 
@@ -1168,83 +1143,18 @@ function renderPromoPosterToCanvas() {
   ctx.save();
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
-  ctx.font = 'bold 15px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = 'bold 18px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#0f172a';
-  ctx.fillText(`🏆 ${isEn ? 'Register Your Team in 3 Easy Steps:' : '৩টি সহজ ধাপে আপনার দল নিবন্ধন করুন:'}`, rx, r5Y + 28);
+  ctx.fillText(`⚽ ${isEn ? 'Complete Your Team Registration Online' : 'অনলাইনে আপনার দলের রেজিস্ট্রেশন সম্পন্ন করুন'}`, rx, r5Y + 48);
 
-  ctx.font = '11.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = '13.5px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#64748b';
-  ctx.fillText(isEn ? 'Follow the simple steps below to confirm your official tournament slot' : 'টুর্নামেন্টে অফিসিয়াল স্লট নিশ্চিত করতে নিচের সহজ প্রক্রিয়াটি অনুসরণ করুন', rx, r5Y + 49);
+  ctx.fillText(isEn ? 'Scan the QR code with your smartphone or visit the link below to fill out the form.' : 'স্মার্টফোনে কিউআর কোড স্ক্যান করুন অথবা নিচের লিংকে প্রবেশ করে ফর্ম পূরণ করুন।', rx, r5Y + 82);
   ctx.restore();
 
-  // 3 Step Definitions
-  const regSteps = [
-    {
-      num: isEn ? '1' : '১',
-      title: isEn ? '1. Scan QR Code or Open Link:' : '১. কিউআর কোড স্ক্যান বা লিংকে প্রবেশ:',
-      desc: isEn ? 'Scan using phone camera or directly browse the official registration link.' : 'মোবাইলের ক্যামেরা দিয়ে কিউআর স্ক্যান করুন অথবা লিংকে সরাসরি প্রবেশ করুন।'
-    },
-    {
-      num: isEn ? '2' : '২',
-      title: isEn ? '2. Submit Team & Squad Details:' : '২. দল ও স্কোয়াড তালিকা পূরণ:',
-      desc: isEn ? 'Fill out accurate team name, captain info, and complete player squad list.' : 'দলের নাম, অধিনায়ক ও খেলোয়াড়দের সঠিক তথ্য দিয়ে ফর্ম সাবমিট করুন।'
-    },
-    {
-      num: isEn ? '3' : '৩',
-      title: isEn ? '3. Pay Entry Fee & Confirm Slot:' : '৩. এন্ট্রি ফি পরিশোধ ও কনফার্মেশন:',
-      desc: isEn ? 'Send fee via bKash/Nagad and provide TrxID for booking confirmation.' : 'বিকাশ বা নগদ-এ ফি পাঠিয়ে ট্রানজ্যাকশন আইডি প্রদান করে স্লট নিশ্চিত করুন।'
-    }
-  ];
-
-  const stepStartY = r5Y + 73;
-  const stepH = 43;
-  const stepGap = 7;
-
-  regSteps.forEach((st, sIdx) => {
-    const sY = stepStartY + sIdx * (stepH + stepGap);
-
-    // Subtle background card
-    drawRoundedRect(ctx, rx, sY, rightW, stepH, 9, '#f8fafc', '#e2e8f0', 1);
-
-    // Left Circular Badge
-    const badgeX = rx + 22;
-    const badgeY = sY + stepH / 2;
-    const badgeR = 12.5;
-    ctx.save();
-    const badgeGrad = ctx.createLinearGradient(badgeX - badgeR, badgeY - badgeR, badgeX + badgeR, badgeY + badgeR);
-    badgeGrad.addColorStop(0, '#f59e0b');
-    badgeGrad.addColorStop(1, '#d97706');
-    ctx.fillStyle = badgeGrad;
-    ctx.beginPath();
-    if (typeof ctx.arc === 'function') ctx.arc(badgeX, badgeY, badgeR, 0, Math.PI * 2);
-    if (typeof ctx.fill === 'function') ctx.fill();
-
-    ctx.font = 'bold 12px "Segoe UI", sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(st.num, badgeX, badgeY);
-    ctx.restore();
-
-    // Step Title & Description
-    ctx.save();
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
-    const textStartX = rx + 44;
-
-    ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
-    ctx.fillStyle = '#0f172a';
-    ctx.fillText(st.title, textStartX, sY + 6);
-
-    ctx.font = '10.5px "Hind Siliguri", "Segoe UI", sans-serif';
-    ctx.fillStyle = '#475569';
-    ctx.fillText(st.desc, textStartX, sY + 23);
-    ctx.restore();
-  });
-
   // Registration URL Pill Box
-  const urlPillY = r5Y + 228;
-  const urlPillH = 36;
+  const urlPillY = r5Y + 134;
+  const urlPillH = 50;
   ctx.save();
   if (ctx.shadowColor !== undefined) {
     ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
@@ -1262,40 +1172,31 @@ function renderPromoPosterToCanvas() {
   ctx.textBaseline = 'middle';
   const urlMidY = urlPillY + urlPillH / 2;
 
-  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = 'bold 14px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#fde047';
-  const lblText = `🔗 ${isEn ? 'Direct Registration Link:' : 'সরাসরি রেজিস্ট্রেশন লিংক:'} `;
-  ctx.fillText(lblText, rx + 14, urlMidY);
+  const lblText = `🔗 ${isEn ? 'Registration Link:' : 'রেজিস্ট্রেশন লিংক:'} `;
+  ctx.fillText(lblText, rx + 18, urlMidY);
 
-  const lblW = isEn ? 165 : 155;
-  ctx.font = 'bold 12px "Consolas", "Courier New", monospace, sans-serif';
+  const lblW = (ctx.measureText && ctx.measureText(lblText).width) ? (ctx.measureText(lblText).width + 8) : (isEn ? 140 : 130);
+  ctx.font = 'bold 13.5px "Consolas", "Courier New", monospace, sans-serif';
   ctx.fillStyle = '#38bdf8';
-  const displayUrl = regUrl.length > 58 ? (regUrl.substring(0, 55) + '...') : regUrl;
-  ctx.fillText(displayUrl, rx + 14 + lblW, urlMidY);
-
-  // Right pill badge
-  const chipW = isEn ? 88 : 82;
-  const chipH = 22;
-  const chipX = rx + rightW - chipW - 10;
-  const chipY = urlMidY - chipH / 2;
-  drawRoundedRect(ctx, chipX, chipY, chipW, chipH, 6, 'rgba(56, 189, 248, 0.2)', '#38bdf8', 1);
-  ctx.textAlign = 'center';
-  ctx.font = 'bold 10px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#a7f3d0';
-  ctx.fillText(isEn ? 'Open Link ↗' : 'প্রবেশ করুন ↗', chipX + chipW / 2, urlMidY);
+  const maxUrlChars = 65;
+  const displayUrl = regUrl.length > maxUrlChars ? (regUrl.substring(0, maxUrlChars - 3) + '...') : regUrl;
+  ctx.fillText(displayUrl, rx + 18 + lblW, urlMidY);
   ctx.restore();
 
-  // Urgency Notice Banner
-  const alertY = r5Y + 272;
-  const alertH = 34;
-  drawRoundedRect(ctx, rx, alertY, rightW, alertH, 8, '#fffbeb', '#fde68a', 1.2);
+  // Special Note Banner (Replacing Urgent Alert)
+  const alertY = r5Y + 214;
+  const alertH = 48;
+  drawRoundedRect(ctx, rx, alertY, rightW, alertH, 10, '#fffbeb', '#fde68a', 1.4);
 
   ctx.save();
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  ctx.font = 'bold 11px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = 'bold 12.5px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#92400e';
-  ctx.fillText(`⚡ ${isEn ? 'Urgent Alert: Team slots are limited! Finalized strictly on a "First-Come, First-Served" basis.' : 'জরুরি বিজ্ঞপ্তি: দল সংখ্যা সীমিত! "আগে আসলে আগে পাবেন" ভিত্তিতে দল চূড়ান্ত করা হবে।'}`, rx + 14, alertY + alertH / 2);
+  const noteText = `📌 ${isEn ? 'Special Note: Team slots are limited! Finalized strictly on a \"First-Come, First-Served\" basis.' : 'বিশেষ দ্রষ্টব্য: দল সংখ্যা সীমিত! \"আগে আসলে আগে পাবেন\" ভিত্তিতে দল চূড়ান্ত করা হবে।'}`;
+  ctx.fillText(noteText, rx + 18, alertY + alertH / 2);
   ctx.restore();
 
   // 10. FLOATING GLASS FOOTER RIBBON OVER BOTTOM CROWD

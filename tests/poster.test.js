@@ -386,19 +386,22 @@ assert(zeroRulesPoster.includes('(0 টি)'), 'Promotional poster displays (0 �
 assert(zeroRulesPoster.includes('কোনো বিশেষ নিয়মাবলী সেট করা হয়নি'), 'Promotional poster renders clean empty state when no rules are selected');
 
 // ---------------------------------------------------------------------
-// TEST SUITE 7: SMART QR CODE & 3 STEPS TEAM REGISTRATION CARD
+// TEST SUITE 7: SMART QR CODE & STREAMLINED TEAM REGISTRATION CARD
 // ---------------------------------------------------------------------
-console.log('\n📲 Test Suite 7: Smart QR Code & 3 Steps Team Registration Card');
+console.log('\n📲 Test Suite 7: Smart QR Code & Streamlined Team Registration Card');
 
 const qrPoster = context.generatePromoPosterCardHtml();
 assert(qrPoster.includes('promo-registration-card'), 'Promo poster renders .promo-registration-card');
 assert(qrPoster.includes('promo-reg-qr-plaque'), 'Promo poster renders QR code plaque');
-assert(qrPoster.includes('promo-reg-steps-col'), 'Promo poster renders 3 steps column');
-assert(qrPoster.includes('১. কিউআর কোড স্ক্যান বা লিংকে প্রবেশ') || qrPoster.includes('1. Scan QR Code'), 'Promo poster includes Step 1 title');
-assert(qrPoster.includes('২. দল ও স্কোয়াড তালিকা পূরণ') || qrPoster.includes('2. Submit Team'), 'Promo poster includes Step 2 title');
-assert(qrPoster.includes('৩. এন্ট্রি ফি পরিশোধ ও কনফার্মেশন') || qrPoster.includes('3. Pay Entry Fee'), 'Promo poster includes Step 3 title');
-assert(qrPoster.includes('promo-reg-url-pill'), 'Promo poster includes direct registration link pill');
-assert(qrPoster.includes('promo-reg-urgency-banner'), 'Promo poster includes limited slots urgency alert banner');
+assert(qrPoster.includes('promo-reg-content-col'), 'Promo poster renders registration content column');
+assert(qrPoster.includes('অনলাইনে দল রেজিস্ট্রেশন করুন') || qrPoster.includes('Online Team Registration'), 'Promo poster renders updated card title (অনলাইনে দল রেজিস্ট্রেশন করুন)');
+assert(qrPoster.includes('রেজিস্ট্রেশন লিংক:') || qrPoster.includes('Registration Link:'), 'Promo poster includes clean registration link label');
+assert(qrPoster.includes('promo-reg-url-pill'), 'Promo poster includes registration link pill');
+assert(qrPoster.includes('বিশেষ দ্রষ্টব্য:') || qrPoster.includes('Special Note:'), 'Promo poster includes বিশেষ দ্রষ্টব্য notice banner');
+assert(!qrPoster.includes('তিনটি সহজ ধাপে'), 'Promo poster cleanly excludes redundant 3-step headline');
+assert(!qrPoster.includes('মোবাইল ক্যামেরা দিয়ে স্ক্যান করুন'), 'Promo poster cleanly excludes redundant QR camera caption');
+assert(!qrPoster.includes('অফিসিয়াল এন্ট্রি গেটওয়ে'), 'Promo poster cleanly excludes redundant official gateway tag');
+assert(!qrPoster.includes('প্রবেশ করুন ↗'), 'Promo poster cleanly excludes redundant open link chip');
 
 // ---------------------------------------------------------------------
 // SUMMARY
