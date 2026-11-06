@@ -563,16 +563,16 @@ function drawCanvasDualTonePrize(ctx, rawText, centerX, centerY, maxW, isChamp) 
     restPart = match[2].trim();
   }
 
-  let fontPx = 25;
+  let fontPx = 36;
   ctx.font = `900 ${fontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
-  let numW = ctx.measureText ? ctx.measureText(numPart).width : 100;
+  let numW = ctx.measureText ? ctx.measureText(numPart).width : 120;
   let restW = restPart && ctx.measureText ? ctx.measureText(' ' + restPart).width : 0;
   let totalW = numW + restW;
 
   if (totalW > maxW) {
-    fontPx = Math.max(14, Math.floor(fontPx * (maxW / totalW)));
+    fontPx = Math.max(18, Math.floor(fontPx * (maxW / totalW)));
     ctx.font = `900 ${fontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
-    numW = ctx.measureText ? ctx.measureText(numPart).width : 80;
+    numW = ctx.measureText ? ctx.measureText(numPart).width : 90;
     restW = restPart && ctx.measureText ? ctx.measureText(' ' + restPart).width : 0;
     totalW = numW + restW;
   }
@@ -601,14 +601,23 @@ function drawCanvasDualTonePrize(ctx, rawText, centerX, centerY, maxW, isChamp) 
   ctx.restore();
 }
 
-function renderPromoPosterToCanvas() {
+function renderPromoPosterToCanvas(scale = 1) {
   const canvas = document.createElement('canvas');
-  const width = 1200;
-  const height = 920;
-  canvas.width = width;
-  canvas.height = height;
+  const baseW = 1200;
+  const baseH = 920;
+  canvas.width = Math.round(baseW * scale);
+  canvas.height = Math.round(baseH * scale);
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
+
+  if (scale !== 1 && typeof ctx.scale === 'function') {
+    ctx.scale(scale, scale);
+  }
+  if ('imageSmoothingEnabled' in ctx) ctx.imageSmoothingEnabled = true;
+  if ('imageSmoothingQuality' in ctx) ctx.imageSmoothingQuality = 'high';
+
+  const width = baseW;
+  const height = baseH;
 
   // 1. BASE BACKGROUND FILL
   ctx.fillStyle = '#07152b';
@@ -782,11 +791,23 @@ function renderPromoPosterToCanvas() {
   ctx.fillText(title, centerTitleX, 84);
   ctx.restore();
 
-  // Glass Capsule Pill: Organizer & Venue with glowing golden border
-  const pillW = 620;
+  // Glass Capsule Pill: Organizer & Venue with glowing golden border (Dynamically measured & fitted)
+  const metaText = `🚩 ${isEn ? 'Organized by:' : 'আয়োজনে:'} ${org}   |   📍 ${isEn ? 'Venue:' : 'স্থান:'} ${venue}`;
+  ctx.save();
+  ctx.font = 'bold 14px "Hind Siliguri", "Segoe UI", sans-serif';
+  let metaTextW = ctx.measureText ? ctx.measureText(metaText).width : 500;
+  const maxAvailablePillW = 1040;
+  let pillFontSize = 14;
+  if (metaTextW + 54 > maxAvailablePillW) {
+    pillFontSize = Math.max(11, Math.floor(pillFontSize * ((maxAvailablePillW - 54) / metaTextW)));
+    ctx.font = `bold ${pillFontSize}px "Hind Siliguri", "Segoe UI", sans-serif`;
+    metaTextW = ctx.measureText ? ctx.measureText(metaText).width : 500;
+  }
+  const pillW = Math.min(maxAvailablePillW, Math.max(520, metaTextW + 52));
   const pillH = 38;
   const pillX = 600 - (pillW / 2);
   const pillY = 112;
+
   ctx.save();
   if (ctx.shadowColor !== undefined) {
     ctx.shadowColor = 'rgba(250, 204, 21, 0.8)';
@@ -795,16 +816,15 @@ function renderPromoPosterToCanvas() {
   drawRoundedRect(ctx, pillX, pillY, pillW, pillH, 19, 'rgba(4, 15, 36, 0.95)', '#facc15', 2.5);
   ctx.restore();
 
-  ctx.save();
-  ctx.font = 'bold 13.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = `bold ${pillFontSize}px "Hind Siliguri", "Segoe UI", sans-serif`;
   ctx.fillStyle = '#ffffff';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(`🚩 ${isEn ? 'Organized by:' : 'আয়োজনে:'} ${org}   |   📍 ${isEn ? 'Venue:' : 'স্থান:'} ${venue}`, 600, pillY + (pillH / 2));
+  ctx.fillText(metaText, 600, pillY + (pillH / 2));
   ctx.restore();
 
   // 5. ROW 1: 2 BLUE GLASS SPECIFICATION CARDS (PERFECTLY ALIGNED WITH PRIZE CARDS BELOW)
-  const r1H = 66;
+  const r1H = 68;
   const prizeCardW = 528;
   const prizeGap = 24;
   const p1X = 60;
@@ -825,31 +845,31 @@ function renderPromoPosterToCanvas() {
       ctx.shadowColor = 'rgba(56, 189, 248, 0.6)';
       ctx.shadowBlur = 14;
     }
-    drawRoundedRect(ctx, cX, r1Y, prizeCardW, r1H, 12, scGrad, '#38bdf8', 2);
+    drawRoundedRect(ctx, cX, r1Y, prizeCardW, r1H, 14, scGrad, '#38bdf8', 2);
     ctx.restore();
 
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = '800 12px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.font = '800 14px "Hind Siliguri", "Segoe UI", sans-serif';
     ctx.fillStyle = '#bae6fd';
     ctx.fillText(sc.label, cX + prizeCardW / 2, r1Y + 20);
 
-    ctx.font = '900 16px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.font = '900 22px "Hind Siliguri", "Segoe UI", sans-serif';
     ctx.fillStyle = '#ffffff';
     if (ctx.shadowColor !== undefined) {
       ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
       ctx.shadowBlur = 4;
       ctx.shadowOffsetY = 2;
     }
-    ctx.fillText(sc.val, cX + prizeCardW / 2, r1Y + 44);
+    ctx.fillText(sc.val, cX + prizeCardW / 2, r1Y + 46);
     ctx.restore();
   });
 
   // 6. ROW 2: 2 GOLDEN RICE SHEAF PRIZE CARDS (RICH 3D LUXURY FINISH)
   const r2Y = 248;
   const r2H = 135;
-  const maxPrizeTextW = prizeCardW - 170; // 358px safe space between left & right wheat sheaves
+  const maxPrizeTextW = prizeCardW - 80; // Expanded safe space taking full advantage of container width
 
   // Champion Prize Card (Deep Espresso / Black Luxury Radial Background)
   const champGrad = ctx.createRadialGradient
@@ -880,8 +900,8 @@ function renderPromoPosterToCanvas() {
   // Champion Header Lockup (3D Tri-Color Ribbon Medal + Title)
   const champTitle = isEn ? 'CHAMPION TEAM PRIZE MONEY' : 'চ্যাম্পিয়ন দলের প্রাইজমানি';
   ctx.save();
-  ctx.font = '800 13px "Hind Siliguri", "Segoe UI", sans-serif';
-  const champTitleW = ctx.measureText ? ctx.measureText(champTitle).width : 170;
+  ctx.font = '900 16.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  const champTitleW = ctx.measureText ? ctx.measureText(champTitle).width : 210;
   const champMedalW = 28;
   const champGroupW = champMedalW + 8 + champTitleW;
   const champStartX = p1X + (prizeCardW - champGroupW) / 2;
@@ -900,7 +920,7 @@ function renderPromoPosterToCanvas() {
   ctx.restore();
 
   // Dual-tone Champion Prize Amount (Golden Numbers + Crisp White Text)
-  drawCanvasDualTonePrize(ctx, champPrize, p1X + prizeCardW / 2, r2Y + 78, maxPrizeTextW, true);
+  drawCanvasDualTonePrize(ctx, champPrize, p1X + prizeCardW / 2, r2Y + 84, maxPrizeTextW, true);
 
   // Runner-Up Prize Card (Deep Slate / Black Luxury Radial Background)
   const ruGrad = ctx.createRadialGradient
@@ -931,8 +951,8 @@ function renderPromoPosterToCanvas() {
   // Runner-Up Header Lockup (3D Tri-Color Ribbon Silver Medal + Title)
   const ruTitle = isEn ? 'RUNNER-UP TEAM PRIZE MONEY' : 'রানার্স-আপ দলের প্রাইজমানি';
   ctx.save();
-  ctx.font = '800 13px "Hind Siliguri", "Segoe UI", sans-serif';
-  const ruTitleW = ctx.measureText ? ctx.measureText(ruTitle).width : 170;
+  ctx.font = '900 16.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  const ruTitleW = ctx.measureText ? ctx.measureText(ruTitle).width : 210;
   const ruMedalW = 28;
   const ruGroupW = ruMedalW + 8 + ruTitleW;
   const ruStartX = p2X + (prizeCardW - ruGroupW) / 2;
@@ -951,7 +971,7 @@ function renderPromoPosterToCanvas() {
   ctx.restore();
 
   // Dual-tone Runner-Up Prize Amount (Golden Numbers + Crisp White Text)
-  drawCanvasDualTonePrize(ctx, runnerPrize, p2X + prizeCardW / 2, r2Y + 78, maxPrizeTextW, false);
+  drawCanvasDualTonePrize(ctx, runnerPrize, p2X + prizeCardW / 2, r2Y + 84, maxPrizeTextW, false);
 
   // 7. ROW 3: SECONDARY PRIZES STRIP
   const r3Y = 396;
@@ -971,10 +991,10 @@ function renderPromoPosterToCanvas() {
   ctx.fillText(`🏅 ${isEn ? 'Individual Awards:' : 'ব্যক্তিগত পুরস্কার:'} ${otherPrizes}`, p1X + fullRowW - 24, r3Y + r3H / 2);
   ctx.restore();
 
-  // 8. ROW 4: 2-COLUMN INFO & CONTACT STRIP (WITH MIDDLE DIVIDER)
+  // 8. ROW 4: 2-COLUMN INFO & CONTACT STRIP (WITH MIDDLE DIVIDER & PROMINENT FONT)
   const r4Y = 442;
-  const r4H = 64;
-  drawRoundedRect(ctx, p1X, r4Y, fullRowW, r4H, 10, 'rgba(5, 16, 38, 0.94)', 'rgba(250, 204, 21, 0.55)', 1.5);
+  const r4H = 72;
+  drawRoundedRect(ctx, p1X, r4Y, fullRowW, r4H, 12, 'rgba(5, 16, 38, 0.94)', 'rgba(250, 204, 21, 0.55)', 1.5);
 
   // Info strip middle divider
   ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
@@ -986,30 +1006,38 @@ function renderPromoPosterToCanvas() {
 
   ctx.save();
   ctx.textBaseline = 'middle';
+  ctx.font = 'bold 15px "Hind Siliguri", "Segoe UI", sans-serif';
 
   // Left Col
   ctx.textAlign = 'left';
-  ctx.font = '12.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  const feeLabel = `👥 ${isEn ? 'Team Entry Fee:' : 'প্রতি দলের এন্ট্রি ফি:'} `;
   ctx.fillStyle = '#fde047';
-  ctx.fillText(`👥 ${isEn ? 'Team Entry Fee:' : 'প্রতি দলের এন্ট্রি ফি:'} `, p1X + 20, r4Y + 20);
+  ctx.fillText(feeLabel, p1X + 22, r4Y + 24);
+  const feeLblW = ctx.measureText ? ctx.measureText(feeLabel).width : (isEn ? 150 : 165);
   ctx.fillStyle = '#ffffff';
-  ctx.fillText(entryFee, p1X + (isEn ? 140 : 160), r4Y + 20);
+  ctx.fillText(entryFee, p1X + 22 + feeLblW, r4Y + 24);
 
+  const dlLabel = `🗓️ ${isEn ? 'Reg. Deadline:' : 'নিবন্ধনের শেষ সময়সীমা:'} `;
   ctx.fillStyle = '#fde047';
-  ctx.fillText(`🗓️ ${isEn ? 'Reg. Deadline:' : 'নিবন্ধনের শেষ সময়সীমা:'} `, p1X + 20, r4Y + 44);
+  ctx.fillText(dlLabel, p1X + 22, r4Y + 50);
+  const dlLblW = ctx.measureText ? ctx.measureText(dlLabel).width : (isEn ? 150 : 190);
   ctx.fillStyle = '#ffffff';
-  ctx.fillText(regDeadline, p1X + (isEn ? 140 : 185), r4Y + 44);
+  ctx.fillText(regDeadline, p1X + 22 + dlLblW, r4Y + 50);
 
   // Right Col
+  const phoneLabel = `📞 ${isEn ? 'Contact / Hotline:' : 'জরুরি যোগাযোগ:'} `;
   ctx.fillStyle = '#38bdf8';
-  ctx.fillText(`📞 ${isEn ? 'Contact / Hotline:' : 'জরুরি যোগাযোগ:'} `, p1X + fullRowW / 2 + 30, r4Y + 20);
+  ctx.fillText(phoneLabel, p1X + fullRowW / 2 + 24, r4Y + 24);
+  const phLblW = ctx.measureText ? ctx.measureText(phoneLabel).width : (isEn ? 160 : 150);
   ctx.fillStyle = '#ffffff';
-  ctx.fillText(contactPhone, p1X + fullRowW / 2 + (isEn ? 160 : 145), r4Y + 20);
+  ctx.fillText(contactPhone, p1X + fullRowW / 2 + 24 + phLblW, r4Y + 24);
 
+  const payLabel = `📱 ${isEn ? 'Payment Via:' : 'ফি প্রদানের মাধ্যম:'} `;
   ctx.fillStyle = '#38bdf8';
-  ctx.fillText(`📱 ${isEn ? 'Payment Via:' : 'ফি প্রদানের মাধ্যম:'} `, p1X + fullRowW / 2 + 30, r4Y + 44);
+  ctx.fillText(payLabel, p1X + fullRowW / 2 + 24, r4Y + 50);
+  const payLblW = ctx.measureText ? ctx.measureText(payLabel).width : (isEn ? 160 : 155);
   ctx.fillStyle = '#ffffff';
-  ctx.fillText(paymentMethod, p1X + fullRowW / 2 + (isEn ? 160 : 145), r4Y + 44);
+  ctx.fillText(paymentMethod, p1X + fullRowW / 2 + 24 + payLblW, r4Y + 50);
   ctx.restore();
 
   // 9. ROW 5: MASTER RULES BOARD (LUXURY GOLDEN FRAME WHITE ROUNDED CARD)
@@ -2428,8 +2456,8 @@ async function downloadSocialCard(type, btnElement) {
   let filename = `${cleanTitle}-card.png`;
 
   if (type === 'promo') {
-    canvas = renderPromoPosterToCanvas();
-    filename = `${cleanTitle}-tournament-notice.png`;
+    canvas = renderPromoPosterToCanvas(3.2); // Native 4K Ultra-HD Resolution (3840 x 2944)
+    filename = `${cleanTitle}-tournament-notice-4k.png`;
   } else if (type === 'standings') {
     canvas = renderStandingsToCanvas();
     filename = `${cleanTitle}-group-standings.png`;

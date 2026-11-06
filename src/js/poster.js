@@ -199,7 +199,7 @@ function generatePosterHeroBannerHtml(opts) {
           <h1 class="promo-hero-title ${activePosterTab === 'promo' ? 'promo-gold-3d-title' : ''}" style="margin:2px 0 4px 0; font-size:${activePosterTab === 'promo' ? '25px' : '22px'}; font-weight:900; color:#ffca28; text-shadow:0 2px 8px rgba(0,0,0,0.85), 0 0 16px rgba(251,191,36,0.4); line-height:1.25;">
             ⚽ ${esc(c.title || defaultTitle)} ⚽
           </h1>
-          <div class="promo-hero-sub ${activePosterTab === 'promo' ? 'promo-glass-capsule' : ''}" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; font-size:11.5px; color:#e2e8f0; font-weight:600; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.3); border-radius:20px; padding:3px 14px; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); text-shadow:0 1px 3px rgba(0,0,0,0.8);">
+          <div class="promo-hero-sub ${activePosterTab === 'promo' ? 'promo-glass-capsule' : ''}" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; max-width:94%; margin:0 auto; box-sizing:border-box; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); text-shadow:0 1px 3px rgba(0,0,0,0.8);">
             <span>🚩 ${tFn('poster.footer_org')} <strong>${esc(c.organizer || defaultOrg)}</strong></span>
             <span style="opacity:0.6;">|</span>
             <span>📍 ${tFn('page1.meta_venue')} <strong>${esc(c.venue || defaultVenue)}</strong></span>
@@ -810,7 +810,7 @@ function switchPosterTab(tab) {
         printBtn.textContent = isEn ? '📸 Download Fixture (PNG)' : '📸 ফিক্সচার ছবি ডাউনলোড (PNG)';
         printBtn.setAttribute('onclick', "downloadSocialCard('fixtures', this)");
       } else {
-        printBtn.textContent = isEn ? '📸 Download Notice (PNG)' : '📸 নোটিশ ছবি ডাউনলোড (PNG)';
+        printBtn.textContent = isEn ? '📸 Download Notice (4K Ultra-HD)' : '📸 নোটিশ ছবি ডাউনলোড (4K Ultra-HD)';
         printBtn.setAttribute('onclick', "downloadSocialCard('promo', this)");
       }
     }
@@ -823,8 +823,8 @@ function switchPosterTab(tab) {
 
     if (tipEl) {
       tipEl.textContent = isEn
-        ? '💡 Tip: Click "📸 Download Image (PNG)" to save crisp pictures ready for direct sharing on Facebook & WhatsApp.'
-        : '💡 টিপস: "📸 ছবি ডাউনলোড (PNG)" বাটনে ক্লিক করে সরাসরি ফেসবুক ও হোয়াটসঅ্যাপে পোস্ট করার উপযোগী হাই-রেজোলিউশন ছবি নামিয়ে নিন।';
+        ? '💡 Tip: Click "📸 Download Notice (4K Ultra-HD)" to save razor-sharp 4K Ultra-HD pictures ready for Facebook, WhatsApp & Printing.'
+        : '💡 টিপস: "📸 নোটিশ ছবি ডাউনলোড (4K Ultra-HD)" বাটনে ক্লিক করে সরাসরি ফেসবুক, হোয়াটসঅ্যাপ ও প্রিন্টের জন্য আল্ট্রা-এইচডি (4K) ছবি নামিয়ে নিন।';
     }
 
     if (container) {

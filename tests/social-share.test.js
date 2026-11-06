@@ -139,6 +139,11 @@ test('Social Share Hub & Image Export Engine Test Suite', async (t) => {
     assert(promoCanvas, 'Promo poster canvas must be created');
     assert.strictEqual(promoCanvas.width, 1200, 'Promo poster canvas width must be 1200');
 
+    const promo4kCanvas = renderPromoPosterToCanvas(3.2);
+    assert(promo4kCanvas, 'Promo poster 4K canvas must be created');
+    assert.strictEqual(promo4kCanvas.width, 3840, 'Promo poster 4K canvas width must be 3840 (Native 4K Ultra-HD)');
+    assert.strictEqual(promo4kCanvas.height, 2944, 'Promo poster 4K canvas height must be 2944 (Native 4K Ultra-HD)');
+
     const standingsCanvas = renderStandingsToCanvas();
     assert(standingsCanvas, 'Standings canvas must be created');
     assert.strictEqual(standingsCanvas.width, 1200, 'Standings canvas width must be 1200');
