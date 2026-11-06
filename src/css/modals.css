@@ -3612,19 +3612,28 @@
       gap: 8px;
     }
 
-    /* Row 5: Master Rules Board (White Rounded Card with 10 Numbered Rules) */
+    /* Row 5: Master Rules Board (White Rounded Card with Luxury Metallic Golden Frame) */
     .promo-ref-rules-card {
       background: #ffffff !important;
-      border: 3px solid #f59e0b !important;
-      border-radius: 14px;
-      padding: 12px 16px;
+      border: 4px solid transparent !important;
+      background-image: linear-gradient(#ffffff, #ffffff), linear-gradient(135deg, #fef08a 0%, #facc15 30%, #ca8a04 70%, #92400e 100%) !important;
+      background-origin: border-box !important;
+      background-clip: padding-box, border-box !important;
+      border-radius: 22px !important;
+      padding: 24px 18px 14px 18px !important;
       color: #0f172a !important;
-      box-shadow: 0 0 22px rgba(245, 158, 11, 0.4), 0 8px 25px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 25px rgba(250, 204, 21, 0.55), 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+      position: relative;
       z-index: 2;
     }
     .promo-ref-rules-card .rules-card-header-wrap {
+      position: absolute;
+      top: -16px;
+      left: 0;
+      right: 0;
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 0;
+      z-index: 3;
     }
     .promo-ref-rules-card .rules-card-header-pill {
       display: inline-flex;
@@ -3632,13 +3641,13 @@
       justify-content: center;
       gap: 6px;
       background: linear-gradient(90deg, #f59e0b, #d97706);
-      border: 1.5px solid #fef08a;
+      border: 2px solid #fef08a;
       color: #ffffff !important;
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 800;
-      padding: 4px 20px;
-      border-radius: 20px;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+      padding: 5px 24px;
+      border-radius: 22px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     }
     .promo-rules-grid-2col {
       display: grid;

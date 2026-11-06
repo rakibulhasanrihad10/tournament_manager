@@ -671,7 +671,20 @@ function renderPromoPosterToCanvas() {
   ctx.fillStyle = bgOverlay;
   ctx.fillRect(0, 0, width, height);
 
-  // 3. SUPERSTAR PLAYER CUTOUTS (OR CUSTOM LOGOS)
+  // 3. SUPERSTAR PLAYER CUTOUTS (OR CUSTOM LOGOS) - CONFINED TO TOP HERO BANNER
+  const r1Y = 168;
+  const heroBottomY = r1Y - 6; // 162px - clean boundary right above the 3 blue spec cards
+  const heroMaxH = 150;
+  const heroMaxW = 210;
+
+  // Clip all hero player cutouts so they NEVER bleed down into specification cards or prize cards!
+  ctx.save();
+  ctx.beginPath();
+  if (typeof ctx.rect === 'function') {
+    ctx.rect(0, 0, width, heroBottomY);
+  }
+  if (typeof ctx.clip === 'function') ctx.clip();
+
   // Left: Messi or User Custom Photo
   let leftPlayerImg = null;
   if (typeof blankRosterImages !== 'undefined' && blankRosterImages && blankRosterImages.leftType === 'custom' && blankRosterImages.customLeft && blankRosterImages.customLeft.startsWith('data:')) {
@@ -688,19 +701,19 @@ function renderPromoPosterToCanvas() {
       ctx.save();
       if (ctx.shadowColor !== undefined) {
         ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-        ctx.shadowBlur = 20;
-        ctx.shadowOffsetY = 10;
+        ctx.shadowBlur = 18;
+        ctx.shadowOffsetY = 6;
       }
-      const maxW = 270;
-      const maxH = 340;
       const pRatio = leftPlayerImg.naturalWidth / leftPlayerImg.naturalHeight;
-      let drawW = maxW;
-      let drawH = drawW / pRatio;
-      if (drawH > maxH) {
-        drawH = maxH;
-        drawW = drawH * pRatio;
+      let drawH = heroMaxH;
+      let drawW = drawH * pRatio;
+      if (drawW > heroMaxW) {
+        drawW = heroMaxW;
+        drawH = drawW / pRatio;
       }
-      ctx.drawImage(leftPlayerImg, 15, 20, drawW, drawH);
+      const drawX = 22;
+      const drawY = Math.max(8, heroBottomY - drawH);
+      ctx.drawImage(leftPlayerImg, drawX, drawY, drawW, drawH);
       ctx.restore();
     } catch (e) {
       // fallback
@@ -723,24 +736,26 @@ function renderPromoPosterToCanvas() {
       ctx.save();
       if (ctx.shadowColor !== undefined) {
         ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-        ctx.shadowBlur = 20;
-        ctx.shadowOffsetY = 10;
+        ctx.shadowBlur = 18;
+        ctx.shadowOffsetY = 6;
       }
-      const maxW = 270;
-      const maxH = 340;
       const pRatio = rightPlayerImg.naturalWidth / rightPlayerImg.naturalHeight;
-      let drawW = maxW;
-      let drawH = drawW / pRatio;
-      if (drawH > maxH) {
-        drawH = maxH;
-        drawW = drawH * pRatio;
+      let drawH = heroMaxH;
+      let drawW = drawH * pRatio;
+      if (drawW > heroMaxW) {
+        drawW = heroMaxW;
+        drawH = drawW / pRatio;
       }
-      ctx.drawImage(rightPlayerImg, width - drawW - 15, 20, drawW, drawH);
+      const drawX = width - drawW - 22;
+      const drawY = Math.max(8, heroBottomY - drawH);
+      ctx.drawImage(rightPlayerImg, drawX, drawY, drawW, drawH);
       ctx.restore();
     } catch (e) {
       // fallback
     }
   }
+
+  ctx.restore(); // Restore hero clipping
 
   // 4. CENTER HERO TITLE & CAPSULE
   const centerTitleX = 600;
@@ -787,7 +802,6 @@ function renderPromoPosterToCanvas() {
   ctx.restore();
 
   // 5. ROW 1: 3 BLUE GLASS SPECIFICATION CARDS
-  const r1Y = 168;
   const r1H = 66;
   const cardW = 345;
   const cardsGap = 22;
@@ -1028,25 +1042,35 @@ function renderPromoPosterToCanvas() {
   ctx.fillText(paymentMethod, p1X + fullRowW / 2 + (isEn ? 160 : 145), r4Y + 44);
   ctx.restore();
 
-  // 9. ROW 5: MASTER RULES BOARD (WHITE ROUNDED CARD WITH VERTICAL DIVIDER)
+  // 9. ROW 5: MASTER RULES BOARD (LUXURY GOLDEN FRAME WHITE ROUNDED CARD)
   const r5Y = 518;
   const r5H = 340;
+
+  // Ultra-Premium Metallic Golden Outer Frame with Ambient Glow
   ctx.save();
   if (ctx.shadowColor !== undefined) {
-    ctx.shadowColor = 'rgba(245, 158, 11, 0.45)';
-    ctx.shadowBlur = 20;
-    ctx.shadowOffsetY = 6;
+    ctx.shadowColor = 'rgba(250, 204, 21, 0.65)';
+    ctx.shadowBlur = 24;
+    ctx.shadowOffsetY = 8;
   }
-  drawRoundedRect(ctx, p1X, r5Y, fullRowW, r5H, 14, '#ffffff', '#f59e0b', 3);
+  const rulesBorderGrad = ctx.createLinearGradient(p1X, r5Y, p1X + fullRowW, r5Y + r5H);
+  rulesBorderGrad.addColorStop(0, '#fef08a');
+  rulesBorderGrad.addColorStop(0.25, '#facc15');
+  rulesBorderGrad.addColorStop(0.65, '#ca8a04');
+  rulesBorderGrad.addColorStop(1, '#92400e');
+  drawRoundedRect(ctx, p1X, r5Y, fullRowW, r5H, 22, '#ffffff', rulesBorderGrad, 4.5);
   ctx.restore();
+
+  // Subtle inner decorative border for certificate/plaque multi-layer depth
+  drawRoundedRect(ctx, p1X + 4.5, r5Y + 4.5, fullRowW - 9, r5H - 9, 18, null, 'rgba(202, 138, 4, 0.22)', 1.2);
 
   // Vertical divider line between the two columns
   const divX = p1X + fullRowW / 2;
-  ctx.strokeStyle = '#cbd5e1';
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1.8;
   ctx.beginPath();
-  if (typeof ctx.moveTo === 'function') ctx.moveTo(divX, r5Y + 54);
-  if (typeof ctx.lineTo === 'function') ctx.lineTo(divX, r5Y + r5H - 14);
+  if (typeof ctx.moveTo === 'function') ctx.moveTo(divX, r5Y + 34);
+  if (typeof ctx.lineTo === 'function') ctx.lineTo(divX, r5Y + r5H - 18);
   if (typeof ctx.stroke === 'function') ctx.stroke();
 
   // Retrieve user rules or default reference rules
@@ -1068,28 +1092,36 @@ function renderPromoPosterToCanvas() {
     }
   }
 
-  // Header Golden Pill
-  const pillHeaderW = 540;
-  const pillHeaderH = 32;
+  // Header Golden Pill - ANCHORED OVERLAPPING TOP GOLDEN BORDER (Exactly like Reference Design)
+  const pillHeaderW = 550;
+  const pillHeaderH = 34;
   const pillHeaderX = 600 - (pillHeaderW / 2);
-  const pillHeaderY = r5Y + 12;
-  const headerPillGrad = ctx.createLinearGradient(pillHeaderX, pillHeaderY, pillHeaderX + pillHeaderW, pillHeaderY);
+  const pillHeaderY = r5Y - 17; // Clamped onto the top gold rim!
+  ctx.save();
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetY = 4;
+  }
+  const headerPillGrad = ctx.createLinearGradient(pillHeaderX, pillHeaderY, pillHeaderX, pillHeaderY + pillHeaderH);
   headerPillGrad.addColorStop(0, '#f59e0b');
-  headerPillGrad.addColorStop(1, '#d97706');
-  drawRoundedRect(ctx, pillHeaderX, pillHeaderY, pillHeaderW, pillHeaderH, 16, headerPillGrad);
+  headerPillGrad.addColorStop(0.5, '#d97706');
+  headerPillGrad.addColorStop(1, '#b45309');
+  drawRoundedRect(ctx, pillHeaderX, pillHeaderY, pillHeaderW, pillHeaderH, 17, headerPillGrad, '#fef08a', 2);
+  ctx.restore();
 
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = 'bold 12.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#ffffff';
   ctx.fillText(`📋 ${isEn ? 'Tournament Rules & Regulations (10 Key Rules):' : 'টুর্নামেন্ট পরিচালনা ও অংশগ্রহণের প্রধান নিয়মাবলী (১০ টি):'}`, 600, pillHeaderY + pillHeaderH / 2);
   ctx.restore();
 
   // 10 Rules in 2 Columns of 5 Rows
   const colRuleW = (fullRowW - 60) / 2; // ~510px
-  const ruleStartY = r5Y + 58;
-  const ruleRowGap = 54;
+  const ruleStartY = r5Y + 40;
+  const ruleRowGap = 56;
 
   rulesToDraw.slice(0, 10).forEach((rule, idx) => {
     const isCol2 = idx >= 5;
