@@ -183,45 +183,58 @@ function getPromoCanvasDefaultRules(isEn) {
   ];
 }
 
-function drawWheatGrain(ctx, cx, cy, rx, ry, angle, fillColor, strokeColor) {
+function drawCanvasLaurelLeaf(ctx, bx, by, tx, ty, width, fillColor, strokeColor) {
   ctx.save();
-  if (typeof ctx.translate === 'function' && typeof ctx.rotate === 'function') {
-    ctx.translate(cx, cy);
-    ctx.rotate(angle);
-    ctx.fillStyle = fillColor;
-    ctx.strokeStyle = strokeColor;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    if (typeof ctx.ellipse === 'function') {
-      ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-    } else if (typeof ctx.arc === 'function') {
-      ctx.arc(0, 0, (rx + ry) / 2, 0, Math.PI * 2);
-    }
-    if (typeof ctx.fill === 'function') ctx.fill();
-    if (typeof ctx.stroke === 'function') ctx.stroke();
-  } else {
-    ctx.fillStyle = fillColor;
-    if (typeof ctx.beginPath === 'function' && typeof ctx.arc === 'function') {
-      ctx.beginPath();
-      ctx.arc(cx, cy, (rx + ry) / 2, 0, Math.PI * 2);
-      if (typeof ctx.fill === 'function') ctx.fill();
-    }
+  ctx.fillStyle = fillColor;
+  ctx.strokeStyle = strokeColor;
+  ctx.lineWidth = 1;
+
+  const dx = tx - bx;
+  const dy = ty - by;
+  const len = Math.hypot(dx, dy) || 1;
+  const ux = dx / len;
+  const uy = dy / len;
+  const px = -uy;
+  const py = ux;
+
+  const midX = (bx + tx) / 2;
+  const midY = (by + ty) / 2;
+  const c1x = midX + px * (width / 2);
+  const c1y = midY + py * (width / 2);
+  const c2x = midX - px * (width / 2);
+  const c2y = midY - py * (width / 2);
+
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') ctx.moveTo(bx, by);
+  if (typeof ctx.quadraticCurveTo === 'function') {
+    ctx.quadraticCurveTo(c1x, c1y, tx, ty);
+    ctx.quadraticCurveTo(c2x, c2y, bx, by);
+  } else if (typeof ctx.lineTo === 'function') {
+    ctx.lineTo(tx, ty);
+    ctx.lineTo(bx, by);
   }
+  if (typeof ctx.closePath === 'function') ctx.closePath();
+  if (typeof ctx.fill === 'function') ctx.fill();
+  if (typeof ctx.stroke === 'function') ctx.stroke();
   ctx.restore();
 }
 
-function drawCanvasRiceSheafBranch(ctx, baseX, baseY, height, isLeft) {
+function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
   ctx.save();
   const dir = isLeft ? 1 : -1;
+  const baseX = isLeft ? (cardX + 26) : (cardX + cardW - 26);
+  const baseY = cardY + cardH - 16;
+  const tipX = isLeft ? (cardX + 60) : (cardX + cardW - 60);
+  const tipY = cardY + 16;
+  const ctrlX = isLeft ? (cardX + 12) : (cardX + cardW - 12);
+  const ctrlY = cardY + cardH * 0.52;
+
+  // Draw main curved golden stem
   ctx.strokeStyle = '#facc15';
   ctx.lineWidth = 2.5;
   ctx.lineCap = 'round';
   ctx.beginPath();
   if (typeof ctx.moveTo === 'function') ctx.moveTo(baseX, baseY);
-  const ctrlX = baseX + (dir * 26);
-  const ctrlY = baseY - (height * 0.52);
-  const tipX = baseX + (dir * 32);
-  const tipY = baseY - height;
   if (typeof ctx.quadraticCurveTo === 'function') {
     ctx.quadraticCurveTo(ctrlX, ctrlY, tipX, tipY);
   } else if (typeof ctx.lineTo === 'function') {
@@ -229,21 +242,54 @@ function drawCanvasRiceSheafBranch(ctx, baseX, baseY, height, isLeft) {
   }
   if (typeof ctx.stroke === 'function') ctx.stroke();
 
-  // Draw tip grain
-  drawWheatGrain(ctx, tipX, tipY, 4, 8, (dir * 0.35), '#fef08a', '#ca8a04');
-
-  // Draw 6 pairs of grains along the curved stem
-  const grainPairs = 6;
-  for (let i = 1; i <= grainPairs; i++) {
-    const t = 1 - (i / (grainPairs + 0.8));
+  // Draw pairs of golden leaves/grains along stem
+  const numPairs = 6;
+  for (let i = 1; i <= numPairs; i++) {
+    const t = 0.12 + (i / (numPairs + 1)) * 0.82;
     const px = (1 - t) * (1 - t) * baseX + 2 * (1 - t) * t * ctrlX + t * t * tipX;
     const py = (1 - t) * (1 - t) * baseY + 2 * (1 - t) * t * ctrlY + t * t * tipY;
 
-    // Outer grain
-    drawWheatGrain(ctx, px - (dir * 8), py + 2, 4.5, 9, (dir * -0.45), '#fde047', '#ca8a04');
-    // Inner grain
-    drawWheatGrain(ctx, px + (dir * 8), py - 2, 4.5, 9, (dir * 0.55), '#facc15', '#ca8a04');
+    // Stem tangent derivative
+    const tx = 2 * (1 - t) * (ctrlX - baseX) + 2 * t * (tipX - ctrlX);
+    const ty = 2 * (1 - t) * (ctrlY - baseY) + 2 * t * (tipY - ctrlY);
+    const tlen = Math.hypot(tx, ty) || 1;
+    const utx = tx / tlen;
+    const uty = ty / tlen;
+    const unx = -uty;
+    const uny = utx;
+
+    const leafLen = 13 + (1 - Math.abs(t - 0.5) * 1.5) * 6;
+    const leafWidth = 6.5;
+
+    // Outer leaf (points away from center and up)
+    const outAngleX = utx * 0.7 - (unx * dir * 0.7);
+    const outAngleY = uty * 0.7 - (uny * dir * 0.7);
+    const outTipX = px + outAngleX * leafLen;
+    const outTipY = py + outAngleY * leafLen;
+    drawCanvasLaurelLeaf(ctx, px, py, outTipX, outTipY, leafWidth, '#fde047', '#ca8a04');
+
+    // Inner leaf (points towards center and up)
+    const inAngleX = utx * 0.75 + (unx * dir * 0.65);
+    const inAngleY = uty * 0.75 + (uny * dir * 0.65);
+    const inTipX = px + inAngleX * (leafLen * 0.9);
+    const inTipY = py + inAngleY * (leafLen * 0.9);
+    drawCanvasLaurelLeaf(ctx, px, py, inTipX, inTipY, leafWidth * 0.95, '#facc15', '#ca8a04');
   }
+
+  // Tip grain at the very top
+  const topDx = (tipX - ctrlX);
+  const topDy = (tipY - ctrlY);
+  const topLen = Math.hypot(topDx, topDy) || 1;
+  const topTipX = tipX + (topDx / topLen) * 14;
+  const topTipY = tipY + (topDy / topLen) * 14;
+  drawCanvasLaurelLeaf(ctx, tipX, tipY, topTipX, topTipY, 6, '#fef08a', '#ca8a04');
+
+  // Base node
+  ctx.fillStyle = '#ca8a04';
+  ctx.beginPath();
+  if (typeof ctx.arc === 'function') ctx.arc(baseX, baseY, 3, 0, Math.PI * 2);
+  if (typeof ctx.fill === 'function') ctx.fill();
+
   ctx.restore();
 }
 
@@ -501,18 +547,29 @@ function renderPromoPosterToCanvas() {
   drawRoundedRect(ctx, p1X, r2Y, prizeCardW, r2H, 16, champGrad, '#facc15', 3);
   ctx.restore();
 
-  // Rice sheaf branches flanking champion prize
-  drawCanvasRiceSheafBranch(ctx, p1X + 22, r2Y + r2H - 12, r2H - 24, true);
-  drawCanvasRiceSheafBranch(ctx, p1X + prizeCardW - 22, r2Y + r2H - 12, r2H - 24, false);
+  // Rice sheaf branches flanking champion prize with perfect placement
+  drawCanvasRiceSheafWreath(ctx, p1X, r2Y, prizeCardW, r2H, true);
+  drawCanvasRiceSheafWreath(ctx, p1X, r2Y, prizeCardW, r2H, false);
+
+  const maxPrizeTextW = prizeCardW - 160; // 368px safe space between left and right wheat sheaves
 
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#fef08a';
-  ctx.fillText(isEn ? '🥇 CHAMPION TEAM PRIZE MONEY' : '🥇 champions দলের প্রাইজমানি', p1X + prizeCardW / 2, r2Y + 28);
+  ctx.fillText(isEn ? '🥇 CHAMPION TEAM PRIZE MONEY' : '🥇 চ্যাম্পিয়ন দলের প্রাইজমানি', p1X + prizeCardW / 2, r2Y + 28);
 
-  ctx.font = '900 25px "Hind Siliguri", "Segoe UI", sans-serif';
+  // Scaled prize text so it never overlaps the sheaves
+  let champFontPx = 24;
+  ctx.font = `900 ${champFontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
+  if (ctx.measureText) {
+    const textW = ctx.measureText(champPrize).width;
+    if (textW > maxPrizeTextW) {
+      champFontPx = Math.max(14, Math.floor(champFontPx * (maxPrizeTextW / textW)));
+      ctx.font = `900 ${champFontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
+    }
+  }
   ctx.fillStyle = '#ffffff';
   if (ctx.shadowColor !== undefined) {
     ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
@@ -542,8 +599,9 @@ function renderPromoPosterToCanvas() {
   drawRoundedRect(ctx, p2X, r2Y, prizeCardW, r2H, 16, ruGrad, '#facc15', 3);
   ctx.restore();
 
-  drawCanvasRiceSheafBranch(ctx, p2X + 22, r2Y + r2H - 12, r2H - 24, true);
-  drawCanvasRiceSheafBranch(ctx, p2X + prizeCardW - 22, r2Y + r2H - 12, r2H - 24, false);
+  // Rice sheaf branches flanking runner-up prize with perfect placement
+  drawCanvasRiceSheafWreath(ctx, p2X, r2Y, prizeCardW, r2H, true);
+  drawCanvasRiceSheafWreath(ctx, p2X, r2Y, prizeCardW, r2H, false);
 
   ctx.save();
   ctx.textAlign = 'center';
@@ -552,7 +610,16 @@ function renderPromoPosterToCanvas() {
   ctx.fillStyle = '#e2e8f0';
   ctx.fillText(isEn ? '🥈 RUNNER-UP TEAM PRIZE MONEY' : '🥈 রানার্স-আপ দলের প্রাইজমানি', p2X + prizeCardW / 2, r2Y + 28);
 
-  ctx.font = '900 25px "Hind Siliguri", "Segoe UI", sans-serif';
+  // Scaled prize text so it never overlaps the sheaves
+  let ruFontPx = 24;
+  ctx.font = `900 ${ruFontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
+  if (ctx.measureText) {
+    const textW = ctx.measureText(runnerPrize).width;
+    if (textW > maxPrizeTextW) {
+      ruFontPx = Math.max(14, Math.floor(ruFontPx * (maxPrizeTextW / textW)));
+      ctx.font = `900 ${ruFontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
+    }
+  }
   ctx.fillStyle = '#ffffff';
   if (ctx.shadowColor !== undefined) {
     ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';

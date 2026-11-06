@@ -377,23 +377,30 @@ function generateFixturePosterCardHtml() {
 // 2. PROMOTIONAL NOTICE & REGISTRATION POSTER (PHASE 1)
 // ----------------------------------------------------
 function getWheatSheafSvg(isLeft) {
-  const flipStyle = isLeft ? '' : 'transform: scaleX(-1);';
   return `
-    <svg class="wheat-sheaf-svg ${isLeft ? 'wheat-sheaf-left' : 'wheat-sheaf-right'}" viewBox="0 0 50 110" fill="none" xmlns="http://www.w3.org/2000/svg" style="${flipStyle}">
+    <svg class="wheat-sheaf-svg ${isLeft ? 'wheat-sheaf-left' : 'wheat-sheaf-right'}" viewBox="0 0 60 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       <!-- Curved Golden Stem -->
-      <path d="M12 105 C15 70 25 35 38 10" stroke="#facc15" stroke-width="2.5" stroke-linecap="round"/>
-      <!-- Paired Grains of Wheat/Rice -->
-      <ellipse cx="38" cy="10" rx="3.5" ry="7" transform="rotate(25 38 10)" fill="#fef08a" stroke="#ca8a04" stroke-width="1"/>
-      <ellipse cx="30" cy="22" rx="4" ry="8" transform="rotate(-15 30 22)" fill="#fde047" stroke="#ca8a04" stroke-width="1"/>
-      <ellipse cx="37" cy="24" rx="4" ry="8" transform="rotate(40 37 24)" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
-      <ellipse cx="24" cy="38" rx="4.5" ry="9" transform="rotate(-20 24 38)" fill="#fde047" stroke="#ca8a04" stroke-width="1"/>
-      <ellipse cx="32" cy="40" rx="4.5" ry="9" transform="rotate(35 32 40)" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
-      <ellipse cx="19" cy="56" rx="4.5" ry="9" transform="rotate(-25 19 56)" fill="#fde047" stroke="#ca8a04" stroke-width="1"/>
-      <ellipse cx="27" cy="58" rx="4.5" ry="9" transform="rotate(30 27 58)" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
-      <ellipse cx="15" cy="74" rx="4.5" ry="9" transform="rotate(-30 15 74)" fill="#fde047" stroke="#ca8a04" stroke-width="1"/>
-      <ellipse cx="23" cy="76" rx="4.5" ry="9" transform="rotate(25 23 76)" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
-      <ellipse cx="12" cy="92" rx="4" ry="8" transform="rotate(-35 12 92)" fill="#fde047" stroke="#ca8a04" stroke-width="1"/>
-      <ellipse cx="19" cy="94" rx="4" ry="8" transform="rotate(20 19 94)" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
+      <path d="M25 114 C10 65 20 30 45 8" stroke="#facc15" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Pairs of Golden Leaves/Grains -->
+      <!-- Pair 1 (Bottom) -->
+      <path d="M24 105 Q12 100 8 92 Q18 92 24 105 Z" fill="#fde047" stroke="#ca8a04" stroke-width="0.8"/>
+      <path d="M25 105 Q35 98 40 90 Q30 92 25 105 Z" fill="#facc15" stroke="#ca8a04" stroke-width="0.8"/>
+      <!-- Pair 2 -->
+      <path d="M20 90 Q7 83 4 74 Q15 75 20 90 Z" fill="#fde047" stroke="#ca8a04" stroke-width="0.8"/>
+      <path d="M21 90 Q33 80 39 72 Q28 75 21 90 Z" fill="#facc15" stroke="#ca8a04" stroke-width="0.8"/>
+      <!-- Pair 3 -->
+      <path d="M18 73 Q4 64 2 54 Q13 57 18 73 Z" fill="#fde047" stroke="#ca8a04" stroke-width="0.8"/>
+      <path d="M19 73 Q32 62 39 52 Q27 57 19 73 Z" fill="#facc15" stroke="#ca8a04" stroke-width="0.8"/>
+      <!-- Pair 4 -->
+      <path d="M18 55 Q6 44 6 34 Q16 38 18 55 Z" fill="#fde047" stroke="#ca8a04" stroke-width="0.8"/>
+      <path d="M20 55 Q33 44 42 35 Q29 41 20 55 Z" fill="#facc15" stroke="#ca8a04" stroke-width="0.8"/>
+      <!-- Pair 5 -->
+      <path d="M22 38 Q12 26 14 17 Q22 22 22 38 Z" fill="#fde047" stroke="#ca8a04" stroke-width="0.8"/>
+      <path d="M24 38 Q38 27 48 18 Q34 26 24 38 Z" fill="#facc15" stroke="#ca8a04" stroke-width="0.8"/>
+      <!-- Top Grain -->
+      <path d="M43 10 Q45 2 48 0 Q52 6 45 15 Z" fill="#fef08a" stroke="#ca8a04" stroke-width="0.8"/>
+      <!-- Base Tie Node -->
+      <circle cx="25" cy="114" r="3" fill="#ca8a04"/>
     </svg>
   `;
 }
