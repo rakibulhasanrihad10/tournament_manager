@@ -376,6 +376,28 @@ function generateFixturePosterCardHtml() {
 // ----------------------------------------------------
 // 2. PROMOTIONAL NOTICE & REGISTRATION POSTER (PHASE 1)
 // ----------------------------------------------------
+function getWheatSheafSvg(isLeft) {
+  const flipStyle = isLeft ? '' : 'transform: scaleX(-1);';
+  return `
+    <svg class="wheat-sheaf-svg ${isLeft ? 'wheat-sheaf-left' : 'wheat-sheaf-right'}" viewBox="0 0 50 110" fill="none" xmlns="http://www.w3.org/2000/svg" style="${flipStyle}">
+      <!-- Curved Golden Stem -->
+      <path d="M12 105 C15 70 25 35 38 10" stroke="#facc15" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Paired Grains of Wheat/Rice -->
+      <ellipse cx="38" cy="10" rx="3.5" ry="7" transform="rotate(25 38 10)" fill="#fef08a" stroke="#ca8a04" stroke-width="1"/>
+      <ellipse cx="30" cy="22" rx="4" ry="8" transform="rotate(-15 30 22)" fill="#fde047" stroke="#ca8a04" stroke-width="1"/>
+      <ellipse cx="37" cy="24" rx="4" ry="8" transform="rotate(40 37 24)" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
+      <ellipse cx="24" cy="38" rx="4.5" ry="9" transform="rotate(-20 24 38)" fill="#fde047" stroke="#ca8a04" stroke-width="1"/>
+      <ellipse cx="32" cy="40" rx="4.5" ry="9" transform="rotate(35 32 40)" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
+      <ellipse cx="19" cy="56" rx="4.5" ry="9" transform="rotate(-25 19 56)" fill="#fde047" stroke="#ca8a04" stroke-width="1"/>
+      <ellipse cx="27" cy="58" rx="4.5" ry="9" transform="rotate(30 27 58)" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
+      <ellipse cx="15" cy="74" rx="4.5" ry="9" transform="rotate(-30 15 74)" fill="#fde047" stroke="#ca8a04" stroke-width="1"/>
+      <ellipse cx="23" cy="76" rx="4.5" ry="9" transform="rotate(25 23 76)" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
+      <ellipse cx="12" cy="92" rx="4" ry="8" transform="rotate(-35 12 92)" fill="#fde047" stroke="#ca8a04" stroke-width="1"/>
+      <ellipse cx="19" cy="94" rx="4" ry="8" transform="rotate(20 19 94)" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
+    </svg>
+  `;
+}
+
 function generatePromoPosterCardHtml() {
   const c = typeof tournamentConfig !== 'undefined' ? tournamentConfig : {};
   const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
@@ -386,17 +408,28 @@ function generatePromoPosterCardHtml() {
 
   const esc = typeof escapeHtml === 'function' ? escapeHtml : (s) => s;
   let rulesListHtml = '';
-  let rulesGridHtml = '';
+  const col1Items = [];
+  const col2Items = [];
+  const halfCount = Math.ceil(allActiveRules.length / 2);
+
   allActiveRules.forEach((r, idx) => {
     const rTitle = typeof resolveRuleTitle === 'function' ? resolveRuleTitle(r, c, isEn) : (isEn && r.titleEn ? r.titleEn : r.title);
     const rDesc = typeof resolveRuleDesc === 'function' ? resolveRuleDesc(r, c, isEn) : (isEn && r.descEn ? r.descEn : r.desc);
     rulesListHtml += `<li><strong>${esc(rTitle)}:</strong> ${esc(rDesc)}</li>`;
-    rulesGridHtml += `
+    const itemHtml = `
       <div class="promo-rule-item">
         <span class="rule-num-badge">${idx + 1}</span>
-        <div class="rule-text"><strong>${esc(rTitle)}:</strong> ${esc(rDesc)}</div>
+        <div class="rule-text">
+          <strong class="rule-title-line">${esc(rTitle)}:</strong>
+          <span class="rule-desc-line">${esc(rDesc)}</span>
+        </div>
       </div>
     `;
+    if (idx < halfCount) {
+      col1Items.push(itemHtml);
+    } else {
+      col2Items.push(itemHtml);
+    }
   });
 
   const defaultTitle = isEn ? 'Football Tournament 2026' : 'ফুটবল টুর্নামেন্ট ২০২৬';
@@ -407,6 +440,7 @@ function generatePromoPosterCardHtml() {
   const defaultDate = isEn ? '2026' : '২০২৬';
 
   const tFn = typeof t === 'function' ? t : (k) => k;
+  const coverUrl = getPosterCoverUrl();
 
   const heroHtml = generatePosterHeroBannerHtml({
     badgeText: '',
@@ -421,34 +455,44 @@ function generatePromoPosterCardHtml() {
   });
 
   return `
-    <div class="promo-poster-card" id="promo-poster-content">
+    <div class="promo-poster-card" id="promo-poster-content" style="position:relative; overflow:hidden;">
+      <!-- Background Stadium Image with Crowd Silhouettes at the bottom -->
+      <div class="promo-card-bg-wrap" style="position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden;">
+        <img src="${coverUrl}" alt="Stadium" style="width:100%; height:100%; object-fit:cover; object-position:center bottom; opacity:0.32; display:block;">
+        <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(7,28,61,0.55) 0%, rgba(5,20,43,0.75) 45%, rgba(3,11,24,0.88) 80%, rgba(2,7,18,0.95) 100%);"></div>
+      </div>
+
       <!-- HERO BANNER -->
       ${heroHtml}
 
       <!-- ROW 1: 3 BLUE GLASS SPECIFICATION CARDS -->
-      <div class="promo-ref-specs-grid promo-meta-grid">
+      <div class="promo-ref-specs-grid promo-meta-grid" style="position:relative; z-index:2;">
         <div class="promo-ref-spec-card promo-meta-item">
-          <div class="spec-card-top p-label">⚽ ${tFn('poster.format')}</div>
-          <div class="spec-card-val p-val">${esc(c.formatType || defaultFormat)}</div>
+          <div class="spec-card-top p-label">🗓️ ${tFn('poster.date')}</div>
+          <div class="spec-card-val p-val">${esc(c.startDate || defaultDate)} (${c.startingPlayers || 7} ${isEn ? 'on pitch' : 'জন মাঠে'}, ${c.benchPlayers || 4} ${isEn ? 'subs' : 'জন বদলি'})</div>
         </div>
         <div class="promo-ref-spec-card promo-meta-item">
           <div class="spec-card-top p-label">⏱️ ${tFn('poster.duration')}</div>
           <div class="spec-card-val p-val">${esc(c.matchDuration || defaultDuration)}</div>
         </div>
         <div class="promo-ref-spec-card promo-meta-item">
-          <div class="spec-card-top p-label">🗓️ ${tFn('poster.date')}</div>
-          <div class="spec-card-val p-val">${esc(c.startDate || defaultDate)}</div>
+          <div class="spec-card-top p-label">🏆 ${tFn('poster.edition')}</div>
+          <div class="spec-card-val p-val">${esc(c.formatType || c.edition || defaultFormat)}</div>
         </div>
       </div>
 
-      <!-- ROW 2: 2 GOLDEN LAUREL WREATH PRIZE CARDS -->
-      <div class="promo-ref-prizes-grid promo-prizes-wrap">
+      <!-- ROW 2: 2 GOLDEN WHEAT SHEAF PRIZE CARDS -->
+      <div class="promo-ref-prizes-grid promo-prizes-wrap" style="position:relative; z-index:2;">
         <div class="promo-ref-prize-card promo-champ-card promo-prize-card champ">
+          ${getWheatSheafSvg(true)}
+          ${getWheatSheafSvg(false)}
           <div class="prize-card-badge promo-prize-title">🥇 ${tFn('poster.champ_prize')}</div>
           <div class="prize-card-amount promo-prize-amount">${esc(c.championPrize || (isEn ? '20,000 BDT & Trophy' : '২০,০০০ টাকা ও আকর্ষণীয় ট্রফি'))}</div>
           <div class="prize-card-sub" style="font-size:10px; color:#fde68a;">${tFn('poster.champ_sub')}</div>
         </div>
         <div class="promo-ref-prize-card promo-ru-card promo-prize-card ru">
+          ${getWheatSheafSvg(true)}
+          ${getWheatSheafSvg(false)}
           <div class="prize-card-badge promo-prize-title">🥈 ${tFn('poster.runner_prize')}</div>
           <div class="prize-card-amount promo-prize-amount">${esc(c.runnerUpPrize || (isEn ? '10,000 BDT & Trophy' : '১০,০০০ টাকা ও ট্রফি'))}</div>
           <div class="prize-card-sub" style="font-size:10px; color:#cbd5e1;">${tFn('poster.runner_sub')}</div>
@@ -456,26 +500,27 @@ function generatePromoPosterCardHtml() {
       </div>
 
       <!-- ROW 3: SECONDARY PRIZES STRIP -->
-      <div class="promo-ref-subprizes-strip">
+      <div class="promo-ref-subprizes-strip" style="position:relative; z-index:2;">
         <div class="subprize-item">🏆 <strong>${tFn('poster.third_place')}</strong> ${esc(c.thirdPrize || (isEn ? 'Trophy & Medals' : '৩য় স্থান: ট্রফি ও মেডেল'))}</div>
         <div class="subprize-sep">|</div>
         <div class="subprize-item">🏅 <strong>${tFn('poster.special_awards')}</strong> ${esc(c.otherPrizes || (isEn ? 'Best Player, Top Scorer, Best GK' : 'সেরা খেলোয়াড়, সেরা গোলদাতা, সেরা গোলকিপার'))}</div>
       </div>
 
       <!-- ROW 4: 2-COLUMN INFO & CONTACT STRIP -->
-      <div class="promo-ref-info-strip promo-entry-contact-box">
+      <div class="promo-ref-info-strip promo-entry-contact-box" style="position:relative; z-index:2;">
         <div class="info-strip-col">
           <div>👥 <strong style="color:#fde047;">${tFn('poster.entry_fee')}</strong> ${esc(c.entryFee || (isEn ? '1,200 BDT' : '১,২০০ টাকা'))}</div>
           <div>🗓️ <strong style="color:#fde047;">${tFn('poster.reg_deadline')}</strong> ${esc(c.regDeadline || (isEn ? 'Before Kickoff' : 'ম্যাচ শুরুর ৩০ মিনিট পূর্বে'))}</div>
         </div>
+        <div class="info-strip-divider"></div>
         <div class="info-strip-col info-strip-col-right">
           <div>📞 <strong style="color:#38bdf8;">${tFn('poster.contact')}</strong> ${esc(c.contactPhone || (isEn ? 'Inbox / Hotline' : '০১৭১১-xxxxxx'))}</div>
           <div>📱 <strong style="color:#38bdf8;">${tFn('poster.payment')}</strong> ${esc(c.paymentMethod || (isEn ? 'bKash / Nagad' : 'বিকাশ / নগদ (পার্সোনাল)'))}</div>
         </div>
       </div>
 
-      <!-- ROW 5: MASTER RULES BOARD (WHITE ROUNDED CARD) -->
-      <div class="promo-ref-rules-card promo-rules-preview-box">
+      <!-- ROW 5: MASTER RULES BOARD (WHITE ROUNDED CARD WITH VERTICAL DIVIDER) -->
+      <div class="promo-ref-rules-card promo-rules-preview-box" style="position:relative; z-index:2;">
         <div class="rules-card-header-wrap promo-rules-preview-title">
           <div class="rules-card-header-pill">
             <span>📋 ${tFn('poster.rules_title')} (${allActiveRules.length} ${tFn('common.items_unit')}):</span>
@@ -487,7 +532,9 @@ function generatePromoPosterCardHtml() {
           </div>
         ` : `
           <div class="promo-rules-grid-2col">
-            ${rulesGridHtml}
+            <div class="promo-rules-col">${col1Items.join('')}</div>
+            <div class="promo-rules-divider"></div>
+            <div class="promo-rules-col">${col2Items.join('')}</div>
           </div>
           <ol class="promo-rules-ol" style="display:none;">
             ${rulesListHtml}
@@ -495,10 +542,10 @@ function generatePromoPosterCardHtml() {
         `}
       </div>
 
-      <!-- FOOTER RIBBON -->
-      <div class="promo-footer-sign promo-ref-footer">
+      <!-- FOOTER RIBBON OVER CROWD -->
+      <div class="promo-footer-sign promo-ref-footer" style="position:relative; z-index:2;">
         <div>⚽ <strong>${isEn ? 'In the spirit of sports, united in bond' : 'খেলাধুলার চেতনায়, ঐক্যের বন্ধনে'} — ${esc(c.title || defaultTitle)}</strong></div>
-        <div>🚩 <strong>${tFn('poster.footer_org')}</strong> ${esc(c.organizer || defaultOrg)}</div>
+        <div style="color:#fde047;">🚩 <strong>${tFn('poster.footer_org')}</strong> ${esc(c.organizer || defaultOrg)}</div>
       </div>
     </div>
   `;

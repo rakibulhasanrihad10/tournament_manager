@@ -183,6 +183,70 @@ function getPromoCanvasDefaultRules(isEn) {
   ];
 }
 
+function drawWheatGrain(ctx, cx, cy, rx, ry, angle, fillColor, strokeColor) {
+  ctx.save();
+  if (typeof ctx.translate === 'function' && typeof ctx.rotate === 'function') {
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+    ctx.fillStyle = fillColor;
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    if (typeof ctx.ellipse === 'function') {
+      ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+    } else if (typeof ctx.arc === 'function') {
+      ctx.arc(0, 0, (rx + ry) / 2, 0, Math.PI * 2);
+    }
+    if (typeof ctx.fill === 'function') ctx.fill();
+    if (typeof ctx.stroke === 'function') ctx.stroke();
+  } else {
+    ctx.fillStyle = fillColor;
+    if (typeof ctx.beginPath === 'function' && typeof ctx.arc === 'function') {
+      ctx.beginPath();
+      ctx.arc(cx, cy, (rx + ry) / 2, 0, Math.PI * 2);
+      if (typeof ctx.fill === 'function') ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function drawCanvasRiceSheafBranch(ctx, baseX, baseY, height, isLeft) {
+  ctx.save();
+  const dir = isLeft ? 1 : -1;
+  ctx.strokeStyle = '#facc15';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') ctx.moveTo(baseX, baseY);
+  const ctrlX = baseX + (dir * 26);
+  const ctrlY = baseY - (height * 0.52);
+  const tipX = baseX + (dir * 32);
+  const tipY = baseY - height;
+  if (typeof ctx.quadraticCurveTo === 'function') {
+    ctx.quadraticCurveTo(ctrlX, ctrlY, tipX, tipY);
+  } else if (typeof ctx.lineTo === 'function') {
+    ctx.lineTo(tipX, tipY);
+  }
+  if (typeof ctx.stroke === 'function') ctx.stroke();
+
+  // Draw tip grain
+  drawWheatGrain(ctx, tipX, tipY, 4, 8, (dir * 0.35), '#fef08a', '#ca8a04');
+
+  // Draw 6 pairs of grains along the curved stem
+  const grainPairs = 6;
+  for (let i = 1; i <= grainPairs; i++) {
+    const t = 1 - (i / (grainPairs + 0.8));
+    const px = (1 - t) * (1 - t) * baseX + 2 * (1 - t) * t * ctrlX + t * t * tipX;
+    const py = (1 - t) * (1 - t) * baseY + 2 * (1 - t) * t * ctrlY + t * t * tipY;
+
+    // Outer grain
+    drawWheatGrain(ctx, px - (dir * 8), py + 2, 4.5, 9, (dir * -0.45), '#fde047', '#ca8a04');
+    // Inner grain
+    drawWheatGrain(ctx, px + (dir * 8), py - 2, 4.5, 9, (dir * 0.55), '#facc15', '#ca8a04');
+  }
+  ctx.restore();
+}
+
 function renderPromoPosterToCanvas() {
   const canvas = document.createElement('canvas');
   const width = 1200;
@@ -238,19 +302,20 @@ function renderPromoPosterToCanvas() {
 
   if (stadiumImg && stadiumImg.naturalWidth > 0) {
     try {
-      ctx.drawImage(stadiumImg, 0, 0, width, 520);
+      // Draw stadium image spanning entire canvas so crowd silhouettes are visible at bottom
+      ctx.drawImage(stadiumImg, 0, 0, width, height);
     } catch (e) {
       // fallback
     }
   }
 
-  // Dark atmospheric gradient overlay
+  // Dark atmospheric gradient overlay (keeping bottom crowd silhouettes visible behind glass ribbon)
   const bgOverlay = ctx.createLinearGradient(0, 0, 0, height);
-  bgOverlay.addColorStop(0, 'rgba(7, 21, 43, 0.2)');
-  bgOverlay.addColorStop(0.35, 'rgba(7, 21, 43, 0.45)');
-  bgOverlay.addColorStop(0.6, 'rgba(5, 14, 29, 0.88)');
-  bgOverlay.addColorStop(0.85, 'rgba(3, 10, 22, 0.98)');
-  bgOverlay.addColorStop(1, '#07152b');
+  bgOverlay.addColorStop(0, 'rgba(7, 21, 43, 0.35)');
+  bgOverlay.addColorStop(0.2, 'rgba(7, 21, 43, 0.6)');
+  bgOverlay.addColorStop(0.5, 'rgba(5, 14, 29, 0.86)');
+  bgOverlay.addColorStop(0.85, 'rgba(4, 12, 28, 0.76)');
+  bgOverlay.addColorStop(1, 'rgba(2, 8, 20, 0.58)');
   ctx.fillStyle = bgOverlay;
   ctx.fillRect(0, 0, width, height);
 
@@ -280,10 +345,11 @@ function renderPromoPosterToCanvas() {
   if (leftPlayerImg && leftPlayerImg.naturalWidth > 0) {
     try {
       ctx.save();
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-      ctx.shadowBlur = 20;
-      ctx.shadowOffsetY = 10;
-      // Aspect ratio fit in left hero area
+      if (ctx.shadowColor !== undefined) {
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+        ctx.shadowBlur = 20;
+        ctx.shadowOffsetY = 10;
+      }
       const maxW = 270;
       const maxH = 340;
       const pRatio = leftPlayerImg.naturalWidth / leftPlayerImg.naturalHeight;
@@ -314,9 +380,11 @@ function renderPromoPosterToCanvas() {
   if (rightPlayerImg && rightPlayerImg.naturalWidth > 0) {
     try {
       ctx.save();
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-      ctx.shadowBlur = 20;
-      ctx.shadowOffsetY = 10;
+      if (ctx.shadowColor !== undefined) {
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+        ctx.shadowBlur = 20;
+        ctx.shadowOffsetY = 10;
+      }
       const maxW = 270;
       const maxH = 340;
       const pRatio = rightPlayerImg.naturalWidth / rightPlayerImg.naturalHeight;
@@ -356,14 +424,21 @@ function renderPromoPosterToCanvas() {
   ctx.fillText(title, centerTitleX, 84);
   ctx.restore();
 
-  // Glass Capsule Pill: Organizer & Venue
-  const pillW = 580;
-  const pillH = 36;
+  // Glass Capsule Pill: Organizer & Venue with glowing golden border
+  const pillW = 620;
+  const pillH = 38;
   const pillX = 600 - (pillW / 2);
   const pillY = 112;
-  drawRoundedRect(ctx, pillX, pillY, pillW, pillH, 18, 'rgba(5, 16, 38, 0.88)', 'rgba(250, 204, 21, 0.55)', 1.5);
   ctx.save();
-  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(250, 204, 21, 0.8)';
+    ctx.shadowBlur = 18;
+  }
+  drawRoundedRect(ctx, pillX, pillY, pillW, pillH, 19, 'rgba(4, 15, 36, 0.95)', '#facc15', 2.5);
+  ctx.restore();
+
+  ctx.save();
+  ctx.font = 'bold 13.5px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#ffffff';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -380,30 +455,41 @@ function renderPromoPosterToCanvas() {
   const specCards = [
     { label: isEn ? '🗓️ MATCH DATE' : '🗓️ ম্যাচের তারিখ', val: `${date} (${startingPlayers} ${isEn ? 'on pitch' : 'জন মাঠে'}, ${benchPlayers} ${isEn ? 'subs' : 'জন বদলি'})` },
     { label: isEn ? '⏱️ MATCH DURATION' : '⏱️ ম্যাচের সময়', val: matchDuration },
-    { label: isEn ? '🏆 TOURNAMENT EDITION' : '🏆 টুর্নামেন্ট সংস্করণ', val: edition }
+    { label: isEn ? '🏆 TOURNAMENT EDITION' : '🏆 টুর্নামেন্ট সংস্করণ', val: c.formatType || edition }
   ];
 
   specCards.forEach((sc, i) => {
     const cX = cardsStartX + i * (cardW + cardsGap);
     const scGrad = ctx.createLinearGradient(cX, r1Y, cX, r1Y + r1H);
-    scGrad.addColorStop(0, 'rgba(8, 47, 107, 0.9)');
-    scGrad.addColorStop(1, 'rgba(2, 132, 199, 0.7)');
-    drawRoundedRect(ctx, cX, r1Y, cardW, r1H, 10, scGrad, 'rgba(56, 189, 248, 0.6)', 1.5);
+    scGrad.addColorStop(0, 'rgba(3, 70, 140, 0.95)');
+    scGrad.addColorStop(1, 'rgba(2, 132, 199, 0.85)');
+    ctx.save();
+    if (ctx.shadowColor !== undefined) {
+      ctx.shadowColor = 'rgba(56, 189, 248, 0.6)';
+      ctx.shadowBlur = 14;
+    }
+    drawRoundedRect(ctx, cX, r1Y, cardW, r1H, 12, scGrad, '#38bdf8', 2);
+    ctx.restore();
 
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = 'bold 11px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.font = '800 12px "Hind Siliguri", "Segoe UI", sans-serif';
     ctx.fillStyle = '#bae6fd';
     ctx.fillText(sc.label, cX + cardW / 2, r1Y + 20);
 
-    ctx.font = 'bold 14px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.font = '900 15px "Hind Siliguri", "Segoe UI", sans-serif';
     ctx.fillStyle = '#ffffff';
+    if (ctx.shadowColor !== undefined) {
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+      ctx.shadowBlur = 4;
+      ctx.shadowOffsetY = 2;
+    }
     ctx.fillText(sc.val, cX + cardW / 2, r1Y + 44);
     ctx.restore();
   });
 
-  // 6. ROW 2: 2 GOLDEN LAUREL WREATH PRIZE CARDS
+  // 6. ROW 2: 2 GOLDEN RICE SHEAF PRIZE CARDS
   const r2Y = 248;
   const r2H = 135;
   const prizeCardW = 528;
@@ -411,64 +497,84 @@ function renderPromoPosterToCanvas() {
   const p1X = cardsStartX; // 60px
   const p2X = p1X + prizeCardW + prizeGap; // 612px
 
-  // Champion Prize Card (Golden Laurel)
+  // Champion Prize Card (Golden Rice Sheaf)
   const champGrad = ctx.createLinearGradient(p1X, r2Y, p1X + prizeCardW, r2Y + r2H);
   champGrad.addColorStop(0, '#582405');
   champGrad.addColorStop(0.35, '#a16207');
   champGrad.addColorStop(0.7, '#ca8a04');
   champGrad.addColorStop(1, '#451a03');
-  drawRoundedRect(ctx, p1X, r2Y, prizeCardW, r2H, 14, champGrad, '#facc15', 2.5);
 
-  // Laurel wreath branches flanking champion prize
-  drawCanvasLaurelWreath(ctx, p1X + 42, r2Y + 68, 36, -Math.PI * 0.7, Math.PI * 0.7, 7, '#fde047');
-  drawCanvasLaurelWreath(ctx, p1X + prizeCardW - 42, r2Y + 68, 36, Math.PI * 0.3, Math.PI * 1.7, 7, '#fde047');
+  ctx.save();
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(250, 204, 21, 0.75)';
+    ctx.shadowBlur = 22;
+  }
+  drawRoundedRect(ctx, p1X, r2Y, prizeCardW, r2H, 16, champGrad, '#facc15', 3);
+  ctx.restore();
+
+  // Rice sheaf branches flanking champion prize
+  drawCanvasRiceSheafBranch(ctx, p1X + 22, r2Y + r2H - 12, r2H - 24, true);
+  drawCanvasRiceSheafBranch(ctx, p1X + prizeCardW - 22, r2Y + r2H - 12, r2H - 24, false);
 
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = 'bold 12.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#fef08a';
-  ctx.fillText(isEn ? '🥇 CHAMPION TEAM PRIZE MONEY' : '🥇 চ্যাম্পিয়ন দলের প্রাইজমানি', p1X + prizeCardW / 2, r2Y + 30);
+  ctx.fillText(isEn ? '🥇 CHAMPION TEAM PRIZE MONEY' : '🥇 champions দলের প্রাইজমানি', p1X + prizeCardW / 2, r2Y + 28);
 
-  ctx.font = '900 24px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = '900 25px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#ffffff';
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
-  ctx.shadowBlur = 8;
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetY = 3;
+  }
   ctx.fillText(champPrize, p1X + prizeCardW / 2, r2Y + 68);
 
-  ctx.font = 'bold 11.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#fde68a';
-  ctx.shadowBlur = 0;
+  if (ctx.shadowBlur !== undefined) ctx.shadowBlur = 0;
   ctx.fillText(isEn ? '+ Champion Winners Trophy & Gold Medals' : '+ সেরা খেলোয়াড় ট্রফি ও মেডেল', p1X + prizeCardW / 2, r2Y + 104);
   ctx.restore();
 
-  // Runner-Up Prize Card (Silver/Gold Laurel)
+  // Runner-Up Prize Card (Golden Rice Sheaf & Gold Glowing Border)
   const ruGrad = ctx.createLinearGradient(p2X, r2Y, p2X + prizeCardW, r2Y + r2H);
   ruGrad.addColorStop(0, '#1e293b');
   ruGrad.addColorStop(0.4, '#475569');
   ruGrad.addColorStop(0.7, '#64748b');
   ruGrad.addColorStop(1, '#0f172a');
-  drawRoundedRect(ctx, p2X, r2Y, prizeCardW, r2H, 14, ruGrad, '#e2e8f0', 2.5);
 
-  drawCanvasLaurelWreath(ctx, p2X + 42, r2Y + 68, 36, -Math.PI * 0.7, Math.PI * 0.7, 7, '#e2e8f0');
-  drawCanvasLaurelWreath(ctx, p2X + prizeCardW - 42, r2Y + 68, 36, Math.PI * 0.3, Math.PI * 1.7, 7, '#e2e8f0');
+  ctx.save();
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(250, 204, 21, 0.65)';
+    ctx.shadowBlur = 20;
+  }
+  drawRoundedRect(ctx, p2X, r2Y, prizeCardW, r2H, 16, ruGrad, '#facc15', 3);
+  ctx.restore();
+
+  drawCanvasRiceSheafBranch(ctx, p2X + 22, r2Y + r2H - 12, r2H - 24, true);
+  drawCanvasRiceSheafBranch(ctx, p2X + prizeCardW - 22, r2Y + r2H - 12, r2H - 24, false);
 
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = 'bold 12.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#e2e8f0';
-  ctx.fillText(isEn ? '🥈 RUNNER-UP TEAM PRIZE MONEY' : '🥈 রানার্স-আপ দলের প্রাইজমানি', p2X + prizeCardW / 2, r2Y + 30);
+  ctx.fillText(isEn ? '🥈 RUNNER-UP TEAM PRIZE MONEY' : '🥈 রানার্স-আপ দলের প্রাইজমানি', p2X + prizeCardW / 2, r2Y + 28);
 
-  ctx.font = '900 24px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = '900 25px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#ffffff';
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
-  ctx.shadowBlur = 8;
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetY = 3;
+  }
   ctx.fillText(runnerPrize, p2X + prizeCardW / 2, r2Y + 68);
 
-  ctx.font = 'bold 11.5px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#cbd5e1';
-  ctx.shadowBlur = 0;
+  if (ctx.shadowBlur !== undefined) ctx.shadowBlur = 0;
   ctx.fillText(isEn ? '+ Runner-Up Trophy & Silver Medals' : '+ রানার্স-আপ ট্রফি ও মেডেল', p2X + prizeCardW / 2, r2Y + 104);
   ctx.restore();
 
@@ -490,10 +596,18 @@ function renderPromoPosterToCanvas() {
   ctx.fillText(`🏅 ${isEn ? 'Individual Awards:' : 'ব্যক্তিগত পুরস্কার:'} ${otherPrizes}`, p1X + fullRowW - 24, r3Y + r3H / 2);
   ctx.restore();
 
-  // 8. ROW 4: 2-COLUMN INFO & CONTACT STRIP
+  // 8. ROW 4: 2-COLUMN INFO & CONTACT STRIP (WITH MIDDLE DIVIDER)
   const r4Y = 442;
   const r4H = 64;
-  drawRoundedRect(ctx, p1X, r4Y, fullRowW, r4H, 10, 'rgba(5, 16, 38, 0.92)', 'rgba(250, 204, 21, 0.45)', 1.5);
+  drawRoundedRect(ctx, p1X, r4Y, fullRowW, r4H, 10, 'rgba(5, 16, 38, 0.94)', 'rgba(250, 204, 21, 0.55)', 1.5);
+
+  // Info strip middle divider
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') ctx.moveTo(p1X + fullRowW / 2, r4Y + 10);
+  if (typeof ctx.lineTo === 'function') ctx.lineTo(p1X + fullRowW / 2, r4Y + r4H - 10);
+  if (typeof ctx.stroke === 'function') ctx.stroke();
 
   ctx.save();
   ctx.textBaseline = 'middle';
@@ -523,10 +637,26 @@ function renderPromoPosterToCanvas() {
   ctx.fillText(paymentMethod, p1X + fullRowW / 2 + (isEn ? 160 : 145), r4Y + 44);
   ctx.restore();
 
-  // 9. ROW 5: MASTER RULES BOARD (WHITE ROUNDED CARD WITH 10 RULES)
+  // 9. ROW 5: MASTER RULES BOARD (WHITE ROUNDED CARD WITH VERTICAL DIVIDER)
   const r5Y = 518;
   const r5H = 340;
-  drawRoundedRect(ctx, p1X, r5Y, fullRowW, r5H, 12, '#ffffff', '#f59e0b', 2.5);
+  ctx.save();
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(245, 158, 11, 0.45)';
+    ctx.shadowBlur = 20;
+    ctx.shadowOffsetY = 6;
+  }
+  drawRoundedRect(ctx, p1X, r5Y, fullRowW, r5H, 14, '#ffffff', '#f59e0b', 3);
+  ctx.restore();
+
+  // Vertical divider line between the two columns
+  const divX = p1X + fullRowW / 2;
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') ctx.moveTo(divX, r5Y + 54);
+  if (typeof ctx.lineTo === 'function') ctx.lineTo(divX, r5Y + r5H - 14);
+  if (typeof ctx.stroke === 'function') ctx.stroke();
 
   // Retrieve user rules or default reference rules
   const selectedSet = new Set(c.selectedRules || []);
@@ -573,15 +703,17 @@ function renderPromoPosterToCanvas() {
   rulesToDraw.slice(0, 10).forEach((rule, idx) => {
     const isCol2 = idx >= 5;
     const rowIdx = idx % 5;
-    const rx = isCol2 ? (p1X + 30 + colRuleW + 20) : (p1X + 20);
+    const rx = isCol2 ? (divX + 20) : (p1X + 20);
     const ry = ruleStartY + rowIdx * ruleRowGap;
 
     // Green circular number badge
     ctx.save();
     ctx.fillStyle = '#059669';
     ctx.beginPath();
-    ctx.arc(rx + 11, ry + 11, 10.5, 0, Math.PI * 2);
-    ctx.fill();
+    if (typeof ctx.arc === 'function') {
+      ctx.arc(rx + 11, ry + 11, 10.5, 0, Math.PI * 2);
+    }
+    if (typeof ctx.fill === 'function') ctx.fill();
 
     ctx.font = 'bold 11px "Segoe UI", sans-serif';
     ctx.fillStyle = '#ffffff';
@@ -597,23 +729,42 @@ function renderPromoPosterToCanvas() {
     ctx.fillStyle = '#0f172a';
     ctx.fillText(rule.title + ':', textStartX, ry);
 
-    ctx.font = '11.5px "Hind Siliguri", "Segoe UI", sans-serif';
+    ctx.font = '11px "Hind Siliguri", "Segoe UI", sans-serif';
     ctx.fillStyle = '#334155';
-    // Truncate long descriptions cleanly to fit in one line
-    const maxChars = isEn ? 62 : 55;
-    const descText = rule.desc.length > maxChars ? rule.desc.substring(0, maxChars - 1) + '…' : rule.desc;
-    ctx.fillText(descText, textStartX, ry + 18);
+    // Clean two-line wrap without truncation
+    const maxCharsPerLine = isEn ? 58 : 50;
+    if (rule.desc.length <= maxCharsPerLine) {
+      ctx.fillText(rule.desc, textStartX, ry + 18);
+    } else {
+      let breakIdx = rule.desc.lastIndexOf(' ', maxCharsPerLine);
+      if (breakIdx === -1 || breakIdx < 20) breakIdx = maxCharsPerLine;
+      const line1 = rule.desc.substring(0, breakIdx).trim();
+      const line2 = rule.desc.substring(breakIdx).trim();
+      ctx.fillText(line1, textStartX, ry + 16);
+      ctx.fillText(line2, textStartX, ry + 29);
+    }
     ctx.restore();
   });
 
-  // 10. FOOTER RIBBON
-  const footerY = 874;
+  // 10. FLOATING GLASS FOOTER RIBBON OVER BOTTOM CROWD
+  const footW = 840;
+  const footH = 34;
+  const footX = 600 - (footW / 2);
+  const footY = 870;
+  ctx.save();
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(56, 189, 248, 0.6)';
+    ctx.shadowBlur = 14;
+  }
+  drawRoundedRect(ctx, footX, footY, footW, footH, 17, 'rgba(5, 18, 42, 0.92)', '#38bdf8', 2);
+  ctx.restore();
+
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#cbd5e1';
-  ctx.fillText(`⚽ ${isEn ? 'In the spirit of sports, united in bond' : 'খেলাধুলার চেতনায়, ঐক্যের বন্ধনে'} — ${title}`, 600, footerY);
+  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(`⚽ ${isEn ? 'In the spirit of sports, united in bond' : 'খেলাধুলার চেতনায়, ঐক্যের বন্ধনে'} — ${title}`, 600, footY + (footH / 2));
   ctx.restore();
 
   return canvas;
