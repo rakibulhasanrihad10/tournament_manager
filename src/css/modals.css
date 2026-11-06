@@ -788,6 +788,230 @@
       box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
     }
 
+    /* Tournament Wizard Luxury Date Picker */
+    .w-date-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .w-date-input-wrap .w-date-input {
+      width: 100%;
+      padding-right: 42px;
+      cursor: pointer;
+    }
+    .w-date-picker-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      line-height: 1;
+      transition: transform 0.15s ease, background 0.15s ease;
+      user-select: none;
+    }
+    .w-date-picker-btn:hover {
+      background: rgba(250, 204, 21, 0.2);
+      transform: translateY(-50%) scale(1.15);
+    }
+    .w-datepicker-popover {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      z-index: 1050;
+      width: 300px;
+      background: #ffffff;
+      border: 2px solid #eab308;
+      border-radius: 14px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18), 0 0 15px rgba(234, 179, 8, 0.2);
+      padding: 12px;
+      box-sizing: border-box;
+      animation: wDpFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-theme="dark"] .w-datepicker-popover {
+      background: #0d1527;
+      border-color: #facc15;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.9), 0 0 20px rgba(250, 204, 21, 0.25);
+    }
+    @keyframes wDpFadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .w-dp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    [data-theme="dark"] .w-dp-header {
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    .w-dp-nav-btn {
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      color: #854d0e;
+      border-radius: 7px;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    [data-theme="dark"] .w-dp-nav-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #facc15;
+    }
+    .w-dp-nav-btn:hover {
+      background: #facc15;
+      color: #020617;
+    }
+    .w-dp-title {
+      font-weight: 800;
+      font-size: 14px;
+      color: #854d0e;
+      letter-spacing: 0.3px;
+    }
+    [data-theme="dark"] .w-dp-title {
+      color: #fef08a;
+    }
+    .w-dp-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+    [data-theme="dark"] .w-dp-weekdays {
+      color: #94a3b8;
+    }
+    .w-dp-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+      text-align: center;
+    }
+    .w-dp-cell {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12.5px;
+      font-weight: 600;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: #1e293b;
+      background: transparent;
+      user-select: none;
+    }
+    [data-theme="dark"] .w-dp-cell {
+      color: #f1f5f9;
+    }
+    .w-dp-cell:hover:not(.other-month) {
+      background: rgba(250, 204, 21, 0.25);
+      color: #854d0e;
+      transform: scale(1.08);
+    }
+    [data-theme="dark"] .w-dp-cell:hover:not(.other-month) {
+      color: #facc15;
+    }
+    .w-dp-cell.other-month {
+      color: #cbd5e1;
+      opacity: 0.4;
+      cursor: default;
+      pointer-events: none;
+    }
+    [data-theme="dark"] .w-dp-cell.other-month {
+      color: #475569;
+      opacity: 0.35;
+    }
+    .w-dp-cell.today {
+      border: 1.5px dashed #0284c7;
+      color: #0284c7;
+    }
+    [data-theme="dark"] .w-dp-cell.today {
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+    .w-dp-cell.selected {
+      background: linear-gradient(135deg, #facc15, #eab308) !important;
+      color: #020617 !important;
+      font-weight: 800 !important;
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.7);
+      transform: scale(1.05);
+    }
+    .w-dp-footer {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+      flex-wrap: wrap;
+    }
+    [data-theme="dark"] .w-dp-footer {
+      border-top-color: rgba(255, 255, 255, 0.1);
+    }
+    .w-dp-quick-btn {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+      font-size: 10.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    [data-theme="dark"] .w-dp-quick-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+    }
+    .w-dp-quick-btn:hover {
+      background: rgba(250, 204, 21, 0.2);
+      color: #854d0e;
+      border-color: #eab308;
+    }
+    [data-theme="dark"] .w-dp-quick-btn:hover {
+      color: #fef08a;
+      border-color: #facc15;
+    }
+    .w-dp-close-btn {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.25);
+      color: #dc2626;
+      margin-left: auto;
+    }
+    [data-theme="dark"] .w-dp-close-btn {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+    .w-dp-close-btn:hover {
+      background: rgba(239, 68, 68, 0.25);
+      color: #b91c1c;
+    }
+    [data-theme="dark"] .w-dp-close-btn:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+    }
+
     /* Rules Checklist in Wizard */
     .w-rules-toolbar {
       display: flex;

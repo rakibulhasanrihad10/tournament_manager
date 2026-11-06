@@ -2424,11 +2424,220 @@ function openTournamentWizard(initialTab = 'info') {
 }
 
 function closeTournamentWizard() {
+  if (typeof closeTournamentDatePicker === 'function') closeTournamentDatePicker();
   const modal = document.getElementById('tournament-wizard-modal');
   if (modal) {
     modal.classList.remove('active');
     modal.style.display = 'none';
   }
+}
+
+// ========================================================
+// TOURNAMENT DATE PICKER CONTROLLER
+// ========================================================
+let dpCurrentYear = 2026;
+let dpCurrentMonth = 10; // 0-based: 10 = November
+let dpSelectedYear = null;
+let dpSelectedMonth = null;
+let dpSelectedDay = null;
+let dpClickListenerAttached = false;
+
+const DP_BN_MONTHS = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+const DP_EN_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DP_BN_DIGITS = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+
+function toBnDigits(num) {
+  return String(num).replace(/[0-9]/g, d => DP_BN_DIGITS[d]);
+}
+
+function parseBnDigits(str) {
+  if (!str) return '';
+  return String(str).replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d));
+}
+
+function openTournamentDatePicker(e) {
+  if (e && e.stopPropagation) e.stopPropagation();
+  const popover = document.getElementById('w-datepicker-popover');
+  if (!popover) return;
+
+  if (popover.style.display === 'block') {
+    closeTournamentDatePicker();
+    return;
+  }
+
+  const inputEl = document.getElementById('w-cfg-startDate');
+  const rawVal = inputEl ? inputEl.value.trim() : '';
+  const now = new Date();
+
+  dpCurrentYear = now.getFullYear();
+  dpCurrentMonth = now.getMonth();
+  dpSelectedYear = null;
+  dpSelectedMonth = null;
+  dpSelectedDay = null;
+
+  if (rawVal) {
+    const rawAscii = parseBnDigits(rawVal);
+    let foundMonth = -1;
+    DP_BN_MONTHS.forEach((m, idx) => {
+      if (rawVal.includes(m)) foundMonth = idx;
+    });
+    if (foundMonth === -1) {
+      DP_EN_MONTHS.forEach((m, idx) => {
+        if (new RegExp(m, 'i').test(rawVal)) foundMonth = idx;
+      });
+    }
+
+    const yearMatch = rawAscii.match(/(20\d\d)/);
+    const dayMatch = rawAscii.match(/\b([0-3]?\d)\b/);
+
+    if (yearMatch) dpCurrentYear = parseInt(yearMatch[1], 10);
+    if (foundMonth !== -1) dpCurrentMonth = foundMonth;
+    if (dayMatch && foundMonth !== -1) {
+      dpSelectedDay = parseInt(dayMatch[1], 10);
+      dpSelectedMonth = dpCurrentMonth;
+      dpSelectedYear = dpCurrentYear;
+    }
+  }
+
+  renderTournamentDatePickerGrid();
+  popover.style.display = 'block';
+
+  if (!dpClickListenerAttached && typeof document !== 'undefined' && document.addEventListener) {
+    dpClickListenerAttached = true;
+    setTimeout(() => {
+      document.addEventListener('click', onDatePickerDocClick);
+    }, 20);
+  }
+}
+
+function closeTournamentDatePicker() {
+  const popover = document.getElementById('w-datepicker-popover');
+  if (popover) popover.style.display = 'none';
+  if (dpClickListenerAttached && typeof document !== 'undefined' && document.removeEventListener) {
+    document.removeEventListener('click', onDatePickerDocClick);
+    dpClickListenerAttached = false;
+  }
+}
+
+function onDatePickerDocClick(e) {
+  const popover = document.getElementById('w-datepicker-popover');
+  const inputEl = document.getElementById('w-cfg-startDate');
+  const btnEl = document.getElementById('btn-wizard-date-picker');
+  if (!popover || popover.style.display === 'none') return;
+
+  if (e && e.target && ((popover.contains && popover.contains(e.target)) || (inputEl && inputEl.contains && inputEl.contains(e.target)) || (btnEl && btnEl.contains && btnEl.contains(e.target)))) {
+    return;
+  }
+  closeTournamentDatePicker();
+}
+
+function navigateDatePickerMonth(delta) {
+  dpCurrentMonth += delta;
+  if (dpCurrentMonth < 0) {
+    dpCurrentMonth = 11;
+    dpCurrentYear--;
+  } else if (dpCurrentMonth > 11) {
+    dpCurrentMonth = 0;
+    dpCurrentYear++;
+  }
+  renderTournamentDatePickerGrid();
+}
+
+function renderTournamentDatePickerGrid() {
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const monthTitle = document.getElementById('w-dp-month-year');
+  const weekdaysEl = document.getElementById('w-dp-weekdays');
+  const gridEl = document.getElementById('w-dp-calendar-grid');
+  if (!gridEl) return;
+
+  const monthNames = isEn ? DP_EN_MONTHS : DP_BN_MONTHS;
+  if (monthTitle) {
+    monthTitle.textContent = isEn
+      ? `${monthNames[dpCurrentMonth]} ${dpCurrentYear}`
+      : `${monthNames[dpCurrentMonth]} ${toBnDigits(dpCurrentYear)}`;
+  }
+
+  if (weekdaysEl) {
+    const days = isEn
+      ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      : ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র', 'শনি'];
+    weekdaysEl.innerHTML = days.map((d, i) => {
+      const colorStyle = i === 5 ? 'color:#38bdf8;' : (i === 6 ? 'color:#f87171;' : '');
+      return `<span style="${colorStyle}">${d}</span>`;
+    }).join('');
+  }
+
+  const firstDay = new Date(dpCurrentYear, dpCurrentMonth, 1).getDay();
+  const totalDays = new Date(dpCurrentYear, dpCurrentMonth + 1, 0).getDate();
+  const prevMonthTotalDays = new Date(dpCurrentYear, dpCurrentMonth, 0).getDate();
+
+  const now = new Date();
+  const isCurrentRealMonth = (now.getFullYear() === dpCurrentYear && now.getMonth() === dpCurrentMonth);
+  const realToday = now.getDate();
+
+  let html = '';
+
+  // Prev month filler
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const d = prevMonthTotalDays - i;
+    html += `<div class="w-dp-cell other-month">${isEn ? d : toBnDigits(d)}</div>`;
+  }
+
+  // Current month days
+  for (let day = 1; day <= totalDays; day++) {
+    const isToday = isCurrentRealMonth && day === realToday;
+    const isSelected = (dpSelectedYear === dpCurrentYear && dpSelectedMonth === dpCurrentMonth && dpSelectedDay === day);
+
+    let classes = 'w-dp-cell';
+    if (isToday) classes += ' today';
+    if (isSelected) classes += ' selected';
+
+    const dayText = isEn ? day : toBnDigits(day);
+    html += `<div class="${classes}" onclick="selectDatePickerDate(${dpCurrentYear}, ${dpCurrentMonth}, ${day})">${dayText}</div>`;
+  }
+
+  // Next month filler
+  const totalCells = firstDay + totalDays;
+  const remainingCells = (totalCells % 7 === 0) ? 0 : (7 - (totalCells % 7));
+  for (let day = 1; day <= remainingCells; day++) {
+    html += `<div class="w-dp-cell other-month">${isEn ? day : toBnDigits(day)}</div>`;
+  }
+
+  gridEl.innerHTML = html;
+}
+
+function selectDatePickerDate(year, month, day) {
+  dpSelectedYear = year;
+  dpSelectedMonth = month;
+  dpSelectedDay = day;
+
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const monthNames = isEn ? DP_EN_MONTHS : DP_BN_MONTHS;
+
+  const formattedDate = isEn
+    ? `${day} ${monthNames[month]} ${year}`
+    : `${toBnDigits(day)} ${monthNames[month]} ${toBnDigits(year)}`;
+
+  const inputEl = document.getElementById('w-cfg-startDate');
+  if (inputEl) {
+    inputEl.value = formattedDate;
+    if (inputEl.dispatchEvent) {
+      try {
+        inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+        inputEl.dispatchEvent(new Event('change', { bubbles: true }));
+      } catch (err) {}
+    }
+  }
+
+  closeTournamentDatePicker();
+}
+
+function selectDatePickerPreset(type) {
+  const d = new Date();
+  if (type === 'tomorrow') {
+    d.setDate(d.getDate() + 1);
+  }
+  selectDatePickerDate(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
 function updateWizardRulesCounts() {

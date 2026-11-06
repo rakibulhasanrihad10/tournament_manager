@@ -558,6 +558,36 @@ assert(domElements['w-cfg-venue'].value === 'ধানমন্ডি লেক 
 assert(domElements['w-cfg-championPrize'].value === '৫০,০০০ টাকা', 'w-cfg-championPrize reflects custom champion prize');
 assert(domElements['w-cfg-runnerUpPrize'].value === '২৫,০০০ টাকা', 'w-cfg-runnerUpPrize reflects custom runner up prize');
 
+console.log('\n📅 Test Suite 15: Tournament Date Picker Popup Controller');
+assert(typeof openTournamentDatePicker === 'function', 'openTournamentDatePicker is a defined function');
+assert(typeof closeTournamentDatePicker === 'function', 'closeTournamentDatePicker is a defined function');
+assert(typeof navigateDatePickerMonth === 'function', 'navigateDatePickerMonth is a defined function');
+assert(typeof selectDatePickerDate === 'function', 'selectDatePickerDate is a defined function');
+assert(typeof selectDatePickerPreset === 'function', 'selectDatePickerPreset is a defined function');
+
+openTournamentDatePicker();
+const popoverEl = domElements['w-datepicker-popover'];
+assert(popoverEl.style.display === 'block', 'openTournamentDatePicker() displays popover');
+assert(domElements['w-dp-calendar-grid'].innerHTML.includes('w-dp-cell'), 'Calendar grid rendered with day cells');
+
+navigateDatePickerMonth(1);
+assert(domElements['w-dp-month-year'].textContent.length > 0, 'Month navigation updates month-year title');
+
+// Test selecting a specific date (15 November 2026)
+selectDatePickerDate(2026, 10, 15);
+assert(domElements['w-cfg-startDate'].value.includes('১৫') && domElements['w-cfg-startDate'].value.includes('নভেম্বর') && domElements['w-cfg-startDate'].value.includes('২০২৬'), 'selectDatePickerDate formats Bengali date correctly');
+assert(popoverEl.style.display === 'none', 'selectDatePickerDate closes popover automatically');
+
+// Test Today preset
+selectDatePickerPreset('today');
+assert(domElements['w-cfg-startDate'].value.length > 0, 'Today preset selects current date');
+
+// Test close function
+openTournamentDatePicker();
+assert(popoverEl.style.display === 'block', 'Popover re-opened');
+closeTournamentDatePicker();
+assert(popoverEl.style.display === 'none', 'closeTournamentDatePicker closes popover');
+
 console.log('\n==========================================');
 console.log(`Results: ${passedCount} passed, ${failedCount} failed`);
 if (failedCount === 0) {

@@ -74,9 +74,31 @@
                 <label class="w-label" data-i18n="wizard.lbl_venue">খেলার মাঠ ও ভেন্যুর ঠিকানা:</label>
                 <input type="text" id="w-cfg-venue" class="w-input" placeholder="যেমন: বঙ্গবন্ধু জাতীয় স্টেডিয়াম মাঠ, ঢাকা" data-i18n-placeholder="wizard.ph_venue">
               </div>
-              <div class="w-field">
-                <label class="w-label" data-i18n="wizard.lbl_date">টুর্নামেন্ট শুরুর সম্ভাব্য তারিখ ও বছর:</label>
-                <input type="text" id="w-cfg-startDate" class="w-input" placeholder="যেমন: ২০২৬ / ১৫ নভেম্বর ২০২৬" data-i18n-placeholder="wizard.ph_date">
+              <div class="w-field" style="position: relative;">
+                <label class="w-label" for="w-cfg-startDate" data-i18n="wizard.lbl_date">টুর্নামেন্ট শুরুর সম্ভাব্য তারিখ ও বছর:</label>
+                <div class="w-date-input-wrap">
+                  <input type="text" id="w-cfg-startDate" class="w-input w-date-input" placeholder="যেমন: ২০২৬ / ১৫ নভেম্বর ২০২৬" data-i18n-placeholder="wizard.ph_date" onclick="openTournamentDatePicker(event)">
+                  <button type="button" class="w-date-picker-btn" id="btn-wizard-date-picker" onclick="openTournamentDatePicker(event)" title="ক্যালেন্ডার থেকে তারিখ নির্বাচন করুন" data-i18n-title="wizard.btn_pick_date" aria-label="Choose Date">
+                    📅
+                  </button>
+                </div>
+                <!-- Custom Luxury Date Picker Popover -->
+                <div id="w-datepicker-popover" class="w-datepicker-popover" style="display: none;" onclick="event.stopPropagation()">
+                  <div class="w-dp-header">
+                    <button type="button" class="w-dp-nav-btn" onclick="navigateDatePickerMonth(-1)" title="পূর্ববর্তী মাস">◀</button>
+                    <div class="w-dp-title" id="w-dp-month-year">নভেম্বর ২০২৬</div>
+                    <button type="button" class="w-dp-nav-btn" onclick="navigateDatePickerMonth(1)" title="পরবর্তী মাস">▶</button>
+                  </div>
+                  <div class="w-dp-weekdays" id="w-dp-weekdays">
+                    <span>রবি</span><span>সোম</span><span>মঙ্গল</span><span>বুধ</span><span>বৃহঃ</span><span style="color:#38bdf8;">শুক্র</span><span style="color:#f87171;">শনি</span>
+                  </div>
+                  <div class="w-dp-grid" id="w-dp-calendar-grid"></div>
+                  <div class="w-dp-footer">
+                    <button type="button" class="w-dp-quick-btn" onclick="selectDatePickerPreset('today')" data-i18n="wizard.dp_today">আজকের তারিখ</button>
+                    <button type="button" class="w-dp-quick-btn" onclick="selectDatePickerPreset('tomorrow')" data-i18n="wizard.dp_tomorrow">আগামীকাল</button>
+                    <button type="button" class="w-dp-quick-btn w-dp-close-btn" onclick="closeTournamentDatePicker()" data-i18n="wizard.dp_close">বন্ধ করুন ✕</button>
+                  </div>
+                </div>
               </div>
             </div>
 
