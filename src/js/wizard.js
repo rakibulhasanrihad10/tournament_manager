@@ -2287,11 +2287,14 @@ function openTournamentWizard(initialTab = 'info') {
     if (el) el.value = val !== undefined && val !== null ? val : '';
   };
 
+  const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+  const defCfg = isEn ? DEFAULT_CONFIG_EN : DEFAULT_CONFIG;
   const isLegacy = tournamentConfig.title && (tournamentConfig.title.includes('চিতড্ডা') || tournamentConfig.title.includes('Chitadda'));
   const isDefault = !tournamentConfig.title || tournamentConfig.title === DEFAULT_CONFIG.title || tournamentConfig.title === DEFAULT_CONFIG_EN.title || isLegacy;
 
-  setVal('w-cfg-title', isDefault ? '' : tournamentConfig.title);
-  setVal('w-cfg-titleAccent', isDefault ? '' : (tournamentConfig.titleAccent || ''));
+  const currentTitle = isLegacy ? defCfg.title : (tournamentConfig.title || defCfg.title);
+  setVal('w-cfg-title', currentTitle || '');
+  setVal('w-cfg-titleAccent', tournamentConfig.titleAccent || defCfg.titleAccent || '');
 
   const currentIcon = tournamentConfig.titleIcon !== undefined ? tournamentConfig.titleIcon : '⚽';
   const iconSelect = document.getElementById('w-cfg-titleIcon');
@@ -2319,9 +2322,12 @@ function openTournamentWizard(initialTab = 'info') {
     }
   }
 
-  setVal('w-cfg-organizer', isDefault ? '' : (tournamentConfig.organizer || ''));
-  setVal('w-cfg-venue', isDefault ? '' : (tournamentConfig.venue || ''));
-  setVal('w-cfg-formatType', isDefault ? '' : (tournamentConfig.formatType || ''));
+  const currentOrg = (tournamentConfig.organizer && !tournamentConfig.organizer.includes('চিতড্ডা')) ? tournamentConfig.organizer : defCfg.organizer;
+  const currentVenue = (tournamentConfig.venue && !tournamentConfig.venue.includes('চিতড্ডা')) ? tournamentConfig.venue : defCfg.venue;
+
+  setVal('w-cfg-organizer', currentOrg || '');
+  setVal('w-cfg-venue', currentVenue || '');
+  setVal('w-cfg-formatType', tournamentConfig.formatType || defCfg.formatType || '');
   
   // Squad Size: No default values on clean/default
   const hasCustomSquad = !isDefault && tournamentConfig.startingPlayers !== undefined && tournamentConfig.startingPlayers !== null && tournamentConfig.startingPlayers !== '';
@@ -2341,17 +2347,17 @@ function openTournamentWizard(initialTab = 'info') {
     (typeof DEFAULT_CONFIG_EN !== 'undefined' && tournamentConfig.matchDuration === DEFAULT_CONFIG_EN.matchDuration);
   const durToPopulate = isDefaultMatchDuration ? '' : tournamentConfig.matchDuration;
   populateMatchDurationFields(durToPopulate);
-  setVal('w-cfg-startDate', isDefault ? '' : (tournamentConfig.startDate || ''));
+  setVal('w-cfg-startDate', tournamentConfig.startDate || defCfg.startDate || '');
 
-  setVal('w-cfg-championPrize', isDefault ? '' : (tournamentConfig.championPrize || ''));
-  setVal('w-cfg-runnerUpPrize', isDefault ? '' : (tournamentConfig.runnerUpPrize || ''));
-  setVal('w-cfg-thirdPrize', isDefault ? '' : (tournamentConfig.thirdPrize || ''));
-  setVal('w-cfg-otherPrizes', isDefault ? '' : (tournamentConfig.otherPrizes || ''));
-  setVal('w-cfg-entryFee', isDefault ? '' : (tournamentConfig.entryFee || ''));
-  setVal('w-cfg-regDeadline', isDefault ? '' : (tournamentConfig.regDeadline || ''));
-  setVal('w-cfg-contactPhone', isDefault ? '' : (tournamentConfig.contactPhone || ''));
-  setVal('w-cfg-paymentMethod', isDefault ? '' : (tournamentConfig.paymentMethod || ''));
-  setVal('w-cfg-registrationUrl', isDefault ? '' : (tournamentConfig.registrationUrl || ''));
+  setVal('w-cfg-championPrize', tournamentConfig.championPrize || defCfg.championPrize || '');
+  setVal('w-cfg-runnerUpPrize', tournamentConfig.runnerUpPrize || defCfg.runnerUpPrize || '');
+  setVal('w-cfg-thirdPrize', tournamentConfig.thirdPrize || defCfg.thirdPrize || '');
+  setVal('w-cfg-otherPrizes', tournamentConfig.otherPrizes || defCfg.otherPrizes || '');
+  setVal('w-cfg-entryFee', tournamentConfig.entryFee || defCfg.entryFee || '');
+  setVal('w-cfg-regDeadline', tournamentConfig.regDeadline || defCfg.regDeadline || '');
+  setVal('w-cfg-contactPhone', tournamentConfig.contactPhone || defCfg.contactPhone || '');
+  setVal('w-cfg-paymentMethod', tournamentConfig.paymentMethod || defCfg.paymentMethod || '');
+  setVal('w-cfg-registrationUrl', tournamentConfig.registrationUrl || '');
 
   tempWizardSelectedRules = new Set(tournamentConfig.selectedRules || []);
   tempWizardCustomRules = JSON.parse(JSON.stringify(tournamentConfig.customRules || []));

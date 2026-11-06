@@ -531,6 +531,33 @@ tournamentConfig.titleIcon = '⚽';
 applyTournamentConfig();
 assert(iconEl1.textContent === '⚽' && iconEl1.style.display === 'inline-block', 'applyTournamentConfig displays football icon by default');
 
+console.log('\n📝 Test Suite 14: General Information Pre-population in Wizard');
+tournamentConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+openTournamentWizard();
+assert(domElements['w-cfg-title'].value === DEFAULT_CONFIG.title, 'w-cfg-title pre-populated with active tournament title');
+assert(domElements['w-cfg-organizer'].value === DEFAULT_CONFIG.organizer, 'w-cfg-organizer pre-populated with active organizer');
+assert(domElements['w-cfg-venue'].value === DEFAULT_CONFIG.venue, 'w-cfg-venue pre-populated with active venue');
+assert(domElements['w-cfg-championPrize'].value === DEFAULT_CONFIG.championPrize, 'w-cfg-championPrize pre-populated with active champion prize');
+assert(domElements['w-cfg-runnerUpPrize'].value === DEFAULT_CONFIG.runnerUpPrize, 'w-cfg-runnerUpPrize pre-populated with active runner-up prize');
+assert(domElements['w-cfg-entryFee'].value === DEFAULT_CONFIG.entryFee, 'w-cfg-entryFee pre-populated with active entry fee');
+assert(domElements['w-cfg-contactPhone'].value === DEFAULT_CONFIG.contactPhone, 'w-cfg-contactPhone pre-populated with active contact phone');
+assert(domElements['w-cfg-paymentMethod'].value === DEFAULT_CONFIG.paymentMethod, 'w-cfg-paymentMethod pre-populated with active payment method');
+
+// Test custom config reflection
+saveTournamentConfig({
+  title: 'কমিউনিটি ফুটবল কাপ ২০২৬',
+  organizer: 'ধানমন্ডি স্পোর্টস ক্লাব',
+  venue: 'ধানমন্ডি লেক মাঠ',
+  championPrize: '৫০,০০০ টাকা',
+  runnerUpPrize: '২৫,০০০ টাকা'
+});
+openTournamentWizard();
+assert(domElements['w-cfg-title'].value === 'কমিউনিটি ফুটবল কাপ ২০২৬', 'w-cfg-title reflects custom tournament title');
+assert(domElements['w-cfg-organizer'].value === 'ধানমন্ডি স্পোর্টস ক্লাব', 'w-cfg-organizer reflects custom organizer');
+assert(domElements['w-cfg-venue'].value === 'ধানমন্ডি লেক মাঠ', 'w-cfg-venue reflects custom venue');
+assert(domElements['w-cfg-championPrize'].value === '৫০,০০০ টাকা', 'w-cfg-championPrize reflects custom champion prize');
+assert(domElements['w-cfg-runnerUpPrize'].value === '২৫,০০০ টাকা', 'w-cfg-runnerUpPrize reflects custom runner up prize');
+
 console.log('\n==========================================');
 console.log(`Results: ${passedCount} passed, ${failedCount} failed`);
 if (failedCount === 0) {
