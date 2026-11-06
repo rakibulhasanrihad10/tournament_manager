@@ -125,9 +125,19 @@ vm.createContext(context);
 const constantsCode = fs.readFileSync(path.join(__dirname, '../src/js/constants.js'), 'utf8');
 vm.runInContext(constantsCode, context);
 
+// Load i18n.js
+const i18nCode = fs.readFileSync(path.join(__dirname, '../src/js/i18n.js'), 'utf8');
+vm.runInContext(i18nCode, context);
+
 // Load state.js to get generateTournamentStructure & getActiveGroupMatches
 const stateCode = fs.readFileSync(path.join(__dirname, '../src/js/state.js'), 'utf8');
 vm.runInContext(stateCode, context);
+
+// Load promo assets & qrcode
+const promoAssetsCode = fs.readFileSync(path.join(__dirname, '../src/js/promo-assets-b64.js'), 'utf8');
+vm.runInContext(promoAssetsCode, context);
+const qrcodeCode = fs.readFileSync(path.join(__dirname, '../src/js/qrcode.js'), 'utf8');
+vm.runInContext(qrcodeCode, context);
 
 // Load poster.js
 const posterCode = fs.readFileSync(path.join(__dirname, '../src/js/poster.js'), 'utf8');
@@ -374,6 +384,21 @@ context.saveTournamentConfig({
 const zeroRulesPoster = context.generatePromoPosterCardHtml();
 assert(zeroRulesPoster.includes('(0 টি)'), 'Promotional poster displays (0 টি)');
 assert(zeroRulesPoster.includes('কোনো বিশেষ নিয়মাবলী সেট করা হয়নি'), 'Promotional poster renders clean empty state when no rules are selected');
+
+// ---------------------------------------------------------------------
+// TEST SUITE 7: SMART QR CODE & 3 STEPS TEAM REGISTRATION CARD
+// ---------------------------------------------------------------------
+console.log('\n📲 Test Suite 7: Smart QR Code & 3 Steps Team Registration Card');
+
+const qrPoster = context.generatePromoPosterCardHtml();
+assert(qrPoster.includes('promo-registration-card'), 'Promo poster renders .promo-registration-card');
+assert(qrPoster.includes('promo-reg-qr-plaque'), 'Promo poster renders QR code plaque');
+assert(qrPoster.includes('promo-reg-steps-col'), 'Promo poster renders 3 steps column');
+assert(qrPoster.includes('১. কিউআর কোড স্ক্যান বা লিংকে প্রবেশ') || qrPoster.includes('1. Scan QR Code'), 'Promo poster includes Step 1 title');
+assert(qrPoster.includes('২. দল ও স্কোয়াড তালিকা পূরণ') || qrPoster.includes('2. Submit Team'), 'Promo poster includes Step 2 title');
+assert(qrPoster.includes('৩. এন্ট্রি ফি পরিশোধ ও কনফার্মেশন') || qrPoster.includes('3. Pay Entry Fee'), 'Promo poster includes Step 3 title');
+assert(qrPoster.includes('promo-reg-url-pill'), 'Promo poster includes direct registration link pill');
+assert(qrPoster.includes('promo-reg-urgency-banner'), 'Promo poster includes limited slots urgency alert banner');
 
 // ---------------------------------------------------------------------
 // SUMMARY

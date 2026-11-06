@@ -9,6 +9,8 @@ test('Social Share Hub & Image Export Engine Test Suite', async (t) => {
   // Load prerequisites
   const constantsCode = fs.readFileSync('src/js/constants.js', 'utf8');
   const i18nCode = fs.readFileSync('src/js/i18n.js', 'utf8');
+  const promoAssetsCode = fs.readFileSync('src/js/promo-assets-b64.js', 'utf8');
+  const qrcodeCode = fs.readFileSync('src/js/qrcode.js', 'utf8');
   const socialCode = fs.readFileSync('src/js/social-share.js', 'utf8');
 
   // Mock basic DOM environment
@@ -105,6 +107,8 @@ test('Social Share Hub & Image Export Engine Test Suite', async (t) => {
   // Evaluate scripts in VM context
   vm.runInThisContext(constantsCode);
   vm.runInThisContext(i18nCode);
+  vm.runInThisContext(promoAssetsCode);
+  vm.runInThisContext(qrcodeCode);
   vm.runInThisContext(socialCode);
 
   await t.test('Test Suite 1: Modal Open and Close Functionality', () => {

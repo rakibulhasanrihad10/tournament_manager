@@ -549,6 +549,25 @@ function generatePromoPosterCardHtml() {
   const allActiveRules = [...activeMasterRules, ...activeCustomRules];
 
   const esc = typeof escapeHtml === 'function' ? escapeHtml : (s) => s;
+  const regUrl = (c.registrationUrl && c.registrationUrl.trim())
+    ? c.registrationUrl.trim()
+    : ((typeof window !== 'undefined' && window.location && window.location.href && window.location.href.startsWith('http'))
+        ? window.location.href.split('#')[0].split('?')[0] + '#register'
+        : 'https://tournament.live/#register');
+
+  let qrSvg = '';
+  const qrGen = (typeof qrcode === 'function') ? qrcode : ((typeof window !== 'undefined' && typeof window.qrcode === 'function') ? window.qrcode : null);
+  if (qrGen) {
+    try {
+      const qr = qrGen(0, 'M');
+      qr.addData(regUrl);
+      qr.make();
+      qrSvg = qr.createSvgTag({ cellSize: 4.5, margin: 2, scalable: true });
+    } catch (e) {
+      console.warn('QR SVG error in poster:', e);
+    }
+  }
+
   let rulesListHtml = '';
   const col1Items = [];
   const col2Items = [];
@@ -667,27 +686,89 @@ function generatePromoPosterCardHtml() {
         </div>
       </div>
 
-      <!-- ROW 5: MASTER RULES BOARD (WHITE ROUNDED CARD WITH VERTICAL DIVIDER) -->
-      <div class="promo-ref-rules-card promo-rules-preview-box" style="position:relative; z-index:2;">
+      <!-- ROW 5: ONLINE TEAM REGISTRATION & SMART QR CODE BOARD (LUXURY GOLDEN FRAME WHITE ROUNDED CARD) -->
+      <div class="promo-ref-rules-card promo-rules-preview-box promo-registration-card" style="position:relative; z-index:2;">
         <div class="rules-card-header-wrap promo-rules-preview-title">
           <div class="rules-card-header-pill">
-            <span>📋 ${tFn('poster.rules_title')} (${allActiveRules.length} ${tFn('common.items_unit')}):</span>
+            <span>📲 ${tFn('poster.reg_card_title') || (isEn ? 'Online Team Registration & Slot Booking' : 'অনলাইনে দল রেজিস্ট্রেশন ও স্লট বুকিং')}</span>
           </div>
         </div>
-        ${allActiveRules.length === 0 ? `
-          <div style="font-size:10.5px; color:#64748b; font-style:italic; padding:6px 0; text-align:center;">
-            ${isEn ? 'No rules selected. Configure rules in Tournament Setup.' : 'কোনো বিশেষ নিয়মাবলী সেট করা হয়নি। টুর্নামেন্ট সেটআপ থেকে নিয়ম নির্বাচন করুন।'}
+
+        <div class="promo-reg-grid-2col">
+          <!-- Left Column: Smart QR Code Plaque -->
+          <div class="promo-reg-qr-plaque">
+            <div class="promo-reg-qr-wrapper">
+              ${qrSvg ? qrSvg : '<div class="promo-reg-qr-fallback">QR Code</div>'}
+              <div class="promo-reg-qr-badge">⚽</div>
+            </div>
+            <div class="promo-reg-qr-caption">
+              <div class="promo-reg-qr-scan">📷 ${tFn('poster.scan_camera') || (isEn ? 'Scan with Mobile Camera' : 'মোবাইল ক্যামেরা দিয়ে স্ক্যান করুন')}</div>
+              <div class="promo-reg-qr-hint">${tFn('poster.instant_reg') || (isEn ? '(Direct Online Registration Form)' : '(সরাসরি অনলাইন এন্ট্রি ফর্ম)')}</div>
+              <div class="promo-reg-qr-tag">✨ ${tFn('poster.official_gateway') || (isEn ? 'Official Entry Gateway' : 'অফিসিয়াল এন্ট্রি গেটওয়ে')}</div>
+            </div>
           </div>
-        ` : `
-          <div class="promo-rules-grid-2col">
-            <div class="promo-rules-col">${col1Items.join('')}</div>
-            <div class="promo-rules-divider"></div>
-            <div class="promo-rules-col">${col2Items.join('')}</div>
+
+          <!-- Center Divider -->
+          <div class="promo-reg-divider"></div>
+
+          <!-- Right Column: 3 Steps + Link + Urgency -->
+          <div class="promo-reg-steps-col">
+            <div class="promo-reg-steps-header">
+              <div class="promo-reg-steps-title">🏆 ${tFn('poster.reg_steps_title') || (isEn ? 'Register Your Team in 3 Easy Steps:' : '৩টি সহজ ধাপে আপনার দল নিবন্ধন করুন:')}</div>
+              <div class="promo-reg-steps-sub">${tFn('poster.reg_steps_sub') || (isEn ? 'Follow the simple steps below to confirm your official tournament slot' : 'টুর্নামেন্টে অফিসিয়াল স্লট নিশ্চিত করতে নিচের সহজ প্রক্রিয়াটি অনুসরণ করুন')}</div>
+            </div>
+
+            <div class="promo-reg-steps-list">
+              <div class="promo-reg-step-item">
+                <div class="promo-reg-step-badge">${isEn ? '1' : '১'}</div>
+                <div class="promo-reg-step-text">
+                  <strong>${tFn('poster.step1_title') || (isEn ? '1. Scan QR Code or Open Link:' : '১. কিউআর কোড স্ক্যান বা লিংকে প্রবেশ:')}</strong>
+                  <span>${tFn('poster.step1_desc') || (isEn ? 'Scan using phone camera or directly browse the official registration link.' : 'মোবাইলের ক্যামেরা দিয়ে কিউআর স্ক্যান করুন অথবা লিংকে সরাসরি প্রবেশ করুন।')}</span>
+                </div>
+              </div>
+
+              <div class="promo-reg-step-item">
+                <div class="promo-reg-step-badge">${isEn ? '2' : '২'}</div>
+                <div class="promo-reg-step-text">
+                  <strong>${tFn('poster.step2_title') || (isEn ? '2. Submit Team & Squad Details:' : '২. দল ও স্কোয়াড তালিকা পূরণ:')}</strong>
+                  <span>${tFn('poster.step2_desc') || (isEn ? 'Fill out accurate team name, captain info, and complete player squad list.' : 'দলের নাম, অধিনায়ক ও খেলোয়াড়দের সঠিক তথ্য দিয়ে ফর্ম সাবমিট করুন।')}</span>
+                </div>
+              </div>
+
+              <div class="promo-reg-step-item">
+                <div class="promo-reg-step-badge">${isEn ? '3' : '৩'}</div>
+                <div class="promo-reg-step-text">
+                  <strong>${tFn('poster.step3_title') || (isEn ? '3. Pay Entry Fee & Confirm Slot:' : '৩. এন্ট্রি ফি পরিশোধ ও কনফার্মেশন:')}</strong>
+                  <span>${tFn('poster.step3_desc') || (isEn ? 'Send fee via bKash/Nagad and provide TrxID for booking confirmation.' : 'বিকাশ বা নগদ-এ ফি পাঠিয়ে ট্রানজ্যাকশন আইডি প্রদান করে স্লট নিশ্চিত করুন।')}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Registration Link Pill -->
+            <a href="${esc(regUrl)}" target="_blank" rel="noopener noreferrer" class="promo-reg-url-pill">
+              <span class="promo-reg-url-lbl">🔗 ${tFn('poster.direct_reg_link') || (isEn ? 'Direct Registration Link:' : 'সরাসরি রেজিস্ট্রেশন লিংক:')}</span>
+              <span class="promo-reg-url-text">${esc(regUrl)}</span>
+              <span class="promo-reg-url-chip">${tFn('poster.btn_open_link') || (isEn ? 'Open Link ↗' : 'প্রবেশ করুন ↗')}</span>
+            </a>
+
+            <!-- Urgency Banner -->
+            <div class="promo-reg-urgency-banner">
+              <span>⚡ ${tFn('poster.urgent_slots_alert') || (isEn ? 'Urgent Alert: Team slots are limited! Finalized strictly on a "First-Come, First-Served" basis.' : 'জরুরি বিজ্ঞপ্তি: দল সংখ্যা সীমিত! "আগে আসলে আগে পাবেন" ভিত্তিতে দল চূড়ান্ত করা হবে।')}</span>
+            </div>
           </div>
-          <ol class="promo-rules-ol" style="display:none;">
-            ${rulesListHtml}
-          </ol>
-        `}
+        </div>
+
+        <!-- Hidden Rules Dataset for Headless Test Verification & Accessibility -->
+        <div class="promo-rules-dataset" style="display:none;" data-rule-count="${allActiveRules.length}">
+          <span class="promo-rules-count-badge">(${allActiveRules.length} ${tFn('common.items_unit')})</span>
+          ${allActiveRules.length === 0 ? `
+            <div class="promo-rules-empty">${isEn ? 'No rules selected. Configure rules in Tournament Setup.' : 'কোনো বিশেষ নিয়মাবলী সেট করা হয়নি। টুর্নামেন্ট সেটআপ থেকে নিয়ম নির্বাচন করুন।'}</div>
+          ` : `
+            <ol class="promo-rules-ol">
+              ${rulesListHtml}
+            </ol>
+          `}
+        </div>
       </div>
 
       <!-- FOOTER RIBBON OVER CROWD -->

@@ -2351,6 +2351,7 @@ function openTournamentWizard(initialTab = 'info') {
   setVal('w-cfg-regDeadline', isDefault ? '' : (tournamentConfig.regDeadline || ''));
   setVal('w-cfg-contactPhone', isDefault ? '' : (tournamentConfig.contactPhone || ''));
   setVal('w-cfg-paymentMethod', isDefault ? '' : (tournamentConfig.paymentMethod || ''));
+  setVal('w-cfg-registrationUrl', isDefault ? '' : (tournamentConfig.registrationUrl || ''));
 
   tempWizardSelectedRules = new Set(tournamentConfig.selectedRules || []);
   tempWizardCustomRules = JSON.parse(JSON.stringify(tournamentConfig.customRules || []));
@@ -3143,6 +3144,7 @@ function saveTournamentConfigFromWizard() {
     regDeadline: getVal('w-cfg-regDeadline', DEFAULT_CONFIG.regDeadline),
     contactPhone: getVal('w-cfg-contactPhone', DEFAULT_CONFIG.contactPhone),
     paymentMethod: getVal('w-cfg-paymentMethod', DEFAULT_CONFIG.paymentMethod),
+    registrationUrl: getVal('w-cfg-registrationUrl', DEFAULT_CONFIG.registrationUrl || ''),
     selectedRules: Array.from(tempWizardSelectedRules),
     customRules: tempWizardCustomRules,
     isCustomConfig: true
