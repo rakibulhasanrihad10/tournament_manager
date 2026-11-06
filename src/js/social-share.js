@@ -183,12 +183,8 @@ function getPromoCanvasDefaultRules(isEn) {
   ];
 }
 
-function drawCanvasLaurelLeaf(ctx, bx, by, tx, ty, width, fillColor, strokeColor) {
+function drawCanvas3DWheatGrain(ctx, bx, by, tx, ty, width, isOuter) {
   ctx.save();
-  ctx.fillStyle = fillColor;
-  ctx.strokeStyle = strokeColor;
-  ctx.lineWidth = 1;
-
   const dx = tx - bx;
   const dy = ty - by;
   const len = Math.hypot(dx, dy) || 1;
@@ -197,41 +193,106 @@ function drawCanvasLaurelLeaf(ctx, bx, by, tx, ty, width, fillColor, strokeColor
   const px = -uy;
   const py = ux;
 
-  const midX = (bx + tx) / 2;
-  const midY = (by + ty) / 2;
-  const c1x = midX + px * (width / 2);
-  const c1y = midY + py * (width / 2);
-  const c2x = midX - px * (width / 2);
-  const c2y = midY - py * (width / 2);
+  // Grain bulge center point (plump teardrop)
+  const midX = bx + dx * 0.48;
+  const midY = by + dy * 0.48;
+  const cOutX = midX + px * width;
+  const cOutY = midY + py * width;
+  const cInX = midX - px * width;
+  const cInY = midY - py * width;
 
+  // 1. Facet A: Highlight face (shining gold)
+  const gradA = ctx.createLinearGradient ? ctx.createLinearGradient(bx, by, tx, ty) : null;
+  if (gradA) {
+    gradA.addColorStop(0, '#ffffff');
+    gradA.addColorStop(0.25, '#fff59d');
+    gradA.addColorStop(0.65, '#facc15');
+    gradA.addColorStop(1, '#ca8a04');
+  }
+
+  // 2. Facet B: Shadow face (rich amber to deep bronze)
+  const gradB = ctx.createLinearGradient ? ctx.createLinearGradient(bx, by, tx, ty) : null;
+  if (gradB) {
+    gradB.addColorStop(0, '#fef08a');
+    gradB.addColorStop(0.35, '#eab308');
+    gradB.addColorStop(0.75, '#b45309');
+    gradB.addColorStop(1, '#78350f');
+  }
+
+  // Draw Highlight Half
+  ctx.fillStyle = isOuter ? (gradA || '#fff59d') : (gradB || '#eab308');
   ctx.beginPath();
   if (typeof ctx.moveTo === 'function') ctx.moveTo(bx, by);
   if (typeof ctx.quadraticCurveTo === 'function') {
-    ctx.quadraticCurveTo(c1x, c1y, tx, ty);
-    ctx.quadraticCurveTo(c2x, c2y, bx, by);
+    ctx.quadraticCurveTo(cOutX, cOutY, tx, ty);
+    ctx.lineTo(bx, by);
   } else if (typeof ctx.lineTo === 'function') {
     ctx.lineTo(tx, ty);
     ctx.lineTo(bx, by);
   }
   if (typeof ctx.closePath === 'function') ctx.closePath();
   if (typeof ctx.fill === 'function') ctx.fill();
+
+  // Draw Shadow Half
+  ctx.fillStyle = isOuter ? (gradB || '#eab308') : (gradA || '#fff59d');
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') ctx.moveTo(bx, by);
+  if (typeof ctx.quadraticCurveTo === 'function') {
+    ctx.quadraticCurveTo(cInX, cInY, tx, ty);
+    ctx.lineTo(bx, by);
+  } else if (typeof ctx.lineTo === 'function') {
+    ctx.lineTo(tx, ty);
+    ctx.lineTo(bx, by);
+  }
+  if (typeof ctx.closePath === 'function') ctx.closePath();
+  if (typeof ctx.fill === 'function') ctx.fill();
+
+  // 3D Embossed Center Ridge Line
+  ctx.strokeStyle = '#fff7aa';
+  ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') ctx.moveTo(bx, by);
+  if (typeof ctx.lineTo === 'function') ctx.lineTo(tx, ty);
   if (typeof ctx.stroke === 'function') ctx.stroke();
+
+  // Crisp Metallic Outer Outline
+  ctx.strokeStyle = '#78350f';
+  ctx.lineWidth = 1.1;
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') ctx.moveTo(bx, by);
+  if (typeof ctx.quadraticCurveTo === 'function') {
+    ctx.quadraticCurveTo(cOutX, cOutY, tx, ty);
+    ctx.quadraticCurveTo(cInX, cInY, bx, by);
+  }
+  if (typeof ctx.closePath === 'function') ctx.closePath();
+  if (typeof ctx.stroke === 'function') ctx.stroke();
+
   ctx.restore();
+}
+
+function drawCanvasLaurelLeaf(ctx, bx, by, tx, ty, width, fillColor, strokeColor) {
+  drawCanvas3DWheatGrain(ctx, bx, by, tx, ty, width, true);
 }
 
 function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
   ctx.save();
   const dir = isLeft ? 1 : -1;
-  const baseX = isLeft ? (cardX + 24) : (cardX + cardW - 24);
-  const baseY = cardY + cardH - 14;
-  const tipX = isLeft ? (cardX + 62) : (cardX + cardW - 62);
-  const tipY = cardY + 14;
-  const ctrlX = isLeft ? (cardX + 10) : (cardX + cardW - 10);
+  const baseX = isLeft ? (cardX + 22) : (cardX + cardW - 22);
+  const baseY = cardY + cardH - 12;
+  const tipX = isLeft ? (cardX + 66) : (cardX + cardW - 66);
+  const tipY = cardY + 12;
+  const ctrlX = isLeft ? (cardX + 8) : (cardX + cardW - 8);
   const ctrlY = cardY + cardH * 0.52;
 
-  // Draw main curved golden stem
-  ctx.strokeStyle = '#facc15';
-  ctx.lineWidth = 2.5;
+  // Draw thick 3D curved golden stem
+  const stemGrad = ctx.createLinearGradient ? ctx.createLinearGradient(baseX, baseY, tipX, tipY) : null;
+  if (stemGrad) {
+    stemGrad.addColorStop(0, '#ca8a04');
+    stemGrad.addColorStop(0.5, '#facc15');
+    stemGrad.addColorStop(1, '#fef08a');
+  }
+  ctx.strokeStyle = stemGrad || '#facc15';
+  ctx.lineWidth = 3.2;
   ctx.lineCap = 'round';
   ctx.beginPath();
   if (typeof ctx.moveTo === 'function') ctx.moveTo(baseX, baseY);
@@ -242,7 +303,7 @@ function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
   }
   if (typeof ctx.stroke === 'function') ctx.stroke();
 
-  // Draw 8 dense pairs of golden leaves/grains along stem (lush & overlapping)
+  // Draw 8 dense pairs of plump, thick 3D golden wheat grains
   const numPairs = 8;
   for (let i = 1; i <= numPairs; i++) {
     const t = 0.08 + (i / (numPairs + 1)) * 0.86;
@@ -258,36 +319,44 @@ function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
     const unx = -uty;
     const uny = utx;
 
-    const leafLen = 14 + (1 - Math.abs(t - 0.5) * 1.6) * 6;
-    const leafWidth = 7;
+    const grainLen = 20 + Math.sin(t * Math.PI) * 6;
+    const grainWidth = 9 + Math.sin(t * Math.PI) * 2.2;
 
-    // Outer leaf (points away from center and up, rich golden highlight)
-    const outAngleX = utx * 0.68 - (unx * dir * 0.72);
-    const outAngleY = uty * 0.68 - (uny * dir * 0.72);
-    const outTipX = px + outAngleX * leafLen;
-    const outTipY = py + outAngleY * leafLen;
-    drawCanvasLaurelLeaf(ctx, px, py, outTipX, outTipY, leafWidth, '#fff59d', '#b45309');
+    // Outer plump grain (curves outward towards card edge)
+    const outAngleX = utx * 0.58 - (unx * dir * 0.82);
+    const outAngleY = uty * 0.58 - (uny * dir * 0.82);
+    const outTipX = px + outAngleX * grainLen;
+    const outTipY = py + outAngleY * grainLen;
+    drawCanvas3DWheatGrain(ctx, px, py, outTipX, outTipY, grainWidth, true);
 
-    // Inner leaf (points towards center and up, warm amber-gold)
-    const inAngleX = utx * 0.72 + (unx * dir * 0.68);
-    const inAngleY = uty * 0.72 + (uny * dir * 0.68);
-    const inTipX = px + inAngleX * (leafLen * 0.95);
-    const inTipY = py + inAngleY * (leafLen * 0.95);
-    drawCanvasLaurelLeaf(ctx, px, py, inTipX, inTipY, leafWidth * 0.95, '#facc15', '#92400e');
+    // Inner plump grain (curves upward-inward)
+    const inAngleX = utx * 0.70 + (unx * dir * 0.70);
+    const inAngleY = uty * 0.70 + (uny * dir * 0.70);
+    const inTipX = px + inAngleX * (grainLen * 0.95);
+    const inTipY = py + inAngleY * (grainLen * 0.95);
+    drawCanvas3DWheatGrain(ctx, px, py, inTipX, inTipY, grainWidth * 0.92, false);
   }
 
-  // Tip grain at the very top
+  // Crowning top grain
   const topDx = (tipX - ctrlX);
   const topDy = (tipY - ctrlY);
   const topLen = Math.hypot(topDx, topDy) || 1;
-  const topTipX = tipX + (topDx / topLen) * 15;
-  const topTipY = tipY + (topDy / topLen) * 15;
-  drawCanvasLaurelLeaf(ctx, tipX, tipY, topTipX, topTipY, 6.5, '#ffffff', '#b45309');
+  const topTipX = tipX + (topDx / topLen) * 20;
+  const topTipY = tipY + (topDy / topLen) * 20;
+  drawCanvas3DWheatGrain(ctx, tipX, tipY, topTipX, topTipY, 8.5, true);
 
-  // Base node
+  // 3D Base Tie Node
   ctx.fillStyle = '#b45309';
+  ctx.strokeStyle = '#78350f';
+  ctx.lineWidth = 1.2;
   ctx.beginPath();
-  if (typeof ctx.arc === 'function') ctx.arc(baseX, baseY, 3.5, 0, Math.PI * 2);
+  if (typeof ctx.arc === 'function') ctx.arc(baseX, baseY, 4.5, 0, Math.PI * 2);
+  if (typeof ctx.fill === 'function') ctx.fill();
+  if (typeof ctx.stroke === 'function') ctx.stroke();
+
+  ctx.fillStyle = '#fff59d';
+  ctx.beginPath();
+  if (typeof ctx.arc === 'function') ctx.arc(baseX, baseY, 2, 0, Math.PI * 2);
   if (typeof ctx.fill === 'function') ctx.fill();
 
   ctx.restore();
@@ -725,7 +794,7 @@ function renderPromoPosterToCanvas() {
   const prizeGap = 24;
   const p1X = cardsStartX; // 60px
   const p2X = p1X + prizeCardW + prizeGap; // 612px
-  const maxPrizeTextW = prizeCardW - 160; // 368px safe space between left & right wheat sheaves
+  const maxPrizeTextW = prizeCardW - 170; // 358px safe space between left & right wheat sheaves
 
   // Champion Prize Card (Deep Espresso / Black Luxury Radial Background)
   const champGrad = ctx.createRadialGradient

@@ -428,47 +428,110 @@ function formatDualTonePrizeHtml(rawText, esc) {
 
 function getWheatSheafSvg(isLeft) {
   return `
-    <svg class="wheat-sheaf-svg ${isLeft ? 'wheat-sheaf-left' : 'wheat-sheaf-right'}" viewBox="0 0 60 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="wheat-sheaf-svg ${isLeft ? 'wheat-sheaf-left' : 'wheat-sheaf-right'}" viewBox="0 0 68 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="sheafGoldGrad1" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#fff59d"/>
-          <stop offset="50%" stop-color="#facc15"/>
-          <stop offset="100%" stop-color="#b45309"/>
+        <linearGradient id="sheafHigh" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="25%" stop-color="#fff59d"/>
+          <stop offset="65%" stop-color="#facc15"/>
+          <stop offset="100%" stop-color="#ca8a04"/>
         </linearGradient>
-        <linearGradient id="sheafGoldGrad2" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#fde047"/>
-          <stop offset="60%" stop-color="#eab308"/>
-          <stop offset="100%" stop-color="#92400e"/>
+        <linearGradient id="sheafShad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#fef08a"/>
+          <stop offset="35%" stop-color="#eab308"/>
+          <stop offset="75%" stop-color="#b45309"/>
+          <stop offset="100%" stop-color="#78350f"/>
+        </linearGradient>
+        <linearGradient id="sheafStemGrad" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0%" stop-color="#ca8a04"/>
+          <stop offset="50%" stop-color="#facc15"/>
+          <stop offset="100%" stop-color="#fef08a"/>
         </linearGradient>
       </defs>
-      <!-- Curved Golden Stem -->
-      <path d="M22 116 C8 65 18 28 46 8" stroke="#facc15" stroke-width="2.5" stroke-linecap="round"/>
-      <!-- 8 Dense Pairs of Overlapping Leaves -->
-      <!-- Pair 1 (Bottom) -->
-      <path d="M22 108 Q9 104 5 95 Q16 95 22 108 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
-      <path d="M23 108 Q35 101 41 93 Q29 95 23 108 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
+      <!-- Thick 3D Curved Golden Stem -->
+      <path d="M24 116 C 9 68 16 30 46 10" stroke="url(#sheafStemGrad)" stroke-width="3.2" stroke-linecap="round"/>
+
+      <!-- 8 Dense Pairs of Plump 3D Wheat Grains (Embossed Center Crease) -->
+      <!-- Pair 1 -->
+      <path d="M24 108 C12 112 5 104 6 94 L24 108 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M24 108 C19 100 13 94 6 94 L24 108 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="24" y1="108" x2="6" y2="94" stroke="#fff7aa" stroke-width="0.8"/>
+
+      <path d="M25 108 C36 112 47 103 48 92 L25 108 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M25 108 C31 99 39 93 48 92 L25 108 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="25" y1="108" x2="48" y2="92" stroke="#fff7aa" stroke-width="0.8"/>
+
       <!-- Pair 2 -->
-      <path d="M19 95 Q6 89 2 80 Q14 81 19 95 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
-      <path d="M20 95 Q33 86 40 77 Q27 80 20 95 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M21 95 C9 99 2 89 3 79 L21 95 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M21 95 C16 87 10 80 3 79 L21 95 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="21" y1="95" x2="3" y2="79" stroke="#fff7aa" stroke-width="0.8"/>
+
+      <path d="M22 95 C34 99 46 87 47 76 L22 95 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M22 95 C29 86 38 78 47 76 L22 95 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="22" y1="95" x2="47" y2="76" stroke="#fff7aa" stroke-width="0.8"/>
+
       <!-- Pair 3 -->
-      <path d="M17 81 Q3 73 1 63 Q13 66 17 81 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
-      <path d="M18 81 Q32 70 40 60 Q27 65 18 81 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M18 81 C6 85 1 73 2 63 L18 81 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M18 81 C13 73 8 64 2 63 L18 81 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="18" y1="81" x2="2" y2="63" stroke="#fff7aa" stroke-width="0.8"/>
+
+      <path d="M19 81 C32 85 46 72 47 60 L19 81 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M19 81 C27 72 37 62 47 60 L19 81 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="19" y1="81" x2="47" y2="60" stroke="#fff7aa" stroke-width="0.8"/>
+
       <!-- Pair 4 -->
-      <path d="M16 67 Q3 58 3 47 Q14 51 16 67 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
-      <path d="M18 67 Q32 55 42 45 Q28 51 18 67 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M17 67 C5 70 1 58 3 47 L17 67 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M17 67 C13 59 9 49 3 47 L17 67 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="17" y1="67" x2="3" y2="47" stroke="#fff7aa" stroke-width="0.8"/>
+
+      <path d="M19 67 C33 70 48 57 49 45 L19 67 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M19 67 C28 58 39 48 49 45 L19 67 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="19" y1="67" x2="49" y2="45" stroke="#fff7aa" stroke-width="0.8"/>
+
       <!-- Pair 5 -->
-      <path d="M18 53 Q6 43 9 32 Q18 37 18 53 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
-      <path d="M20 53 Q35 41 45 31 Q30 38 20 53 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M18 53 C7 56 4 43 6 33 L18 53 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M18 53 C15 45 12 35 6 33 L18 53 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="18" y1="53" x2="6" y2="33" stroke="#fff7aa" stroke-width="0.8"/>
+
+      <path d="M21 53 C36 56 51 43 52 31 L21 53 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M21 53 C31 44 42 34 52 31 L21 53 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="21" y1="53" x2="52" y2="31" stroke="#fff7aa" stroke-width="0.8"/>
+
       <!-- Pair 6 -->
-      <path d="M22 39 Q12 28 17 18 Q25 24 22 39 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
-      <path d="M25 39 Q40 28 50 18 Q35 25 25 39 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M21 39 C11 41 9 29 11 20 L21 39 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M21 39 C19 32 17 23 11 20 L21 39 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="21" y1="39" x2="11" y2="20" stroke="#fff7aa" stroke-width="0.8"/>
+
+      <path d="M24 39 C39 41 54 30 55 19 L24 39 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M24 39 C34 31 46 22 55 19 L24 39 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="24" y1="39" x2="55" y2="19" stroke="#fff7aa" stroke-width="0.8"/>
+
       <!-- Pair 7 -->
-      <path d="M28 26 Q21 16 28 8 Q33 15 28 26 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
-      <path d="M33 26 Q46 17 54 9 Q41 15 33 26 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
-      <!-- Top Tip Grain -->
-      <path d="M44 9 Q46 1 49 0 Q53 7 45 15 Z" fill="#fff59d" stroke="#b45309" stroke-width="0.8"/>
-      <!-- Base Node -->
-      <circle cx="22" cy="116" r="3.5" fill="#b45309"/>
+      <path d="M26 26 C17 27 16 17 19 9 L26 26 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M26 26 C25 20 23 12 19 9 L26 26 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="26" y1="26" x2="19" y2="9" stroke="#fff7aa" stroke-width="0.8"/>
+
+      <path d="M31 26 C45 28 58 19 59 10 L31 26 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M31 26 C41 20 51 13 59 10 L31 26 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="31" y1="26" x2="59" y2="10" stroke="#fff7aa" stroke-width="0.8"/>
+
+      <!-- Pair 8 -->
+      <path d="M34 16 C27 16 27 7 30 2 L34 16 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M34 16 C33 11 32 5 30 2 L34 16 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="34" y1="16" x2="30" y2="2" stroke="#fff7aa" stroke-width="0.8"/>
+
+      <path d="M39 16 C50 17 59 9 60 2 L39 16 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M39 16 C46 11 54 5 60 2 L39 16 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="39" y1="16" x2="60" y2="2" stroke="#fff7aa" stroke-width="0.8"/>
+
+      <!-- Crowning Top Grain -->
+      <path d="M43 11 C41 5 44 1 48 0 L43 11 Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="1"/>
+      <path d="M43 11 C47 7 51 3 48 0 L43 11 Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="1"/>
+      <line x1="43" y1="11" x2="48" y2="0" stroke="#fff7aa" stroke-width="0.8"/>
+
+      <!-- 3D Base Tie Node -->
+      <circle cx="24" cy="116" r="4.5" fill="url(#sheafStemGrad)" stroke="#78350f" stroke-width="1.2"/>
+      <circle cx="24" cy="116" r="2" fill="#fff59d"/>
     </svg>
   `;
 }

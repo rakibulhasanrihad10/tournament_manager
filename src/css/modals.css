@@ -3413,7 +3413,7 @@
     }
     .promo-ref-prize-card {
       border-radius: 18px;
-      padding: 12px 54px;
+      padding: 12px 64px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -3442,17 +3442,18 @@
     .promo-ref-prize-card .wheat-sheaf-svg {
       position: absolute;
       top: 50%;
-      width: 46px;
-      height: 106px;
+      width: 54px;
+      height: 112px;
       pointer-events: none;
       z-index: 1;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 8px rgba(250, 204, 21, 0.4));
     }
     .promo-ref-prize-card .wheat-sheaf-left {
-      left: 12px;
+      left: 6px;
       transform: translateY(-50%);
     }
     .promo-ref-prize-card .wheat-sheaf-right {
-      right: 12px;
+      right: 6px;
       transform: translateY(-50%) scaleX(-1);
     }
     .promo-ref-prize-card.promo-champ-card {
