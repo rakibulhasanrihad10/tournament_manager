@@ -430,9 +430,9 @@ function getWheatSheafSvg(isLeft) {
   const P0 = { x: 52, y: 110 }, P1 = { x: 10, y: 112 }, P2 = { x: 10, y: 8 }, P3 = { x: 52, y: 10 };
   let leavesHtml = '';
 
-  const numPairs = 10;
+  const numPairs = 11;
   for (let i = 1; i <= numPairs; i++) {
-    const t = 0.05 + (i / (numPairs + 1)) * 0.88;
+    const t = 0.04 + (i / (numPairs + 1)) * 0.90;
     const u = 1 - t;
     const px = u * u * u * P0.x + 3 * u * u * t * P1.x + 3 * u * t * t * P2.x + t * t * t * P3.x;
     const py = u * u * u * P0.y + 3 * u * u * t * P1.y + 3 * u * t * t * P2.y + t * t * t * P3.y;
@@ -445,10 +445,10 @@ function getWheatSheafSvg(isLeft) {
     const unx = -uty;
     const uny = utx;
 
-    const leafLen = 17 + Math.sin(t * Math.PI) * 4;
-    const leafWidth = 6.8 + Math.sin(t * Math.PI) * 1.6;
+    const leafLen = 20 + Math.sin(t * Math.PI) * 5;
+    const leafWidth = 8 + Math.sin(t * Math.PI) * 2;
 
-    // Helper to generate a sleek 3D pointed-oval laurel leaf
+    // Helper to generate a clean pointed-oval laurel leaf (single closed path)
     function makeLeaf(vx, vy, len, width) {
       const vlen = Math.hypot(vx, vy) || 1;
       const tipX = px + (vx / vlen) * len;
@@ -458,19 +458,28 @@ function getWheatSheafSvg(isLeft) {
       const dlen = Math.hypot(dx, dy) || 1;
       const nx = -dy / dlen;
       const ny = dx / dlen;
+      // Bulge at 45% along the leaf — wide middle, pointed tip & base
       const mx = px + dx * 0.45;
       const my = py + dy * 0.45;
-      const cOutX = (mx + nx * (width * 0.55)).toFixed(1);
-      const cOutY = (my + ny * (width * 0.55)).toFixed(1);
-      const cInX = (mx - nx * (width * 0.55)).toFixed(1);
-      const cInY = (my - ny * (width * 0.55)).toFixed(1);
+      const halfW = width * 0.95;
+      const cOutX = (mx + nx * halfW).toFixed(1);
+      const cOutY = (my + ny * halfW).toFixed(1);
+      const cInX  = (mx - nx * halfW).toFixed(1);
+      const cInY  = (my - ny * halfW).toFixed(1);
       const bX = px.toFixed(1), bY = py.toFixed(1);
       const tX = tipX.toFixed(1), tY = tipY.toFixed(1);
 
+      // Single closed leaf: base → (Q highlight side) → tip → (Q shadow side) → base
+      // Then overlay the highlight half as a filled sub-path for 3D sheen
+      const highlightMx = (px + dx * 0.42 + nx * halfW * 0.5).toFixed(1);
+      const highlightMy = (py + dy * 0.42 + ny * halfW * 0.5).toFixed(1);
+
       return `
-        <path d="M ${bX} ${bY} Q ${cOutX} ${cOutY} ${tX} ${tY} L ${bX} ${bY} Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="0.8"/>
-        <path d="M ${bX} ${bY} Q ${cInX} ${cInY} ${tX} ${tY} L ${bX} ${bY} Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="0.8"/>
-        <line x1="${bX}" y1="${bY}" x2="${tX}" y2="${tY}" stroke="#fff7aa" stroke-width="0.6"/>
+        <path d="M ${bX} ${bY} Q ${cOutX} ${cOutY} ${tX} ${tY} Q ${cInX} ${cInY} ${bX} ${bY} Z"
+              fill="url(#sheafShad)" stroke="#78350f" stroke-width="0.9"/>
+        <path d="M ${bX} ${bY} Q ${cOutX} ${cOutY} ${tX} ${tY} Q ${highlightMx} ${highlightMy} ${bX} ${bY} Z"
+              fill="url(#sheafHigh)" stroke="none"/>
+        <line x1="${bX}" y1="${bY}" x2="${tX}" y2="${tY}" stroke="#fff7aa" stroke-width="0.55" stroke-linecap="round"/>
       `;
     }
 
@@ -488,9 +497,11 @@ function getWheatSheafSvg(isLeft) {
   const crownTipX = (P3.x + (topTx / topTlen) * 16).toFixed(1);
   const crownTipY = (P3.y + (topTy / topTlen) * 16).toFixed(1);
   const crownLeaf = `
-    <path d="M ${P3.x} ${P3.y} Q ${P3.x + 3} ${P3.y - 4} ${crownTipX} ${crownTipY} L ${P3.x} ${P3.y} Z" fill="url(#sheafHigh)" stroke="#78350f" stroke-width="0.8"/>
-    <path d="M ${P3.x} ${P3.y} Q ${P3.x + 7} ${P3.y + 4} ${crownTipX} ${crownTipY} L ${P3.x} ${P3.y} Z" fill="url(#sheafShad)" stroke="#78350f" stroke-width="0.8"/>
-    <line x1="${P3.x}" y1="${P3.y}" x2="${crownTipX}" y2="${crownTipY}" stroke="#fff7aa" stroke-width="0.6"/>
+    <path d="M ${P3.x} ${P3.y} Q ${P3.x + 3} ${P3.y - 4} ${crownTipX} ${crownTipY} Q ${P3.x + 7} ${P3.y + 4} ${P3.x} ${P3.y} Z"
+          fill="url(#sheafShad)" stroke="#78350f" stroke-width="0.9"/>
+    <path d="M ${P3.x} ${P3.y} Q ${P3.x + 3} ${P3.y - 4} ${crownTipX} ${crownTipY} Q ${(P3.x + 5)} ${P3.y} ${P3.x} ${P3.y} Z"
+          fill="url(#sheafHigh)" stroke="none"/>
+    <line x1="${P3.x}" y1="${P3.y}" x2="${crownTipX}" y2="${crownTipY}" stroke="#fff7aa" stroke-width="0.55" stroke-linecap="round"/>
   `;
 
   return `

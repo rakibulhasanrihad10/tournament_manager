@@ -188,29 +188,19 @@ function drawCanvas3DWheatGrain(ctx, bx, by, tx, ty, width, isOuter) {
   const dx = tx - bx;
   const dy = ty - by;
   const len = Math.hypot(dx, dy) || 1;
-  const ux = dx / len;
-  const uy = dy / len;
-  const px = -uy;
-  const py = ux;
+  const nx = -dy / len;   // normal perpendicular to leaf axis
+  const ny = dx / len;
 
-  // Grain bulge center point (plump teardrop)
-  const midX = bx + dx * 0.48;
-  const midY = by + dy * 0.48;
-  const cOutX = midX + px * width;
-  const cOutY = midY + py * width;
-  const cInX = midX - px * width;
-  const cInY = midY - py * width;
+  // Bulge control point at 45% along the leaf — wide middle, pointed at both ends
+  const mx = bx + dx * 0.45;
+  const my = by + dy * 0.45;
+  const halfW = width * 0.95;
+  const cOutX = mx + nx * halfW;
+  const cOutY = my + ny * halfW;
+  const cInX  = mx - nx * halfW;
+  const cInY  = my - ny * halfW;
 
-  // 1. Facet A: Highlight face (shining gold)
-  const gradA = ctx.createLinearGradient ? ctx.createLinearGradient(bx, by, tx, ty) : null;
-  if (gradA) {
-    gradA.addColorStop(0, '#ffffff');
-    gradA.addColorStop(0.25, '#fff59d');
-    gradA.addColorStop(0.65, '#facc15');
-    gradA.addColorStop(1, '#ca8a04');
-  }
-
-  // 2. Facet B: Shadow face (rich amber to deep bronze)
+  // Shadow (full leaf base colour) — draw first so highlight overlays on top
   const gradB = ctx.createLinearGradient ? ctx.createLinearGradient(bx, by, tx, ty) : null;
   if (gradB) {
     gradB.addColorStop(0, '#fef08a');
@@ -219,13 +209,13 @@ function drawCanvas3DWheatGrain(ctx, bx, by, tx, ty, width, isOuter) {
     gradB.addColorStop(1, '#78350f');
   }
 
-  // Draw Highlight Half
-  ctx.fillStyle = isOuter ? (gradA || '#fff59d') : (gradB || '#eab308');
+  // Single clean closed leaf: base → (Q highlight side) → tip → (Q shadow side) → base
+  ctx.fillStyle = gradB || '#eab308';
   ctx.beginPath();
   if (typeof ctx.moveTo === 'function') ctx.moveTo(bx, by);
   if (typeof ctx.quadraticCurveTo === 'function') {
     ctx.quadraticCurveTo(cOutX, cOutY, tx, ty);
-    ctx.lineTo(bx, by);
+    ctx.quadraticCurveTo(cInX, cInY, bx, by);
   } else if (typeof ctx.lineTo === 'function') {
     ctx.lineTo(tx, ty);
     ctx.lineTo(bx, by);
@@ -233,13 +223,22 @@ function drawCanvas3DWheatGrain(ctx, bx, by, tx, ty, width, isOuter) {
   if (typeof ctx.closePath === 'function') ctx.closePath();
   if (typeof ctx.fill === 'function') ctx.fill();
 
-  // Draw Shadow Half
-  ctx.fillStyle = isOuter ? (gradB || '#eab308') : (gradA || '#fff59d');
+  // Highlight overlay — just the "lit" half of the leaf
+  const gradA = ctx.createLinearGradient ? ctx.createLinearGradient(bx, by, tx, ty) : null;
+  if (gradA) {
+    gradA.addColorStop(0, '#ffffff');
+    gradA.addColorStop(0.25, '#fff59d');
+    gradA.addColorStop(0.65, '#facc15');
+    gradA.addColorStop(1, '#ca8a04');
+  }
+  const hlMx = bx + dx * 0.42 + nx * halfW * 0.5;
+  const hlMy = by + dy * 0.42 + ny * halfW * 0.5;
+  ctx.fillStyle = gradA || '#fff59d';
   ctx.beginPath();
   if (typeof ctx.moveTo === 'function') ctx.moveTo(bx, by);
   if (typeof ctx.quadraticCurveTo === 'function') {
-    ctx.quadraticCurveTo(cInX, cInY, tx, ty);
-    ctx.lineTo(bx, by);
+    ctx.quadraticCurveTo(cOutX, cOutY, tx, ty);
+    ctx.quadraticCurveTo(hlMx, hlMy, bx, by);
   } else if (typeof ctx.lineTo === 'function') {
     ctx.lineTo(tx, ty);
     ctx.lineTo(bx, by);
@@ -247,17 +246,9 @@ function drawCanvas3DWheatGrain(ctx, bx, by, tx, ty, width, isOuter) {
   if (typeof ctx.closePath === 'function') ctx.closePath();
   if (typeof ctx.fill === 'function') ctx.fill();
 
-  // 3D Embossed Center Ridge Line
-  ctx.strokeStyle = '#fff7aa';
-  ctx.lineWidth = 0.8;
-  ctx.beginPath();
-  if (typeof ctx.moveTo === 'function') ctx.moveTo(bx, by);
-  if (typeof ctx.lineTo === 'function') ctx.lineTo(tx, ty);
-  if (typeof ctx.stroke === 'function') ctx.stroke();
-
-  // Crisp Metallic Outer Outline
+  // Dark outline (single pass on the full leaf)
   ctx.strokeStyle = '#78350f';
-  ctx.lineWidth = 1.1;
+  ctx.lineWidth = 0.9;
   ctx.beginPath();
   if (typeof ctx.moveTo === 'function') ctx.moveTo(bx, by);
   if (typeof ctx.quadraticCurveTo === 'function') {
@@ -265,6 +256,15 @@ function drawCanvas3DWheatGrain(ctx, bx, by, tx, ty, width, isOuter) {
     ctx.quadraticCurveTo(cInX, cInY, bx, by);
   }
   if (typeof ctx.closePath === 'function') ctx.closePath();
+  if (typeof ctx.stroke === 'function') ctx.stroke();
+
+  // Centre vein
+  ctx.strokeStyle = 'rgba(255,247,170,0.75)';
+  ctx.lineWidth = 0.55;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') ctx.moveTo(bx, by);
+  if (typeof ctx.lineTo === 'function') ctx.lineTo(tx, ty);
   if (typeof ctx.stroke === 'function') ctx.stroke();
 
   ctx.restore();
@@ -310,10 +310,10 @@ function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
   }
   if (typeof ctx.stroke === 'function') ctx.stroke();
 
-  // Draw 10 dense pairs of sleek, braided 3D golden laurel leaves along the C-arc
-  const numPairs = 10;
+  // Draw 11 dense pairs of plump 3D golden laurel leaves along the C-arc
+  const numPairs = 11;
   for (let i = 1; i <= numPairs; i++) {
-    const t = 0.05 + (i / (numPairs + 1)) * 0.88;
+    const t = 0.04 + (i / (numPairs + 1)) * 0.90;
     // Cubic Bezier position
     const u = 1 - t;
     const px = u * u * u * baseX + 3 * u * u * t * cp1X + 3 * u * t * t * cp2X + t * t * t * tipX;
@@ -330,8 +330,9 @@ function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
     const unx = -uty * dir;
     const uny = utx * dir;
 
-    const grainLen = 22 + Math.sin(t * Math.PI) * 4.5;
-    const grainWidth = 7.5 + Math.sin(t * Math.PI) * 1.6;
+    // Plumper leaves — wider & longer for a rich reference-style look
+    const grainLen = 25 + Math.sin(t * Math.PI) * 5;
+    const grainWidth = 9 + Math.sin(t * Math.PI) * 2;
 
     // Outer laurel leaf (forward acute angle ~23° leaning gently outward along the C-arc)
     const outVx = utx * 0.90 - unx * 0.38;
@@ -354,9 +355,9 @@ function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
   const topTx = 3 * (tipX - cp2X);
   const topTy = 3 * (tipY - cp2Y);
   const topTlen = Math.hypot(topTx, topTy) || 1;
-  const topTipX = tipX + (topTx / topTlen) * 18;
-  const topTipY = tipY + (topTy / topTlen) * 18;
-  drawCanvas3DWheatGrain(ctx, tipX, tipY, topTipX, topTipY, 8, true);
+  const topTipX = tipX + (topTx / topTlen) * 20;
+  const topTipY = tipY + (topTy / topTlen) * 20;
+  drawCanvas3DWheatGrain(ctx, tipX, tipY, topTipX, topTipY, 9.5, true);
 
   // 3D Base Tie Node
   ctx.fillStyle = '#b45309';
