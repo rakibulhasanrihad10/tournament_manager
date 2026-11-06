@@ -427,6 +427,10 @@ function formatDualTonePrizeHtml(rawText, esc) {
 }
 
 function getWheatSheafSvg(isLeft) {
+  if (typeof PROMO_LAUREL_BRANCH_B64 !== 'undefined' && PROMO_LAUREL_BRANCH_B64) {
+    return `<img class="wheat-sheaf-svg ${isLeft ? 'wheat-sheaf-left' : 'wheat-sheaf-right'}" src="${PROMO_LAUREL_BRANCH_B64}" alt="Golden Laurel Wreath" />`;
+  }
+
   const P0 = { x: 52, y: 110 }, P1 = { x: 10, y: 112 }, P2 = { x: 10, y: 8 }, P3 = { x: 52, y: 10 };
   let leavesHtml = '';
 

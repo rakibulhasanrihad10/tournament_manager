@@ -115,6 +115,13 @@ if (typeof PROMO_MBAPPE_B64 !== 'undefined' && PROMO_MBAPPE_B64) {
   cachedPromoMbappeImg = new Image();
   cachedPromoMbappeImg.src = PROMO_MBAPPE_B64;
 }
+let cachedPromoLaurelImg = null;
+if (typeof PROMO_LAUREL_BRANCH_B64 !== 'undefined' && PROMO_LAUREL_BRANCH_B64) {
+  if (typeof Image !== 'undefined') {
+    cachedPromoLaurelImg = new Image();
+    cachedPromoLaurelImg.src = PROMO_LAUREL_BRANCH_B64;
+  }
+}
 
 function drawCanvasLaurelWreath(ctx, cx, cy, r, startA, endA, leaves, col) {
   if (!ctx || !ctx.beginPath) return;
@@ -275,6 +282,28 @@ function drawCanvasLaurelLeaf(ctx, bx, by, tx, ty, width, fillColor, strokeColor
 }
 
 function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
+  // 1. If high-definition Nano Banana golden laurel asset is available, render it directly!
+  if (cachedPromoLaurelImg && typeof ctx.drawImage === 'function') {
+    const branchH = cardH - 12;
+    const imgAspect = (cachedPromoLaurelImg.naturalWidth && cachedPromoLaurelImg.naturalHeight)
+      ? (cachedPromoLaurelImg.naturalWidth / cachedPromoLaurelImg.naturalHeight)
+      : (137 / 280);
+    const branchW = Math.round(branchH * imgAspect);
+    const branchY = cardY + 6;
+    const branchX = isLeft ? (cardX + 16) : (cardX + cardW - 16 - branchW);
+
+    ctx.save();
+    if (!isLeft) {
+      ctx.translate(branchX + branchW, branchY);
+      ctx.scale(-1, 1);
+      ctx.drawImage(cachedPromoLaurelImg, 0, 0, branchW, branchH);
+    } else {
+      ctx.drawImage(cachedPromoLaurelImg, branchX, branchY, branchW, branchH);
+    }
+    ctx.restore();
+    return;
+  }
+
   ctx.save();
   const dir = isLeft ? 1 : -1;
   const innerX = isLeft ? (cardX + 54) : (cardX + cardW - 54);
