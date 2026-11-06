@@ -2551,7 +2551,7 @@ function generateSocialExportCardsHtml() {
           <p>${isEn ? 'Live points, goal difference (GD), form, and top runners-up qualification card.' : 'সবকটি গ্রুপের লাইভ পয়েন্ট, গোল ব্যবধান (GD), সাম্প্রতিক ফর্ম ও সেমিফাইনালের কার্ড।'}</p>
           <div class="social-card-actions">
             <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('standings', this)" style="width: 100%;">
-              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Standings PNG' : 'পয়েন্ট টেবিল ছবি (PNG)'}</span>
+              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Standings' : 'পয়েন্ট টেবিল ছবি'}</span>
             </button>
           </div>
         </div>
@@ -2567,7 +2567,7 @@ function generateSocialExportCardsHtml() {
           <p>${isEn ? 'Head-to-head roadmap, semifinals, and Grand Final championship trophy bracket.' : '১ম ও ২য় সেমিফাইনাল, ৩য় স্থান নির্ধারণী ম্যাচ এবং গ্র্যান্ড ফাইনালের হেড-টু-হেড রোডম্যাপ।'}</p>
           <div class="social-card-actions">
             <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('bracket', this)" style="width: 100%;">
-              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Knockout PNG' : 'নকআউট ব্র্যাকেট ছবি (PNG)'}</span>
+              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Knockout' : 'নকআউট ব্র্যাকেট ছবি'}</span>
             </button>
           </div>
         </div>
@@ -2583,7 +2583,7 @@ function generateSocialExportCardsHtml() {
           <p>${isEn ? 'Match timings, group opponents, head-to-head clash schedule, and live score results.' : 'কার সাথে কার খেলা, ম্যাচের সময়, গ্রুপ পর্বের প্রতিপক্ষের মুখোমুখি লড়াই ও ফলাফল।'}</p>
           <div class="social-card-actions">
             <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('fixtures', this)" style="width: 100%;">
-              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Fixtures PNG' : 'ফিক্সচার ছবি (PNG)'}</span>
+              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Fixtures' : 'ফিক্সচার ছবি'}</span>
             </button>
           </div>
         </div>
@@ -2599,7 +2599,7 @@ function generateSocialExportCardsHtml() {
           <p>${isEn ? 'High-resolution complete Page 1 including banner, standings, fixtures & roadmap.' : 'ব্যানার, ভেন্যু, পয়েন্ট টেবিল, ফিকশ্চার ও নকআউট ব্র্যাকেটসহ সম্পূর্ণ ক্রিস্টাল-ক্লিয়ার বোর্ড।'}</p>
           <div class="social-card-actions">
             <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('full', this)" style="width: 100%;">
-              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Master Board PNG' : 'সম্পূর্ণ বোর্ড ছবি (PNG)'}</span>
+              <span class="btn-ic">📸</span> <span>${isEn ? 'Download Master Board' : 'সম্পূর্ণ বোর্ড ছবি'}</span>
             </button>
           </div>
         </div>
@@ -2607,7 +2607,7 @@ function generateSocialExportCardsHtml() {
     </div>
     <div style="margin-top: 14px; text-align: center;">
       <button type="button" class="btn btn-dl-all-social" onclick="downloadAllSocialCards(this)" style="padding: 10px 20px; font-weight: 700; font-size: 13px; background: linear-gradient(135deg, #1e40af, #4338ca); color: #fff; border-radius: 8px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);">
-        📦 ${isEn ? 'Download All 5 Social Images (Batch PNG)' : 'সবগুলো ৫টি ছবি একসাথে ডাউনলোড (Download All PNGs)'}
+        📦 ${isEn ? 'Download All 5 Social Images' : 'সবগুলো ৫টি ছবি একসাথে ডাউনলোড'}
       </button>
     </div>
   `;

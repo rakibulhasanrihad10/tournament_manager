@@ -1869,7 +1869,7 @@
             <div style="display:flex; gap:6px;">
               <button type="button" class="btn" id="btn-poster-branding-setup" style="background:linear-gradient(135deg, #0284c7, #0369a1); color:#fff; font-size:11px; padding:5px 10px; font-weight:700;" onclick="openBlankRosterConfigModal()" data-i18n="poster.btn_branding_setup" title="পোস্টারের স্টেডিয়াম কভার ও লোগো পরিবর্তন করুন">🏟️ কভার ও লোগো</button>
               <button type="button" class="btn" id="btn-poster-copy-action" style="background:linear-gradient(135deg, #1e40af, #2563eb); color:#fff; font-size:11px; padding:5px 10px;" onclick="copyFacebookFixturePost()" data-i18n="modal.btn_copy_fixture">📋 ফিক্সচার পোস্ট কপি করুন</button>
-              <button type="button" class="btn" id="btn-poster-print-action" style="background:linear-gradient(135deg, #15803d, #16a34a); color:#fff; font-size:11px; padding:5px 10px;" onclick="downloadSocialCard('fixtures', this)" data-i18n="poster.btn_download_png">📸 ফিক্সচার ছবি ডাউনলোড (PNG)</button>
+              <button type="button" class="btn" id="btn-poster-print-action" style="background:linear-gradient(135deg, #15803d, #16a34a); color:#fff; font-size:11px; padding:5px 10px;" onclick="downloadSocialCard('promo', this)" data-i18n="poster.btn_download_notice">📸 নোটিশ ছবি ডাউনলোড</button>
             </div>
           </div>
 
@@ -1879,7 +1879,7 @@
           </div>
 
           <div class="modal-promo-footer-bar" style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#f8fafc; border-top:1px solid #e2e8f0; flex-wrap:wrap; gap:8px;">
-            <div class="modal-promo-tip" style="font-size:11px; color:#475569;" data-i18n="poster.social_img_tip">💡 টিপস: "📸 ছবি ডাউনলোড (PNG)" বাটনে ক্লিক করে সরাসরি ফেসবুক ও হোয়াটসঅ্যাপে পোস্ট করার উপযোগী হাই-রেজোলিউশন ছবি নামিয়ে নিন।</div>
+            <div class="modal-promo-tip" style="font-size:11px; color:#475569;" data-i18n="poster.social_img_tip">💡 টিপস: "📸 নোটিশ ছবি ডাউনলোড" বাটনে ক্লিক করে সরাসরি ফেসবুক ও হোয়াটসঅ্যাপে পোস্ট করার উপযোগী হাই-রেজোলিউশন ছবি নামিয়ে নিন।</div>
             <button type="button" class="btn" style="background:#0f172a; color:#fff;" onclick="closePromoPosterModal()" data-i18n="modal.btn_close_done">বন্ধ করুন ✕</button>
           </div>
         </div>
@@ -2343,7 +2343,7 @@
         <span class="social-intro-icon">📢</span>
         <div class="social-intro-txt">
           <strong data-i18n="social.intro_title">ম্যাচ শেষে সোশ্যাল মিডিয়ায় এক ক্লিকে আপডেট শেয়ার করুন!</strong>
-          <p data-i18n="social.intro_desc">আলাদা কোনো ডিজাইনের প্রয়োজন নেই। আপনার টুর্নামেন্ট থেকেই পয়েন্ট টেবিল, রোডম্যাপ বা পুরো বোর্ডের ক্রিস্টাল-ক্লিয়ার ছবি (PNG) সরাসরি নামিয়ে নিন।</p>
+          <p data-i18n="social.intro_desc">আলাদা কোনো ডিজাইনের প্রয়োজন নেই। আপনার টুর্নামেন্ট থেকেই পয়েন্ট টেবিল, রোডম্যাপ বা পুরো বোর্ডের ক্রিস্টাল-ক্লিয়ার ছবি সরাসরি নামিয়ে নিন।</p>
         </div>
       </div>
 
@@ -2359,7 +2359,7 @@
               <p data-i18n="social.card_standings_desc">সবকটি গ্রুপের লাইভ পয়েন্ট, গোল ব্যবধান (GD), সাম্প্রতিক ফর্ম ও সেমিফাইনালে খেলার যোগ্য সেরা রানার্স-আপের পূর্ণাঙ্গ কার্ড।</p>
               <div class="social-card-actions">
                 <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('standings', this)" style="width:100%;">
-                  <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_standings">পয়েন্ট টেবিল ছবি (PNG)</span>
+                  <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_standings">পয়েন্ট টেবিল ছবি</span>
                 </button>
               </div>
             </div>
@@ -2375,7 +2375,7 @@
               <p data-i18n="social.card_bracket_desc">১ম ও ২য় সেমিফাইনাল, ৩য় স্থান নির্ধারণী ম্যাচ এবং গ্র্যান্ড ফাইনালের হেড-টু-হেড রোডম্যাপ ও বিজয়ী ট্রফি প্রদর্শন।</p>
               <div class="social-card-actions">
                 <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('bracket', this)" style="width:100%;">
-                  <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_bracket">নকআউট ব্র্যাকেট ছবি (PNG)</span>
+                  <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_bracket">নকআউট ব্র্যাকেট ছবি</span>
                 </button>
               </div>
             </div>
@@ -2391,7 +2391,7 @@
               <p data-i18n="social.card_fixtures_desc">কার সাথে কার খেলা, ম্যাচের সময়, গ্রুপ পর্বের প্রতিপক্ষের মুখোমুখি লড়াই এবং লাইভ ফলাফল প্রদর্শন কার্ড।</p>
               <div class="social-card-actions">
                 <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('fixtures', this)" style="width:100%;">
-                  <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_fixtures">ফিক্সচার ছবি (PNG)</span>
+                  <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_fixtures">ফিক্সচার ছবি</span>
                 </button>
               </div>
             </div>
@@ -2407,7 +2407,7 @@
               <p data-i18n="social.card_master_desc">ব্যানার, ভেন্যু, পয়েন্ট টেবিল, ফিকশ্চার ও নকআউট ব্র্যাকেটসহ পুরো পেজ ১-এর সম্পূর্ণ ক্রিস্টাল-ক্লিয়ার হাই-রেজোলিউশন বোর্ড।</p>
               <div class="social-card-actions">
                 <button type="button" class="btn btn-sc-primary" onclick="downloadSocialCard('full', this)" style="width:100%;">
-                  <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_master">সম্পূর্ণ বোর্ড ছবি (PNG)</span>
+                  <span class="btn-ic">📸</span> <span data-i18n="social.btn_dl_master">সম্পূর্ণ বোর্ড ছবি</span>
                 </button>
               </div>
             </div>
@@ -2418,7 +2418,7 @@
       <!-- Modal Footer Actions -->
       <div class="social-export-footer">
         <button type="button" class="btn btn-dl-all-social" onclick="downloadAllSocialCards(this)" data-i18n="social.btn_dl_all">
-          📦 সবগুলো ছবি একসাথে ডাউনলোড (Download All PNGs)
+          📦 সবগুলো ছবি একসাথে ডাউনলোড
         </button>
         <button type="button" class="btn btn-close-social" onclick="closeSocialShareModal()" data-i18n="modal.btn_close_done">
           বন্ধ করুন ✕

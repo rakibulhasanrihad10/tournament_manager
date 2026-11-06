@@ -766,12 +766,12 @@ function switchPosterTab(tab) {
     if (brandingBtn) brandingBtn.style.display = 'none';
     if (copyBtn) {
       copyBtn.style.display = 'inline-flex';
-      copyBtn.textContent = isEn ? '📦 Download All (PNG)' : '📦 সবগুলো ছবি ডাউনলোড (PNG)';
+      copyBtn.textContent = isEn ? '📦 Download All' : '📦 সবগুলো ছবি ডাউনলোড';
       copyBtn.setAttribute('onclick', 'downloadAllSocialCards(this)');
     }
     if (printBtn) {
       printBtn.style.display = 'inline-flex';
-      printBtn.textContent = isEn ? '📸 Download Master Board (PNG)' : '📸 সম্পূর্ণ বোর্ড ছবি (PNG)';
+      printBtn.textContent = isEn ? '📸 Download Master Board' : '📸 সম্পূর্ণ বোর্ড ছবি';
       printBtn.setAttribute('onclick', "downloadSocialCard('full', this)");
     }
     if (subtitleEl) {
@@ -781,8 +781,8 @@ function switchPosterTab(tab) {
     }
     if (tipEl) {
       tipEl.textContent = isEn
-        ? '💡 Tip: Click any "📸 Download (PNG)" button to directly download crisp images ready for Facebook & WhatsApp.'
-        : '💡 টিপস: যেকোনো "📸 ছবি ডাউনলোড (PNG)" বাটনে ক্লিক করে সরাসরি সোশ্যাল মিডিয়ায় পোস্ট করার উপযোগী ক্রিস্টাল-ক্লিয়ার ছবি নামিয়ে নিন।';
+        ? '💡 Tip: Click any "📸 Download" button to directly download crisp images ready for Facebook & WhatsApp.'
+        : '💡 টিপস: যেকোনো "📸 ছবি ডাউনলোড" বাটনে ক্লিক করে সরাসরি সোশ্যাল মিডিয়ায় পোস্ট করার উপযোগী ক্রিস্টাল-ক্লিয়ার ছবি নামিয়ে নিন।';
     }
     if (container) {
       if (typeof generateSocialExportCardsHtml === 'function') {
@@ -807,10 +807,10 @@ function switchPosterTab(tab) {
     if (printBtn) {
       printBtn.style.display = 'inline-flex';
       if (activePosterTab === 'fixture') {
-        printBtn.textContent = isEn ? '📸 Download Fixture (PNG)' : '📸 ফিক্সচার ছবি ডাউনলোড (PNG)';
+        printBtn.textContent = isEn ? '📸 Download Fixture' : '📸 ফিক্সচার ছবি ডাউনলোড';
         printBtn.setAttribute('onclick', "downloadSocialCard('fixtures', this)");
       } else {
-        printBtn.textContent = isEn ? '📸 Download Notice (4K Ultra-HD)' : '📸 নোটিশ ছবি ডাউনলোড (4K Ultra-HD)';
+        printBtn.textContent = isEn ? '📸 Download Notice' : '📸 নোটিশ ছবি ডাউনলোড';
         printBtn.setAttribute('onclick', "downloadSocialCard('promo', this)");
       }
     }
@@ -823,8 +823,12 @@ function switchPosterTab(tab) {
 
     if (tipEl) {
       tipEl.textContent = isEn
-        ? '💡 Tip: Click "📸 Download Notice (4K Ultra-HD)" to save razor-sharp 4K Ultra-HD pictures ready for Facebook, WhatsApp & Printing.'
-        : '💡 টিপস: "📸 নোটিশ ছবি ডাউনলোড (4K Ultra-HD)" বাটনে ক্লিক করে সরাসরি ফেসবুক, হোয়াটসঅ্যাপ ও প্রিন্টের জন্য আল্ট্রা-এইচডি (4K) ছবি নামিয়ে নিন।';
+        ? (activePosterTab === 'fixture'
+            ? '💡 Tip: Click "📸 Download Fixture" to save crisp pictures ready for direct sharing on Facebook & WhatsApp.'
+            : '💡 Tip: Click "📸 Download Notice" to save crisp pictures ready for direct sharing on Facebook & WhatsApp.')
+        : (activePosterTab === 'fixture'
+            ? '💡 টিপস: "📸 ফিক্সচার ছবি ডাউনলোড" বাটনে ক্লিক করে সরাসরি ফেসবুক ও হোয়াটসঅ্যাপে পোস্ট করার উপযোগী হাই-রেজোলিউশন ছবি নামিয়ে নিন।'
+            : '💡 টিপস: "📸 নোটিশ ছবি ডাউনলোড" বাটনে ক্লিক করে সরাসরি ফেসবুক ও হোয়াটসঅ্যাপে পোস্ট করার উপযোগী হাই-রেজোলিউশন ছবি নামিয়ে নিন।');
     }
 
     if (container) {
