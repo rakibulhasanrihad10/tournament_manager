@@ -633,8 +633,8 @@ function renderPromoPosterToCanvas() {
   const startingPlayers = c.startingPlayers || 7;
   const benchPlayers = c.benchPlayers || 4;
 
-  const champPrize = c.championPrize || c.champPrize || (isEn ? '20,000 BDT & Trophy' : '২০,০০০ টাকা ও আকর্ষণীয় ট্রফি');
-  const runnerPrize = c.runnerUpPrize || c.runnerPrize || (isEn ? '10,000 BDT & Trophy' : '১০,০০০ টাকা ও ট্রফি');
+  const champPrize = c.championPrize || c.champPrize || (isEn ? '20,000 BDT' : '২০,০০০ টাকা');
+  const runnerPrize = c.runnerUpPrize || c.runnerPrize || (isEn ? '10,000 BDT' : '১০,০০০ টাকা');
   const thirdPrize = c.thirdPrize || (isEn ? 'Trophy & Medals' : 'ট্রফি ও মেডেল');
   const otherPrizes = c.otherPrizes || (isEn ? 'Best Player, Top Scorer, Best Goalkeeper' : 'সেরা খেলোয়াড়, সেরা গোলদাতা, সেরা গোলকিপার');
 
@@ -904,21 +904,7 @@ function renderPromoPosterToCanvas() {
   ctx.restore();
 
   // Dual-tone Champion Prize Amount (Golden Numbers + Crisp White Text)
-  drawCanvasDualTonePrize(ctx, champPrize, p1X + prizeCardW / 2, r2Y + 68, maxPrizeTextW, true);
-
-  // Champion Subtitle
-  ctx.save();
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#ffffff';
-  if (ctx.shadowColor !== undefined) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-    ctx.shadowBlur = 3;
-    ctx.shadowOffsetY = 1;
-  }
-  ctx.fillText(isEn ? '+ Best Player Trophy & Medals' : '+ সেরা খেলোয়াড় ট্রফি ও মেডেল', p1X + prizeCardW / 2, r2Y + 104);
-  ctx.restore();
+  drawCanvasDualTonePrize(ctx, champPrize, p1X + prizeCardW / 2, r2Y + 78, maxPrizeTextW, true);
 
   // Runner-Up Prize Card (Deep Slate / Black Luxury Radial Background)
   const ruGrad = ctx.createRadialGradient
@@ -969,21 +955,7 @@ function renderPromoPosterToCanvas() {
   ctx.restore();
 
   // Dual-tone Runner-Up Prize Amount (Golden Numbers + Crisp White Text)
-  drawCanvasDualTonePrize(ctx, runnerPrize, p2X + prizeCardW / 2, r2Y + 68, maxPrizeTextW, false);
-
-  // Runner-Up Subtitle
-  ctx.save();
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#cbd5e1';
-  if (ctx.shadowColor !== undefined) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-    ctx.shadowBlur = 3;
-    ctx.shadowOffsetY = 1;
-  }
-  ctx.fillText(isEn ? '+ Runner-Up Trophy & Medals' : '+ রানার্স-আপ ট্রফি ও মেডেল', p2X + prizeCardW / 2, r2Y + 104);
-  ctx.restore();
+  drawCanvasDualTonePrize(ctx, runnerPrize, p2X + prizeCardW / 2, r2Y + 78, maxPrizeTextW, false);
 
   // 7. ROW 3: SECONDARY PRIZES STRIP
   const r3Y = 396;

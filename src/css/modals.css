@@ -3413,7 +3413,7 @@
     }
     .promo-ref-prize-card {
       border-radius: 18px;
-      padding: 12px 64px;
+      padding: 16px 64px 15px 64px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -3485,7 +3485,7 @@
       font-weight: 900;
       color: #ffffff;
       text-shadow: 0 3px 6px rgba(0, 0, 0, 0.95);
-      margin: 2px 0 3px 0;
+      margin: 6px 0 2px 0;
       letter-spacing: 0.5px;
       max-width: 100%;
       word-break: break-word;

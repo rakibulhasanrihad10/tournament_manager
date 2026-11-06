@@ -651,8 +651,7 @@ function generatePromoPosterCardHtml() {
             ${getRibbonMedalSvg(false)}
             <span>${tFn('poster.champ_prize')}</span>
           </div>
-          <div class="prize-card-amount promo-prize-amount">${formatDualTonePrizeHtml(c.championPrize || (isEn ? '20,000 BDT & Trophy' : '২০,০০০ টাকা ও আকর্ষণীয় ট্রফি'), esc)}</div>
-          <div class="prize-card-sub" style="font-size:11px; color:#ffffff; font-weight:700;">${tFn('poster.champ_sub')}</div>
+          <div class="prize-card-amount promo-prize-amount">${formatDualTonePrizeHtml(c.championPrize || (isEn ? '20,000 BDT' : '২০,০০০ টাকা'), esc)}</div>
         </div>
         <div class="promo-ref-prize-card promo-ru-card promo-prize-card ru">
           ${getWheatSheafSvg(true)}
@@ -661,8 +660,7 @@ function generatePromoPosterCardHtml() {
             ${getRibbonMedalSvg(true)}
             <span>${tFn('poster.runner_prize')}</span>
           </div>
-          <div class="prize-card-amount promo-prize-amount">${formatDualTonePrizeHtml(c.runnerUpPrize || (isEn ? '10,000 BDT & Trophy' : '১০,০০০ টাকা ও ট্রফি'), esc)}</div>
-          <div class="prize-card-sub" style="font-size:11px; color:#cbd5e1; font-weight:700;">${tFn('poster.runner_sub')}</div>
+          <div class="prize-card-amount promo-prize-amount">${formatDualTonePrizeHtml(c.runnerUpPrize || (isEn ? '10,000 BDT' : '১০,০০০ টাকা'), esc)}</div>
         </div>
       </div>
 

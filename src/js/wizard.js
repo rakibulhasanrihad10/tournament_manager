@@ -3020,16 +3020,16 @@ function applyWizardPreset(presetKey) {
       setVal('w-cfg-formatType', '11-a-side (11 on pitch, FIFA Standard Football)');
       setVal('w-cfg-matchDuration', '90 mins (45+15+45 mins)');
       setVal('w-cfg-entryFee', '3,000 BDT (Non-refundable)');
-      setVal('w-cfg-championPrize', '50,000 BDT & Champions Trophy');
-      setVal('w-cfg-runnerUpPrize', '25,000 BDT & Runner-Up Trophy');
+      setVal('w-cfg-championPrize', '50,000 BDT');
+      setVal('w-cfg-runnerUpPrize', '25,000 BDT');
       setVal('w-cfg-thirdPrize', '10,000 BDT or Trophy & Medals');
       setVal('w-cfg-otherPrizes', 'Golden Boot, Golden Glove, MVP of the Final');
     } else {
       setVal('w-cfg-formatType', '১১-এ-সাইড (মাঠে প্রতি দলে ১১ জন খেলোয়াড়, ফিফা স্ট্যান্ডার্ড)');
       setVal('w-cfg-matchDuration', '৯০ মিনিট (৪৫+১৫+৪৫ মিনিট)');
       setVal('w-cfg-entryFee', '৩,০০০ টাকা (অফেরতযোগ্য)');
-      setVal('w-cfg-championPrize', '৫০,০০০ টাকা ও আকর্ষণীয় চ্যাম্পিয়ন ট্রফি');
-      setVal('w-cfg-runnerUpPrize', '২৫,০০০ টাকা ও রানার্স-আপ ট্রফি');
+      setVal('w-cfg-championPrize', '৫০,০০০ টাকা');
+      setVal('w-cfg-runnerUpPrize', '২৫,০০০ টাকা');
       setVal('w-cfg-thirdPrize', '১০,০০০ টাকা অথবা ট্রফি ও মেডেল');
       setVal('w-cfg-otherPrizes', 'গোল্ডেন বুট, গোল্ডেন গ্লাভস, ফাইনালের ম্যান অব দ্য ম্যাচ');
     }
@@ -3046,16 +3046,16 @@ function applyWizardPreset(presetKey) {
       setVal('w-cfg-formatType', '5/6-a-side Minibar (Short Pitch / Futsal)');
       setVal('w-cfg-matchDuration', '20 mins (10+2+10 mins)');
       setVal('w-cfg-entryFee', '1,500 BDT');
-      setVal('w-cfg-championPrize', '20,000 BDT & Minibar Trophy');
-      setVal('w-cfg-runnerUpPrize', '10,000 BDT & Trophy');
+      setVal('w-cfg-championPrize', '20,000 BDT');
+      setVal('w-cfg-runnerUpPrize', '10,000 BDT');
       setVal('w-cfg-thirdPrize', 'Trophy & Crest');
       setVal('w-cfg-otherPrizes', 'Top Scorer, Best Goalkeeper');
     } else {
       setVal('w-cfg-formatType', '৫/৬-এ-সাইড মিনিবার (শর্ট পিচ / ছোট পোস্ট)');
       setVal('w-cfg-matchDuration', '২০ মিনিট (১০+২+১০ মিনিট)');
       setVal('w-cfg-entryFee', '১,৫০০ টাকা');
-      setVal('w-cfg-championPrize', '২০,০০০ টাকা ও মিনিবার ট্রফি');
-      setVal('w-cfg-runnerUpPrize', '১০,০০০ টাকা ও ট্রফি');
+      setVal('w-cfg-championPrize', '২০,০০০ টাকা');
+      setVal('w-cfg-runnerUpPrize', '১০,০০০ টাকা');
       setVal('w-cfg-thirdPrize', 'ট্রফি ও ক্রেস্ট');
       setVal('w-cfg-otherPrizes', 'সেরা গোলদাতা, সেরা গোলরক্ষক');
     }
