@@ -376,31 +376,99 @@ function generateFixturePosterCardHtml() {
 // ----------------------------------------------------
 // 2. PROMOTIONAL NOTICE & REGISTRATION POSTER (PHASE 1)
 // ----------------------------------------------------
+function getRibbonMedalSvg(isSilver) {
+  const medalGradId = isSilver ? 'ruMedalGrad' : 'champMedalGrad';
+  const medalStroke = isSilver ? '#94a3b8' : '#ca8a04';
+  const starFill = isSilver ? '#f8fafc' : '#ffffff';
+  return `
+    <svg class="prize-ribbon-medal-svg" viewBox="0 0 36 46" width="28" height="36" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.8)); margin-right:4px;">
+      <defs>
+        <linearGradient id="champMedalGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="25%" stop-color="#fde047"/>
+          <stop offset="65%" stop-color="#facc15"/>
+          <stop offset="100%" stop-color="#b45309"/>
+        </linearGradient>
+        <linearGradient id="ruMedalGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="35%" stop-color="#cbd5e1"/>
+          <stop offset="70%" stop-color="#94a3b8"/>
+          <stop offset="100%" stop-color="#475569"/>
+        </linearGradient>
+      </defs>
+      <!-- Folded V-Ribbon (Blue-White-Red Stripes) -->
+      <!-- Left side fold -->
+      <polygon points="10,0 18,17 14,17 7,0" fill="#1d4ed8"/>
+      <polygon points="7,0 14,17 10,17 4,0" fill="#ffffff"/>
+      <polygon points="4,0 10,17 6,17 0,0" fill="#b91c1c"/>
+      <!-- Right side fold -->
+      <polygon points="26,0 18,17 22,17 29,0" fill="#1d4ed8"/>
+      <polygon points="29,0 22,17 26,17 32,0" fill="#ffffff"/>
+      <polygon points="32,0 26,17 30,17 36,0" fill="#b91c1c"/>
+      <!-- Medal Circle Rim -->
+      <circle cx="18" cy="27" r="13.5" fill="url(#${medalGradId})" stroke="${medalStroke}" stroke-width="1.5"/>
+      <circle cx="18" cy="27" r="10.5" fill="none" stroke="${medalStroke}" stroke-width="0.8" stroke-dasharray="2 1"/>
+      <!-- Embossed Star in Center -->
+      <polygon points="18,18 20.5,23.5 26.5,24 22,28 23.5,34 18,30.8 12.5,34 14,28 9.5,24 15.5,23.5" fill="${starFill}" opacity="0.95"/>
+    </svg>
+  `;
+}
+
+function formatDualTonePrizeHtml(rawText, esc) {
+  if (!rawText) return '';
+  const str = String(rawText).trim();
+  const match = str.match(/^([০-৯0-9,]+(?:\s*(?:টাকা|BDT|\$|Tk))?)(.*)$/i);
+  if (match && match[1]) {
+    const numPart = match[1].trim();
+    const restPart = match[2].trim();
+    return `<span class="prize-amount-gold">${esc(numPart)}</span> ${restPart ? `<span class="prize-amount-white">${esc(restPart)}</span>` : ''}`;
+  }
+  return `<span class="prize-amount-gold">${esc(str)}</span>`;
+}
+
 function getWheatSheafSvg(isLeft) {
   return `
     <svg class="wheat-sheaf-svg ${isLeft ? 'wheat-sheaf-left' : 'wheat-sheaf-right'}" viewBox="0 0 60 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sheafGoldGrad1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#fff59d"/>
+          <stop offset="50%" stop-color="#facc15"/>
+          <stop offset="100%" stop-color="#b45309"/>
+        </linearGradient>
+        <linearGradient id="sheafGoldGrad2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#fde047"/>
+          <stop offset="60%" stop-color="#eab308"/>
+          <stop offset="100%" stop-color="#92400e"/>
+        </linearGradient>
+      </defs>
       <!-- Curved Golden Stem -->
-      <path d="M25 114 C10 65 20 30 45 8" stroke="#facc15" stroke-width="2.5" stroke-linecap="round"/>
-      <!-- Pairs of Golden Leaves/Grains -->
+      <path d="M22 116 C8 65 18 28 46 8" stroke="#facc15" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- 8 Dense Pairs of Overlapping Leaves -->
       <!-- Pair 1 (Bottom) -->
-      <path d="M24 105 Q12 100 8 92 Q18 92 24 105 Z" fill="#fde047" stroke="#ca8a04" stroke-width="0.8"/>
-      <path d="M25 105 Q35 98 40 90 Q30 92 25 105 Z" fill="#facc15" stroke="#ca8a04" stroke-width="0.8"/>
+      <path d="M22 108 Q9 104 5 95 Q16 95 22 108 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M23 108 Q35 101 41 93 Q29 95 23 108 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
       <!-- Pair 2 -->
-      <path d="M20 90 Q7 83 4 74 Q15 75 20 90 Z" fill="#fde047" stroke="#ca8a04" stroke-width="0.8"/>
-      <path d="M21 90 Q33 80 39 72 Q28 75 21 90 Z" fill="#facc15" stroke="#ca8a04" stroke-width="0.8"/>
+      <path d="M19 95 Q6 89 2 80 Q14 81 19 95 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M20 95 Q33 86 40 77 Q27 80 20 95 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
       <!-- Pair 3 -->
-      <path d="M18 73 Q4 64 2 54 Q13 57 18 73 Z" fill="#fde047" stroke="#ca8a04" stroke-width="0.8"/>
-      <path d="M19 73 Q32 62 39 52 Q27 57 19 73 Z" fill="#facc15" stroke="#ca8a04" stroke-width="0.8"/>
+      <path d="M17 81 Q3 73 1 63 Q13 66 17 81 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M18 81 Q32 70 40 60 Q27 65 18 81 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
       <!-- Pair 4 -->
-      <path d="M18 55 Q6 44 6 34 Q16 38 18 55 Z" fill="#fde047" stroke="#ca8a04" stroke-width="0.8"/>
-      <path d="M20 55 Q33 44 42 35 Q29 41 20 55 Z" fill="#facc15" stroke="#ca8a04" stroke-width="0.8"/>
+      <path d="M16 67 Q3 58 3 47 Q14 51 16 67 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M18 67 Q32 55 42 45 Q28 51 18 67 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
       <!-- Pair 5 -->
-      <path d="M22 38 Q12 26 14 17 Q22 22 22 38 Z" fill="#fde047" stroke="#ca8a04" stroke-width="0.8"/>
-      <path d="M24 38 Q38 27 48 18 Q34 26 24 38 Z" fill="#facc15" stroke="#ca8a04" stroke-width="0.8"/>
-      <!-- Top Grain -->
-      <path d="M43 10 Q45 2 48 0 Q52 6 45 15 Z" fill="#fef08a" stroke="#ca8a04" stroke-width="0.8"/>
-      <!-- Base Tie Node -->
-      <circle cx="25" cy="114" r="3" fill="#ca8a04"/>
+      <path d="M18 53 Q6 43 9 32 Q18 37 18 53 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M20 53 Q35 41 45 31 Q30 38 20 53 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
+      <!-- Pair 6 -->
+      <path d="M22 39 Q12 28 17 18 Q25 24 22 39 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M25 39 Q40 28 50 18 Q35 25 25 39 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
+      <!-- Pair 7 -->
+      <path d="M28 26 Q21 16 28 8 Q33 15 28 26 Z" fill="url(#sheafGoldGrad1)" stroke="#b45309" stroke-width="0.8"/>
+      <path d="M33 26 Q46 17 54 9 Q41 15 33 26 Z" fill="url(#sheafGoldGrad2)" stroke="#b45309" stroke-width="0.8"/>
+      <!-- Top Tip Grain -->
+      <path d="M44 9 Q46 1 49 0 Q53 7 45 15 Z" fill="#fff59d" stroke="#b45309" stroke-width="0.8"/>
+      <!-- Base Node -->
+      <circle cx="22" cy="116" r="3.5" fill="#b45309"/>
     </svg>
   `;
 }
@@ -493,16 +561,22 @@ function generatePromoPosterCardHtml() {
         <div class="promo-ref-prize-card promo-champ-card promo-prize-card champ">
           ${getWheatSheafSvg(true)}
           ${getWheatSheafSvg(false)}
-          <div class="prize-card-badge promo-prize-title">🥇 ${tFn('poster.champ_prize')}</div>
-          <div class="prize-card-amount promo-prize-amount">${esc(c.championPrize || (isEn ? '20,000 BDT & Trophy' : '২০,০০০ টাকা ও আকর্ষণীয় ট্রফি'))}</div>
-          <div class="prize-card-sub" style="font-size:10px; color:#fde68a;">${tFn('poster.champ_sub')}</div>
+          <div class="prize-card-badge promo-prize-title">
+            ${getRibbonMedalSvg(false)}
+            <span>${tFn('poster.champ_prize')}</span>
+          </div>
+          <div class="prize-card-amount promo-prize-amount">${formatDualTonePrizeHtml(c.championPrize || (isEn ? '20,000 BDT & Trophy' : '২০,০০০ টাকা ও আকর্ষণীয় ট্রফি'), esc)}</div>
+          <div class="prize-card-sub" style="font-size:11px; color:#ffffff; font-weight:700;">${tFn('poster.champ_sub')}</div>
         </div>
         <div class="promo-ref-prize-card promo-ru-card promo-prize-card ru">
           ${getWheatSheafSvg(true)}
           ${getWheatSheafSvg(false)}
-          <div class="prize-card-badge promo-prize-title">🥈 ${tFn('poster.runner_prize')}</div>
-          <div class="prize-card-amount promo-prize-amount">${esc(c.runnerUpPrize || (isEn ? '10,000 BDT & Trophy' : '১০,০০০ টাকা ও ট্রফি'))}</div>
-          <div class="prize-card-sub" style="font-size:10px; color:#cbd5e1;">${tFn('poster.runner_sub')}</div>
+          <div class="prize-card-badge promo-prize-title">
+            ${getRibbonMedalSvg(true)}
+            <span>${tFn('poster.runner_prize')}</span>
+          </div>
+          <div class="prize-card-amount promo-prize-amount">${formatDualTonePrizeHtml(c.runnerUpPrize || (isEn ? '10,000 BDT & Trophy' : '১০,০০০ টাকা ও ট্রফি'), esc)}</div>
+          <div class="prize-card-sub" style="font-size:11px; color:#cbd5e1; font-weight:700;">${tFn('poster.runner_sub')}</div>
         </div>
       </div>
 

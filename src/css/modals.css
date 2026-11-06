@@ -3412,19 +3412,38 @@
       z-index: 2;
     }
     .promo-ref-prize-card {
-      border-radius: 16px;
-      padding: 12px 56px;
+      border-radius: 18px;
+      padding: 12px 54px;
       text-align: center;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 0 25px rgba(250, 204, 21, 0.65), inset 0 0 15px rgba(250, 204, 21, 0.25);
+      box-shadow: 0 0 25px rgba(250, 204, 21, 0.65), inset 0 0 18px rgba(0, 0, 0, 0.95);
       border: 3px solid #facc15;
+    }
+    .promo-ref-prize-card::before,
+    .promo-ref-prize-card::after {
+      content: '';
+      position: absolute;
+      width: 70px;
+      height: 3.5px;
+      background: radial-gradient(circle, #ffffff 15%, #fef08a 60%, transparent 95%);
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      filter: drop-shadow(0 0 5px #facc15);
+      z-index: 3;
+    }
+    .promo-ref-prize-card::before {
+      top: -1.5px;
+    }
+    .promo-ref-prize-card::after {
+      bottom: -1.5px;
     }
     .promo-ref-prize-card .wheat-sheaf-svg {
       position: absolute;
       top: 50%;
-      width: 44px;
-      height: 104px;
+      width: 46px;
+      height: 106px;
       pointer-events: none;
       z-index: 1;
     }
@@ -3437,38 +3456,56 @@
       transform: translateY(-50%) scaleX(-1);
     }
     .promo-ref-prize-card.promo-champ-card {
-      background: radial-gradient(circle at 50% 25%, rgba(202, 138, 4, 0.45) 0%, rgba(120, 53, 15, 0.95) 70%, rgba(55, 19, 2, 0.98) 100%);
+      background: radial-gradient(ellipse at 50% 30%, #351604 0%, #170902 60%, #0a0301 100%) !important;
+      border: 3px solid #facc15 !important;
     }
     .promo-ref-prize-card.promo-ru-card {
-      background: radial-gradient(circle at 50% 25%, rgba(148, 163, 184, 0.4) 0%, rgba(51, 65, 85, 0.95) 70%, rgba(15, 23, 42, 0.98) 100%);
+      background: radial-gradient(ellipse at 50% 30%, #1e2638 0%, #0d131f 60%, #05080e 100%) !important;
+      border: 3px solid #facc15 !important;
     }
     .promo-ref-prize-card .prize-card-badge {
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 800;
       color: #fef08a;
       letter-spacing: 0.5px;
       margin-bottom: 3px;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
     .promo-ref-prize-card.promo-ru-card .prize-card-badge {
       color: #e2e8f0;
     }
     .promo-ref-prize-card .prize-card-amount {
-      font-size: 22px;
+      font-size: 23px;
       font-weight: 900;
       color: #ffffff;
-      text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(250, 204, 21, 0.6);
-      margin: 2px 0;
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.95);
+      margin: 2px 0 3px 0;
       letter-spacing: 0.5px;
+      max-width: 100%;
+      word-break: break-word;
+    }
+    .promo-ref-prize-card .prize-amount-gold {
+      color: #ffea00;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95), 0 0 12px rgba(250, 204, 21, 0.7);
+      font-weight: 900;
+    }
+    .promo-ref-prize-card .prize-amount-white {
+      color: #ffffff;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95);
+      font-weight: 800;
     }
     .promo-ref-prize-card.promo-champ-card .prize-card-amount {
-      color: #fffbeb;
-      text-shadow: 0 3px 8px rgba(180, 83, 9, 0.9), 0 0 16px rgba(250, 204, 21, 0.7);
+      text-shadow: 0 3px 8px rgba(0, 0, 0, 0.95), 0 0 14px rgba(250, 204, 21, 0.5);
     }
     .promo-ref-prize-card .prize-card-sub {
       font-size: 11px;
       font-weight: 700;
-      color: #fde68a;
+      color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
     }
     .promo-ref-prize-card.promo-ru-card .prize-card-sub {
       color: #cbd5e1;

@@ -222,11 +222,11 @@ function drawCanvasLaurelLeaf(ctx, bx, by, tx, ty, width, fillColor, strokeColor
 function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
   ctx.save();
   const dir = isLeft ? 1 : -1;
-  const baseX = isLeft ? (cardX + 26) : (cardX + cardW - 26);
-  const baseY = cardY + cardH - 16;
-  const tipX = isLeft ? (cardX + 60) : (cardX + cardW - 60);
-  const tipY = cardY + 16;
-  const ctrlX = isLeft ? (cardX + 12) : (cardX + cardW - 12);
+  const baseX = isLeft ? (cardX + 24) : (cardX + cardW - 24);
+  const baseY = cardY + cardH - 14;
+  const tipX = isLeft ? (cardX + 62) : (cardX + cardW - 62);
+  const tipY = cardY + 14;
+  const ctrlX = isLeft ? (cardX + 10) : (cardX + cardW - 10);
   const ctrlY = cardY + cardH * 0.52;
 
   // Draw main curved golden stem
@@ -242,10 +242,10 @@ function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
   }
   if (typeof ctx.stroke === 'function') ctx.stroke();
 
-  // Draw pairs of golden leaves/grains along stem
-  const numPairs = 6;
+  // Draw 8 dense pairs of golden leaves/grains along stem (lush & overlapping)
+  const numPairs = 8;
   for (let i = 1; i <= numPairs; i++) {
-    const t = 0.12 + (i / (numPairs + 1)) * 0.82;
+    const t = 0.08 + (i / (numPairs + 1)) * 0.86;
     const px = (1 - t) * (1 - t) * baseX + 2 * (1 - t) * t * ctrlX + t * t * tipX;
     const py = (1 - t) * (1 - t) * baseY + 2 * (1 - t) * t * ctrlY + t * t * tipY;
 
@@ -258,38 +258,232 @@ function drawCanvasRiceSheafWreath(ctx, cardX, cardY, cardW, cardH, isLeft) {
     const unx = -uty;
     const uny = utx;
 
-    const leafLen = 13 + (1 - Math.abs(t - 0.5) * 1.5) * 6;
-    const leafWidth = 6.5;
+    const leafLen = 14 + (1 - Math.abs(t - 0.5) * 1.6) * 6;
+    const leafWidth = 7;
 
-    // Outer leaf (points away from center and up)
-    const outAngleX = utx * 0.7 - (unx * dir * 0.7);
-    const outAngleY = uty * 0.7 - (uny * dir * 0.7);
+    // Outer leaf (points away from center and up, rich golden highlight)
+    const outAngleX = utx * 0.68 - (unx * dir * 0.72);
+    const outAngleY = uty * 0.68 - (uny * dir * 0.72);
     const outTipX = px + outAngleX * leafLen;
     const outTipY = py + outAngleY * leafLen;
-    drawCanvasLaurelLeaf(ctx, px, py, outTipX, outTipY, leafWidth, '#fde047', '#ca8a04');
+    drawCanvasLaurelLeaf(ctx, px, py, outTipX, outTipY, leafWidth, '#fff59d', '#b45309');
 
-    // Inner leaf (points towards center and up)
-    const inAngleX = utx * 0.75 + (unx * dir * 0.65);
-    const inAngleY = uty * 0.75 + (uny * dir * 0.65);
-    const inTipX = px + inAngleX * (leafLen * 0.9);
-    const inTipY = py + inAngleY * (leafLen * 0.9);
-    drawCanvasLaurelLeaf(ctx, px, py, inTipX, inTipY, leafWidth * 0.95, '#facc15', '#ca8a04');
+    // Inner leaf (points towards center and up, warm amber-gold)
+    const inAngleX = utx * 0.72 + (unx * dir * 0.68);
+    const inAngleY = uty * 0.72 + (uny * dir * 0.68);
+    const inTipX = px + inAngleX * (leafLen * 0.95);
+    const inTipY = py + inAngleY * (leafLen * 0.95);
+    drawCanvasLaurelLeaf(ctx, px, py, inTipX, inTipY, leafWidth * 0.95, '#facc15', '#92400e');
   }
 
   // Tip grain at the very top
   const topDx = (tipX - ctrlX);
   const topDy = (tipY - ctrlY);
   const topLen = Math.hypot(topDx, topDy) || 1;
-  const topTipX = tipX + (topDx / topLen) * 14;
-  const topTipY = tipY + (topDy / topLen) * 14;
-  drawCanvasLaurelLeaf(ctx, tipX, tipY, topTipX, topTipY, 6, '#fef08a', '#ca8a04');
+  const topTipX = tipX + (topDx / topLen) * 15;
+  const topTipY = tipY + (topDy / topLen) * 15;
+  drawCanvasLaurelLeaf(ctx, tipX, tipY, topTipX, topTipY, 6.5, '#ffffff', '#b45309');
 
   // Base node
-  ctx.fillStyle = '#ca8a04';
+  ctx.fillStyle = '#b45309';
   ctx.beginPath();
-  if (typeof ctx.arc === 'function') ctx.arc(baseX, baseY, 3, 0, Math.PI * 2);
+  if (typeof ctx.arc === 'function') ctx.arc(baseX, baseY, 3.5, 0, Math.PI * 2);
   if (typeof ctx.fill === 'function') ctx.fill();
 
+  ctx.restore();
+}
+
+function drawCanvas3DRibbonMedal(ctx, cx, cy, isSilver) {
+  ctx.save();
+  const medalY = cy + 5;
+  const r = 12.5;
+
+  // 1. Folded V-Ribbon (Blue-White-Red Stripes)
+  // Left fold
+  ctx.fillStyle = '#b91c1c';
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') {
+    ctx.moveTo(cx - 13, cy - 16);
+    ctx.lineTo(cx, cy + 2);
+    ctx.lineTo(cx - 4, cy + 2);
+    ctx.lineTo(cx - 17, cy - 16);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') {
+    ctx.moveTo(cx - 9, cy - 16);
+    ctx.lineTo(cx - 2, cy + 2);
+    ctx.lineTo(cx - 6, cy + 2);
+    ctx.lineTo(cx - 13, cy - 16);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.fillStyle = '#1d4ed8';
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') {
+    ctx.moveTo(cx - 5, cy - 16);
+    ctx.lineTo(cx - 1, cy + 2);
+    ctx.lineTo(cx - 3, cy + 2);
+    ctx.lineTo(cx - 8, cy - 16);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Right fold
+  ctx.fillStyle = '#1d4ed8';
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') {
+    ctx.moveTo(cx + 5, cy - 16);
+    ctx.lineTo(cx + 1, cy + 2);
+    ctx.lineTo(cx + 3, cy + 2);
+    ctx.lineTo(cx + 8, cy - 16);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') {
+    ctx.moveTo(cx + 9, cy - 16);
+    ctx.lineTo(cx + 2, cy + 2);
+    ctx.lineTo(cx + 6, cy + 2);
+    ctx.lineTo(cx + 13, cy - 16);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.fillStyle = '#b91c1c';
+  ctx.beginPath();
+  if (typeof ctx.moveTo === 'function') {
+    ctx.moveTo(cx + 13, cy - 16);
+    ctx.lineTo(cx, cy + 2);
+    ctx.lineTo(cx + 4, cy + 2);
+    ctx.lineTo(cx + 17, cy - 16);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // 2. Medal Rim with metallic gradient
+  const mGrad = ctx.createLinearGradient(cx - r, medalY - r, cx + r, medalY + r);
+  if (isSilver) {
+    mGrad.addColorStop(0, '#ffffff');
+    mGrad.addColorStop(0.3, '#cbd5e1');
+    mGrad.addColorStop(0.7, '#94a3b8');
+    mGrad.addColorStop(1, '#475569');
+  } else {
+    mGrad.addColorStop(0, '#ffffff');
+    mGrad.addColorStop(0.25, '#fde047');
+    mGrad.addColorStop(0.65, '#facc15');
+    mGrad.addColorStop(1, '#b45309');
+  }
+
+  ctx.fillStyle = mGrad;
+  ctx.strokeStyle = isSilver ? '#475569' : '#b45309';
+  ctx.lineWidth = 1.5;
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetY = 2;
+  }
+  ctx.beginPath();
+  if (typeof ctx.arc === 'function') ctx.arc(cx, medalY, r, 0, Math.PI * 2);
+  if (typeof ctx.fill === 'function') ctx.fill();
+  if (typeof ctx.stroke === 'function') ctx.stroke();
+
+  // Inner ring
+  if (ctx.shadowColor !== undefined) ctx.shadowColor = 'transparent';
+  ctx.strokeStyle = isSilver ? '#94a3b8' : '#ca8a04';
+  ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  if (typeof ctx.arc === 'function') ctx.arc(cx, medalY, r - 3, 0, Math.PI * 2);
+  if (typeof ctx.stroke === 'function') ctx.stroke();
+
+  // 3. Embossed Star
+  ctx.fillStyle = isSilver ? '#ffffff' : '#fef08a';
+  ctx.beginPath();
+  const starR = 5;
+  const innerR = 2.2;
+  for (let i = 0; i < 5; i++) {
+    const aOuter = -Math.PI / 2 + (i * 2 * Math.PI / 5);
+    const aInner = aOuter + Math.PI / 5;
+    const ox = cx + Math.cos(aOuter) * starR;
+    const oy = medalY + Math.sin(aOuter) * starR;
+    const ix = cx + Math.cos(aInner) * innerR;
+    const iy = medalY + Math.sin(aInner) * innerR;
+    if (i === 0) {
+      if (typeof ctx.moveTo === 'function') ctx.moveTo(ox, oy);
+    } else {
+      if (typeof ctx.lineTo === 'function') ctx.lineTo(ox, oy);
+    }
+    if (typeof ctx.lineTo === 'function') ctx.lineTo(ix, iy);
+  }
+  if (typeof ctx.closePath === 'function') ctx.closePath();
+  if (typeof ctx.fill === 'function') ctx.fill();
+
+  ctx.restore();
+}
+
+function drawCanvasLensGlint(ctx, gx, gy) {
+  ctx.save();
+  const glintGrad = ctx.createRadialGradient ? ctx.createRadialGradient(gx, gy, 0, gx, gy, 45) : null;
+  if (glintGrad) {
+    glintGrad.addColorStop(0, '#ffffff');
+    glintGrad.addColorStop(0.2, '#fef08a');
+    glintGrad.addColorStop(0.6, 'rgba(250, 204, 21, 0.45)');
+    glintGrad.addColorStop(1, 'rgba(250, 204, 21, 0)');
+    ctx.fillStyle = glintGrad;
+  } else {
+    ctx.fillStyle = '#ffffff';
+  }
+  ctx.fillRect(gx - 40, gy - 3, 80, 6);
+  ctx.restore();
+}
+
+function drawCanvasDualTonePrize(ctx, rawText, centerX, centerY, maxW, isChamp) {
+  const str = String(rawText || '').trim();
+  const match = str.match(/^([০-৯0-9,]+(?:\s*(?:টাকা|BDT|\$|Tk))?)(.*)$/i);
+  let numPart = str;
+  let restPart = '';
+  if (match && match[1]) {
+    numPart = match[1].trim();
+    restPart = match[2].trim();
+  }
+
+  let fontPx = 25;
+  ctx.font = `900 ${fontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
+  let numW = ctx.measureText ? ctx.measureText(numPart).width : 100;
+  let restW = restPart && ctx.measureText ? ctx.measureText(' ' + restPart).width : 0;
+  let totalW = numW + restW;
+
+  if (totalW > maxW) {
+    fontPx = Math.max(14, Math.floor(fontPx * (maxW / totalW)));
+    ctx.font = `900 ${fontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
+    numW = ctx.measureText ? ctx.measureText(numPart).width : 80;
+    restW = restPart && ctx.measureText ? ctx.measureText(' ' + restPart).width : 0;
+    totalW = numW + restW;
+  }
+
+  const startX = centerX - totalW / 2;
+  ctx.save();
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'left';
+
+  // Heavy black 3D outline and drop shadow
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 3;
+  }
+
+  // Golden amount (#ffea00 for champion, #ffffff for runner-up)
+  ctx.fillStyle = isChamp ? '#ffea00' : '#ffffff';
+  ctx.fillText(numPart, startX, centerY);
+
+  // Pure white text for the rest
+  if (restPart) {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(' ' + restPart, startX + numW, centerY);
+  }
   ctx.restore();
 }
 
@@ -524,114 +718,143 @@ function renderPromoPosterToCanvas() {
     ctx.restore();
   });
 
-  // 6. ROW 2: 2 GOLDEN RICE SHEAF PRIZE CARDS
+  // 6. ROW 2: 2 GOLDEN RICE SHEAF PRIZE CARDS (RICH 3D LUXURY FINISH)
   const r2Y = 248;
   const r2H = 135;
   const prizeCardW = 528;
   const prizeGap = 24;
   const p1X = cardsStartX; // 60px
   const p2X = p1X + prizeCardW + prizeGap; // 612px
+  const maxPrizeTextW = prizeCardW - 160; // 368px safe space between left & right wheat sheaves
 
-  // Champion Prize Card (Golden Rice Sheaf)
-  const champGrad = ctx.createLinearGradient(p1X, r2Y, p1X + prizeCardW, r2Y + r2H);
-  champGrad.addColorStop(0, '#582405');
-  champGrad.addColorStop(0.35, '#a16207');
-  champGrad.addColorStop(0.7, '#ca8a04');
-  champGrad.addColorStop(1, '#451a03');
+  // Champion Prize Card (Deep Espresso / Black Luxury Radial Background)
+  const champGrad = ctx.createRadialGradient
+    ? ctx.createRadialGradient(p1X + prizeCardW / 2, r2Y + r2H * 0.35, 10, p1X + prizeCardW / 2, r2Y + r2H / 2, prizeCardW * 0.55)
+    : null;
+  if (champGrad) {
+    champGrad.addColorStop(0, '#351604');
+    champGrad.addColorStop(0.55, '#170902');
+    champGrad.addColorStop(1, '#0a0301');
+  }
 
   ctx.save();
   if (ctx.shadowColor !== undefined) {
     ctx.shadowColor = 'rgba(250, 204, 21, 0.75)';
-    ctx.shadowBlur = 22;
+    ctx.shadowBlur = 24;
   }
-  drawRoundedRect(ctx, p1X, r2Y, prizeCardW, r2H, 16, champGrad, '#facc15', 3);
+  drawRoundedRect(ctx, p1X, r2Y, prizeCardW, r2H, 18, champGrad || '#170902', '#facc15', 3);
   ctx.restore();
 
-  // Rice sheaf branches flanking champion prize with perfect placement
+  // Specular 3D Lens Glints on Top & Bottom Border
+  drawCanvasLensGlint(ctx, p1X + prizeCardW / 2, r2Y);
+  drawCanvasLensGlint(ctx, p1X + prizeCardW / 2, r2Y + r2H);
+
+  // Dense Golden Wheat / Rice Sheaves flanking Champion Card
   drawCanvasRiceSheafWreath(ctx, p1X, r2Y, prizeCardW, r2H, true);
   drawCanvasRiceSheafWreath(ctx, p1X, r2Y, prizeCardW, r2H, false);
 
-  const maxPrizeTextW = prizeCardW - 160; // 368px safe space between left and right wheat sheaves
+  // Champion Header Lockup (3D Tri-Color Ribbon Medal + Title)
+  const champTitle = isEn ? 'CHAMPION TEAM PRIZE MONEY' : 'চ্যাম্পিয়ন দলের প্রাইজমানি';
+  ctx.save();
+  ctx.font = '800 13px "Hind Siliguri", "Segoe UI", sans-serif';
+  const champTitleW = ctx.measureText ? ctx.measureText(champTitle).width : 170;
+  const champMedalW = 28;
+  const champGroupW = champMedalW + 8 + champTitleW;
+  const champStartX = p1X + (prizeCardW - champGroupW) / 2;
 
+  drawCanvas3DRibbonMedal(ctx, champStartX + champMedalW / 2, r2Y + 28, false);
+
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#fef08a';
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetY = 1;
+  }
+  ctx.fillText(champTitle, champStartX + champMedalW + 8, r2Y + 28);
+  ctx.restore();
+
+  // Dual-tone Champion Prize Amount (Golden Numbers + Crisp White Text)
+  drawCanvasDualTonePrize(ctx, champPrize, p1X + prizeCardW / 2, r2Y + 68, maxPrizeTextW, true);
+
+  // Champion Subtitle
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#fef08a';
-  ctx.fillText(isEn ? '🥇 CHAMPION TEAM PRIZE MONEY' : '🥇 চ্যাম্পিয়ন দলের প্রাইজমানি', p1X + prizeCardW / 2, r2Y + 28);
-
-  // Scaled prize text so it never overlaps the sheaves
-  let champFontPx = 24;
-  ctx.font = `900 ${champFontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
-  if (ctx.measureText) {
-    const textW = ctx.measureText(champPrize).width;
-    if (textW > maxPrizeTextW) {
-      champFontPx = Math.max(14, Math.floor(champFontPx * (maxPrizeTextW / textW)));
-      ctx.font = `900 ${champFontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
-    }
-  }
+  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#ffffff';
   if (ctx.shadowColor !== undefined) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetY = 3;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+    ctx.shadowBlur = 3;
+    ctx.shadowOffsetY = 1;
   }
-  ctx.fillText(champPrize, p1X + prizeCardW / 2, r2Y + 68);
-
-  ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#fde68a';
-  if (ctx.shadowBlur !== undefined) ctx.shadowBlur = 0;
-  ctx.fillText(isEn ? '+ Champion Winners Trophy & Gold Medals' : '+ সেরা খেলোয়াড় ট্রফি ও মেডেল', p1X + prizeCardW / 2, r2Y + 104);
+  ctx.fillText(isEn ? '+ Best Player Trophy & Medals' : '+ সেরা খেলোয়াড় ট্রফি ও মেডেল', p1X + prizeCardW / 2, r2Y + 104);
   ctx.restore();
 
-  // Runner-Up Prize Card (Golden Rice Sheaf & Gold Glowing Border)
-  const ruGrad = ctx.createLinearGradient(p2X, r2Y, p2X + prizeCardW, r2Y + r2H);
-  ruGrad.addColorStop(0, '#1e293b');
-  ruGrad.addColorStop(0.4, '#475569');
-  ruGrad.addColorStop(0.7, '#64748b');
-  ruGrad.addColorStop(1, '#0f172a');
+  // Runner-Up Prize Card (Deep Slate / Black Luxury Radial Background)
+  const ruGrad = ctx.createRadialGradient
+    ? ctx.createRadialGradient(p2X + prizeCardW / 2, r2Y + r2H * 0.35, 10, p2X + prizeCardW / 2, r2Y + r2H / 2, prizeCardW * 0.55)
+    : null;
+  if (ruGrad) {
+    ruGrad.addColorStop(0, '#1e2638');
+    ruGrad.addColorStop(0.55, '#0d131f');
+    ruGrad.addColorStop(1, '#05080e');
+  }
 
   ctx.save();
   if (ctx.shadowColor !== undefined) {
     ctx.shadowColor = 'rgba(250, 204, 21, 0.65)';
-    ctx.shadowBlur = 20;
+    ctx.shadowBlur = 22;
   }
-  drawRoundedRect(ctx, p2X, r2Y, prizeCardW, r2H, 16, ruGrad, '#facc15', 3);
+  drawRoundedRect(ctx, p2X, r2Y, prizeCardW, r2H, 18, ruGrad || '#0d131f', '#facc15', 3);
   ctx.restore();
 
-  // Rice sheaf branches flanking runner-up prize with perfect placement
+  // Specular 3D Lens Glints on Top & Bottom Border
+  drawCanvasLensGlint(ctx, p2X + prizeCardW / 2, r2Y);
+  drawCanvasLensGlint(ctx, p2X + prizeCardW / 2, r2Y + r2H);
+
+  // Dense Golden Wheat / Rice Sheaves flanking Runner-Up Card
   drawCanvasRiceSheafWreath(ctx, p2X, r2Y, prizeCardW, r2H, true);
   drawCanvasRiceSheafWreath(ctx, p2X, r2Y, prizeCardW, r2H, false);
 
+  // Runner-Up Header Lockup (3D Tri-Color Ribbon Silver Medal + Title)
+  const ruTitle = isEn ? 'RUNNER-UP TEAM PRIZE MONEY' : 'রানার্স-আপ দলের প্রাইজমানি';
+  ctx.save();
+  ctx.font = '800 13px "Hind Siliguri", "Segoe UI", sans-serif';
+  const ruTitleW = ctx.measureText ? ctx.measureText(ruTitle).width : 170;
+  const ruMedalW = 28;
+  const ruGroupW = ruMedalW + 8 + ruTitleW;
+  const ruStartX = p2X + (prizeCardW - ruGroupW) / 2;
+
+  drawCanvas3DRibbonMedal(ctx, ruStartX + ruMedalW / 2, r2Y + 28, true);
+
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#e2e8f0';
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetY = 1;
+  }
+  ctx.fillText(ruTitle, ruStartX + ruMedalW + 8, r2Y + 28);
+  ctx.restore();
+
+  // Dual-tone Runner-Up Prize Amount (Golden Numbers + Crisp White Text)
+  drawCanvasDualTonePrize(ctx, runnerPrize, p2X + prizeCardW / 2, r2Y + 68, maxPrizeTextW, false);
+
+  // Runner-Up Subtitle
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = 'bold 13px "Hind Siliguri", "Segoe UI", sans-serif';
-  ctx.fillStyle = '#e2e8f0';
-  ctx.fillText(isEn ? '🥈 RUNNER-UP TEAM PRIZE MONEY' : '🥈 রানার্স-আপ দলের প্রাইজমানি', p2X + prizeCardW / 2, r2Y + 28);
-
-  // Scaled prize text so it never overlaps the sheaves
-  let ruFontPx = 24;
-  ctx.font = `900 ${ruFontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
-  if (ctx.measureText) {
-    const textW = ctx.measureText(runnerPrize).width;
-    if (textW > maxPrizeTextW) {
-      ruFontPx = Math.max(14, Math.floor(ruFontPx * (maxPrizeTextW / textW)));
-      ctx.font = `900 ${ruFontPx}px "Hind Siliguri", "Segoe UI", sans-serif`;
-    }
-  }
-  ctx.fillStyle = '#ffffff';
-  if (ctx.shadowColor !== undefined) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetY = 3;
-  }
-  ctx.fillText(runnerPrize, p2X + prizeCardW / 2, r2Y + 68);
-
   ctx.font = 'bold 12px "Hind Siliguri", "Segoe UI", sans-serif';
   ctx.fillStyle = '#cbd5e1';
-  if (ctx.shadowBlur !== undefined) ctx.shadowBlur = 0;
-  ctx.fillText(isEn ? '+ Runner-Up Trophy & Silver Medals' : '+ রানার্স-আপ ট্রফি ও মেডেল', p2X + prizeCardW / 2, r2Y + 104);
+  if (ctx.shadowColor !== undefined) {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+    ctx.shadowBlur = 3;
+    ctx.shadowOffsetY = 1;
+  }
+  ctx.fillText(isEn ? '+ Runner-Up Trophy & Medals' : '+ রানার্স-আপ ট্রফি ও মেডেল', p2X + prizeCardW / 2, r2Y + 104);
   ctx.restore();
 
   // 7. ROW 3: SECONDARY PRIZES STRIP
