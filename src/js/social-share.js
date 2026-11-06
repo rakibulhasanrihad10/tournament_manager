@@ -319,17 +319,6 @@ function renderPromoPosterToCanvas() {
   ctx.fillStyle = bgOverlay;
   ctx.fillRect(0, 0, width, height);
 
-  // Golden border around entire poster
-  ctx.strokeStyle = '#facc15';
-  ctx.lineWidth = 3;
-  if (typeof ctx.strokeRect === 'function') {
-    ctx.strokeRect(1.5, 1.5, width - 3, height - 3);
-  } else if (typeof ctx.stroke === 'function') {
-    ctx.beginPath();
-    if (typeof ctx.rect === 'function') ctx.rect(1.5, 1.5, width - 3, height - 3);
-    ctx.stroke();
-  }
-
   // 3. SUPERSTAR PLAYER CUTOUTS (OR CUSTOM LOGOS)
   // Left: Messi or User Custom Photo
   let leftPlayerImg = null;

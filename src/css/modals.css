@@ -3268,7 +3268,7 @@
       position: relative;
       background: linear-gradient(180deg, #071c3d 0%, #05142b 60%, #030b18 100%);
       color: #fff;
-      border: 3px solid #facc15;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 14px;
       padding: 16px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
